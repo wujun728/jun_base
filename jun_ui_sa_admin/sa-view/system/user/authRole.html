@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>分配角色</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../static/sa.css">
+    <link rel="stylesheet" href="../../static/ruoyi.css">
+</head>
+<body>
+    <div class="vue-box" style="display: none;" :style="'display: block;'">
+        <div class="app-container">
+            <!-- 用户基本信息 -->
+            <h4 class="form-header h4">基本信息</h4>
+            <el-form :model="form" label-width="80px" :inline="true">
+                <el-form-item label="用户昵称">
+                    <el-input v-model="form.nickName" disabled style="width: 200px;"></el-input>
+                </el-form-item>
+                <el-form-item label="登录账号">
+                    <el-input v-model="form.userName" disabled style="width: 200px;"></el-input>
+                </el-form-item>
+            </el-form>
+
+            <!-- 角色信息 -->
+            <h4 class="form-header h4">角色信息</h4>
+            <el-table v-loading="loading" :data="roles" ref="roleTable" @row-click="clickRow" @selection-change="handleSelectionChange">
+                <el-table-column type="selection" width="55" align="center"></el-table-column>
+                <el-table-column label="角色编号" align="center" prop="roleId" width="120"></el-table-column>
+                <el-table-column label="角色名称" align="center" prop="roleName"></el-table-column>
+                <el-table-column label="权限字符" align="center" prop="roleKey"></el-table-column>
+                <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+                    <template slot-scope="scope">
+                        <span>{{ parseTime(scope.row.createTime) }}</span>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <!-- 底部按钮 -->
+            <div style="margin-top: 20px; text-align: center;">
+                <el-button type="primary" @click="submitForm">提交</el-button>
+                <el-button @click="close">返回</el-button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui@2.13.0/lib/index.js"></script>
+    <script src="https://unpkg.com/jquery@3.4.1/dist/jquery.min.js"></script>
+    <script src="../../static/kj/layer/layer.js"></script>
+    <script src="../../static/sa.js"></script>
+    <script src="../../static/ruoyi-util.js"></script>
+    <script>
+        var app = new Vue({
+            el: '.vue-box',
+            data: {
+                // 遮罩层
+                loading: true,
+                // 用户ID
+                userId: undefined,
+                // 用户信息
+                form: {
+                    nickName: '',
+                    userName: ''
+                },
+                // 角色列表
+                roles: [],
+                // 选中的角色ID
+                roleIds: []
+            },
+            methods: {
+                /** 获取授权角色数据 */
+                getAuthRole: function() {
+                    this.loading = true;
+                    ruoyi.get('/system/user/authRole/' + this.userId, function(res) {
+                        this.form = res.user || {};
+                        this.roles = res.roles || [];
+                        this.loading = false;
+                        // 预选已分配的角色
+                        this.$nextTick(function() {
+                            var table = this.$refs.roleTable;
+                            if (table) {
+                                this.roles.forEach(function(role) {
+                                    if (role.flag) {
+                                        table.toggleRowSelection(role, true);
+                                    }
+                                });
+                            }
+                        }.bind(this));
+                    }.bind(this), function() {
+                        this.loading = false;
+                    }.bind(this));
+                },
+                /** 单击行选中 */
+                clickRow: function(row) {
+                    this.$refs.roleTable.toggleRowSelection(row);
+                },
+                /** 多选框选中数据 */
+                handleSelectionChange: function(selection) {
+                    this.roleIds = selection.map(function(item) { return item.roleId; });
+                },
+                /** 提交按钮 */
+                submitForm: function() {
+                    if (this.roleIds.length === 0) {
+                        this.$modal.msgError('请选择要分配的角色');
+                        return;
+                    }
+                    var data = {
+                        userId: this.userId,
+                        roleIds: this.roleIds.join(',')
+                    };
+                    ruoyi.put('/system/user/authRole', data, function(res) {
+                        this.$modal.msgSuccess('授权成功');
+                        this.close();
+                    }.bind(this));
+                },
+                /** 关闭页面 */
+                close: function() {
+                    try {
+                        // 尝试关闭当前标签页并回到用户管理
+                        var tabId = parent.sa_admin.tab.id;
+                        parent.sa_admin.closeTab(tabId);
+                    } catch (e) {
+                        // 如果无法关闭标签页，尝试返回
+                        history.back();
+                    }
+                }
+            },
+            created: function() {
+                this.userId = ruoyi.getQueryParam('userId');
+                if (this.userId) {
+                    this.getAuthRole();
+                } else {
+                    this.$modal.msgError('缺少用户ID参数');
+                    this.loading = false;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

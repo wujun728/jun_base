@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>定时任务</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../static/sa.css">
+    <link rel="stylesheet" href="../../static/ruoyi.css">
+</head>
+<body>
+    <div class="vue-box" style="display: none;" :style="'display: block;'">
+        <div class="c-panel">
+            <!-- 检索参数 -->
+            <div class="c-title">定时任务</div>
+            <el-form :inline="true" :model="queryParams" ref="queryForm" @submit.native.prevent>
+                <el-form-item label="任务名称" prop="jobName">
+                    <el-input v-model="queryParams.jobName" placeholder="请输入任务名称" clearable size="small" style="width: 200px;" @keyup.enter.native="handleQuery"></el-input>
+                </el-form-item>
+                <el-form-item label="任务组名" prop="jobGroup">
+                    <el-select v-model="queryParams.jobGroup" placeholder="请选择任务组名" clearable size="small" style="width: 200px;">
+                        <el-option v-for="dict in sysJobGroupOptions" :key="dict.value" :label="dict.label" :value="dict.value"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="任务状态" prop="status">
+                    <el-select v-model="queryParams.status" placeholder="请选择任务状态" clearable size="small" style="width: 200px;">
+                        <el-option v-for="dict in sysJobStatusOptions" :key="dict.value" :label="dict.label" :value="dict.value"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+                    <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+                </el-form-item>
+            </el-form>
+
+            <!-- 操作按钮 -->
+            <el-row :gutter="10" class="mb8">
+                <el-col :span="1.5">
+                    <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd" v-hasPermi="['monitor:job:add']">新增</el-button>
+                </el-col>
+                <el-col :span="1.5">
+                    <el-button type="success" plain icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate" v-hasPermi="['monitor:job:edit']">修改</el-button>
+                </el-col>
+                <el-col :span="1.5">
+                    <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete" v-hasPermi="['monitor:job:remove']">删除</el-button>
+                </el-col>
+                <el-col :span="1.5">
+                    <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport" v-hasPermi="['monitor:job:export']">导出</el-button>
+                </el-col>
+                <el-col :span="1.5">
+                    <el-button type="info" plain icon="el-icon-s-operation" size="mini" @click="handleJobLog">日志</el-button>
+                </el-col>
+            </el-row>
+
+            <!-- 数据列表 -->
+            <el-table :data="jobList" size="small" v-loading="loading" @selection-change="handleSelectionChange">
+                <el-table-column type="selection" width="55" align="center"></el-table-column>
+                <el-table-column label="任务编号" align="center" prop="jobId" width="80"></el-table-column>
+                <el-table-column label="任务名称" align="center" prop="jobName" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                        <el-link type="primary" @click="handleView(scope.row)">{{ scope.row.jobName }}</el-link>
+                    </template>
+                </el-table-column>
+                <el-table-column label="任务组名" align="center" prop="jobGroup">
+                    <template slot-scope="scope">
+                        <span>{{ selectDictLabel(sysJobGroupOptions, scope.row.jobGroup) }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="调用目标字符串" align="center" prop="invokeTarget" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="cron执行表达式" align="center" prop="cronExpression" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="状态" align="center" width="100">
+                    <template slot-scope="scope">
+                        <el-switch v-model="scope.row.status" active-value="0" inactive-value="1" @change="handleStatusChange(scope.row)" v-hasPermi="['monitor:job:changeStatus']"></el-switch>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" align="center" class-name="fixed-width" width="200">
+                    <template slot-scope="scope">
+                        <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['monitor:job:edit']">修改</el-button>
+                        <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['monitor:job:remove']">删除</el-button>
+                        <el-dropdown size="mini" @command="function(command) { handleCommand(command, scope.row) }">
+                            <el-button size="mini" type="text" icon="el-icon-d-arrow-right">更多</el-button>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item command="handleRun" icon="el-icon-caret-right" v-hasPermi="['monitor:job:changeStatus']">执行一次</el-dropdown-item>
+                                <el-dropdown-item command="handleView" icon="el-icon-view">任务详细</el-dropdown-item>
+                                <el-dropdown-item command="handleJobLog" icon="el-icon-s-operation">调度日志</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <!-- 分页 -->
+            <div class="pagination-container">
+                <el-pagination background layout="total, sizes, prev, pager, next, jumper" :current-page.sync="queryParams.pageNum" :page-size.sync="queryParams.pageSize" :page-sizes="[10, 20, 50, 100]" :total="total" @size-change="getList" @current-change="getList"></el-pagination>
+            </div>
+        </div>
+
+        <!-- 添加或修改定时任务对话框 -->
+        <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body>
+            <el-form ref="form" :model="form" :rules="rules" label-width="120px">
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item label="任务名称" prop="jobName">
+                            <el-input v-model="form.jobName" placeholder="请输入任务名称"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="任务分组" prop="jobGroup">
+                            <el-select v-model="form.jobGroup" placeholder="请选择任务分组" style="width: 100%;">
+                                <el-option v-for="dict in sysJobGroupOptions" :key="dict.value" :label="dict.label" :value="dict.value"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item prop="invokeTarget">
+                            <span slot="label">
+                                调用方法
+                                <el-tooltip placement="top">
+                                    <div slot="content">
+                                        Bean调用示例：ryTask.ryParams('ry')
+                                        <br>Class类调用示例：com.ruoyi.quartz.task.RyTask.ryParams('ry')
+                                        <br>参数说明：支持字符串，布尔类型，长整型，浮点型，整型
+                                    </div>
+                                    <i class="el-icon-question"></i>
+                                </el-tooltip>
+                            </span>
+                            <el-input v-model="form.invokeTarget" placeholder="请输入调用目标字符串"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="cron表达式" prop="cronExpression">
+                            <el-input v-model="form.cronExpression" placeholder="请输入cron执行表达式"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="执行策略" prop="misfirePolicy">
+                            <el-radio-group v-model="form.misfirePolicy">
+                                <el-radio label="1">立即执行</el-radio>
+                                <el-radio label="2">执行一次</el-radio>
+                                <el-radio label="3">放弃执行</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item label="是否并发" prop="concurrent">
+                            <el-radio-group v-model="form.concurrent">
+                                <el-radio label="0">允许</el-radio>
+                                <el-radio label="1">禁止</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="状态">
+                            <el-radio-group v-model="form.status">
+                                <el-radio label="0">正常</el-radio>
+                                <el-radio label="1">暂停</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="submitForm">确 定</el-button>
+                <el-button @click="cancel">取 消</el-button>
+            </div>
+        </el-dialog>
+
+        <!-- 任务详细对话框 -->
+        <el-dialog title="任务详细" :visible.sync="openView" width="700px" append-to-body>
+            <el-form ref="viewForm" :model="form" label-width="120px" size="mini">
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item label="任务编号：">{{ form.jobId }}</el-form-item>
+                        <el-form-item label="任务名称：">{{ form.jobName }}</el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="任务分组：">{{ selectDictLabel(sysJobGroupOptions, form.jobGroup) }}</el-form-item>
+                        <el-form-item label="创建时间：">{{ form.createTime }}</el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item label="cron表达式：">{{ form.cronExpression }}</el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="下次执行时间：">{{ parseTime(form.nextValidTime) }}</el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="调用目标方法：">{{ form.invokeTarget }}</el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item label="任务状态：">
+                            <span v-if="form.status === '0'">正常</span>
+                            <span v-else-if="form.status === '1'">暂停</span>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="是否并发：">
+                            <span v-if="form.concurrent === '0'">允许</span>
+                            <span v-else-if="form.concurrent === '1'">禁止</span>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item label="执行策略：">
+                            <span v-if="form.misfirePolicy === '0'">默认策略</span>
+                            <span v-else-if="form.misfirePolicy === '1'">立即执行</span>
+                            <span v-else-if="form.misfirePolicy === '2'">执行一次</span>
+                            <span v-else-if="form.misfirePolicy === '3'">放弃执行</span>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="openView = false">关 闭</el-button>
+            </div>
+        </el-dialog>
+    </div>
+
+    <script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui@2.13.0/lib/index.js"></script>
+    <script src="https://unpkg.com/jquery@3.4.1/dist/jquery.min.js"></script>
+    <script src="../../static/kj/layer/layer.js"></script>
+    <script src="../../static/sa.js"></script>
+    <script src="../../static/ruoyi-util.js"></script>
+    <script>
+        var app = new Vue({
+            el: '.vue-box',
+            data: {
+                // 遮罩层
+                loading: true,
+                // 选中数组
+                ids: [],
+                // 非单个禁用
+                single: true,
+                // 非多个禁用
+                multiple: true,
+                // 总条数
+                total: 0,
+                // 定时任务表格数据
+                jobList: [],
+                // 弹出层标题
+                title: '',
+                // 是否显示弹出层
+                open: false,
+                // 是否显示详细弹出层
+                openView: false,
+                // 任务组名字典
+                sysJobGroupOptions: [],
+                // 任务状态字典
+                sysJobStatusOptions: [],
+                // 查询参数
+                queryParams: {
+                    pageNum: 1,
+                    pageSize: 10,
+                    jobName: undefined,
+                    jobGroup: undefined,
+                    status: undefined
+                },
+                // 表单参数
+                form: {},
+                // 表单校验
+                rules: {
+                    jobName: [
+                        { required: true, message: '任务名称不能为空', trigger: 'blur' }
+                    ],
+                    invokeTarget: [
+                        { required: true, message: '调用目标字符串不能为空', trigger: 'blur' }
+                    ],
+                    cronExpression: [
+                        { required: true, message: 'cron执行表达式不能为空', trigger: 'blur' }
+                    ]
+                }
+            },
+            methods: {
+                /** 查询定时任务列表 */
+                getList: function() {
+                    this.loading = true;
+                    ruoyi.get('/monitor/job/list', this.queryParams, function(res) {
+                        this.jobList = res.rows;
+                        this.total = res.total;
+                        this.loading = false;
+                    }.bind(this));
+                },
+                /** 搜索按钮操作 */
+                handleQuery: function() {
+                    this.queryParams.pageNum = 1;
+                    this.getList();
+                },
+                /** 重置按钮操作 */
+                resetQuery: function() {
+                    this.resetForm('queryForm');
+                    this.queryParams.jobName = undefined;
+                    this.queryParams.jobGroup = undefined;
+                    this.queryParams.status = undefined;
+                    this.queryParams.pageNum = 1;
+                    this.handleQuery();
+                },
+                /** 多选框选中数据 */
+                handleSelectionChange: function(selection) {
+                    this.ids = selection.map(function(item) { return item.jobId; });
+                    this.single = selection.length !== 1;
+                    this.multiple = !selection.length;
+                },
+                /** 任务状态修改 */
+                handleStatusChange: function(row) {
+                    var text = row.status === '0' ? '启用' : '停用';
+                    this.$modal.confirm('确认要"' + text + '""' + row.jobName + '"任务吗？').then(function() {
+                        ruoyi.put('/monitor/job/changeStatus', { jobId: row.jobId, status: row.status }, function(res) {
+                            this.$modal.msgSuccess(text + '成功');
+                        }.bind(this));
+                    }.bind(this)).catch(function() {
+                        row.status = row.status === '0' ? '1' : '0';
+                    });
+                },
+                /** 更多操作下拉菜单 */
+                handleCommand: function(command, row) {
+                    switch (command) {
+                        case 'handleRun':
+                            this.handleRun(row);
+                            break;
+                        case 'handleView':
+                            this.handleView(row);
+                            break;
+                        case 'handleJobLog':
+                            this.handleJobLog(row);
+                            break;
+                        default:
+                            break;
+                    }
+                },
+                /** 执行一次 */
+                handleRun: function(row) {
+                    this.$modal.confirm('确认要立即执行一次"' + row.jobName + '"任务吗？').then(function() {
+                        ruoyi.put('/monitor/job/run', { jobId: row.jobId, jobGroup: row.jobGroup }, function(res) {
+                            this.$modal.msgSuccess('执行成功');
+                        }.bind(this));
+                    }.bind(this)).catch(function() {});
+                },
+                /** 任务详细信息 */
+                handleView: function(row) {
+                    ruoyi.get('/monitor/job/' + row.jobId, function(res) {
+                        this.form = res.data;
+                        this.openView = true;
+                    }.bind(this));
+                },
+                /** 调度日志 */
+                handleJobLog: function(row) {
+                    if (row && row.jobId) {
+                        parent.sa_admin.showTab({
+                            id: 'job-log-' + row.jobId,
+                            name: row.jobName + '日志',
+                            url: 'sa-view/monitor/job/log.html?jobId=' + row.jobId + '&jobName=' + encodeURIComponent(row.jobName)
+                        });
+                    } else {
+                        parent.sa_admin.showTab({
+                            id: 'job-log-all',
+                            name: '调度日志',
+                            url: 'sa-view/monitor/job/log.html'
+                        });
+                    }
+                },
+                /** 新增按钮操作 */
+                handleAdd: function() {
+                    this.reset();
+                    this.open = true;
+                    this.title = '添加任务';
+                },
+                /** 修改按钮操作 */
+                handleUpdate: function(row) {
+                    this.reset();
+                    var jobId = row.jobId || this.ids[0];
+                    ruoyi.get('/monitor/job/' + jobId, function(res) {
+                        this.form = res.data;
+                        this.open = true;
+                        this.title = '修改任务';
+                    }.bind(this));
+                },
+                /** 提交按钮 */
+                submitForm: function() {
+                    this.$refs['form'].validate(function(valid) {
+                        if (valid) {
+                            if (this.form.jobId !== undefined) {
+                                ruoyi.put('/monitor/job', this.form, function(res) {
+                                    this.$modal.msgSuccess('修改成功');
+                                    this.open = false;
+                                    this.getList();
+                                }.bind(this));
+                            } else {
+                                ruoyi.post('/monitor/job', this.form, function(res) {
+                                    this.$modal.msgSuccess('新增成功');
+                                    this.open = false;
+                                    this.getList();
+                                }.bind(this));
+                            }
+                        }
+                    }.bind(this));
+                },
+                /** 删除按钮操作 */
+                handleDelete: function(row) {
+                    var jobIds = row.jobId ? [row.jobId] : this.ids;
+                    this.$modal.confirm('是否确认删除定时任务编号为"' + jobIds + '"的数据项？').then(function() {
+                        ruoyi.del('/monitor/job/' + jobIds.join(','), function(res) {
+                            this.getList();
+                            this.$modal.msgSuccess('删除成功');
+                        }.bind(this));
+                    }.bind(this)).catch(function() {});
+                },
+                /** 导出按钮操作 */
+                handleExport: function() {
+                    this.$modal.confirm('是否确认导出所有定时任务数据项？').then(function() {
+                        ruoyi.download('/monitor/job/export', this.queryParams, 'job.xlsx');
+                    }.bind(this)).catch(function() {});
+                },
+                /** 取消按钮 */
+                cancel: function() {
+                    this.open = false;
+                    this.reset();
+                },
+                /** 表单重置 */
+                reset: function() {
+                    this.form = {
+                        jobId: undefined,
+                        jobName: undefined,
+                        jobGroup: undefined,
+                        invokeTarget: undefined,
+                        cronExpression: undefined,
+                        misfirePolicy: '1',
+                        concurrent: '1',
+                        status: '0'
+                    };
+                    if (this.$refs['form']) {
+                        this.$refs['form'].resetFields();
+                    }
+                }
+            },
+            created: function() {
+                this.getList();
+                ruoyi.loadDicts(this, ['sys_job_group', 'sys_job_status']);
+            }
+        });
+    </script>
+</body>
+</html>

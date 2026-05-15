@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>角色列表</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<!-- 所有的 css & js 资源 -->
+		<link rel="stylesheet" href="https://unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css">
+		<link rel="stylesheet" href="../../static/sa.css"> 
+		<script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
+		<script src="https://unpkg.com/element-ui@2.13.0/lib/index.js"></script>
+		<script src="https://unpkg.com/http-vue-loader@1.4.2/src/httpVueLoader.js"></script>
+		<script src="https://unpkg.com/jquery@3.4.1/dist/jquery.min.js"></script>
+		<script src="https://www.layuicdn.com/layer-v3.1.1/layer.js"></script>
+		<script src="../../static/sa.js"></script>
+		<style type="text/css">
+			.c-panel .c-label{width: 10em;}
+		</style>
+	</head>
+	<body>
+		<div class="vue-box" style="display: none;" :style="'display: block;'">
+			<!-- 参数栏 -->
+			<div class="c-panel">
+				<div class="c-title">服务器所有设置</div>
+				<el-form v-if="m">
+					<div class="c-item br">
+						<label class="c-label">系统名称：</label>
+						<el-input v-model="m.app_name"></el-input>
+					</div>
+					<div class="c-item br">
+						<label class="c-label">当前版本：</label>
+						<el-input v-model="m.app_version_no"></el-input>
+					</div>
+					<div class="c-item br">
+						<label class="c-label">联系Q群：</label>
+						<el-input v-model="m.qq_group"></el-input>
+					</div>
+					<div class="c-item br">
+						<label class="c-label">开放注册：</label>
+						<el-switch v-model="m.xcx_share_btn" :active-value="1" :inactive-value="2"></el-switch>
+						<span class="c-remark" v-if="m.open_reg==1">开启</span>
+						<span class="c-remark" v-else>关闭</span>
+					</div>
+					<div class="c-item br">
+						<label class="c-label">显示分享按钮：</label>
+						<el-switch v-model="m.gzhxc" :active-value="1" :inactive-value="2"></el-switch>
+						<span class="ps" v-if="m.show_share==1">开启</span>
+						<span class="ps" v-else>关闭</span>
+					</div>
+					<div class="c-item br">
+						<label class="c-label"></label>
+						<el-button type="primary" icon="el-icon-check" @click="ok">保存修改</el-button>
+						<el-button type="primary" icon="el-icon-close" @click="f5">重置</el-button>
+					</div>
+				</el-form>
+			</div>
+		</div>
+		<script type="text/javascript">
+			// 创建一个初始化的m 
+			function create_m() {
+				return {	
+					app_name: '',
+					app_version_no: '',
+					qq_group: '',
+					open_reg: 1,
+					show_share: 1,
+				}
+			}
+		</script>
+		<script type="text/javascript">
+			var app = new Vue({
+				el: '.vue-box',
+				data: {
+					m: null
+				},
+				methods: {
+					// f5
+					f5: function() {
+						var value = localStorage.getItem('system-cfg');
+						if(value != null) {
+							value = JSON.parse(value);
+						} else {
+							value = create_m();
+						}
+						this.m = value;
+					},
+					// ok
+					ok: function() {
+						var value = JSON.stringify(this.m);
+						localStorage.setItem('system-cfg', value);
+						sa.ok('保存成功');
+					},
+				},
+				created: function() {
+					this.f5();
+				}
+			})
+			
+		</script>
+		
+		
+		
+		
+		
+		
+	</body>
+</html>

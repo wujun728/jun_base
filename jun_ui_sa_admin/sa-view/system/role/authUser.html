@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>分配用户</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../static/sa.css">
+    <link rel="stylesheet" href="../../static/ruoyi.css">
+</head>
+<body>
+    <div class="vue-box" style="display: none;" :style="'display: block;'">
+        <div class="app-container">
+            <!-- 搜索区域 -->
+            <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
+                <el-form-item label="用户名称" prop="userName">
+                    <el-input v-model="queryParams.userName" placeholder="请输入用户名称" clearable size="small" style="width: 240px"
+                        @keyup.enter.native="handleQuery"></el-input>
+                </el-form-item>
+                <el-form-item label="手机号码" prop="phonenumber">
+                    <el-input v-model="queryParams.phonenumber" placeholder="请输入手机号码" clearable size="small" style="width: 240px"
+                        @keyup.enter.native="handleQuery"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+                    <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+                </el-form-item>
+            </el-form>
+
+            <!-- 操作按钮 -->
+            <el-row :gutter="10" class="mb8">
+                <el-col :span="1.5">
+                    <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="openSelectUser"
+                        v-hasPermi="['system:role:edit']">添加用户</el-button>
+                </el-col>
+                <el-col :span="1.5">
+                    <el-button type="danger" plain icon="el-icon-circle-close" size="mini" :disabled="multiple" @click="cancelAuthUserAll"
+                        v-hasPermi="['system:role:edit']">批量取消授权</el-button>
+                </el-col>
+                <el-col :span="1.5">
+                    <el-button type="warning" plain icon="el-icon-close" size="mini" @click="handleClose">关闭</el-button>
+                </el-col>
+            </el-row>
+
+            <!-- 已授权用户数据表格 -->
+            <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
+                <el-table-column type="selection" width="55" align="center"></el-table-column>
+                <el-table-column label="用户名称" prop="userName" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="用户昵称" prop="nickName" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="邮箱" prop="email" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="手机" prop="phonenumber" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="状态" align="center" prop="status">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.status === '0'">正常</span>
+                        <span v-else>停用</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+                    <template slot-scope="scope">
+                        <span>{{ parseTime(scope.row.createTime) }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" align="center" class-name="fixed-width">
+                    <template slot-scope="scope">
+                        <el-button size="mini" type="text" icon="el-icon-circle-close" @click="cancelAuthUser(scope.row)"
+                            v-hasPermi="['system:role:edit']">取消授权</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <!-- 分页 -->
+            <div class="pagination-container">
+                <el-pagination background layout="total, sizes, prev, pager, next, jumper"
+                    :current-page.sync="queryParams.pageNum" :page-sizes="[10, 20, 50, 100]"
+                    :page-size.sync="queryParams.pageSize" :total="total"
+                    @size-change="getList" @current-change="getList"></el-pagination>
+            </div>
+
+            <!-- 选择用户对话框 -->
+            <el-dialog title="选择用户" :visible.sync="openSelectUserDialog" width="800px" append-to-body>
+                <el-form :model="selectUserQueryParams" ref="selectUserQueryForm" :inline="true" label-width="68px">
+                    <el-form-item label="用户名称" prop="userName">
+                        <el-input v-model="selectUserQueryParams.userName" placeholder="请输入用户名称" clearable size="small" style="width: 200px"
+                            @keyup.enter.native="handleSelectUserQuery"></el-input>
+                    </el-form-item>
+                    <el-form-item label="手机号码" prop="phonenumber">
+                        <el-input v-model="selectUserQueryParams.phonenumber" placeholder="请输入手机号码" clearable size="small" style="width: 200px"
+                            @keyup.enter.native="handleSelectUserQuery"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleSelectUserQuery">搜索</el-button>
+                        <el-button icon="el-icon-refresh" size="mini" @click="resetSelectUserQuery">重置</el-button>
+                    </el-form-item>
+                </el-form>
+                <el-table v-loading="selectUserLoading" :data="unallocatedUserList" @selection-change="handleUnallocatedSelectionChange" ref="unallocatedTable">
+                    <el-table-column type="selection" width="55" align="center"></el-table-column>
+                    <el-table-column label="用户名称" prop="userName" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column label="用户昵称" prop="nickName" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column label="邮箱" prop="email" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column label="手机" prop="phonenumber" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column label="状态" align="center" prop="status">
+                        <template slot-scope="scope">
+                            <span v-if="scope.row.status === '0'">正常</span>
+                            <span v-else>停用</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+                        <template slot-scope="scope">
+                            <span>{{ parseTime(scope.row.createTime) }}</span>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <div class="pagination-container">
+                    <el-pagination background layout="total, sizes, prev, pager, next, jumper"
+                        :current-page.sync="selectUserQueryParams.pageNum" :page-sizes="[10, 20, 50, 100]"
+                        :page-size.sync="selectUserQueryParams.pageSize" :total="unallocatedTotal"
+                        @size-change="getUnallocatedList" @current-change="getUnallocatedList"></el-pagination>
+                </div>
+                <div slot="footer" class="dialog-footer">
+                    <el-button type="primary" @click="handleSelectUser">确 定</el-button>
+                    <el-button @click="openSelectUserDialog = false">取 消</el-button>
+                </div>
+            </el-dialog>
+        </div>
+    </div>
+    <script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui@2.13.0/lib/index.js"></script>
+    <script src="https://unpkg.com/jquery@3.4.1/dist/jquery.min.js"></script>
+    <script src="../../static/kj/layer/layer.js"></script>
+    <script src="../../static/sa.js"></script>
+    <script src="../../static/ruoyi-util.js"></script>
+    <script>
+        var app = new Vue({
+            el: '.vue-box',
+            data: {
+                // 角色ID
+                roleId: ruoyi.getQueryParam('roleId'),
+                // 遮罩层
+                loading: true,
+                // 选中用户ID数组
+                userIds: [],
+                // 非多个禁用
+                multiple: true,
+                // 总条数
+                total: 0,
+                // 用户表格数据
+                userList: [],
+                // 查询参数
+                queryParams: {
+                    pageNum: 1,
+                    pageSize: 10,
+                    roleId: undefined,
+                    userName: undefined,
+                    phonenumber: undefined
+                },
+                // 选择用户对话框
+                openSelectUserDialog: false,
+                // 选择用户加载
+                selectUserLoading: false,
+                // 未分配用户列表
+                unallocatedUserList: [],
+                // 未分配用户总条数
+                unallocatedTotal: 0,
+                // 选择的未分配用户ID数组
+                unallocatedUserIds: [],
+                // 选择用户查询参数
+                selectUserQueryParams: {
+                    pageNum: 1,
+                    pageSize: 10,
+                    roleId: undefined,
+                    userName: undefined,
+                    phonenumber: undefined
+                }
+            },
+            methods: {
+                /** 查询已授权用户列表 */
+                getList: function() {
+                    this.loading = true;
+                    this.queryParams.roleId = this.roleId;
+                    ruoyi.get('/system/role/authUser/allocatedList', this.queryParams, function(res) {
+                        this.userList = res.rows;
+                        this.total = res.total;
+                        this.loading = false;
+                    }.bind(this));
+                },
+                /** 搜索按钮操作 */
+                handleQuery: function() {
+                    this.queryParams.pageNum = 1;
+                    this.getList();
+                },
+                /** 重置按钮操作 */
+                resetQuery: function() {
+                    this.resetForm('queryForm');
+                    this.handleQuery();
+                },
+                /** 多选框选中数据 */
+                handleSelectionChange: function(selection) {
+                    this.userIds = selection.map(function(item) { return item.userId; });
+                    this.multiple = !selection.length;
+                },
+                /** 未分配用户多选框选中 */
+                handleUnallocatedSelectionChange: function(selection) {
+                    this.unallocatedUserIds = selection.map(function(item) { return item.userId; });
+                },
+                /** 打开选择用户对话框 */
+                openSelectUser: function() {
+                    this.selectUserQueryParams.roleId = this.roleId;
+                    this.selectUserQueryParams.userName = undefined;
+                    this.selectUserQueryParams.phonenumber = undefined;
+                    this.selectUserQueryParams.pageNum = 1;
+                    this.openSelectUserDialog = true;
+                    this.getUnallocatedList();
+                },
+                /** 查询未分配用户列表 */
+                getUnallocatedList: function() {
+                    this.selectUserLoading = true;
+                    this.selectUserQueryParams.roleId = this.roleId;
+                    ruoyi.get('/system/role/authUser/unallocatedList', this.selectUserQueryParams, function(res) {
+                        this.unallocatedUserList = res.rows;
+                        this.unallocatedTotal = res.total;
+                        this.selectUserLoading = false;
+                    }.bind(this));
+                },
+                /** 选择用户查询 */
+                handleSelectUserQuery: function() {
+                    this.selectUserQueryParams.pageNum = 1;
+                    this.getUnallocatedList();
+                },
+                /** 重置选择用户查询 */
+                resetSelectUserQuery: function() {
+                    this.resetForm('selectUserQueryForm');
+                    this.handleSelectUserQuery();
+                },
+                /** 确认选择用户 */
+                handleSelectUser: function() {
+                    if (this.unallocatedUserIds.length === 0) {
+                        this.$modal.msgError('请选择要分配的用户');
+                        return;
+                    }
+                    ruoyi.put('/system/role/authUser/selectAll', {
+                        roleId: this.roleId,
+                        userIds: this.unallocatedUserIds.join(',')
+                    }, function(res) {
+                        this.$modal.msgSuccess('授权成功');
+                        this.openSelectUserDialog = false;
+                        this.getList();
+                    }.bind(this));
+                },
+                /** 取消授权按钮操作 */
+                cancelAuthUser: function(row) {
+                    this.$modal.confirm('确认要取消该用户"' + row.userName + '"角色吗？').then(function() {
+                        ruoyi.put('/system/role/authUser/cancel', {
+                            userId: row.userId,
+                            roleId: this.roleId
+                        }, function(res) {
+                            this.getList();
+                            this.$modal.msgSuccess('取消授权成功');
+                        }.bind(this));
+                    }.bind(this)).catch(function() {});
+                },
+                /** 批量取消授权按钮操作 */
+                cancelAuthUserAll: function() {
+                    var roleId = this.roleId;
+                    var userIds = this.userIds.join(',');
+                    this.$modal.confirm('是否取消选中用户授权数据项？').then(function() {
+                        ruoyi.put('/system/role/authUser/cancelAll', {
+                            roleId: roleId,
+                            userIds: userIds
+                        }, function(res) {
+                            this.getList();
+                            this.$modal.msgSuccess('取消授权成功');
+                        }.bind(this));
+                    }.bind(this)).catch(function() {});
+                },
+                /** 关闭页面 */
+                handleClose: function() {
+                    try {
+                        parent.sa_admin.closeTabByUrl('sa-view/system/role/authUser.html?roleId=' + this.roleId);
+                    } catch(e) {
+                        // fallback: try to close current tab
+                        try {
+                            parent.sa_admin.closeTab();
+                        } catch(e2) {}
+                    }
+                }
+            },
+            created: function() {
+                this.queryParams.roleId = this.roleId;
+                this.getList();
+            }
+        });
+    </script>
+</body>
+</html>

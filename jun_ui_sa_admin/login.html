@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta charset="utf-8">
+		<title>若依后台管理系统</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<link rel="stylesheet" media="screen" href="sa-frame/login/style.css">
+		<link rel="stylesheet" href="https://unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css">
+		<link rel="stylesheet" href="static/sa.css">
+		<style type="text/css">
+			#particles-js { background-image: url(sa-frame/login/bg.jpg); }
+			.login-box { display: flex; justify-content: center; align-items: center; position: fixed; width: inherit; height: 100%; pointer-events: none; }
+			.login { height: auto; padding: 40px 40px; position: static; margin: 0 auto !important; pointer-events: all; border-radius: 4px; background: #fff; min-width: 380px; }
+			.login-top { margin-top: 0px; margin-bottom: 25px; text-align: center; }
+			.page-title { font-size: 22px; color: #707070; }
+			.login-form .el-form-item { margin-bottom: 22px; }
+			.login-form .el-input { height: 38px; }
+			.login-form .el-input input { height: 38px; }
+			.login-code { display: inline-block; width: 33%; float: right; height: 38px; }
+			.login-code img { cursor: pointer; vertical-align: middle; height: 38px; width: 100%; }
+			.login-button { width: 100%; }
+			.el-login-footer { height: 40px; line-height: 40px; position: fixed; bottom: 0; width: 100%; text-align: center; color: #fff; font-family: Arial; font-size: 12px; letter-spacing: 1px; }
+			.login { opacity: 0; transition: opacity 0.3s; }
+		</style>
+	</head>
+	<body>
+		<div id="particles-js">
+			<div class="login-box">
+				<div class="login" id="app">
+					<div class="login-top">
+						<span class="page-title">若依后台管理系统</span>
+					</div>
+					<el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">
+						<el-form-item prop="username">
+							<el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号" prefix-icon="el-icon-user"></el-input>
+						</el-form-item>
+						<el-form-item prop="password">
+							<el-input v-model="loginForm.password" type="password" auto-complete="off" placeholder="密码" prefix-icon="el-icon-lock" @keyup.enter.native="handleLogin"></el-input>
+						</el-form-item>
+						<el-form-item prop="code" v-if="captchaEnabled">
+							<el-input v-model="loginForm.code" auto-complete="off" placeholder="验证码" style="width: 63%" prefix-icon="el-icon-key" @keyup.enter.native="handleLogin"></el-input>
+							<div class="login-code">
+								<img :src="codeUrl" @click="getCode" />
+							</div>
+						</el-form-item>
+						<el-checkbox v-model="loginForm.rememberMe" style="margin: 0px 0px 20px 0px;">记住密码</el-checkbox>
+						<el-form-item style="width: 100%;">
+							<el-button :loading="loading" size="medium" type="primary" class="login-button" @click.native.prevent="handleLogin">
+								<span v-if="!loading">登 录</span>
+								<span v-else>登 录 中...</span>
+							</el-button>
+						</el-form-item>
+					</el-form>
+				</div>
+			</div>
+			<div class="el-login-footer">
+				<span>Copyright © 2018-2024 ruoyi.vip All Rights Reserved.</span>
+			</div>
+		</div>
+
+		<!-- scripts -->
+		<script src="sa-frame/login/particles.min.js"></script>
+		<script src="sa-frame/login/app.js"></script>
+		<script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
+		<script src="https://unpkg.com/element-ui@2.13.0/lib/index.js"></script>
+		<script src="https://unpkg.com/jquery@3.4.1/dist/jquery.min.js"></script>
+		<script src="static/sa.js"></script>
+		<script src="static/ruoyi-util.js"></script>
+		<script type="text/javascript">
+			var app = new Vue({
+				el: '#app',
+				data: {
+					codeUrl: '',
+					loginForm: {
+						username: 'admin',
+						password: 'admin123',
+						rememberMe: false,
+						code: '',
+						uuid: ''
+					},
+					loginRules: {
+						username: [{ required: true, trigger: 'blur', message: '请输入您的账号' }],
+						password: [{ required: true, trigger: 'blur', message: '请输入您的密码' }],
+						code: [{ required: true, trigger: 'change', message: '请输入验证码' }]
+					},
+					loading: false,
+					captchaEnabled: true
+				},
+				created: function() {
+					this.getCode();
+					this.getCookie();
+				},
+				methods: {
+					getCode: function() {
+						var self = this;
+						ruoyi.get('/captchaImage', function(res) {
+							self.captchaEnabled = res.captchaEnabled === undefined ? true : res.captchaEnabled;
+							if (self.captchaEnabled) {
+								self.codeUrl = 'data:image/gif;base64,' + res.img;
+								self.loginForm.uuid = res.uuid;
+							}
+						});
+					},
+					getCookie: function() {
+						var username = this.getCookieValue('username');
+						var password = this.getCookieValue('password');
+						var rememberMe = this.getCookieValue('rememberMe');
+						this.loginForm = {
+							username: username || this.loginForm.username,
+							password: password ? atob(password) : this.loginForm.password,
+							rememberMe: rememberMe ? Boolean(rememberMe) : false,
+							code: this.loginForm.code,
+							uuid: this.loginForm.uuid
+						};
+					},
+					getCookieValue: function(name) {
+						var pairs = document.cookie.split(';');
+						for (var i = 0; i < pairs.length; i++) {
+							var pair = pairs[i].trim();
+							if (pair.indexOf(name + '=') === 0) {
+								return decodeURIComponent(pair.substring(name.length + 1));
+							}
+						}
+						return '';
+					},
+					setCookie: function(name, value, days) {
+						var expires = '';
+						if (days) {
+							var date = new Date();
+							date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+							expires = '; expires=' + date.toUTCString();
+						}
+						document.cookie = name + '=' + encodeURIComponent(value) + expires + '; path=/';
+					},
+					removeCookie: function(name) {
+						document.cookie = name + '=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+					},
+					handleLogin: function() {
+						var self = this;
+						this.$refs.loginForm.validate(function(valid) {
+							if (valid) {
+								self.loading = true;
+								if (self.loginForm.rememberMe) {
+									self.setCookie('username', self.loginForm.username, 30);
+									self.setCookie('password', btoa(self.loginForm.password), 30);
+									self.setCookie('rememberMe', self.loginForm.rememberMe, 30);
+								} else {
+									self.removeCookie('username');
+									self.removeCookie('password');
+									self.removeCookie('rememberMe');
+								}
+								ruoyi.post('/login', {
+									username: self.loginForm.username,
+									password: self.loginForm.password,
+									code: self.loginForm.code,
+									uuid: self.loginForm.uuid
+								}, function(res) {
+									ruoyi.setToken(res.token);
+									self.loading = false;
+									// 跳转到首页
+									if (parent === window) {
+										location.href = 'index.html';
+									} else {
+										parent.location.reload();
+									}
+								}, function(err) {
+									self.loading = false;
+									if (self.captchaEnabled) {
+										self.getCode();
+									}
+								});
+							}
+						});
+					}
+				}
+			});
+
+			// 去掉透明动画
+			setTimeout(function() {
+				document.querySelector('.login').style.opacity = '1';
+			}, 100);
+		</script>
+	</body>
+</html>

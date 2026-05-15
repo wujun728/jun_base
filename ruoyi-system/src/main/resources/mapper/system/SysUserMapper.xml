@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysUserMapper">
+
+	<resultMap type="com.ruoyi.common.core.domain.entity.SysUser" id="SysUserResult">
+		<id     property="userId"       column="user_id"      />
+		<result property="deptId"       column="dept_id"      />
+		<result property="userName"     column="user_name"    />
+		<result property="nickName"     column="nick_name"    />
+		<result property="email"        column="email"        />
+		<result property="phonenumber"  column="phonenumber"  />
+		<result property="sex"          column="sex"          />
+		<result property="avatar"       column="avatar"       />
+		<result property="password"     column="password"     />
+		<result property="status"       column="status"       />
+		<result property="delFlag"      column="del_flag"     />
+		<result property="loginIp"      column="login_ip"     />
+		<result property="loginDate"    column="login_date"   />
+		<result property="createBy"     column="create_by"    />
+		<result property="createTime"   column="create_time"  />
+		<result property="updateBy"     column="update_by"    />
+		<result property="updateTime"   column="update_time"  />
+		<result property="remark"       column="remark"       />
+		<association property="dept"    column="dept_id" javaType="com.ruoyi.common.core.domain.entity.SysDept" resultMap="deptResult" />
+		<collection  property="roles"   javaType="java.util.List"        resultMap="RoleResult" />
+	</resultMap>
+	
+	<resultMap id="deptResult" type="SysDept">
+		<id     property="deptId"   column="dept_id"     />
+		<result property="parentId" column="parent_id"   />
+		<result property="deptName" column="dept_name"   />
+		<result property="ancestors" column="ancestors"   />
+		<result property="orderNum" column="order_num"   />
+		<result property="leader"   column="leader"      />
+		<result property="status"   column="dept_status" />
+	</resultMap>
+	
+	<resultMap id="RoleResult" type="SysRole">
+		<id     property="roleId"       column="role_id"        />
+		<result property="roleName"     column="role_name"      />
+		<result property="roleKey"      column="role_key"       />
+		<result property="roleSort"     column="role_sort"      />
+		<result property="dataScope"     column="data_scope"    />
+		<result property="status"       column="role_status"    />
+	</resultMap>
+	
+	<sql id="selectUserVo">
+        select u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.avatar, u.phonenumber, u.password, u.sex, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, 
+        d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.status as dept_status,
+        r.role_id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.status as role_status
+        from sys_user u
+		    left join sys_dept d on u.dept_id = d.dept_id
+		    left join sys_user_role ur on u.user_id = ur.user_id
+		    left join sys_role r on r.role_id = ur.role_id
+    </sql>
+    
+    <select id="selectUserList" parameterType="SysUser" resultMap="SysUserResult">
+		select u.user_id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phonenumber, u.sex, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name, d.leader from sys_user u
+		left join sys_dept d on u.dept_id = d.dept_id
+		where u.del_flag = '0'
+		<if test="entity.userId != null and entity.userId != 0">
+			AND u.user_id = #{entity.userId}
+		</if>
+		<if test="entity.userName != null and entity.userName != ''">
+			AND u.user_name like concat('%', #{entity.userName}, '%')
+		</if>
+		<if test="entity.status != null and entity.status != ''">
+			AND u.status = #{entity.status}
+		</if>
+		<if test="entity.phonenumber != null and entity.phonenumber != ''">
+			AND u.phonenumber like concat('%', #{entity.phonenumber}, '%')
+		</if>
+		<if test="entity.params != null and entity.params.beginTime != null and entity.params.beginTime != ''"><!-- 开始时间检索 -->
+			AND date_format(u.create_time,'%y%m%d') &gt;= date_format(#{entity.params.beginTime},'%y%m%d')
+		</if>
+		<if test="entity.params != null and entity.params.endTime != null and entity.params.endTime != ''"><!-- 结束时间检索 -->
+			AND date_format(u.create_time,'%y%m%d') &lt;= date_format(#{entity.params.endTime},'%y%m%d')
+		</if>
+		<if test="entity.deptId != null and entity.deptId != 0">
+			AND (u.dept_id = #{entity.deptId} OR u.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE find_in_set(#{entity.deptId}, ancestors) ))
+		</if>
+		<!-- 数据范围过滤 -->
+		<if test="entity.params != null">
+			${entity.params.dataScope}
+		</if>
+	</select>
+	
+	<select id="selectAllocatedList" parameterType="SysUser" resultMap="SysUserResult">
+	    select distinct u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.phonenumber, u.status, u.create_time
+	    from sys_user u
+			 left join sys_dept d on u.dept_id = d.dept_id
+			 left join sys_user_role ur on u.user_id = ur.user_id
+			 left join sys_role r on r.role_id = ur.role_id
+	    where u.del_flag = '0' and r.role_id = #{entity.roleId}
+	    <if test="entity.userName != null and entity.userName != ''">
+			AND u.user_name like concat('%', #{entity.userName}, '%')
+		</if>
+		<if test="entity.phonenumber != null and entity.phonenumber != ''">
+			AND u.phonenumber like concat('%', #{entity.phonenumber}, '%')
+		</if>
+		<!-- 数据范围过滤 -->
+		<if test="entity.params != null">
+			${entity.params.dataScope}
+		</if>
+	</select>
+	
+	<select id="selectUnallocatedList" parameterType="SysUser" resultMap="SysUserResult">
+	    select distinct u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.phonenumber, u.status, u.create_time
+	    from sys_user u
+			 left join sys_dept d on u.dept_id = d.dept_id
+			 left join sys_user_role ur on u.user_id = ur.user_id
+			 left join sys_role r on r.role_id = ur.role_id
+	    where u.del_flag = '0' and (r.role_id != #{entity.roleId} or r.role_id IS NULL)
+	    and u.user_id not in (select u.user_id from sys_user u inner join sys_user_role ur on u.user_id = ur.user_id and ur.role_id = #{entity.roleId})
+	    <if test="entity.userName != null and entity.userName != ''">
+			AND u.user_name like concat('%', #{entity.userName}, '%')
+		</if>
+		<if test="entity.phonenumber != null and entity.phonenumber != ''">
+			AND u.phonenumber like concat('%', #{entity.phonenumber}, '%')
+		</if>
+		<!-- 数据范围过滤 -->
+		<if test="entity.params != null">
+			${entity.params.dataScope}
+		</if>
+	</select>
+	
+	<select id="selectUserByUserName" parameterType="String" resultMap="SysUserResult">
+	    <include refid="selectUserVo"/>
+		where u.user_name = #{userName} and u.del_flag = '0'
+	</select>
+	
+	<select id="selectUserById" parameterType="Long" resultMap="SysUserResult">
+		<include refid="selectUserVo"/>
+		where u.user_id = #{userId}
+	</select>
+	
+</mapper> 

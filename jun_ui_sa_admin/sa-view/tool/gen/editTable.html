@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>代码生成配置</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../static/sa.css">
+    <link rel="stylesheet" href="../../static/ruoyi.css">
+    <style>
+        .el-card { margin-bottom: 15px; }
+        .el-card__header { padding: 14px 15px 7px; font-weight: bold; }
+        .el-tabs { margin-top: 10px; }
+        .bottom-actions { text-align: center; padding: 20px 0; }
+        .column-table .el-table__body-wrapper { overflow-y: auto; }
+        .column-table .el-input, .column-table .el-select { width: 100%; }
+        .column-table .cell { padding-left: 5px; padding-right: 5px; }
+        .column-table .el-checkbox { margin-right: 0; }
+    </style>
+</head>
+<body>
+    <div class="vue-box" style="display: none;" :style="'display: block;'">
+        <div class="app-container" v-loading="loading">
+            <el-tabs v-model="activeName" type="card">
+                <!-- 基本信息 -->
+                <el-tab-pane label="基本信息" name="basic">
+                    <el-form ref="basicForm" :model="info" :rules="basicRules" label-width="150px">
+                        <el-row>
+                            <el-col :span="12">
+                                <el-form-item label="表名称" prop="tableName">
+                                    <el-input v-model="info.tableName" placeholder="请输入表名称" :disabled="true"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="表描述" prop="tableComment">
+                                    <el-input v-model="info.tableComment" placeholder="请输入表描述"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="实体类名称" prop="className">
+                                    <el-input v-model="info.className" placeholder="请输入实体类名称"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="作者" prop="functionAuthor">
+                                    <el-input v-model="info.functionAuthor" placeholder="请输入作者"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="24">
+                                <el-form-item label="备注" prop="remark">
+                                    <el-input v-model="info.remark" type="textarea" :rows="3" placeholder="请输入备注"></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                    </el-form>
+                </el-tab-pane>
+
+                <!-- 生成信息 -->
+                <el-tab-pane label="生成信息" name="genInfo">
+                    <el-form ref="genForm" :model="info" :rules="genRules" label-width="150px">
+                        <el-row>
+                            <el-col :span="12">
+                                <el-form-item label="生成模板" prop="tplCategory">
+                                    <el-select v-model="info.tplCategory" @change="tplCategoryChange">
+                                        <el-option label="单表（增删改查）" value="crud"></el-option>
+                                        <el-option label="树表（增删改查）" value="tree"></el-option>
+                                        <el-option label="主子表（增删改查）" value="sub"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="生成包路径" prop="packageName">
+                                    <el-input v-model="info.packageName" placeholder="请输入生成包路径"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="生成模块名" prop="moduleName">
+                                    <el-input v-model="info.moduleName" placeholder="请输入生成模块名"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="生成业务名" prop="businessName">
+                                    <el-input v-model="info.businessName" placeholder="请输入生成业务名"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="生成功能名" prop="functionName">
+                                    <el-input v-model="info.functionName" placeholder="请输入生成功能名"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="上级菜单" prop="parentMenuId">
+                                    <el-tree-select
+                                        v-if="false"
+                                        v-model="info.parentMenuId"
+                                        :data="menuOptions"
+                                        :props="menuTreeProps"
+                                        placeholder="请选择上级菜单">
+                                    </el-tree-select>
+                                    <el-cascader
+                                        v-model="info.parentMenuId"
+                                        :options="menuOptions"
+                                        :props="{ checkStrictly: true, value: 'id', label: 'label', children: 'children', emitPath: false }"
+                                        clearable
+                                        filterable
+                                        placeholder="请选择上级菜单"
+                                        style="width: 100%;">
+                                    </el-cascader>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="生成代码方式" prop="genType">
+                                    <el-radio-group v-model="info.genType">
+                                        <el-radio label="0">zip压缩包</el-radio>
+                                        <el-radio label="1">自定义路径</el-radio>
+                                    </el-radio-group>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12" v-if="info.genType === '1'">
+                                <el-form-item label="自定义路径" prop="genPath">
+                                    <el-input v-model="info.genPath" placeholder="请输入自定义路径">
+                                        <el-dropdown slot="append" @command="handleGenPathCommand">
+                                            <el-button type="primary">
+                                                最近路径<i class="el-icon-arrow-down el-icon--right"></i>
+                                            </el-button>
+                                            <el-dropdown-menu slot="dropdown">
+                                                <el-dropdown-item command="/">恢复默认的生成基础路径</el-dropdown-item>
+                                            </el-dropdown-menu>
+                                        </el-dropdown>
+                                    </el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+
+                        <!-- 树表选项 -->
+                        <el-row v-if="info.tplCategory === 'tree'">
+                            <h4 class="form-header">其他信息</h4>
+                            <el-col :span="12">
+                                <el-form-item label="树编码字段" prop="treeCode">
+                                    <el-select v-model="info.treeCode" placeholder="请选择">
+                                        <el-option v-for="column in columns" :key="column.columnName" :label="column.columnName + '：' + column.columnComment" :value="column.columnName"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="树父编码字段" prop="treeParentCode">
+                                    <el-select v-model="info.treeParentCode" placeholder="请选择">
+                                        <el-option v-for="column in columns" :key="column.columnName" :label="column.columnName + '：' + column.columnComment" :value="column.columnName"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="树名称字段" prop="treeName">
+                                    <el-select v-model="info.treeName" placeholder="请选择">
+                                        <el-option v-for="column in columns" :key="column.columnName" :label="column.columnName + '：' + column.columnComment" :value="column.columnName"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+
+                        <!-- 主子表选项 -->
+                        <el-row v-if="info.tplCategory === 'sub'">
+                            <h4 class="form-header">关联信息</h4>
+                            <el-col :span="12">
+                                <el-form-item label="关联子表的表名" prop="subTableName">
+                                    <el-select v-model="info.subTableName" placeholder="请选择" @change="subTableNameChange">
+                                        <el-option v-for="table in tables" :key="table.tableName" :label="table.tableName + '：' + table.tableComment" :value="table.tableName"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="子表关联的外键名" prop="subTableFkName">
+                                    <el-select v-model="info.subTableFkName" placeholder="请选择">
+                                        <el-option v-for="column in subColumns" :key="column.columnName" :label="column.columnName + '：' + column.columnComment" :value="column.columnName"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                    </el-form>
+                </el-tab-pane>
+
+                <!-- 字段信息 -->
+                <el-tab-pane label="字段信息" name="columnInfo">
+                    <el-table :data="columns" size="small" border class="column-table" max-height="600">
+                        <el-table-column label="序号" type="index" width="55" align="center"></el-table-column>
+                        <el-table-column label="字段列名" prop="columnName" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+                        <el-table-column label="字段描述" min-width="120">
+                            <template slot-scope="scope">
+                                <el-input v-model="scope.row.columnComment" size="small"></el-input>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="物理类型" prop="columnType" min-width="100" :show-overflow-tooltip="true"></el-table-column>
+                        <el-table-column label="Java类型" min-width="120">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.javaType" size="small">
+                                    <el-option label="Long" value="Long"></el-option>
+                                    <el-option label="String" value="String"></el-option>
+                                    <el-option label="Integer" value="Integer"></el-option>
+                                    <el-option label="Double" value="Double"></el-option>
+                                    <el-option label="BigDecimal" value="BigDecimal"></el-option>
+                                    <el-option label="Date" value="Date"></el-option>
+                                    <el-option label="Boolean" value="Boolean"></el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="Java属性" min-width="120">
+                            <template slot-scope="scope">
+                                <el-input v-model="scope.row.javaField" size="small"></el-input>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="插入" width="55" align="center">
+                            <template slot-scope="scope">
+                                <el-checkbox v-model="scope.row.isInsert" true-label="1" false-label="0"></el-checkbox>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="编辑" width="55" align="center">
+                            <template slot-scope="scope">
+                                <el-checkbox v-model="scope.row.isEdit" true-label="1" false-label="0"></el-checkbox>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="列表" width="55" align="center">
+                            <template slot-scope="scope">
+                                <el-checkbox v-model="scope.row.isList" true-label="1" false-label="0"></el-checkbox>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="查询" width="55" align="center">
+                            <template slot-scope="scope">
+                                <el-checkbox v-model="scope.row.isQuery" true-label="1" false-label="0"></el-checkbox>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="查询方式" min-width="110">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.queryType" size="small">
+                                    <el-option label="=" value="EQ"></el-option>
+                                    <el-option label="!=" value="NE"></el-option>
+                                    <el-option label=">" value="GT"></el-option>
+                                    <el-option label=">=" value="GTE"></el-option>
+                                    <el-option label="<" value="LT"></el-option>
+                                    <el-option label="<=" value="LTE"></el-option>
+                                    <el-option label="LIKE" value="LIKE"></el-option>
+                                    <el-option label="BETWEEN" value="BETWEEN"></el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="必填" width="55" align="center">
+                            <template slot-scope="scope">
+                                <el-checkbox v-model="scope.row.isRequired" true-label="1" false-label="0"></el-checkbox>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="显示类型" min-width="120">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.htmlType" size="small">
+                                    <el-option label="文本框" value="input"></el-option>
+                                    <el-option label="文本域" value="textarea"></el-option>
+                                    <el-option label="下拉框" value="select"></el-option>
+                                    <el-option label="单选框" value="radio"></el-option>
+                                    <el-option label="复选框" value="checkbox"></el-option>
+                                    <el-option label="日期控件" value="datetime"></el-option>
+                                    <el-option label="图片上传" value="imageUpload"></el-option>
+                                    <el-option label="文件上传" value="fileUpload"></el-option>
+                                    <el-option label="富文本控件" value="editor"></el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="字典类型" min-width="140">
+                            <template slot-scope="scope">
+                                <el-input v-model="scope.row.dictType" size="small" placeholder="请输入字典类型" v-if="scope.row.htmlType === 'select' || scope.row.htmlType === 'radio' || scope.row.htmlType === 'checkbox'"></el-input>
+                                <span v-else>-</span>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-tab-pane>
+            </el-tabs>
+
+            <!-- 底部操作按钮 -->
+            <div class="bottom-actions">
+                <el-button type="primary" @click="submitForm">提交</el-button>
+                <el-button @click="closeTab">返回</el-button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui@2.13.0/lib/index.js"></script>
+    <script src="https://unpkg.com/jquery@3.4.1/dist/jquery.min.js"></script>
+    <script src="../../static/kj/layer/layer.js"></script>
+    <script src="../../static/sa.js"></script>
+    <script src="../../static/ruoyi-util.js"></script>
+    <script>
+        var app = new Vue({
+            el: '.vue-box',
+            data: {
+                // 页面加载
+                loading: true,
+                // 选中的tab
+                activeName: 'columnInfo',
+                // 表信息
+                info: {
+                    tableId: undefined,
+                    tableName: '',
+                    tableComment: '',
+                    className: '',
+                    functionAuthor: '',
+                    remark: '',
+                    tplCategory: 'crud',
+                    packageName: '',
+                    moduleName: '',
+                    businessName: '',
+                    functionName: '',
+                    parentMenuId: undefined,
+                    genType: '0',
+                    genPath: '/',
+                    treeCode: undefined,
+                    treeParentCode: undefined,
+                    treeName: undefined,
+                    subTableName: undefined,
+                    subTableFkName: undefined,
+                    params: {}
+                },
+                // 列信息
+                columns: [],
+                // 关联的表信息
+                tables: [],
+                // 子表列信息
+                subColumns: [],
+                // 菜单树选项
+                menuOptions: [],
+                // 菜单树属性
+                menuTreeProps: {
+                    children: 'children',
+                    label: 'label',
+                    value: 'id'
+                },
+                // 基本信息表单校验
+                basicRules: {
+                    tableName: [
+                        { required: true, message: '请输入表名称', trigger: 'blur' }
+                    ],
+                    tableComment: [
+                        { required: true, message: '请输入表描述', trigger: 'blur' }
+                    ],
+                    className: [
+                        { required: true, message: '请输入实体类名称', trigger: 'blur' }
+                    ],
+                    functionAuthor: [
+                        { required: true, message: '请输入作者', trigger: 'blur' }
+                    ]
+                },
+                // 生成信息表单校验
+                genRules: {
+                    tplCategory: [
+                        { required: true, message: '请选择生成模板', trigger: 'change' }
+                    ],
+                    packageName: [
+                        { required: true, message: '请输入生成包路径', trigger: 'blur' }
+                    ],
+                    moduleName: [
+                        { required: true, message: '请输入生成模块名', trigger: 'blur' }
+                    ],
+                    businessName: [
+                        { required: true, message: '请输入生成业务名', trigger: 'blur' }
+                    ],
+                    functionName: [
+                        { required: true, message: '请输入生成功能名', trigger: 'blur' }
+                    ]
+                }
+            },
+            methods: {
+                /** 获取表信息 */
+                getTableInfo: function(tableId) {
+                    this.loading = true;
+                    ruoyi.get('/tool/gen/' + tableId, function(res) {
+                        var data = res.data;
+                        // 填充表信息
+                        this.info = data.info;
+                        if (!this.info.params) {
+                            this.info.params = {};
+                        }
+                        if (this.info.treeCode) {
+                            this.info.treeCode = this.info.params.treeCode || this.info.treeCode;
+                        }
+                        if (this.info.treeParentCode) {
+                            this.info.treeParentCode = this.info.params.treeParentCode || this.info.treeParentCode;
+                        }
+                        if (this.info.treeName) {
+                            this.info.treeName = this.info.params.treeName || this.info.treeName;
+                        }
+                        // 填充列信息
+                        this.columns = data.rows;
+                        // 填充关联表信息
+                        this.tables = data.tables || [];
+                        // 如果有子表名称，加载子表列
+                        if (this.info.subTableName) {
+                            this.loadSubColumns(this.info.subTableName);
+                        }
+                        this.loading = false;
+                    }.bind(this));
+                },
+                /** 获取菜单树 */
+                getMenuTreeselect: function() {
+                    ruoyi.get('/system/menu/treeselect', function(res) {
+                        this.menuOptions = res.data || [];
+                    }.bind(this));
+                },
+                /** 模板类型变化 */
+                tplCategoryChange: function(value) {
+                    if (value === 'tree') {
+                        // 清空子表信息
+                        this.info.subTableName = undefined;
+                        this.info.subTableFkName = undefined;
+                        this.subColumns = [];
+                    } else if (value === 'sub') {
+                        // 清空树表信息
+                        this.info.treeCode = undefined;
+                        this.info.treeParentCode = undefined;
+                        this.info.treeName = undefined;
+                    } else {
+                        // crud 模式，清空扩展信息
+                        this.info.treeCode = undefined;
+                        this.info.treeParentCode = undefined;
+                        this.info.treeName = undefined;
+                        this.info.subTableName = undefined;
+                        this.info.subTableFkName = undefined;
+                        this.subColumns = [];
+                    }
+                },
+                /** 子表名称变化 */
+                subTableNameChange: function(value) {
+                    this.info.subTableFkName = undefined;
+                    this.subColumns = [];
+                    if (value) {
+                        this.loadSubColumns(value);
+                    }
+                },
+                /** 加载子表列信息 */
+                loadSubColumns: function(tableName) {
+                    ruoyi.get('/tool/gen/db/column/' + tableName, function(res) {
+                        this.subColumns = res.data || [];
+                    }.bind(this));
+                },
+                /** 生成路径快捷命令 */
+                handleGenPathCommand: function(command) {
+                    this.info.genPath = command;
+                },
+                /** 提交按钮 */
+                submitForm: function() {
+                    // 校验基本信息
+                    var basicValid = true;
+                    var genValid = true;
+                    var vm = this;
+
+                    // 构造提交参数
+                    var submitData = JSON.parse(JSON.stringify(this.info));
+                    submitData.columns = this.columns;
+                    submitData.params = {};
+
+                    // 树表参数
+                    if (submitData.tplCategory === 'tree') {
+                        submitData.params.treeCode = submitData.treeCode;
+                        submitData.params.treeParentCode = submitData.treeParentCode;
+                        submitData.params.treeName = submitData.treeName;
+                    }
+
+                    // 转换 parentMenuId
+                    if (submitData.parentMenuId && typeof submitData.parentMenuId === 'object') {
+                        submitData.parentMenuId = submitData.parentMenuId[submitData.parentMenuId.length - 1];
+                    }
+
+                    ruoyi.put('/tool/gen', submitData, function(res) {
+                        vm.$modal.msgSuccess('修改成功');
+                        vm.closeTab();
+                    });
+                },
+                /** 关闭标签页 */
+                closeTab: function() {
+                    var tableId = ruoyi.getQueryParam('tableId');
+                    try {
+                        parent.sa_admin.closeTabById('gen-edit-' + tableId);
+                    } catch(e) {
+                        // 降级处理：如果无法关闭标签页，跳转回列表
+                        window.history.back();
+                    }
+                }
+            },
+            created: function() {
+                var tableId = ruoyi.getQueryParam('tableId');
+                if (tableId) {
+                    this.getTableInfo(tableId);
+                    this.getMenuTreeselect();
+                } else {
+                    this.$modal.msgError('缺少参数 tableId');
+                    this.loading = false;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

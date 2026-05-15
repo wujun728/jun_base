@@ -1,0 +1,115 @@
+# sa-admin 使用步骤 <span style="font-size: 14px;">五分钟快速上手</span>
+
+#### 1、获取 源码
+> - 你有两种方式获取源码
+> - 通过gitee、或github获取源码
+> - [点我直接下载](http://sa-admin.dev33.cn/sa-admin-dev.rar)
+
+#### 2、使用说明
+> - 在使用时，不建议你直接魔改模板的代码，以免在运行时出现意外bug，而是用扩展的方法，来适应你的业务逻辑
+> - 如何扩展？在 `sa-resourecs` 文件下，有个 `sa-code.js` ，这是专门为了方便你接入你的业务逻辑而预留的一个文件 你可以在此文件中根据模板提供的API来操作模板
+> - 具体可以操作哪些接口？接着往下看
+
+#### 3、设置模板标题
+``` js 
+sa_admin.title = "SA-后台模板";
+
+// sa_admin.logo='url';	// 设置logo图标地址   默认值：sa-frame/admin-logo.png
+// sa_admin.icon = 'sa-frame/admin-logo.png';    // 设置icon图标地址   默认值：sa-frame/admin-logo.png
+```
+测试：
+<input id="title-input" value="SA-后台模板">
+<button onclick="top.sa_admin.title = document.getElementById('title-input').value;">更新标题</button>
+
+#### 4、自定义菜单树
+``` js 
+var myMenuList = window.menuList;	// window.menuList 在 menu-list.js 中定义 
+sa_admin.setMenuList(myMenuList);	// 写入菜单 
+
+// sa_admin.setMenuList(myMenuList, [11, 1, '1-1']);	// 写入菜单，并设置应该显示哪些id的菜单（第二个参数为空时，代表默认显示所有）
+```
+
+#### 5、js控制打开某个菜单
+```js 
+sa_admin.showHome();			// 显示主页选项卡 
+sa_admin.showTabById('1-1');	// 显示一个选项卡, 根据id
+sa_admin.closeTabById('1-1');	// 关闭一个选项卡，根据 id （ 第二个参数可填关闭后的回调函数 ）
+sa_admin.showMenuById('1-1');	// 打开一个 菜单，根据 id
+
+// 新增一个选项卡
+// sa_admin.addTab({id: 12345, name: '新页面', url: 'http://sa-token.dev33.cn/'});	// id不要和已有的菜单id冲突，其它属性均可参照菜单项 
+
+// 新增一个选项卡、并立即显示  
+// sa_admin.showTab({id: 12345, name: '新页面', url: 'http://web.yanzhi21.com'});	// 参数同上 
+```
+测试：
+<button onclick="top.sa_admin.showHome()">显示首页</button>
+<button onclick="top.sa_admin.addTab({id: Math.round(Math.random()*9999999999999), name: '新窗口', url: 'http://sa-token.dev33.cn/'})">新增选项卡</button>
+<button onclick="top.sa_admin.showTab({id: Math.round(Math.random()*9999999999999), name: '新窗口', url: 'http://web.yanzhi21.com'})">新增选项卡并显示</button>
+<button onclick="top.sa_admin.atOpen()">打开弹窗添加</button>
+
+#### 6、如何设置登录后右上角显示的user信息
+``` js
+sa_admin.user = { 
+    username: 'root', // 昵称	
+    avatar: 'sa-frame/admin-logo.png' // 头像地址 
+}
+```
+
+#### 7、重写按钮事件
+你可以轻松自定义登录后的头像处，下拉可以出现的选项
+``` js
+sa_admin.dropList = [	// 头像点击处可操作的选项	
+    {	
+    	name: '我的资料',	
+    	click: function() {	
+        	/* balabala... */
+        }	
+    },	
+    {	
+        name: '退出登录',	
+        click: function() {
+            	/* balabala... */
+        }	
+    }	
+]	
+``` 
+
+#### 8、怎么在一个选项卡页面调用另一个页面的代码 
+``` js
+var win = sa_admin.getTabWindow('2-1');		// 根据id获取其页面的window对象   （如果此页面未打开，则返回空）（跨域模式下无法获取其window对象）
+win.app.f5();								// 然后调用这个对象上的方法 
+
+```
+
+#### 9、子父窗口通信操作注意点
+根据`iframe`的子父通信原则，在子页面中调用父页面的方法，需要加上parent前缀，例如：
+```
+parent.sa_admin.msg('啦啦啦');		// 调用父页面的弹窗方法 
+```
+
+#### 10、初始化模板（必须调用）
+``` js
+sa_admin.init();	// 初始化模板 
+
+// 或者以下方式，增加配置项
+sa_admin.init({
+	themeDefault: '1',	// 默认的主题，可选值：1、2、3、4、5、6、7 
+	switchDefault: 'fade',	// 默认的切换动画，可选值：fade、slide、cube、coverflow、flip
+	is_reme_open: true,		// 是否记住上一次最后打开的窗口, 默认为true, 配置为false后, 每次刷新不再自动打开上一次最后打开的窗口(也不再有锚链接智能tab调准)
+});
+```
+想获得更多操作能力？其实在`sa_admin`对象上的所有属性和函数都可以直接调用 
+
+
+#### 11、以上示例在 sa-code.js中 都有相应的注释说明，如何还有不懂的地方，可以加群问我（群链接在首页）
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>缓存列表</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../static/sa.css">
+    <link rel="stylesheet" href="../../static/ruoyi.css">
+    <style>
+        .cache-panel { height: calc(100vh - 80px); }
+        .cache-panel .el-card { height: 100%; }
+        .cache-panel .el-card__body { padding: 10px; height: calc(100% - 55px); overflow: auto; }
+        .cache-panel .el-card__header { padding: 10px 15px; }
+        .cache-header { display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: bold; }
+        .cache-detail-item { padding: 10px 0; border-bottom: 1px solid #EBEEF5; }
+        .cache-detail-item:last-child { border-bottom: none; }
+        .cache-detail-label { font-weight: bold; color: #606266; font-size: 13px; margin-bottom: 5px; }
+        .cache-detail-value { color: #303133; font-size: 13px; word-break: break-all; }
+        .row-active { background-color: #ecf5ff !important; }
+        .el-table__body tr.current-row > td { background-color: #ecf5ff !important; }
+    </style>
+</head>
+<body>
+    <div class="vue-box" style="display: none;" :style="'display: block;'">
+        <div class="c-panel">
+            <div class="c-title">缓存列表</div>
+
+            <el-row :gutter="15" class="cache-panel">
+                <!-- 左侧：缓存名称列表 -->
+                <el-col :span="8">
+                    <el-card>
+                        <div slot="header" class="cache-header">
+                            <span><i class="el-icon-folder"></i> 缓存名称</span>
+                            <el-button type="danger" icon="el-icon-delete" size="mini" plain @click="handleClearAll">清理全部</el-button>
+                        </div>
+                        <el-table :data="cacheNames" size="small" highlight-current-row @current-change="handleCacheNameChange" v-loading="loadingNames" style="width: 100%;">
+                            <el-table-column label="序号" width="60" align="center" type="index"></el-table-column>
+                            <el-table-column label="缓存名称" align="center" prop="cacheName" :show-overflow-tooltip="true">
+                                <template slot-scope="scope">
+                                    <span>{{ scope.row.cacheName }}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true"></el-table-column>
+                            <el-table-column label="操作" width="60" align="center">
+                                <template slot-scope="scope">
+                                    <el-button size="mini" type="text" icon="el-icon-delete" @click.stop="handleClearCacheName(scope.row)"></el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </el-card>
+                </el-col>
+
+                <!-- 中间：缓存键名列表 -->
+                <el-col :span="8">
+                    <el-card>
+                        <div slot="header" class="cache-header">
+                            <span><i class="el-icon-key"></i> 键名列表</span>
+                            <el-button type="danger" icon="el-icon-delete" size="mini" plain :disabled="!currentCacheName" @click="handleClearCurrentName">清理名称</el-button>
+                        </div>
+                        <el-table :data="cacheKeys" size="small" highlight-current-row @current-change="handleCacheKeyChange" v-loading="loadingKeys" style="width: 100%;">
+                            <el-table-column label="序号" width="60" align="center" type="index"></el-table-column>
+                            <el-table-column label="缓存键名" align="center" :show-overflow-tooltip="true">
+                                <template slot-scope="scope">
+                                    <span>{{ scope.row }}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="操作" width="60" align="center">
+                                <template slot-scope="scope">
+                                    <el-button size="mini" type="text" icon="el-icon-delete" @click.stop="handleClearCacheKey(scope.row)"></el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </el-card>
+                </el-col>
+
+                <!-- 右侧：缓存内容详情 -->
+                <el-col :span="8">
+                    <el-card>
+                        <div slot="header" class="cache-header">
+                            <span><i class="el-icon-document"></i> 缓存内容</span>
+                            <el-button type="danger" icon="el-icon-refresh" size="mini" plain @click="handleClearCacheValue" :disabled="!cacheValue.cacheKey">清理</el-button>
+                        </div>
+                        <div v-if="cacheValue.cacheKey" v-loading="loadingValue">
+                            <div class="cache-detail-item">
+                                <div class="cache-detail-label">缓存名称:</div>
+                                <div class="cache-detail-value">{{ cacheValue.cacheName }}</div>
+                            </div>
+                            <div class="cache-detail-item">
+                                <div class="cache-detail-label">缓存键名:</div>
+                                <div class="cache-detail-value">{{ cacheValue.cacheKey }}</div>
+                            </div>
+                            <div class="cache-detail-item">
+                                <div class="cache-detail-label">缓存内容:</div>
+                                <div class="cache-detail-value">{{ cacheValue.cacheValue }}</div>
+                            </div>
+                            <div class="cache-detail-item" v-if="cacheValue.remark">
+                                <div class="cache-detail-label">备注:</div>
+                                <div class="cache-detail-value">{{ cacheValue.remark }}</div>
+                            </div>
+                        </div>
+                        <div v-else style="text-align: center; color: #909399; padding: 40px 0; font-size: 14px;">
+                            <i class="el-icon-info" style="font-size: 40px; display: block; margin-bottom: 10px;"></i>
+                            请选择左侧缓存键名查看详情
+                        </div>
+                    </el-card>
+                </el-col>
+            </el-row>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui@2.13.0/lib/index.js"></script>
+    <script src="https://unpkg.com/jquery@3.4.1/dist/jquery.min.js"></script>
+    <script src="../../static/kj/layer/layer.js"></script>
+    <script src="../../static/sa.js"></script>
+    <script src="../../static/ruoyi-util.js"></script>
+    <script>
+        var app = new Vue({
+            el: '.vue-box',
+            data: {
+                // 缓存名称列表
+                cacheNames: [],
+                // 缓存键名列表
+                cacheKeys: [],
+                // 缓存内容详情
+                cacheValue: {
+                    cacheName: '',
+                    cacheKey: '',
+                    cacheValue: '',
+                    remark: ''
+                },
+                // 当前选中的缓存名称
+                currentCacheName: '',
+                // 当前选中的缓存键名
+                currentCacheKey: '',
+                // 加载状态
+                loadingNames: false,
+                loadingKeys: false,
+                loadingValue: false
+            },
+            methods: {
+                /** 获取缓存名称列表 */
+                getCacheNames: function() {
+                    this.loadingNames = true;
+                    ruoyi.get('/monitor/cache/getNames', function(res) {
+                        this.cacheNames = res.data || [];
+                        this.loadingNames = false;
+                    }.bind(this));
+                },
+                /** 选中缓存名称事件 */
+                handleCacheNameChange: function(row) {
+                    if (!row) return;
+                    this.currentCacheName = row.cacheName;
+                    this.cacheKeys = [];
+                    this.cacheValue = { cacheName: '', cacheKey: '', cacheValue: '', remark: '' };
+                    this.currentCacheKey = '';
+                    this.loadingKeys = true;
+                    ruoyi.get('/monitor/cache/getKeys/' + row.cacheName, function(res) {
+                        this.cacheKeys = res.data || [];
+                        this.loadingKeys = false;
+                    }.bind(this));
+                },
+                /** 选中缓存键名事件 */
+                handleCacheKeyChange: function(cacheKey) {
+                    if (!cacheKey) return;
+                    this.currentCacheKey = cacheKey;
+                    this.loadingValue = true;
+                    ruoyi.get('/monitor/cache/getValue/' + this.currentCacheName + '/' + cacheKey, function(res) {
+                        this.cacheValue = res.data || { cacheName: '', cacheKey: '', cacheValue: '', remark: '' };
+                        this.loadingValue = false;
+                    }.bind(this));
+                },
+                /** 清理指定缓存名称 */
+                handleClearCacheName: function(row) {
+                    this.$modal.confirm('是否确认清理缓存名称为"' + row.cacheName + '"的数据项？').then(function() {
+                        ruoyi.del('/monitor/cache/clearCacheName/' + row.cacheName, function(res) {
+                            this.$modal.msgSuccess('清理缓存名称[' + row.cacheName + ']成功');
+                            this.getCacheNames();
+                            // 如果清理的是当前选中的名称，则清空键名和值
+                            if (this.currentCacheName === row.cacheName) {
+                                this.cacheKeys = [];
+                                this.cacheValue = { cacheName: '', cacheKey: '', cacheValue: '', remark: '' };
+                                this.currentCacheName = '';
+                                this.currentCacheKey = '';
+                            }
+                        }.bind(this));
+                    }.bind(this)).catch(function() {});
+                },
+                /** 清理指定缓存键名 */
+                handleClearCacheKey: function(cacheKey) {
+                    this.$modal.confirm('是否确认清理缓存键名为"' + cacheKey + '"的数据项？').then(function() {
+                        ruoyi.del('/monitor/cache/clearCacheKey/' + cacheKey, function(res) {
+                            this.$modal.msgSuccess('清理缓存键名[' + cacheKey + ']成功');
+                            // 重新加载键名列表
+                            if (this.currentCacheName) {
+                                ruoyi.get('/monitor/cache/getKeys/' + this.currentCacheName, function(res2) {
+                                    this.cacheKeys = res2.data || [];
+                                }.bind(this));
+                            }
+                            // 如果清理的是当前选中的键名，则清空值
+                            if (this.currentCacheKey === cacheKey) {
+                                this.cacheValue = { cacheName: '', cacheKey: '', cacheValue: '', remark: '' };
+                                this.currentCacheKey = '';
+                            }
+                        }.bind(this));
+                    }.bind(this)).catch(function() {});
+                },
+                /** 清理当前选中的缓存名称 */
+                handleClearCurrentName: function() {
+                    if (!this.currentCacheName) return;
+                    this.$modal.confirm('是否确认清理缓存名称为"' + this.currentCacheName + '"的数据项？').then(function() {
+                        ruoyi.del('/monitor/cache/clearCacheName/' + this.currentCacheName, function(res) {
+                            this.$modal.msgSuccess('清理缓存名称[' + this.currentCacheName + ']成功');
+                            this.getCacheNames();
+                            this.cacheKeys = [];
+                            this.cacheValue = { cacheName: '', cacheKey: '', cacheValue: '', remark: '' };
+                            this.currentCacheName = '';
+                            this.currentCacheKey = '';
+                        }.bind(this));
+                    }.bind(this)).catch(function() {});
+                },
+                /** 清理当前缓存值 */
+                handleClearCacheValue: function() {
+                    if (!this.cacheValue.cacheKey) return;
+                    this.$modal.confirm('是否确认清理该缓存数据？').then(function() {
+                        ruoyi.del('/monitor/cache/clearCacheKey/' + this.cacheValue.cacheKey, function(res) {
+                            this.$modal.msgSuccess('清理缓存键名[' + this.cacheValue.cacheKey + ']成功');
+                            this.cacheValue = { cacheName: '', cacheKey: '', cacheValue: '', remark: '' };
+                            this.currentCacheKey = '';
+                            // 重新加载键名列表
+                            if (this.currentCacheName) {
+                                ruoyi.get('/monitor/cache/getKeys/' + this.currentCacheName, function(res2) {
+                                    this.cacheKeys = res2.data || [];
+                                }.bind(this));
+                            }
+                        }.bind(this));
+                    }.bind(this)).catch(function() {});
+                },
+                /** 清理全部缓存 */
+                handleClearAll: function() {
+                    this.$modal.confirm('是否确认清理全部缓存数据项？').then(function() {
+                        ruoyi.del('/monitor/cache/clearCacheAll', function(res) {
+                            this.$modal.msgSuccess('清理全部缓存成功');
+                            this.getCacheNames();
+                            this.cacheKeys = [];
+                            this.cacheValue = { cacheName: '', cacheKey: '', cacheValue: '', remark: '' };
+                            this.currentCacheName = '';
+                            this.currentCacheKey = '';
+                        }.bind(this));
+                    }.bind(this)).catch(function() {});
+                }
+            },
+            created: function() {
+                this.getCacheNames();
+            }
+        });
+    </script>
+</body>
+</html>

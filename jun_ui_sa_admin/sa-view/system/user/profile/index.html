@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>个人中心</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../../static/sa.css">
+    <link rel="stylesheet" href="../../../static/ruoyi.css">
+    <style>
+        .user-info-head { padding: 20px 0; text-align: center; }
+        .user-info-head .user-avatar { width: 120px; height: 120px; border-radius: 50%; cursor: pointer; position: relative; }
+        .user-info-head .user-avatar:hover:after {
+            content: '+';
+            position: absolute;
+            left: 0; right: 0; top: 0; bottom: 0;
+            color: #eee;
+            background: rgba(0,0,0,0.5);
+            font-size: 24px;
+            font-style: normal;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .user-info-list { list-style: none; padding: 0; }
+        .user-info-list li { border-bottom: 1px solid #e7eaec; padding: 11px 0; font-size: 13px; }
+        .user-info-list .pull-right { float: right; }
+        .profile-left { width: 350px; min-width: 350px; padding-right: 15px; }
+        .profile-right { flex: 1; }
+        .profile-container { display: flex; padding: 15px; }
+        .avatar-preview { width: 200px; height: 200px; border-radius: 50%; overflow: hidden; margin: 20px auto; box-shadow: 0 0 4px #ccc; }
+        .avatar-preview img { width: 100%; height: 100%; object-fit: cover; }
+    </style>
+</head>
+<body>
+    <div class="vue-box" style="display: none;" :style="'display: block;'">
+        <div class="profile-container">
+            <!-- 左侧用户信息卡片 -->
+            <div class="profile-left">
+                <el-card>
+                    <div slot="header">
+                        <span>个人信息</span>
+                    </div>
+                    <div>
+                        <div class="user-info-head" @click="editCropper()">
+                            <img :src="userAvatar" title="点击上传头像" class="user-avatar" />
+                        </div>
+                        <ul class="user-info-list">
+                            <li>
+                                <i class="el-icon-user"></i> 用户名称
+                                <span class="pull-right">{{ user.userName }}</span>
+                            </li>
+                            <li>
+                                <i class="el-icon-phone"></i> 手机号码
+                                <span class="pull-right">{{ user.phonenumber }}</span>
+                            </li>
+                            <li>
+                                <i class="el-icon-message"></i> 用户邮箱
+                                <span class="pull-right">{{ user.email }}</span>
+                            </li>
+                            <li>
+                                <i class="el-icon-s-custom"></i> 所属部门
+                                <span class="pull-right" v-if="user.dept">{{ user.dept.deptName }} / {{ postGroup }}</span>
+                            </li>
+                            <li>
+                                <i class="el-icon-user"></i> 所属角色
+                                <span class="pull-right">{{ roleGroup }}</span>
+                            </li>
+                            <li>
+                                <i class="el-icon-date"></i> 创建日期
+                                <span class="pull-right">{{ parseTime(user.createTime) }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </el-card>
+            </div>
+
+            <!-- 右侧标签页 -->
+            <div class="profile-right">
+                <el-card>
+                    <div slot="header">
+                        <span>基本资料</span>
+                    </div>
+                    <el-tabs v-model="activeTab">
+                        <!-- 基本资料 -->
+                        <el-tab-pane label="基本资料" name="userinfo">
+                            <el-form ref="userInfoForm" :model="userInfoForm" :rules="userInfoRules" label-width="80px">
+                                <el-form-item label="用户昵称" prop="nickName">
+                                    <el-input v-model="userInfoForm.nickName" maxlength="30"></el-input>
+                                </el-form-item>
+                                <el-form-item label="手机号码" prop="phonenumber">
+                                    <el-input v-model="userInfoForm.phonenumber" maxlength="11"></el-input>
+                                </el-form-item>
+                                <el-form-item label="邮箱" prop="email">
+                                    <el-input v-model="userInfoForm.email" maxlength="50"></el-input>
+                                </el-form-item>
+                                <el-form-item label="性别" prop="sex">
+                                    <el-radio-group v-model="userInfoForm.sex">
+                                        <el-radio label="0">男</el-radio>
+                                        <el-radio label="1">女</el-radio>
+                                    </el-radio-group>
+                                </el-form-item>
+                                <el-form-item>
+                                    <el-button type="primary" size="mini" @click="submitUserInfo">保存</el-button>
+                                    <el-button type="danger" size="mini" @click="closeProfile">关闭</el-button>
+                                </el-form-item>
+                            </el-form>
+                        </el-tab-pane>
+
+                        <!-- 修改密码 -->
+                        <el-tab-pane label="修改密码" name="resetPwd">
+                            <el-form ref="pwdForm" :model="pwdForm" :rules="pwdRules" label-width="80px">
+                                <el-form-item label="旧密码" prop="oldPassword">
+                                    <el-input v-model="pwdForm.oldPassword" placeholder="请输入旧密码" type="password" show-password></el-input>
+                                </el-form-item>
+                                <el-form-item label="新密码" prop="newPassword">
+                                    <el-input v-model="pwdForm.newPassword" placeholder="请输入新密码" type="password" show-password></el-input>
+                                </el-form-item>
+                                <el-form-item label="确认密码" prop="confirmPassword">
+                                    <el-input v-model="pwdForm.confirmPassword" placeholder="请确认新密码" type="password" show-password></el-input>
+                                </el-form-item>
+                                <el-form-item>
+                                    <el-button type="primary" size="mini" @click="submitPwd">保存</el-button>
+                                    <el-button type="danger" size="mini" @click="resetPwdForm">重置</el-button>
+                                </el-form-item>
+                            </el-form>
+                        </el-tab-pane>
+
+                        <!-- 头像 -->
+                        <el-tab-pane label="头像" name="avatar">
+                            <div style="text-align: center;">
+                                <div class="avatar-preview">
+                                    <img :src="userAvatar" />
+                                </div>
+                                <el-upload
+                                    ref="avatarUpload"
+                                    :action="uploadUrl"
+                                    :headers="uploadHeaders"
+                                    :show-file-list="false"
+                                    :on-success="handleAvatarSuccess"
+                                    :before-upload="beforeAvatarUpload"
+                                    name="avatarfile"
+                                    accept="image/*"
+                                >
+                                    <el-button size="small" type="primary">
+                                        <i class="el-icon-upload"></i> 选择文件
+                                    </el-button>
+                                </el-upload>
+                                <div style="margin-top: 10px; color: #999; font-size: 12px;">
+                                    支持 JPG、PNG 格式图片，文件大小不超过 2MB
+                                </div>
+                            </div>
+                        </el-tab-pane>
+                    </el-tabs>
+                </el-card>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui@2.13.0/lib/index.js"></script>
+    <script src="https://unpkg.com/jquery@3.4.1/dist/jquery.min.js"></script>
+    <script src="../../../static/kj/layer/layer.js"></script>
+    <script src="../../../static/sa.js"></script>
+    <script src="../../../static/ruoyi-util.js"></script>
+    <script>
+        var app = new Vue({
+            el: '.vue-box',
+            data: {
+                // 当前激活的标签
+                activeTab: 'userinfo',
+                // 用户信息
+                user: {},
+                // 角色组
+                roleGroup: '',
+                // 岗位组
+                postGroup: '',
+                // 头像地址
+                userAvatar: '',
+                // 上传地址
+                uploadUrl: '/prod-api/system/user/profile/avatar',
+                // 上传头信息
+                uploadHeaders: {
+                    Authorization: 'Bearer ' + ruoyi.getToken()
+                },
+                // 基本资料表单
+                userInfoForm: {
+                    nickName: '',
+                    phonenumber: '',
+                    email: '',
+                    sex: ''
+                },
+                // 基本资料校验规则
+                userInfoRules: {
+                    nickName: [
+                        { required: true, message: '用户昵称不能为空', trigger: 'blur' }
+                    ],
+                    email: [
+                        { required: true, message: '邮箱地址不能为空', trigger: 'blur' },
+                        { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+                    ],
+                    phonenumber: [
+                        { required: true, message: '手机号码不能为空', trigger: 'blur' },
+                        { pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/, message: '请输入正确的手机号码', trigger: 'blur' }
+                    ]
+                },
+                // 密码表单
+                pwdForm: {
+                    oldPassword: '',
+                    newPassword: '',
+                    confirmPassword: ''
+                },
+                // 密码校验规则
+                pwdRules: {
+                    oldPassword: [
+                        { required: true, message: '旧密码不能为空', trigger: 'blur' }
+                    ],
+                    newPassword: [
+                        { required: true, message: '新密码不能为空', trigger: 'blur' },
+                        { min: 5, max: 20, message: '长度在 5 到 20 个字符', trigger: 'blur' }
+                    ],
+                    confirmPassword: [
+                        { required: true, message: '确认密码不能为空', trigger: 'blur' },
+                        {
+                            validator: function(rule, value, callback) {
+                                if (value !== app.pwdForm.newPassword) {
+                                    callback(new Error('两次输入的密码不一致'));
+                                } else {
+                                    callback();
+                                }
+                            },
+                            trigger: 'blur'
+                        }
+                    ]
+                }
+            },
+            methods: {
+                /** 获取用户信息 */
+                getUser: function() {
+                    ruoyi.get('/system/user/profile', function(res) {
+                        this.user = res.data || {};
+                        this.roleGroup = res.roleGroup || '';
+                        this.postGroup = res.postGroup || '';
+                        // 处理头像
+                        this.userAvatar = this.user.avatar ? (/^http/.test(this.user.avatar) ? this.user.avatar : '/prod-api' + this.user.avatar) : '';
+                        // 填充基本资料表单
+                        this.userInfoForm.nickName = this.user.nickName || '';
+                        this.userInfoForm.phonenumber = this.user.phonenumber || '';
+                        this.userInfoForm.email = this.user.email || '';
+                        this.userInfoForm.sex = this.user.sex || '';
+                    }.bind(this));
+                },
+                /** 提交基本资料 */
+                submitUserInfo: function() {
+                    this.$refs['userInfoForm'].validate(function(valid) {
+                        if (valid) {
+                            ruoyi.put('/system/user/profile', this.userInfoForm, function(res) {
+                                this.$modal.msgSuccess('修改成功');
+                                this.getUser();
+                            }.bind(this));
+                        }
+                    }.bind(this));
+                },
+                /** 提交修改密码 */
+                submitPwd: function() {
+                    this.$refs['pwdForm'].validate(function(valid) {
+                        if (valid) {
+                            var params = {
+                                oldPassword: this.pwdForm.oldPassword,
+                                newPassword: this.pwdForm.newPassword
+                            };
+                            ruoyi.put('/system/user/profile/updatePwd?oldPassword=' + encodeURIComponent(params.oldPassword) + '&newPassword=' + encodeURIComponent(params.newPassword), {}, function(res) {
+                                this.$modal.msgSuccess('修改成功');
+                                this.resetPwdForm();
+                            }.bind(this));
+                        }
+                    }.bind(this));
+                },
+                /** 重置密码表单 */
+                resetPwdForm: function() {
+                    this.pwdForm = {
+                        oldPassword: '',
+                        newPassword: '',
+                        confirmPassword: ''
+                    };
+                    if (this.$refs['pwdForm']) {
+                        this.$refs['pwdForm'].resetFields();
+                    }
+                },
+                /** 头像上传成功 */
+                handleAvatarSuccess: function(response, file) {
+                    if (response.code === 200) {
+                        this.$modal.msgSuccess('上传成功');
+                        this.userAvatar = response.imgUrl ? (/^http/.test(response.imgUrl) ? response.imgUrl : '/prod-api' + response.imgUrl) : '';
+                        // 刷新用户信息
+                        this.getUser();
+                    } else {
+                        this.$modal.msgError(response.msg || '上传失败');
+                    }
+                },
+                /** 头像上传前验证 */
+                beforeAvatarUpload: function(file) {
+                    var isImage = file.type.indexOf('image/') === 0;
+                    var isLt2M = file.size / 1024 / 1024 < 2;
+                    if (!isImage) {
+                        this.$modal.msgError('上传头像图片只能是图片格式!');
+                    }
+                    if (!isLt2M) {
+                        this.$modal.msgError('上传头像图片大小不能超过 2MB!');
+                    }
+                    return isImage && isLt2M;
+                },
+                /** 打开头像标签页 */
+                editCropper: function() {
+                    this.activeTab = 'avatar';
+                },
+                /** 关闭个人中心 */
+                closeProfile: function() {
+                    try {
+                        var tabId = parent.sa_admin.tab.id;
+                        parent.sa_admin.closeTab(tabId);
+                    } catch (e) {
+                        // ignore
+                    }
+                }
+            },
+            created: function() {
+                this.getUser();
+            }
+        });
+    </script>
+</body>
+</html>

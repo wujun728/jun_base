@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysRoleMapper">
+
+	<resultMap type="SysRole" id="SysRoleResult">
+		<id     property="roleId"             column="role_id"               />
+		<result property="roleName"           column="role_name"             />
+		<result property="roleKey"            column="role_key"              />
+		<result property="roleSort"           column="role_sort"             />
+		<result property="dataScope"          column="data_scope"            />
+		<result property="menuCheckStrictly"  column="menu_check_strictly"   />
+		<result property="deptCheckStrictly"  column="dept_check_strictly"   />
+		<result property="status"             column="status"                />
+		<result property="delFlag"            column="del_flag"              />
+		<result property="createBy"           column="create_by"             />
+		<result property="createTime"         column="create_time"           />
+		<result property="updateBy"           column="update_by"             />
+		<result property="updateTime"         column="update_time"           />
+		<result property="remark"             column="remark"                />
+	</resultMap>
+	
+	<sql id="selectRoleVo">
+	    select distinct r.role_id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.menu_check_strictly, r.dept_check_strictly,
+            r.status, r.del_flag, r.create_time, r.remark 
+        from sys_role r
+	        left join sys_user_role ur on ur.role_id = r.role_id
+	        left join sys_user u on u.user_id = ur.user_id
+	        left join sys_dept d on u.dept_id = d.dept_id
+    </sql>
+    
+    <select id="selectRoleList" parameterType="SysRole" resultMap="SysRoleResult">
+		<include refid="selectRoleVo"/>
+		where r.del_flag = '0'
+		<if test="entity.roleId != null and entity.roleId != 0">
+			AND r.role_id = #{entity.roleId}
+		</if>
+		<if test="entity.roleName != null and entity.roleName != ''">
+			AND r.role_name like concat('%', #{entity.roleName}, '%')
+		</if>
+		<if test="entity.status != null and entity.status != ''">
+			AND r.status = #{entity.status}
+		</if>
+		<if test="entity.params != null and entity.roleKey != null and entity.roleKey != ''">
+			AND r.role_key like concat('%', #{entity.roleKey}, '%')
+		</if>
+		<if test="entity.params != null and entity.params.beginTime != null and entity.params.beginTime != ''"><!-- 开始时间检索 -->
+			and date_format(r.create_time,'%y%m%d') &gt;= date_format(#{entity.params.beginTime},'%y%m%d')
+		</if>
+		<if test="entity.params != null and entity.params.endTime != null and entity.params.endTime != ''"><!-- 结束时间检索 -->
+			and date_format(r.create_time,'%y%m%d') &lt;= date_format(#{entity.params.endTime},'%y%m%d')
+		</if>
+		<!-- 数据范围过滤 -->
+		<if test="entity.params != null">
+			${params.dataScope}
+		</if>
+		order by r.role_sort
+	</select>
+	
+	<select id="selectRoleListByUserId" parameterType="Long" resultType="Long">
+		select r.role_id
+        from sys_role r
+	        left join sys_user_role ur on ur.role_id = r.role_id
+	        left join sys_user u on u.user_id = ur.user_id
+	    where u.user_id = #{userId}
+	</select>
+
+	<select id="selectRole" resultMap="SysRoleResult">
+		<include refid="selectRoleVo"/>
+		WHERE ${ew.getSqlSegment}
+	</select>
+
+	<select id="selectRoles" resultMap="SysRoleResult">
+		<include refid="selectRoleVo"/>
+		WHERE ${ew.getSqlSegment}
+	</select>
+</mapper> 
