@@ -1,0 +1,35 @@
+// ==================== 标签页主题样式 ====================
+
+.tags-view-container {
+  .tags-view-wrapper {
+    .tags-view-item {
+      color: #495060;
+      background: #fff;
+      border: 1px solid #d8dce5;
+
+      &:hover {
+        color: var(--tab-hover-color, #2D8CF0);
+        border-color: var(--tab-hover-color, #2D8CF0);
+      }
+
+      &.active {
+        background-color: var(--tab-active-bg-color, #2D8CF0);
+        color: var(--tab-active-color, #fff);
+        border-color: var(--tab-active-bg-color, #2D8CF0);
+
+        &::before {
+          background: var(--tab-active-color, #fff);
+        }
+      }
+    }
+  }
+
+  .contextmenu {
+    li {
+      &:hover {
+        background-color: var(--tool-hover-bg-color, #ecf5ff);
+        color: var(--tab-hover-color, #2D8CF0);
+      }
+    }
+  }
+}

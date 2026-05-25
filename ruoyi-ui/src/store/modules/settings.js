@@ -12,7 +12,9 @@ const state = {
   tagsView: storageSetting.tagsView === undefined ? tagsView : storageSetting.tagsView,
   fixedHeader: storageSetting.fixedHeader === undefined ? fixedHeader : storageSetting.fixedHeader,
   sidebarLogo: storageSetting.sidebarLogo === undefined ? sidebarLogo : storageSetting.sidebarLogo,
-  dynamicTitle: storageSetting.dynamicTitle === undefined ? dynamicTitle : storageSetting.dynamicTitle
+  dynamicTitle: storageSetting.dynamicTitle === undefined ? dynamicTitle : storageSetting.dynamicTitle,
+  // Sa-Admin 主题系统
+  saAdminTheme: localStorage.getItem('saAdminTheme') || 'theme-0'
 }
 const mutations = {
   CHANGE_SETTING: (state, { key, value }) => {
@@ -30,6 +32,16 @@ const actions = {
   // 设置网页标题
   setTitle({ commit }, title) {
     state.title = title
+  },
+  // 切换 Sa-Admin 主题
+  changeSaAdminTheme({ commit }, theme) {
+    commit('CHANGE_SETTING', { key: 'saAdminTheme', value: theme })
+    localStorage.setItem('saAdminTheme', theme)
+    // 应用主题到 body
+    const body = document.body
+    const classList = body.className.split(' ')
+    const filteredClasses = classList.filter(cls => !cls.startsWith('theme-'))
+    body.className = [...filteredClasses, theme].join(' ')
   }
 }
 

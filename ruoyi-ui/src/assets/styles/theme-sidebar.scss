@@ -1,0 +1,68 @@
+// ==================== 侧边栏主题样式（基于 CSS 变量）====================
+
+#app {
+  .sidebar-container {
+    background-color: var(--menu-bg-color, $base-menu-background);
+    color: var(--menu-color, $base-menu-color);
+    border-right: 1px solid var(--nav-left-border-color, $base-menu-background);
+
+    // Element UI 菜单样式覆盖
+    .el-menu {
+      background-color: var(--menu-bg-color, $base-menu-background);
+      color: var(--menu-color, $base-menu-color);
+    }
+
+    .el-menu-item,
+    .el-submenu__title {
+      color: var(--menu-color, $base-menu-color);
+      background-color: transparent;
+
+      &:hover {
+        background-color: var(--menu-hover-bg-color, rgba(0, 0, 0, 0.06)) !important;
+      }
+    }
+
+    // 选中状态
+    .el-menu-item.is-active {
+      background-color: var(--menu-active-bg-color, $base-menu-color-active) !important;
+      color: var(--menu-active-color, #FFF) !important;
+    }
+
+    // 子菜单背景
+    .nest-menu .el-submenu > .el-submenu__title,
+    .el-submenu .el-menu-item {
+      background-color: var(--menu-bg-color-2, $base-sub-menu-background) !important;
+
+      &:hover {
+        background-color: var(--menu-hover-bg-color, $base-sub-menu-hover) !important;
+      }
+    }
+
+    // 子菜单选中状态
+    .el-submenu .el-menu-item.is-active {
+      background-color: var(--menu-active-bg-color, $base-menu-color-active) !important;
+      color: var(--menu-active-color, #FFF) !important;
+    }
+  }
+}
+
+// 折叠菜单弹出层样式
+.el-menu--vertical {
+  > .el-menu--popup {
+    background-color: var(--menu-bg-color, $base-menu-background);
+
+    .el-menu-item {
+      background-color: var(--menu-bg-color-2, $base-sub-menu-background) !important;
+      color: var(--menu-color, $base-menu-color);
+
+      &:hover {
+        background-color: var(--menu-hover-bg-color, $base-sub-menu-hover) !important;
+      }
+
+      &.is-active {
+        background-color: var(--menu-active-bg-color, $base-menu-color-active) !important;
+        color: var(--menu-active-color, #FFF) !important;
+      }
+    }
+  }
+}

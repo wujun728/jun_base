@@ -1,0 +1,35 @@
+// ==================== 顶部导航栏主题样式 ====================
+
+.navbar {
+  background-color: var(--tool-bg-color, #fff);
+  color: var(--tool-color, #333);
+  border-bottom: 1px solid #f1f1f1;
+
+  .hamburger-container {
+    &:hover {
+      background-color: var(--tool-hover-bg-color, rgba(0, 0, 0, 0.025));
+    }
+  }
+
+  .breadcrumb-container {
+    color: var(--tool-color, #333);
+  }
+
+  .right-menu {
+    .right-menu-item {
+      color: var(--tool-color, #333);
+
+      &:hover {
+        background-color: var(--tool-hover-bg-color, rgba(0, 0, 0, 0.025));
+      }
+    }
+
+    .avatar-container {
+      .avatar-wrapper {
+        &:hover {
+          background-color: var(--tool-hover-bg-color, rgba(0, 0, 0, 0.025));
+        }
+      }
+    }
+  }
+}

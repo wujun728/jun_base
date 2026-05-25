@@ -1,0 +1,119 @@
+// ==================== Sa-Admin 主题变量系统 ====================
+// 基于 CSS 变量实现多主题切换
+
+// 默认主题变量（主题-0：蓝色）
+:root {
+  // 菜单相关
+  --menu-bg-color: #222;                    // 菜单背景色
+  --menu-color: #FFF;                       // 菜单文字色
+  --menu-bg-color-2: #000;                  // 二级菜单背景色
+  --menu-hover-bg-color: #4E5465;           // 菜单悬浮背景色
+  --menu-active-bg-color: #2D8CF0;          // 菜单选中背景色
+  --menu-active-color: #FFF;                // 菜单选中文字色
+
+  // 工具栏相关
+  --tool-bg-color: #FFF;                    // 工具栏背景色
+  --tool-color: #333;                       // 工具栏文字色
+  --tool-hover-bg-color: #EEE;              // 工具栏悬浮背景色
+
+  // 标签页相关
+  --tab-hover-color: #2D8CF0;               // Tab悬浮文字色
+  --tab-active-bg-color: #2D8CF0;           // Tab选中背景色
+  --tab-active-color: #FFF;                 // Tab选中文字色
+
+  // 边框相关
+  --nav-left-border-color: #222;            // 左侧边栏边框色
+}
+
+// ==================== 主题-1：默认（继承主题-0）====================
+.theme-1 {
+  // 使用默认值
+}
+
+// ==================== 主题-2：绿色 ====================
+.theme-2 {
+  --menu-active-bg-color: #009688;
+  --tab-hover-color: #009688;
+  --tab-active-bg-color: #009688;
+}
+
+// ==================== 主题-3：白色清爽 ====================
+.theme-3 {
+  --menu-bg-color: #FFF;
+  --menu-color: #333;
+  --menu-bg-color-2: #fafafa;
+  --menu-hover-bg-color: #ECF5FF;
+  --menu-active-bg-color: #ECF5FF;
+  --menu-active-color: #409EFF;
+  --nav-left-border-color: #ddd;
+  --tab-hover-color: #409EFF;
+  --tab-active-bg-color: #ECF5FF;
+  --tab-active-color: #409EFF;
+}
+
+// ==================== 主题-4：灰绿色 ====================
+.theme-4 {
+  --menu-bg-color: #EEE;
+  --menu-color: #333;
+  --menu-bg-color-2: #DDD;
+  --menu-hover-bg-color: #ECF5FF;
+  --menu-active-bg-color: #009688;
+  --menu-active-color: #FFF;
+  --tool-bg-color: #222;
+  --tool-color: #EEE;
+  --tool-hover-bg-color: #444;
+  --nav-left-border-color: #ddd;
+  --tab-hover-color: #009688;
+  --tab-active-bg-color: #009688;
+}
+
+// ==================== 主题-5：红色 ====================
+.theme-5 {
+  --menu-active-bg-color: #F56C6C;
+  --tab-hover-color: #F56C6C;
+  --tab-active-bg-color: #F56C6C;
+}
+
+// ==================== 主题-6：棕色 ====================
+.theme-6 {
+  --menu-active-bg-color: #805322;
+  --tool-bg-color: #222;
+  --tool-color: #EEE;
+  --tool-hover-bg-color: #444;
+  --tab-hover-color: #805322;
+  --tab-active-bg-color: #805322;
+}
+
+// ==================== 主题-7：沉淀式黑蓝 ====================
+.theme-7 {
+  --tool-bg-color: #222;
+  --tool-color: #EEE;
+  --tool-hover-bg-color: #444;
+}
+
+// ==================== 主题-8：简约式灰蓝 ====================
+.theme-8 {
+  --menu-active-bg-color: #4E5465;
+  --tab-hover-color: #4E5465;
+  --tab-active-bg-color: #4E5465;
+}
+
+// ==================== 主题-9：紫色 ====================
+.theme-9 {
+  --menu-active-bg-color: #A906B3;
+  --tab-hover-color: #A906B3;
+  --tab-active-bg-color: #A906B3;
+}
+
+// ==================== 主题-10：简约草绿 ====================
+.theme-10 {
+  --menu-bg-color: #FFF;
+  --menu-color: #333;
+  --menu-bg-color-2: #fff;
+  --menu-hover-bg-color: #ECF5FF;
+  --menu-active-bg-color: #73D13D;
+  --menu-active-color: #FFF;
+  --nav-left-border-color: #ddd;
+  --tab-hover-color: #73D13D;
+  --tab-active-bg-color: #73D13D;
+}

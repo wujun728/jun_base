@@ -66,6 +66,11 @@
 
         <el-divider/>
 
+        <h3 class="drawer-title">Sa-Admin 主题选择</h3>
+        <theme-selector @theme-change="handleSaThemeChange" />
+
+        <el-divider/>
+
         <el-button size="small" type="primary" plain icon="el-icon-document-add" @click="saveSetting">保存配置</el-button>
         <el-button size="small" plain icon="el-icon-refresh" @click="resetSetting">重置配置</el-button>
       </div>
@@ -75,9 +80,10 @@
 
 <script>
 import ThemePicker from '@/components/ThemePicker'
+import ThemeSelector from '@/components/ThemeSelector'
 
 export default {
-  components: { ThemePicker },
+  components: { ThemePicker, ThemeSelector },
   data() {
     return {
       theme: this.$store.state.settings.theme,
@@ -164,6 +170,10 @@ export default {
         value: val
       })
       this.sideTheme = val;
+    },
+    handleSaThemeChange(themeId) {
+      // Sa-Admin 主题切换回调
+      this.$store.dispatch('settings/changeSaAdminTheme', themeId)
     },
     saveSetting() {
       this.$modal.loading("正在保存到本地，请稍候...");
