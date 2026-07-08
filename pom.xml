@@ -18,7 +18,7 @@
 	</properties>
 
 	<modules>
-		<module>RuoYi-Vue-3.92</module> 
+		<module>RuoYi-Vue-3.92-springboot3-jdk17</module> 
 	</modules>
 
 	<dependencyManagement>
