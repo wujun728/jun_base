@@ -10,6 +10,7 @@
 6. 生成脚本优先选择 Python，次选 PowerShell，次选 Shell。
 7. 处理长整数 ID（雪花 ID 等）时不可丢失精度；通过 MCP 查询 MySQL 时用 `CAST(id AS CHAR)` 避免精度丢失。
 8. 不要重复写代码，需有理有据，不确认的逻辑先行确认。
+9. 默认只使用 RuoYi-Vue-3.92-springboot3-jdk17，暂不使用springboot4版本。特殊情况自当说明
 
 ## 项目架构
 
