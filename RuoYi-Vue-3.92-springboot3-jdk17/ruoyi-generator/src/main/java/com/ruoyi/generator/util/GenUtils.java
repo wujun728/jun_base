@@ -2,11 +2,11 @@ package com.ruoyi.generator.util;
 
 import java.util.Arrays;
 import org.apache.commons.lang3.RegExUtils;
-import com.ruoyi.common.constant.GenConstants;
+import com.ruoyi.generator.constant.GenConstants;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.generator.config.GenConfig;
+import com.ruoyi.generator.domain.GenColumn;
 import com.ruoyi.generator.domain.GenTable;
-import com.ruoyi.generator.domain.GenTableColumn;
 
 /**
  * 代码生成器 工具类
@@ -32,7 +32,7 @@ public class GenUtils
     /**
      * 初始化列属性字段
      */
-    public static void initColumnField(GenTableColumn column, GenTable table)
+    public static void initColumnField(GenColumn column, GenTable table)
     {
         String dataType = getDbType(column.getColumnType());
         String columnName = column.getColumnName();

@@ -482,3 +482,106 @@
   position: relative;
   float: right;
 }
+
+/* 页面圆角模式 */ 
+#app.rounded-corner {
+  // 卡片
+  .el-card, .el-card--always {
+    border-radius: var(--rounded-radius-base);
+  }
+  .el-card__header {
+    border-radius: var(--rounded-radius-base) var(--rounded-radius-base) 0 0;
+  }
+
+  // 表格
+  .el-table {
+    border-radius: var(--rounded-radius-base);
+    overflow: hidden;
+  }
+  .el-table th.el-table__cell {
+    background-color: #f8f8f9;
+  }
+  .el-table--border {
+    border-radius: var(--rounded-radius-base);
+  }
+
+  // 弹窗
+  .el-dialog {
+    border-radius: var(--rounded-radius-base);
+    overflow: hidden;
+  }
+  .el-dialog__header {
+    border-radius: var(--rounded-radius-base) var(--rounded-radius-base) 0 0;
+  }
+
+  // 抽屉
+  .el-drawer {
+    border-radius: var(--rounded-radius-base) 0 0 var(--rounded-radius-base);
+    overflow: hidden;
+  }
+
+  // 按钮
+  .el-button {
+    border-radius: var(--rounded-radius-base);
+  }
+  .el-button--mini {
+    border-radius: calc(var(--rounded-radius-base) * 0.7);
+  }
+
+  // 输入框
+  .el-input__inner, .el-textarea__inner {
+    border-radius: var(--rounded-radius-base);
+  }
+
+  // 下拉选择器
+  .el-select .el-input__inner {
+    border-radius: var(--rounded-radius-base);
+  }
+
+  // 日期选择器
+  .el-date-editor .el-input__inner,
+  .el-range-editor.el-input__inner {
+    border-radius: var(--rounded-radius-base);
+  }
+
+  // 分页
+  .el-pagination button, .el-pager li {
+    border-radius: var(--rounded-radius-base);
+  }
+
+  // 标签页
+  .el-tabs__header {
+    border-radius: var(--rounded-radius-base) var(--rounded-radius-base) 0 0;
+  }
+  .el-tabs--border-card {
+    border-radius: var(--rounded-radius-base);
+    > .el-tabs__header {
+      border-radius: var(--rounded-radius-base) var(--rounded-radius-base) 0 0;
+    }
+  }
+
+  // 标签
+  .el-tag {
+    border-radius: calc(var(--rounded-radius-base) * 0.7);
+  }
+
+  // 下拉菜单
+  .el-dropdown-menu {
+    border-radius: var(--rounded-radius-base);
+  }
+
+  // 消息提示
+  .el-message {
+    border-radius: var(--rounded-radius-base);
+  }
+
+  // 进度条
+  .el-progress-bar__outer {
+    border-radius: 100px;
+  }
+
+  // 搜索表单 .app-container
+  .app-container, .el-form--inline {
+    border-radius: var(--rounded-radius-base);
+  }
+}

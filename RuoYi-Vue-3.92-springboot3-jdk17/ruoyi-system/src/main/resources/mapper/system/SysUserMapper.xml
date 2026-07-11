@@ -73,16 +73,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<if test="phonenumber != null and phonenumber != ''">
 			AND u.phonenumber like concat('%', #{phonenumber}, '%')
 		</if>
-		<if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+		<if test="params.beginTime != null and params.beginTime != ''"><!-- 寮€濮嬫椂闂存绱?-->
 			AND date_format(u.create_time,'%Y%m%d') &gt;= date_format(#{params.beginTime},'%Y%m%d')
 		</if>
-		<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+		<if test="params.endTime != null and params.endTime != ''"><!-- 缁撴潫鏃堕棿妫€绱?-->
 			AND date_format(u.create_time,'%Y%m%d') &lt;= date_format(#{params.endTime},'%Y%m%d')
 		</if>
 		<if test="deptId != null and deptId != 0">
 			AND (u.dept_id = #{deptId} OR u.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE find_in_set(#{deptId}, ancestors) ))
 		</if>
-		<!-- 数据范围过滤 -->
+		<!-- 鏁版嵁鑼冨洿杩囨护 -->
 		${params.dataScope}
 	</select>
 	
@@ -99,7 +99,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<if test="phonenumber != null and phonenumber != ''">
 			AND u.phonenumber like concat('%', #{phonenumber}, '%')
 		</if>
-		<!-- 数据范围过滤 -->
+		<!-- 鏁版嵁鑼冨洿杩囨护 -->
 		${params.dataScope}
 	</select>
 	
@@ -117,7 +117,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<if test="phonenumber != null and phonenumber != ''">
 			AND u.phonenumber like concat('%', #{phonenumber}, '%')
 		</if>
-		<!-- 数据范围过滤 -->
+		<!-- 鏁版嵁鑼冨洿杩囨护 -->
 		${params.dataScope}
 	</select>
 	
@@ -223,5 +223,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			#{userId}
         </foreach> 
  	</delete>
+	<select id="selectUserByEmail" parameterType="String" resultMap="SysUserResult">
+		select u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.phonenumber, u.sex, u.avatar, u.password, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark,
+		d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.status as dept_status
+		from sys_user u left join sys_dept d on u.dept_id = d.dept_id
+		where u.email = #{email}
+	</select>
+
+	<select id="selectUserByPhonenumber" parameterType="String" resultMap="SysUserResult">
+		select u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.phonenumber, u.sex, u.avatar, u.password, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark,
+		d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.status as dept_status
+		from sys_user u left join sys_dept d on u.dept_id = d.dept_id
+		where u.phonenumber = #{phonenumber}
+	</select>
+
 	
 </mapper> 

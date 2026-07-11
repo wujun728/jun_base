@@ -52,6 +52,12 @@ public interface SysUserMapper
      */
     public SysUser selectUserById(Long userId);
 
+    public SysUser selectUserByEmail(String email);
+
+    public SysUser selectUserByPhonenumber(String phonenumber);
+
+    public SysUser selectUserByPhone(String phone);
+
     /**
      * 新增用户信息
      * 

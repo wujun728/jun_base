@@ -11,48 +11,48 @@
     <packaging>jar</packaging>
     <artifactId>ruoyi-admin</artifactId>
 
-    <description>
-        web服务入口
-    </description>
+    <description>web服务入口</description>
 
     <dependencies>
-
-        <!-- spring-boot-devtools -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional> <!-- 表示依赖不会传递 -->
+            <optional>true</optional>
         </dependency>
-
-        <!-- spring-doc -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
         </dependency>
-
-         <!-- Mysql驱动包 -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
         </dependency>
-
-        <!-- 核心模块-->
         <dependency>
             <groupId>com.ruoyi</groupId>
             <artifactId>ruoyi-framework</artifactId>
         </dependency>
-
-        <!-- 定时任务-->
         <dependency>
             <groupId>com.ruoyi</groupId>
             <artifactId>ruoyi-quartz</artifactId>
         </dependency>
-
-        <!-- 代码生成-->
         <dependency>
             <groupId>com.ruoyi</groupId>
             <artifactId>ruoyi-generator</artifactId>
         </dependency>
+
+        <!-- 三层架构模块 -->
+        <dependency><groupId>com.ruoyi</groupId><artifactId>ruoyi-module-form</artifactId><version>3.9.2</version></dependency>
+        <dependency><groupId>com.ruoyi</groupId><artifactId>ruoyi-module-tenant</artifactId><version>3.9.2</version></dependency>
+        <!-- TODO: Flowable 8.0需要建表后启用
+        <dependency><groupId>com.ruoyi</groupId><artifactId>ruoyi-module-flowable</artifactId><version>3.9.2</version></dependency>
+        -->
+        <!-- TODO: OSS需要存储插件配置后启用
+        <dependency><groupId>com.ruoyi</groupId><artifactId>ruoyi-module-datarule</artifactId><version>3.9.2</version></dependency>
+        <dependency><groupId>com.ruoyi</groupId><artifactId>ruoyi-module-oss</artifactId><version>3.9.2</version></dependency>
+        -->
+        <dependency><groupId>com.ruoyi</groupId><artifactId>ruoyi-module-online</artifactId><version>3.9.2</version></dependency>
+        <dependency><groupId>com.ruoyi</groupId><artifactId>ruoyi-auth-starter</artifactId><version>3.9.2</version></dependency>
+        <dependency><groupId>com.ruoyi</groupId><artifactId>ruoyi-pay-starter</artifactId><version>3.9.2</version></dependency>
 
     </dependencies>
 
@@ -72,17 +72,16 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>   
-                <groupId>org.apache.maven.plugins</groupId>   
-                <artifactId>maven-war-plugin</artifactId>   
-                <version>3.1.0</version>   
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.1.0</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                     <warName>${project.artifactId}</warName>
-                </configuration>   
-           </plugin>   
+                </configuration>
+           </plugin>
         </plugins>
         <finalName>${project.artifactId}</finalName>
     </build>
-
 </project>

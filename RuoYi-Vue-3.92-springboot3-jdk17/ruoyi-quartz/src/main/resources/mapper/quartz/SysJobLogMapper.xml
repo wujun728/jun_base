@@ -93,7 +93,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="exceptionInfo != null and exceptionInfo != ''">#{exceptionInfo},</if>
  			<if test="startTime != null">#{startTime},</if>
  			<if test="endTime != null">#{endTime},</if>
- 			sysdate()
+  		<choose>
+  			<when test="_databaseId == 'postgresql' or _databaseId == 'opengauss'">
+  				CURRENT_TIMESTAMP
+  			</when>
+  			<otherwise>
+  				sysdate()
+  			</otherwise>
+  		</choose>
  		)
 	</insert>
 

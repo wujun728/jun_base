@@ -43,6 +43,12 @@ public class HttpUtils
         return sendGet(url, StringUtils.EMPTY);
     }
 
+    /** Geek-compatible alias */
+    public static String get(String url)
+    {
+        return sendGet(url);
+    }
+
     /**
      * 向指定 URL 发送GET方法的请求
      *

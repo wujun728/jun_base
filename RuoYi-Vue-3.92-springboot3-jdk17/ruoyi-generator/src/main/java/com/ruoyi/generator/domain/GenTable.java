@@ -4,7 +4,7 @@ import java.util.List;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.apache.commons.lang3.ArrayUtils;
-import com.ruoyi.common.constant.GenConstants;
+import com.ruoyi.generator.constant.GenConstants;
 import com.ruoyi.common.core.domain.BaseEntity;
 import com.ruoyi.common.utils.StringUtils;
 
@@ -73,15 +73,18 @@ public class GenTable extends BaseEntity
     /** 生成路径（不填默认项目路径） */
     private String genPath;
 
+    /** 表别名 */
+    private String tableAlias;
+
     /** 主键信息 */
-    private GenTableColumn pkColumn;
+    private GenColumn pkColumn;
 
     /** 子表信息 */
     private GenTable subTable;
 
     /** 表列信息 */
     @Valid
-    private List<GenTableColumn> columns;
+    private List<GenColumn> columns;
 
     /** 其它生成选项 */
     private String options;
@@ -96,7 +99,7 @@ public class GenTable extends BaseEntity
     private String treeName;
 
     /** 上级菜单ID字段 */
-    private Long parentMenuId;
+    private String parentMenuId;
 
     /** 上级菜单名称字段 */
     private String parentMenuName;
@@ -264,12 +267,22 @@ public class GenTable extends BaseEntity
         this.genPath = genPath;
     }
 
-    public GenTableColumn getPkColumn()
+    public String getTableAlias()
+    {
+        return tableAlias;
+    }
+
+    public void setTableAlias(String tableAlias)
+    {
+        this.tableAlias = tableAlias;
+    }
+
+    public GenColumn getPkColumn()
     {
         return pkColumn;
     }
 
-    public void setPkColumn(GenTableColumn pkColumn)
+    public void setPkColumn(GenColumn pkColumn)
     {
         this.pkColumn = pkColumn;
     }
@@ -284,12 +297,12 @@ public class GenTable extends BaseEntity
         this.subTable = subTable;
     }
 
-    public List<GenTableColumn> getColumns()
+    public List<GenColumn> getColumns()
     {
         return columns;
     }
 
-    public void setColumns(List<GenTableColumn> columns)
+    public void setColumns(List<GenColumn> columns)
     {
         this.columns = columns;
     }
@@ -334,12 +347,12 @@ public class GenTable extends BaseEntity
         this.treeName = treeName;
     }
 
-    public Long getParentMenuId()
+    public String getParentMenuId()
     {
         return parentMenuId;
     }
 
-    public void setParentMenuId(Long parentMenuId)
+    public void setParentMenuId(String parentMenuId)
     {
         this.parentMenuId = parentMenuId;
     }

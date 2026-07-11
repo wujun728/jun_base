@@ -103,6 +103,16 @@
           <el-switch v-model="footerVisible" class="drawer-switch" />
         </div>
 
+        <div class="drawer-item">
+          <span>页面圆角</span>
+          <el-switch v-model="roundedCorner" class="drawer-switch" />
+        </div>
+
+        <div class="drawer-item" v-show="roundedCorner">
+          <span>圆角值</span>
+          <el-slider v-model="roundedCornerValue" :min="2" :max="20" :step="2" show-input :marks="radiusMarks" style="width:160px;float:right;margin-top:4px" />
+        </div>
+
         <el-divider/>
 
         <el-button size="small" type="primary" plain icon="el-icon-document-add" @click="saveSetting">保存配置</el-button>
@@ -123,7 +133,8 @@ export default {
       theme: this.$store.state.settings.theme,
       sideTheme: this.$store.state.settings.sideTheme,
       navType: this.$store.state.settings.navType,
-      showSettings: false
+      showSettings: false,
+      radiusMarks: { 2: '2', 6: '6', 10: '10', 14: '14', 18: '18' }
     }
   },
   computed: {
@@ -215,6 +226,28 @@ export default {
           value: val
         })
       }
+    },
+    roundedCorner: {
+      get() {
+        return this.$store.state.settings.roundedCorner
+      },
+      set(val) {
+        this.$store.dispatch('settings/changeSetting', {
+          key: 'roundedCorner',
+          value: val
+        })
+      }
+    },
+    roundedCornerValue: {
+      get() {
+        return this.$store.state.settings.roundedCornerValue
+      },
+      set(val) {
+        this.$store.dispatch('settings/changeSetting', {
+          key: 'roundedCornerValue',
+          value: val
+        })
+      }
     }
   },
   watch: {
@@ -281,6 +314,8 @@ export default {
             "sidebarLogo":${this.sidebarLogo},
             "dynamicTitle":${this.dynamicTitle},
             "footerVisible":${this.footerVisible},
+            "roundedCorner":${this.roundedCorner},
+            "roundedCornerValue":${this.roundedCornerValue},
             "sideTheme":"${this.sideTheme}",
             "theme":"${this.theme}"
           }`

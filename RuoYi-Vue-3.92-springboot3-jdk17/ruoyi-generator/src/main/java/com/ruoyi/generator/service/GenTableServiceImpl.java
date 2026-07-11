@@ -10,6 +10,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -26,14 +28,16 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.constant.Constants;
-import com.ruoyi.common.constant.GenConstants;
 import com.ruoyi.common.core.text.CharsetKit;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.generator.constant.GenConstants;
+import com.ruoyi.generator.domain.GenColumn;
 import com.ruoyi.generator.domain.GenTable;
-import com.ruoyi.generator.domain.GenTableColumn;
-import com.ruoyi.generator.mapper.GenTableColumnMapper;
+import com.ruoyi.generator.domain.vo.GenTableVo;
+import com.ruoyi.generator.mapper.GenColumnMapper;
 import com.ruoyi.generator.mapper.GenTableMapper;
+import com.ruoyi.generator.service.IGenJoinService;
 import com.ruoyi.generator.util.GenUtils;
 import com.ruoyi.generator.util.VelocityInitializer;
 import com.ruoyi.generator.util.VelocityUtils;
@@ -52,7 +56,10 @@ public class GenTableServiceImpl implements IGenTableService
     private GenTableMapper genTableMapper;
 
     @Autowired
-    private GenTableColumnMapper genTableColumnMapper;
+    private GenColumnMapper genTableColumnMapper;
+
+    @Autowired
+    private IGenJoinService genJoinTableService;
 
     /**
      * 查询业务信息
@@ -101,7 +108,29 @@ public class GenTableServiceImpl implements IGenTableService
     @Override
     public List<GenTable> selectDbTableListByNames(String[] tableNames)
     {
-        return genTableMapper.selectDbTableListByNames(tableNames);
+        List<GenTable> genTables = genTableMapper.selectDbTableListByNames(tableNames);
+        genTables.forEach(i -> i.setTableAlias(generateTableAlias(i.getTableName())));
+        return genTables;
+    }
+
+    public static String generateTableAlias(String tableName)
+    {
+        if (StringUtils.isEmpty(tableName))
+        {
+            return "t";
+        }
+        Pattern pattern = Pattern.compile("([A-Z][a-z0-9]*)|([a-z0-9]+)(?=[A-Z])|([a-z0-9]+)(?=_)|([a-z0-9]+)$");
+        Matcher matcher = pattern.matcher(tableName);
+        StringBuilder alias = new StringBuilder();
+        while (matcher.find())
+        {
+            String word = matcher.group();
+            if (!word.isEmpty())
+            {
+                alias.append(word.charAt(0));
+            }
+        }
+        return alias.toString().toLowerCase();
     }
 
     /**
@@ -130,7 +159,7 @@ public class GenTableServiceImpl implements IGenTableService
         int row = genTableMapper.updateGenTable(genTable);
         if (row > 0)
         {
-            for (GenTableColumn genTableColumn : genTable.getColumns())
+            for (GenColumn genTableColumn : genTable.getColumns())
             {
                 genTableColumnMapper.updateGenTableColumn(genTableColumn);
             }
@@ -183,8 +212,8 @@ public class GenTableServiceImpl implements IGenTableService
                 if (row > 0)
                 {
                     // 保存列信息
-                    List<GenTableColumn> genTableColumns = genTableColumnMapper.selectDbTableColumnsByName(tableName);
-                    for (GenTableColumn column : genTableColumns)
+                    List<GenColumn> genTableColumns = genTableColumnMapper.selectDbTableColumnsByName(tableName);
+                    for (GenColumn column : genTableColumns)
                     {
                         GenUtils.initColumnField(column, table);
                         genTableColumnMapper.insertGenTableColumn(column);
@@ -208,21 +237,17 @@ public class GenTableServiceImpl implements IGenTableService
     public Map<String, String> previewCode(Long tableId)
     {
         Map<String, String> dataMap = new LinkedHashMap<>();
-        // 查询表信息
         GenTable table = genTableMapper.selectGenTableById(tableId);
-        // 设置主子表信息
         setSubTable(table);
-        // 设置主键列信息
         setPkColumn(table);
         VelocityInitializer.initVelocity();
+        GenTableVo genTableVo = genJoinTableService.selectGenJoinTableVoListByGenTable(table);
 
-        VelocityContext context = VelocityUtils.prepareContext(table);
+        VelocityContext context = VelocityUtils.prepareContext(genTableVo);
 
-        // 获取模板列表
-        List<String> templates = VelocityUtils.getTemplateList(table);
+        List<String> templates = VelocityUtils.getTemplateList(table.getTplCategory(), table.getTplWebType());
         for (String template : templates)
         {
-            // 渲染模板
             StringWriter sw = new StringWriter();
             Template tpl = Velocity.getTemplate(template, Constants.UTF8);
             tpl.merge(context, sw);
@@ -251,24 +276,19 @@ public class GenTableServiceImpl implements IGenTableService
     @Override
     public void generatorCode(String tableName)
     {
-        // 查询表信息
         GenTable table = genTableMapper.selectGenTableByName(tableName);
-        // 设置主子表信息
         setSubTable(table);
-        // 设置主键列信息
         setPkColumn(table);
 
         VelocityInitializer.initVelocity();
+        GenTableVo genTableVo = genJoinTableService.selectGenJoinTableVoListByGenTable(table);
+        VelocityContext context = VelocityUtils.prepareContext(genTableVo);
 
-        VelocityContext context = VelocityUtils.prepareContext(table);
-
-        // 获取模板列表
-        List<String> templates = VelocityUtils.getTemplateList(table);
+        List<String> templates = VelocityUtils.getTemplateList(table.getTplCategory(), table.getTplWebType());
         for (String template : templates)
         {
             if (!StringUtils.containsAny(template, "sql.vm", "api.js.vm", "api.ts.vm", "type.ts.vm", "index.ts.vm", "index.vue.vm", "index-tree.vue.vm", "view.vue.vm"))
             {
-                // 渲染模板
                 StringWriter sw = new StringWriter();
                 Template tpl = Velocity.getTemplate(template, Constants.UTF8);
                 tpl.merge(context, sw);
@@ -295,25 +315,24 @@ public class GenTableServiceImpl implements IGenTableService
     public void synchDb(String tableName)
     {
         GenTable table = genTableMapper.selectGenTableByName(tableName);
-        List<GenTableColumn> tableColumns = table.getColumns();
-        Map<String, GenTableColumn> tableColumnMap = tableColumns.stream().collect(Collectors.toMap(GenTableColumn::getColumnName, Function.identity()));
+        List<GenColumn> tableColumns = table.getColumns();
+        Map<String, GenColumn> tableColumnMap = tableColumns.stream().collect(Collectors.toMap(GenColumn::getColumnName, Function.identity()));
 
-        List<GenTableColumn> dbTableColumns = genTableColumnMapper.selectDbTableColumnsByName(tableName);
+        List<GenColumn> dbTableColumns = genTableColumnMapper.selectDbTableColumnsByName(tableName);
         if (StringUtils.isEmpty(dbTableColumns))
         {
             throw new ServiceException("同步数据失败，原表结构不存在");
         }
-        List<String> dbTableColumnNames = dbTableColumns.stream().map(GenTableColumn::getColumnName).collect(Collectors.toList());
+        List<String> dbTableColumnNames = dbTableColumns.stream().map(GenColumn::getColumnName).collect(Collectors.toList());
 
         dbTableColumns.forEach(column -> {
             GenUtils.initColumnField(column, table);
             if (tableColumnMap.containsKey(column.getColumnName()))
             {
-                GenTableColumn prevColumn = tableColumnMap.get(column.getColumnName());
+                GenColumn prevColumn = tableColumnMap.get(column.getColumnName());
                 column.setColumnId(prevColumn.getColumnId());
                 if (column.isList())
                 {
-                    // 如果是列表，继续保留查询方式/字典类型选项
                     column.setDictType(prevColumn.getDictType());
                     column.setQueryType(prevColumn.getQueryType());
                 }
@@ -321,7 +340,6 @@ public class GenTableServiceImpl implements IGenTableService
                         && (column.isInsert() || column.isEdit())
                         && ((column.isUsableColumn()) || (!column.isSuperColumn())))
                 {
-                    // 如果是(新增/修改&非主键/非忽略及父属性)，继续保留必填/显示类型选项
                     column.setIsRequired(prevColumn.getIsRequired());
                     column.setHtmlType(prevColumn.getHtmlType());
                 }
@@ -333,7 +351,7 @@ public class GenTableServiceImpl implements IGenTableService
             }
         });
 
-        List<GenTableColumn> delColumns = tableColumns.stream().filter(column -> !dbTableColumnNames.contains(column.getColumnName())).collect(Collectors.toList());
+        List<GenColumn> delColumns = tableColumns.stream().filter(column -> !dbTableColumnNames.contains(column.getColumnName())).collect(Collectors.toList());
         if (StringUtils.isNotEmpty(delColumns))
         {
             genTableColumnMapper.deleteGenTableColumns(delColumns);
@@ -369,27 +387,21 @@ public class GenTableServiceImpl implements IGenTableService
      */
     private void generatorCode(String tableName, ZipOutputStream zip, Map<String, StringBuffer> typeFiles)
     {
-        // 查询表信息
         GenTable table = genTableMapper.selectGenTableByName(tableName);
-        // 设置主子表信息
         setSubTable(table);
-        // 设置主键列信息
         setPkColumn(table);
 
         VelocityInitializer.initVelocity();
+        GenTableVo genTableVo = genJoinTableService.selectGenJoinTableVoListByGenTable(table);
+        VelocityContext context = VelocityUtils.prepareContext(genTableVo);
 
-        VelocityContext context = VelocityUtils.prepareContext(table);
-
-        // 获取模板列表
-        List<String> templates = VelocityUtils.getTemplateList(table);
+        List<String> templates = VelocityUtils.getTemplateList(table.getTplCategory(), table.getTplWebType());
         for (String template : templates)
         {
-            // 渲染模板
             StringWriter sw = new StringWriter();
             Template tpl = Velocity.getTemplate(template, Constants.UTF8);
             tpl.merge(context, sw);
             String fileName = VelocityUtils.getFileName(template, table);
-            // index-bak.ts 模版，追加内容
             if (fileName.contains("index-bak.ts"))
             {
                 if (!typeFiles.containsKey(fileName))
@@ -403,19 +415,11 @@ public class GenTableServiceImpl implements IGenTableService
             }
             else
             {
-                // 其他文件正常添加
                 writeToZip(zip, fileName, sw.toString());
             }
         }
     }
 
-    /**
-     * 将字符串内容写入ZIP输出流
-     * 
-     * @param zip ZIP输出流
-     * @param fileName ZIP条目名称（即文件名）
-     * @param content 要写入的内容
-     */
     private void writeToZip(ZipOutputStream zip, String fileName, String content)
     {
         try
@@ -431,11 +435,6 @@ public class GenTableServiceImpl implements IGenTableService
         }
     }
 
-    /**
-     * 修改保存参数校验
-     * 
-     * @param genTable 业务信息
-     */
     @Override
     public void validateEdit(GenTable genTable)
     {
@@ -469,14 +468,9 @@ public class GenTableServiceImpl implements IGenTableService
         }
     }
 
-    /**
-     * 设置主键列信息
-     * 
-     * @param table 业务表信息
-     */
     public void setPkColumn(GenTable table)
     {
-        for (GenTableColumn column : table.getColumns())
+        for (GenColumn column : table.getColumns())
         {
             if (column.isPk())
             {
@@ -490,7 +484,7 @@ public class GenTableServiceImpl implements IGenTableService
         }
         if (GenConstants.TPL_SUB.equals(table.getTplCategory()))
         {
-            for (GenTableColumn column : table.getSubTable().getColumns())
+            for (GenColumn column : table.getSubTable().getColumns())
             {
                 if (column.isPk())
                 {
@@ -505,11 +499,6 @@ public class GenTableServiceImpl implements IGenTableService
         }
     }
 
-    /**
-     * 设置主子表信息
-     * 
-     * @param table 业务表信息
-     */
     public void setSubTable(GenTable table)
     {
         String subTableName = table.getSubTableName();
@@ -519,11 +508,6 @@ public class GenTableServiceImpl implements IGenTableService
         }
     }
 
-    /**
-     * 设置代码生成其他选项值
-     * 
-     * @param genTable 设置后的生成对象
-     */
     public void setTableFromOptions(GenTable genTable)
     {
         JSONObject paramsObj = JSON.parseObject(genTable.getOptions());
@@ -532,7 +516,7 @@ public class GenTableServiceImpl implements IGenTableService
             String treeCode = paramsObj.getString(GenConstants.TREE_CODE);
             String treeParentCode = paramsObj.getString(GenConstants.TREE_PARENT_CODE);
             String treeName = paramsObj.getString(GenConstants.TREE_NAME);
-            Long parentMenuId = paramsObj.getLongValue(GenConstants.PARENT_MENU_ID);
+            String parentMenuId = paramsObj.getString(GenConstants.PARENT_MENU_ID);
             String parentMenuName = paramsObj.getString(GenConstants.PARENT_MENU_NAME);
             boolean isView = paramsObj.getBooleanValue(GenConstants.GEN_VIEW);
 
@@ -545,13 +529,6 @@ public class GenTableServiceImpl implements IGenTableService
         }
     }
 
-    /**
-     * 获取代码生成地址
-     * 
-     * @param table 业务表信息
-     * @param template 模板文件路径
-     * @return 生成地址
-     */
     public static String getGenPath(GenTable table, String template)
     {
         String genPath = table.getGenPath();

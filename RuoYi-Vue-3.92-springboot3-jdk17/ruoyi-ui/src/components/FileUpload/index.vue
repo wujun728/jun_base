@@ -12,6 +12,7 @@
       :on-success="handleUploadSuccess"
       :show-file-list="false"
       :headers="headers"
+      :accept="fileType.join(',')"
       class="upload-file-uploader"
       ref="fileUpload"
       v-if="!disabled"
@@ -21,8 +22,14 @@
       <!-- 上传提示 -->
       <div class="el-upload__tip" slot="tip" v-if="showTip">
         请上传
-        <template v-if="fileSize"> 大小不超过 <b style="color: #f56c6c">{{ fileSize }}MB</b> </template>
-        <template v-if="fileType"> 格式为 <b style="color: #f56c6c">{{ fileType.join("/") }}</b> </template>
+        <template v-if="fileSize">
+          大小不超过
+          <b style="color: #f56c6c">{{ fileSize }}MB</b>
+        </template>
+        <template v-if="fileType">
+          格式为
+          <b style="color: #f56c6c">{{ fileType.join("/") }}</b>
+        </template>
         的文件
       </div>
     </el-upload>
@@ -31,7 +38,7 @@
     <transition-group ref="uploadFileList" class="upload-file-list el-upload-list el-upload-list--text" name="el-fade-in-linear" tag="ul">
       <li :key="file.url" class="el-upload-list__item ele-upload-list__item-content" v-for="(file, index) in fileList">
         <el-link :href="`${baseUrl}${file.url}`" :underline="false" target="_blank">
-          <span class="el-icon-document"> {{ getFileName(file.name) }} </span>
+          <span class="el-icon-document">{{ getFileName(file.name) }}</span>
         </el-link>
         <div class="ele-upload-list__item-content-action">
           <el-link :underline="false" @click="handleDelete(index)" type="danger" v-if="!disabled">删除</el-link>
@@ -123,9 +130,9 @@ export default {
         if (val) {
           let temp = 1
           // 首先将值转为数组
-          const list = Array.isArray(val) ? val : this.value.split(',')
+          const list = Array.isArray(val) ? val : this.value.split(",");
           // 然后将数组转为对象数组
-          this.fileList = list.map(item => {
+          this.fileList = list.map((item) => {
             if (typeof item === "string") {
               item = { name: item, url: item }
             }
@@ -138,8 +145,8 @@ export default {
         }
       },
       deep: true,
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   computed: {
     // 是否显示提示

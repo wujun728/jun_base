@@ -2,5 +2,17 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-auth" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-pay" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-modules/ruoyi-module-flowable" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-modules/ruoyi-module-form" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-modules/ruoyi-module-message" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-modules/ruoyi-module-online" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-plugins/ruoyi-plugin-ehcache" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-plugins/ruoyi-plugin-minio" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-plugins/ruoyi-plugin-netty" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-plugins/ruoyi-plugin-rabbitmq" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-plugins/ruoyi-plugin-redis" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-plugins/ruoyi-plugin-websocket" vcs="Git" />
   </component>
 </project>

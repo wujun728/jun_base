@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ruoyi.web.demo.treetable.mapper.TreeTableMapper">
+
+    <sql id="Base_Column_List">
+        a.*,
+        (select count(*) from demo_tree_table s
+        WHERE s.parent_id=a.id) as
+        hasChildren
+    </sql>
+    <sql id="tableJoins">
+
+    </sql>
+    <select
+        id="selectByTreeId"
+        resultType="com.ruoyi.web.demo.treetable.entity.TreeTable">
+        select
+        <include refid="Base_Column_List"/>
+        from demo_tree_table a
+        <include refid="tableJoins"/>
+        where a.id = #{id,jdbcType=VARCHAR}
+    </select>
+
+    <select
+        id="selectTreeList"
+        resultType="com.ruoyi.web.demo.treetable.entity.TreeTable">
+        select
+        <include refid="Base_Column_List"/>
+        from demo_tree_table a
+        <include refid="tableJoins"/>
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
+
+    <!-- 更新子树 -->
+    <update id="updateSunTreeParentIds">
+        update demo_tree_table set ancestors= CONCAT(#{newParentIds},substring(ancestors, length(#{oldParentIds})+1,length(ancestors)+1))
+        where ancestors like concat(#{oldParentIds}, '%')
+    </update>
+
+    <!-- 删除子树 -->
+    <delete
+        id="deleteSunTree"
+        parameterType="java.lang.String">
+        delete from demo_tree_table
+        where ancestors like concat(#{parentIds}, '%')
+    </delete>
+
+</mapper>

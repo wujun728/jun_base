@@ -2,66 +2,31 @@
   <div>
     <el-tabs type="border-card">
       <el-tab-pane label="秒" v-if="shouldHide('second')">
-        <CrontabSecond
-          @update="updateCrontabValue"
-          :check="checkNumber"
-          :cron="crontabValueObj"
-          ref="cronsecond"
-        />
+        <CrontabSecond @update="updateCrontabValue" :check="checkNumber" :cron="crontabValueObj" ref="cronsecond" />
       </el-tab-pane>
 
       <el-tab-pane label="分钟" v-if="shouldHide('min')">
-        <CrontabMin
-          @update="updateCrontabValue"
-          :check="checkNumber"
-          :cron="crontabValueObj"
-          ref="cronmin"
-        />
+        <CrontabMin @update="updateCrontabValue" :check="checkNumber" :cron="crontabValueObj" ref="cronmin" />
       </el-tab-pane>
 
       <el-tab-pane label="小时" v-if="shouldHide('hour')">
-        <CrontabHour
-          @update="updateCrontabValue"
-          :check="checkNumber"
-          :cron="crontabValueObj"
-          ref="cronhour"
-        />
+        <CrontabHour @update="updateCrontabValue" :check="checkNumber" :cron="crontabValueObj" ref="cronhour" />
       </el-tab-pane>
 
       <el-tab-pane label="日" v-if="shouldHide('day')">
-        <CrontabDay
-          @update="updateCrontabValue"
-          :check="checkNumber"
-          :cron="crontabValueObj"
-          ref="cronday"
-        />
+        <CrontabDay @update="updateCrontabValue" :check="checkNumber" :cron="crontabValueObj" ref="cronday" />
       </el-tab-pane>
 
       <el-tab-pane label="月" v-if="shouldHide('month')">
-        <CrontabMonth
-          @update="updateCrontabValue"
-          :check="checkNumber"
-          :cron="crontabValueObj"
-          ref="cronmonth"
-        />
+        <CrontabMonth @update="updateCrontabValue" :check="checkNumber" :cron="crontabValueObj" ref="cronmonth" />
       </el-tab-pane>
 
       <el-tab-pane label="周" v-if="shouldHide('week')">
-        <CrontabWeek
-          @update="updateCrontabValue"
-          :check="checkNumber"
-          :cron="crontabValueObj"
-          ref="cronweek"
-        />
+        <CrontabWeek @update="updateCrontabValue" :check="checkNumber" :cron="crontabValueObj" ref="cronweek" />
       </el-tab-pane>
 
       <el-tab-pane label="年" v-if="shouldHide('year')">
-        <CrontabYear
-          @update="updateCrontabValue"
-          :check="checkNumber"
-          :cron="crontabValueObj"
-          ref="cronyear"
-        />
+        <CrontabYear @update="updateCrontabValue" :check="checkNumber" :cron="crontabValueObj" ref="cronyear" />
       </el-tab-pane>
     </el-tabs>
 
@@ -329,7 +294,7 @@ export default {
     },
   },
   computed: {
-    crontabValueString: function() {
+    crontabValueString: function () {
       let obj = this.crontabValueObj
       let str =
         obj.second +
@@ -363,7 +328,7 @@ export default {
       // 隐藏部分组件
     },
   },
-  mounted: function() {
+  mounted: function () {
     this.resolveExp()
   },
 }

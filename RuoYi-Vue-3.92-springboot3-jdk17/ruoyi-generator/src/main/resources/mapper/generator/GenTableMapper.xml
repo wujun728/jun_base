@@ -27,10 +27,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="updateBy"       column="update_by"         />
 		<result property="updateTime"     column="update_time"       />
 		<result property="remark"         column="remark"            />
-		<collection  property="columns"   javaType="java.util.List"  resultMap="GenTableColumnResult" />
+		<collection  property="columns"   javaType="java.util.List"  resultMap="GenColumnResult" />
 	</resultMap>
 	
-	<resultMap type="GenTableColumn" id="GenTableColumnResult">
+	<resultMap type="GenColumn" id="GenColumnResult">
         <id     property="columnId"       column="column_id"      />
         <result property="tableId"        column="table_id"       />
         <result property="columnName"     column="column_name"    />

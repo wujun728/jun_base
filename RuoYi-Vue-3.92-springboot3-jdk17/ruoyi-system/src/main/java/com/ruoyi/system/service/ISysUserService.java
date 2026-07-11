@@ -52,6 +52,17 @@ public interface ISysUserService
     public SysUser selectUserById(Long userId);
 
     /**
+     * 通过邮箱查询用户
+     */
+    public SysUser selectUserByEmail(String email);
+
+    /**
+     * 通过手机号查询用户
+     */
+    public SysUser selectUserByPhonenumber(String phonenumber);
+    public SysUser selectUserByPhone(String phone);
+
+    /**
      * 根据用户ID查询用户所属角色组
      * 
      * @param userName 用户名

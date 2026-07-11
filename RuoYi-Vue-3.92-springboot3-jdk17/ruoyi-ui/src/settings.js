@@ -62,5 +62,15 @@ module.exports = {
   /**
    * 底部版权文本内容
    */
-  footerContent: 'Copyright © 2018-2026 RuoYi. All Rights Reserved.'
+  footerContent: 'Copyright © 2018-2026 RuoYi. All Rights Reserved.',
+
+  /**
+   * 是否开启页面圆角
+   */
+  roundedCorner: false,
+
+  /**
+   * 圆角值(px)
+   */
+  roundedCornerValue: 6
 }

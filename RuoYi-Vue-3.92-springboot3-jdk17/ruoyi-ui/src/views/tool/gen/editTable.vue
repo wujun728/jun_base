@@ -111,6 +111,9 @@
       <el-tab-pane label="生成信息" name="genInfo">
         <gen-info-form ref="genInfo" :info="info" :tables="tables" :menus="menus"/>
       </el-tab-pane>
+      <el-tab-pane label="关联表" name="joinTable">
+        <join-table-form ref="joinTable" :tables="tables" :main-table="info" :joins-prop="joins"/>
+      </el-tab-pane>
     </el-tabs>
     <el-form label-width="100px">
       <el-form-item style="text-align: center;margin-left:-100px;margin-top:10px;">
@@ -127,13 +130,15 @@ import { optionselect as getDictOptionselect } from "@/api/system/dict/type"
 import { listMenu as getMenuTreeselect } from "@/api/system/menu"
 import basicInfoForm from "./basicInfoForm"
 import genInfoForm from "./genInfoForm"
+import JoinTableForm from "./joinTableForm"
 import Sortable from 'sortablejs'
 
 export default {
   name: "GenEdit",
   components: {
     basicInfoForm,
-    genInfoForm
+    genInfoForm,
+    JoinTableForm
   },
   data() {
     return {
@@ -150,7 +155,9 @@ export default {
       // 菜单信息
       menus: [],
       // 表详细信息
-      info: {}
+      info: {},
+      // 关联表配置数据
+      joins: []
     }
   },
   created() {
@@ -161,6 +168,7 @@ export default {
         this.columns = res.data.rows
         this.info = res.data.info
         this.tables = res.data.tables
+        this.joins = res.data.joinTablesMate || res.data.joins || []
       })
       /** 查询字典下拉列表 */
       getDictOptionselect().then(response => {
@@ -188,6 +196,11 @@ export default {
             treeName: genTable.treeName,
             treeParentCode: genTable.treeParentCode,
             parentMenuId: genTable.parentMenuId
+          }
+          // 关联表数据
+          if (this.$refs.joinTable) {
+            genTable.joinTablesMate = this.$refs.joinTable.getJoins()
+            genTable.joinTables = this.tables
           }
           updateGenTable(genTable).then(res => {
             this.$modal.msgSuccess(res.msg)

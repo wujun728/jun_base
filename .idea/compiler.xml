@@ -2,28 +2,120 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="ruoyi-common" />
-        <module name="ruoyi-framework" />
-        <module name="ruoyi-generator" />
+        <module name="ruoyi-pay-starter" />
         <module name="ruoyi-system" />
-        <module name="ruoyi-quartz" />
+        <module name="ruoyi-module-tenant" />
+        <module name="ruoyi-generator" />
+        <module name="ruoyi-module-oss" />
+        <module name="ruoyi-biz-demo" />
+        <module name="ruoyi-oa-biz-sdk" />
+        <module name="ruoyi-module-online" />
+        <module name="ruoyi-auth-starter" />
+        <module name="ruoyi-framework" />
+        <module name="ruoyi-plugin-redis" />
+        <module name="ruoyi-plugin-websocket" />
+        <module name="ruoyi-oa-sms" />
+        <module name="ruoyi-module-form" />
+        <module name="ruoyi-auth-common" />
+        <module name="ruoyi-common" />
+        <module name="ruoyi-plugin-ehcache" />
+        <module name="ruoyi-oa-tools" />
+        <module name="ruoyi-pay-common" />
         <module name="ruoyi-admin" />
+        <module name="ruoyi-tfa-email" />
+        <module name="ruoyi-oa-workflow-file" />
+        <module name="ruoyi-oauth-wx" />
+        <module name="ruoyi-module-datarule" />
+        <module name="ruoyi-module-flowable" />
+        <module name="ruoyi-plugin-alioss" />
+        <module name="ruoyi-plugin-minio" />
+        <module name="ruoyi-module-message" />
+        <module name="ruoyi-plugin-netty" />
+        <module name="ruoyi-tfa-phone" />
+        <module name="ruoyi-oa-message" />
+        <module name="ruoyi-oa-workflow" />
+        <module name="ruoyi-oauth-justauth" />
+        <module name="ruoyi-quartz" />
+        <module name="ruoyi-plugin-rabbitmq" />
+        <module name="ruoyi-oa-worksetting" />
+        <module name="ruoyi-oa-seal" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="ruoyi-module-gen" target="17" />
+      <module name="ruoyi-module-quartz" target="17" />
+      <module name="ruoyi-oa-biz-sdk" target="17" />
+      <module name="ruoyi-oa-message" target="17" />
+      <module name="ruoyi-oa-qixing" target="17" />
+      <module name="ruoyi-oa-seal" target="17" />
+      <module name="ruoyi-oa-sms" target="17" />
+      <module name="ruoyi-oa-tools" target="17" />
+      <module name="ruoyi-oa-workflow" target="17" />
+      <module name="ruoyi-oa-workflow-file" target="17" />
+      <module name="ruoyi-oa-worksetting" target="17" />
+      <module name="ruoyi-pay-alipay" target="17" />
+      <module name="ruoyi-pay-sqb" target="17" />
+      <module name="ruoyi-pay-wx" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="ruoyi" options="-parameters" />
       <module name="ruoyi-admin" options="-parameters" />
+      <module name="ruoyi-auth-common" options="-parameters" />
+      <module name="ruoyi-auth-starter" options="-parameters" />
+      <module name="ruoyi-biz-demo" options="-parameters" />
+      <module name="ruoyi-business" options="-parameters" />
       <module name="ruoyi-common" options="-parameters" />
       <module name="ruoyi-framework" options="-parameters" />
       <module name="ruoyi-generator" options="-parameters" />
+      <module name="ruoyi-module-datarule" options="-parameters" />
+      <module name="ruoyi-module-flowable" options="-parameters" />
+      <module name="ruoyi-module-form" options="-parameters" />
+      <module name="ruoyi-module-gen" options="-parameters" />
+      <module name="ruoyi-module-message" options="-parameters" />
+      <module name="ruoyi-module-online" options="-parameters" />
+      <module name="ruoyi-module-oss" options="-parameters" />
+      <module name="ruoyi-module-quartz" options="-parameters" />
+      <module name="ruoyi-module-tenant" options="-parameters" />
+      <module name="ruoyi-modules" options="-parameters" />
+      <module name="ruoyi-modules-starter" options="-parameters" />
+      <module name="ruoyi-oa-biz-sdk" options="-parameters" />
+      <module name="ruoyi-oa-message" options="-parameters" />
+      <module name="ruoyi-oa-qixing" options="-parameters" />
+      <module name="ruoyi-oa-seal" options="-parameters" />
+      <module name="ruoyi-oa-sms" options="-parameters" />
+      <module name="ruoyi-oa-tools" options="-parameters" />
+      <module name="ruoyi-oa-workflow" options="-parameters" />
+      <module name="ruoyi-oa-workflow-file" options="-parameters" />
+      <module name="ruoyi-oa-worksetting" options="-parameters" />
+      <module name="ruoyi-oauth-justauth" options="-parameters" />
+      <module name="ruoyi-oauth-wx" options="-parameters" />
+      <module name="ruoyi-pay-alipay" options="-parameters" />
+      <module name="ruoyi-pay-common" options="-parameters" />
+      <module name="ruoyi-pay-sqb" options="-parameters" />
+      <module name="ruoyi-pay-starter" options="-parameters" />
+      <module name="ruoyi-pay-wx" options="-parameters" />
+      <module name="ruoyi-plugin-alioss" options="-parameters" />
+      <module name="ruoyi-plugin-ehcache" options="-parameters" />
+      <module name="ruoyi-plugin-minio" options="-parameters" />
+      <module name="ruoyi-plugin-netty" options="-parameters" />
+      <module name="ruoyi-plugin-rabbitmq" options="-parameters" />
+      <module name="ruoyi-plugin-redis" options="-parameters" />
+      <module name="ruoyi-plugin-websocket" options="-parameters" />
+      <module name="ruoyi-plugins" options="-parameters" />
+      <module name="ruoyi-plugins-starter" options="-parameters" />
       <module name="ruoyi-quartz" options="-parameters" />
+      <module name="ruoyi-scene-auth" options="-parameters" />
+      <module name="ruoyi-scene-pay" options="-parameters" />
       <module name="ruoyi-system" options="-parameters" />
+      <module name="ruoyi-tfa-email" options="-parameters" />
+      <module name="ruoyi-tfa-phone" options="-parameters" />
     </option>
   </component>
 </project>

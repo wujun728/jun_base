@@ -14,6 +14,20 @@ import directive from './directive' // directive
 import plugins from './plugins' // plugins
 import { download } from '@/utils/request'
 
+// OA模块: 富文本编辑器
+import Tinymce from '@/components/tinymce/index.vue'
+// OA模块: 大文件上传
+import uploader from 'vue-simple-uploader'
+// OA模块: WebSocket长连接
+import * as socketApi from '@/utils/socket/wssocket'
+// OA模块: 弹窗拖拽指令
+import './utils/directive/dialogDrag'
+// OA模块: VForm表单设计器
+import vform from '@/components/vform/VFormDesigner.umd.min.js'
+import '@/components/vform/VFormDesigner.css'
+// OA模块: 流程引擎全局状态
+import modelerStore from '@/components/Process/common/global'
+
 import './assets/icons' // icon
 import './permission' // permission control
 import { getDicts } from "@/api/system/dict/data"
@@ -37,6 +51,7 @@ import DictTag from '@/components/DictTag'
 import DictData from '@/components/DictData'
 
 // 全局方法挂载
+Vue.component('tinymce', Tinymce)
 Vue.prototype.getDicts = getDicts
 Vue.prototype.getConfigKey = getConfigKey
 Vue.prototype.parseTime = parseTime
@@ -46,6 +61,12 @@ Vue.prototype.selectDictLabel = selectDictLabel
 Vue.prototype.selectDictLabels = selectDictLabels
 Vue.prototype.download = download
 Vue.prototype.handleTree = handleTree
+// OA模块: 流程引擎全局状态
+Vue.prototype.modelerStore = modelerStore
+// OA模块: WebSocket挂载
+Vue.prototype.$wsApi = socketApi
+// OA模块: 全局事件总线
+Vue.prototype.$eventBus = new Vue()
 
 // 全局组件挂载
 Vue.component('DictTag', DictTag)
@@ -58,6 +79,9 @@ Vue.component('ImagePreview', ImagePreview)
 
 Vue.use(directive)
 Vue.use(plugins)
+// OA模块: 注册VForm表单设计器和上传组件
+Vue.use(vform)
+Vue.use(uploader)
 DictData.install()
 
 /**

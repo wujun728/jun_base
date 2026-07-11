@@ -3,12 +3,100 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-admin/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-admin/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-biz-demo/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-biz-demo/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-oa-biz-sdk/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-oa-biz-sdk/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-oa-message/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-oa-message/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-oa-qixing/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-oa-qixing/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-oa-seal/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-oa-seal/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-oa-sms/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-oa-sms/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-oa-tools/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-oa-tools/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-oa-workflow-file/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-oa-workflow-file/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-oa-workflow/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-oa-workflow/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-oa-worksetting/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-oa-worksetting/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-auth/ruoyi-auth-common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-auth/ruoyi-auth-common/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-auth/ruoyi-auth-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-auth/ruoyi-auth-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-auth/ruoyi-oauth-justauth/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-auth/ruoyi-oauth-justauth/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-auth/ruoyi-oauth-wx/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-auth/ruoyi-oauth-wx/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-auth/ruoyi-tfa-email/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-auth/ruoyi-tfa-email/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-auth/ruoyi-tfa-phone/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-auth/ruoyi-tfa-phone/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-auth/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-auth/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-pay/ruoyi-pay-alipay/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-pay/ruoyi-pay-alipay/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-pay/ruoyi-pay-common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-pay/ruoyi-pay-common/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-pay/ruoyi-pay-sqb/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-pay/ruoyi-pay-sqb/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-pay/ruoyi-pay-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-pay/ruoyi-pay-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-pay/ruoyi-pay-wx/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-pay/ruoyi-pay-wx/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-pay/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/ruoyi-scene-pay/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-business/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-common/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-common/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-framework/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-framework/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-generator/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-generator/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-modules/ruoyi-module-datarule/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-modules/ruoyi-module-datarule/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-modules/ruoyi-module-flowable/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-modules/ruoyi-module-flowable/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-modules/ruoyi-module-form/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-modules/ruoyi-module-form/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-modules/ruoyi-module-gen/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-modules/ruoyi-module-gen/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-modules/ruoyi-module-message/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-modules/ruoyi-module-message/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-modules/ruoyi-module-online/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-modules/ruoyi-module-online/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-modules/ruoyi-module-oss/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-modules/ruoyi-module-oss/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-modules/ruoyi-module-quartz/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-modules/ruoyi-module-quartz/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-modules/ruoyi-module-tenant/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-modules/ruoyi-module-tenant/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-modules/ruoyi-modules-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-modules/ruoyi-modules-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-modules/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-modules/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-plugins/ruoyi-plugin-alioss/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-plugins/ruoyi-plugin-alioss/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-plugins/ruoyi-plugin-ehcache/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-plugins/ruoyi-plugin-ehcache/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-plugins/ruoyi-plugin-minio/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-plugins/ruoyi-plugin-minio/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-plugins/ruoyi-plugin-netty/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-plugins/ruoyi-plugin-netty/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-plugins/ruoyi-plugin-rabbitmq/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-plugins/ruoyi-plugin-rabbitmq/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-plugins/ruoyi-plugin-redis/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-plugins/ruoyi-plugin-redis/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-plugins/ruoyi-plugin-websocket/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-plugins/ruoyi-plugin-websocket/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-plugins/ruoyi-plugins-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-plugins/ruoyi-plugins-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-plugins/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-plugins/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-quartz/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-quartz/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/RuoYi-Vue-3.92-springboot3-jdk17/ruoyi-system/src/main/java" charset="UTF-8" />

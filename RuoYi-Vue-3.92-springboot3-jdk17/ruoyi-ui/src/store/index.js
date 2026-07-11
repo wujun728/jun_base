@@ -8,6 +8,9 @@ import tagsView from './modules/tagsView'
 import permission from './modules/permission'
 import settings from './modules/settings'
 import getters from './getters'
+// OA模块: UI状态 + WangEditor状态
+import uiStore from './modules/uiStore'
+import wangEditorStore from './modules/wangEditorStore'
 
 Vue.use(Vuex)
 
@@ -19,7 +22,10 @@ const store = new Vuex.Store({
     user,
     tagsView,
     permission,
-    settings
+    settings,
+    // OA模块
+    uiStore,
+    wangEditorStore
   },
   getters
 })

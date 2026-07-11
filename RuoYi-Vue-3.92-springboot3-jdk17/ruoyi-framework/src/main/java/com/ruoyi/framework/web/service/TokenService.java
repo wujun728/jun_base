@@ -83,6 +83,24 @@ public class TokenService
         return null;
     }
 
+    public LoginUser getLoginUser(String token)
+    {
+        if (StringUtils.isNotEmpty(token))
+        {
+            try
+            {
+                String userKey = getTokenKey(token);
+                LoginUser user = redisCache.getCacheObject(userKey);
+                return user;
+            }
+            catch (Exception e)
+            {
+                log.error("获取用户信息异常'{}'", e.getMessage());
+            }
+        }
+        return null;
+    }
+
     /**
      * 设置用户身份信息
      */

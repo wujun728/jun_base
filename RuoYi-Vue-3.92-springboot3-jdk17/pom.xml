@@ -170,6 +170,42 @@
                 <version>${ruoyi.version}</version>
             </dependency>
 
+            <!-- 插件聚合 -->
+            <dependency>
+                <groupId>com.ruoyi</groupId>
+                <artifactId>ruoyi-plugins-starter</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+            <!-- 模块聚合 -->
+            <dependency>
+                <groupId>com.ruoyi</groupId>
+                <artifactId>ruoyi-modules-starter</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+            <!-- 业务场景 -->
+            <dependency>
+                <groupId>com.ruoyi</groupId>
+                <artifactId>ruoyi-scene-auth</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ruoyi</groupId>
+                <artifactId>ruoyi-scene-pay</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ruoyi</groupId>
+                <artifactId>ruoyi-auth-starter</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ruoyi</groupId>
+                <artifactId>ruoyi-pay-starter</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -180,6 +216,9 @@
         <module>ruoyi-quartz</module>
         <module>ruoyi-generator</module>
         <module>ruoyi-common</module>
+        <module>ruoyi-plugins</module>
+        <module>ruoyi-business</module>
+        <module>ruoyi-modules</module>
     </modules>
     <packaging>pom</packaging>
 

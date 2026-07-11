@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" :class="{ 'rounded-corner': roundedCorner }" :style="roundedStyle">
     <router-view />
     <theme-picker />
   </div>
@@ -10,7 +10,22 @@ import ThemePicker from "@/components/ThemePicker"
 
 export default {
   name: "App",
-  components: { ThemePicker }
+  components: { ThemePicker },
+  computed: {
+    roundedCorner() {
+      return this.$store.state.settings.roundedCorner
+    },
+    roundedCornerValue() {
+      return this.$store.state.settings.roundedCornerValue || 6
+    },
+    roundedStyle() {
+      if (!this.roundedCorner) return {}
+      const v = this.roundedCornerValue + 'px'
+      return {
+        '--rounded-radius-base': v
+      }
+    }
+  }
 }
 </script>
 <style scoped>

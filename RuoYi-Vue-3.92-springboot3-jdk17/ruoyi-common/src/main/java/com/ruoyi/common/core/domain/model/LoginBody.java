@@ -27,6 +27,16 @@ public class LoginBody
      */
     private String uuid;
 
+    /**
+     * 手机号码
+     */
+    private String phonenumber;
+
+    /**
+     * 邮箱
+     */
+    private String email;
+
     public String getUsername()
     {
         return username;
@@ -65,5 +75,25 @@ public class LoginBody
     public void setUuid(String uuid)
     {
         this.uuid = uuid;
+    }
+
+    public String getPhonenumber()
+    {
+        return phonenumber;
+    }
+
+    public void setPhonenumber(String phonenumber)
+    {
+        this.phonenumber = phonenumber;
+    }
+
+    public String getEmail()
+    {
+        return email;
+    }
+
+    public void setEmail(String email)
+    {
+        this.email = email;
     }
 }
