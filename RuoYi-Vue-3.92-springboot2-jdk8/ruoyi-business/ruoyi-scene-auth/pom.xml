@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>ruoyi-business</artifactId>
+        <groupId>com.ruoyi</groupId>
+        <version>3.9.2</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>ruoyi-scene-auth</artifactId>
+
+    <properties>
+        <justauth.version>1.16.7</justauth.version>
+        <alipay.version>3.7.4.ALL</alipay.version>
+        <dysmsapi.version>3.1.1</dysmsapi.version>
+        <mail.version>2.0.1</mail.version>
+    </properties>
+
+    <description>
+        绗笁鏂硅璇佹ā鍧?
+    </description>
+    <dependencyManagement>
+        <dependencies>
+            <!-- 绗笁鏂硅璇侀€氱敤宸ュ叿-->
+            <dependency>
+                <groupId>com.ruoyi</groupId>
+                <artifactId>ruoyi-auth-common</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>jakarta.mail</groupId>
+                <artifactId>jakarta.mail-api</artifactId>
+                <version>${mail.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.sun.mail</groupId>
+                <artifactId>jakarta.mail</artifactId>
+                <version>${mail.version}</version>
+            </dependency>
+
+            <!-- justauth绗笁鏂硅璇佹鏋?-->
+            <dependency>
+                <groupId>me.zhyd.oauth</groupId>
+                <artifactId>JustAuth</artifactId>
+                <version>${justauth.version}</version>
+            </dependency>
+
+            <!-- 鏀粯瀹濆紑鍙戣€卻dk -->
+            <dependency>
+                <groupId>com.alipay.sdk</groupId>
+                <artifactId>alipay-sdk-java</artifactId>
+                <version>${alipay.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>commons-logging</artifactId>
+                        <groupId>commons-logging</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- 闃块噷浜戠煭淇¤璇?-->
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>dysmsapi20170525</artifactId>
+                <version>${dysmsapi.version}</version>
+            </dependency>
+
+            <!-- justauth閫氱敤璁よ瘉 -->
+            <dependency>
+                <groupId>com.ruoyi</groupId>
+                <artifactId>ruoyi-oauth-justauth</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+            <!-- 寰俊灏忕▼搴忓拰鍏紬鍙疯璇?-->
+            <dependency>
+                <groupId>com.ruoyi</groupId>
+                <artifactId>ruoyi-oauth-wx</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+            <!-- 鎵嬫満鍙疯璇?-->
+            <dependency>
+                <groupId>com.ruoyi</groupId>
+                <artifactId>ruoyi-tfa-phone</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+            <!-- 閭璁よ瘉 -->
+            <dependency>
+                <groupId>com.ruoyi</groupId>
+                <artifactId>ruoyi-tfa-email</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+            <!-- 绗笁鏂圭櫥褰曞惎鍔ㄥ櫒 -->
+            <dependency>
+                <groupId>com.ruoyi</groupId>
+                <artifactId>ruoyi-auth-starter</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+    <modules>
+        <module>ruoyi-auth-common</module>
+        <module>ruoyi-tfa-email</module>
+        <module>ruoyi-tfa-phone</module>
+        <module>ruoyi-oauth-wx</module>
+        <module>ruoyi-oauth-justauth</module>
+        <module>ruoyi-auth-starter</module>
+    </modules>
+    <packaging>pom</packaging>
+</project>

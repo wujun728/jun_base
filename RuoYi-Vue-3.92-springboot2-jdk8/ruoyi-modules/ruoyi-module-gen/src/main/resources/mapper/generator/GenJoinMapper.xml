@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.generator.mapper.GenJoinMapper">
+
+    <resultMap type="GenJoin" id="GenJoinTableResult">
+        <result property="tableId" column="table_id" />
+        <result property="leftTableId" column="left_table_id" />
+        <result property="rightTableId" column="right_table_id" />
+        <result property="leftTableAlias" column="left_table_alias" />
+        <result property="rightTableAlias" column="right_table_alias" />
+        <result property="leftTableFk" column="left_table_fk" />
+        <result property="rightTableFk" column="right_table_fk" />
+        <result property="joinType" column="join_type" />
+        <result property="orderNum" column="order_num"/>
+        <result property="newTableId" column="new_table_id"/>
+        <result property="joinColumns" column="join_columns" typeHandler="com.ruoyi.common.core.orm.GenericListTypeHandler$StringList"/>
+    </resultMap>
+
+    <sql id="selectGenJoinTableVo">
+        select table_id, left_table_id, right_table_id, left_table_alias, right_table_alias, left_table_fk, right_table_fk, join_type, join_columns, order_num, new_table_id from gen_join_table
+    </sql>
+
+    <select id="selectGenJoinTableList" parameterType="GenJoin" resultMap="GenJoinTableResult">
+        <include refid="selectGenJoinTableVo"/>
+        <where>
+            <if test="tableId != null"> and table_id = #{tableId}</if>
+            <if test="leftTableId != null"> and left_table_id = #{leftTableId}</if>
+            <if test="rightTableId != null"> and right_table_id = #{rightTableId}</if>
+            <if test="leftTableFk != null"> and left_table_fk = #{leftTableFk}</if>
+            <if test="rightTableFk != null"> and right_table_fk = #{rightTableFk}</if>
+            <if test="leftTableAlias != null  and leftTableAlias != ''"> and left_table_alias = #{leftTableAlias}</if>
+            <if test="rightTableAlias != null  and rightTableAlias != ''"> and right_table_alias = #{rightTableAlias}</if>
+            <if test="joinType != null  and joinType != ''"> and join_type = #{joinType}</if>
+            <if test="orderNum != null"> and order_num = #{orderNum}</if>
+            <if test="newTableId != null"> and new_table_id = #{newTableId}</if>
+        </where>
+        order by order_num asc
+    </select>
+
+    <insert id="insertGenJoinTable" parameterType="GenJoin">
+        insert into gen_join_table
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tableId != null">table_id,</if>
+            <if test="leftTableId != null">left_table_id,</if>
+            <if test="rightTableId != null">right_table_id,</if>
+            <if test="leftTableAlias != null and leftTableAlias != ''">left_table_alias,</if>
+            <if test="rightTableAlias != null and rightTableAlias != ''">right_table_alias,</if>
+            <if test="leftTableFk != null"> left_table_fk,</if>
+            <if test="rightTableFk != null"> right_table_fk,</if>
+            <if test="joinType != null">join_type,</if>
+            <if test="joinColumns != null">join_columns,</if>
+            <if test="orderNum != null">order_num,</if>
+            <if test="newTableId != null">new_table_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tableId != null">#{tableId},</if>
+            <if test="leftTableId != null">#{leftTableId},</if>
+            <if test="rightTableId != null">#{rightTableId},</if>
+            <if test="leftTableAlias != null and leftTableAlias != ''">#{leftTableAlias},</if>
+            <if test="rightTableAlias != null and rightTableAlias != ''">#{rightTableAlias},</if>
+            <if test="leftTableFk != null">#{leftTableFk},</if>
+            <if test="rightTableFk != null">#{rightTableFk},</if>
+            <if test="joinType != null">#{joinType},</if>
+            <if test="joinColumns != null">#{joinColumns,typeHandler=com.ruoyi.common.core.orm.GenericListTypeHandler$StringList},</if>
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="newTableId != null">#{newTableId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateGenJoinTable" parameterType="GenJoin">
+        update gen_join_table
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="leftTableId != null">left_table_id = #{leftTableId},</if>
+            <if test="rightTableId != null">right_table_id = #{rightTableId},</if>
+            <if test="leftTableAlias != null and leftTableAlias != ''">left_table_alias = #{leftTableAlias},</if>
+            <if test="rightTableAlias != null and rightTableAlias != ''">right_table_alias = #{rightTableAlias},</if>
+            <if test="leftTableFk != null"> left_table_fk = #{leftTableFk},</if>
+            <if test="rightTableFk != null"> right_table_fk = #{rightTableFk},</if>
+            <if test="joinType != null">join_type = #{joinType},</if>
+            <if test="joinColumns != null">join_columns = #{joinColumns,typeHandler=com.ruoyi.common.core.orm.GenericListTypeHandler$StringList},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="newTableId != null">new_table_id = #{newTableId},</if>
+        </trim>
+        where gen_join_table.table_id = #{tableId} and gen_join_table.right_table_id = #{rightTableId}
+    </update>
+
+    <delete id="deleteGenJoinTableByTableId">
+        delete from gen_join_table where table_id = #{tableId}
+    </delete>
+</mapper>

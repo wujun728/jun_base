@@ -1,0 +1,48 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="Administrator (generated)" id="1764223194862-25">
+        <createTable remarks="流程实例关联表单" tableName="sys_deploy_form">
+            <column autoIncrement="true" name="id" remarks="主键" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="form_id" remarks="表单主键" type="BIGINT"/>
+            <column name="deploy_id" remarks="流程实例主键" type="VARCHAR(50)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-29">
+        <createTable remarks="流程表达式" tableName="sys_expression">
+            <column autoIncrement="true" name="id" remarks="表单主键" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" remarks="表达式名称" type="VARCHAR(50)"/>
+            <column name="expression" remarks="表达式内容" type="VARCHAR(255)"/>
+            <column name="data_type" remarks="表达式类型" type="VARCHAR(255)"/>
+            <column name="create_time" remarks="创建时间" type="datetime(0)"/>
+            <column name="update_time" remarks="更新时间" type="datetime(0)"/>
+            <column name="create_by" remarks="创建人员" type="BIGINT"/>
+            <column name="update_by" remarks="更新人员" type="BIGINT"/>
+            <column defaultValueNumeric="0" name="status" remarks="状态" type="TINYINT(3)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-33">
+        <createTable remarks="流程监听" tableName="sys_listener">
+            <column autoIncrement="true" name="id" remarks="表单主键" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" remarks="名称" type="VARCHAR(128)"/>
+            <column name="type" remarks="监听类型" type="CHAR(2)"/>
+            <column name="event_type" remarks="事件类型" type="VARCHAR(32)"/>
+            <column name="value_type" remarks="值类型" type="VARCHAR(32)"/>
+            <column name="value" remarks="执行内容" type="VARCHAR(255)"/>
+            <column name="create_time" remarks="创建时间" type="datetime(0)"/>
+            <column name="update_time" remarks="更新时间" type="datetime(0)"/>
+            <column name="create_by" remarks="创建人员" type="BIGINT"/>
+            <column name="update_by" remarks="更新人员" type="BIGINT"/>
+            <column defaultValueNumeric="0" name="status" remarks="状态" type="TINYINT(3)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

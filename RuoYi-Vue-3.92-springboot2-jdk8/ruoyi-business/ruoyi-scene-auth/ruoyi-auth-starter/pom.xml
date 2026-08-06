@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>ruoyi-scene-auth</artifactId>
+        <groupId>com.ruoyi</groupId>
+        <version>3.9.2</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>ruoyi-auth-starter</artifactId>
+
+    <description>
+        第三方认证模块
+    </description>
+
+    <dependencies>
+            <!-- 第三方认证通用工具-->
+            <dependency>
+                <groupId>com.ruoyi</groupId>
+                <artifactId>ruoyi-auth-common</artifactId>
+            </dependency>
+
+            <!-- TODO: 适配后取消注释
+            <dependency><groupId>com.ruoyi</groupId><artifactId>ruoyi-oauth-justauth</artifactId></dependency>
+            <dependency><groupId>com.ruoyi</groupId><artifactId>ruoyi-oauth-wx</artifactId></dependency>
+            <dependency><groupId>com.ruoyi</groupId><artifactId>ruoyi-tfa-phone</artifactId></dependency>
+            <dependency><groupId>com.ruoyi</groupId><artifactId>ruoyi-tfa-email</artifactId></dependency>
+            -->
+    
+        <!-- springdoc -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+        </dependency>
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>    </dependencies>
+
+</project>

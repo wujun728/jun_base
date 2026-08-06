@@ -1,0 +1,19 @@
+{
+    "properties": [
+        {
+            "name": "minio.enable",
+            "type": "java.lang.Boolean",
+            "description": "是否开启minio"
+        },
+        {
+            "name": "minio.primary",
+            "type": "java.lang.String",
+            "description": "默认存储名称"
+        },
+        {
+            "name": "minio.buckets",
+            "type": "java.util.Map<java.lang.String, com.ruoyi.file.minio.config.MinioBucketProperties>",
+            "description": "储存桶"
+        }
+    ]
+}

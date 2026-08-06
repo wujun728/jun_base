@@ -1,0 +1,29 @@
+{
+    "properties": [
+        {
+            "name": "pay.alipay.enabled",
+            "type": "java.lang.Boolean",
+            "description": "是否启用支付宝支付"
+        },
+        {
+            "name": "pay.alipay.appId",
+            "type": "java.lang.String",
+            "description": "支付宝appid"
+        },
+        {
+            "name": "pay.alipay.appPrivateKey",
+            "type": "java.lang.String",
+            "description": "支付宝应用私钥，可以直接用字符串，也可以是基于classpath的文件路径"
+        },
+        {
+            "name": "pay.alipay.alipayPublicKey",
+            "type": "java.lang.String",
+            "description": "支付宝应用公钥，可以直接用字符串，也可以是基于classpath的文件路径"
+        },
+        {
+            "name": "pay.alipay.notifyUrl",
+            "type": "java.lang.String",
+            "description": "支付宝支付回调地址"
+        }
+    ]
+}

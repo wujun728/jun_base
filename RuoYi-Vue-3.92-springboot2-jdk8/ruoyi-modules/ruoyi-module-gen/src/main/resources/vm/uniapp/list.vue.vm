@@ -1,0 +1,140 @@
+<template>
+  <view>
+    <uni-table border stripe type="selection" emptyText="暂无更多数据" :loading="loading">
+      <uni-tr>
+#foreach($column in $columns)
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+        <uni-th>${comment}</uni-th>
+#end
+      </uni-tr>
+      <uni-tr  v-for="(item,index) in ${businessName}List" :key="index">
+#foreach($column in $columns)
+#set($javaField=$column.javaField)
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#if($column.pk)
+        <uni-td>{{ item.${javaField} }}</uni-td>
+#elseif($column.list && $column.htmlType == "time")
+        <uni-td>{{ item.${javaField} }}</uni-td>
+#elseif($column.list && $column.htmlType == "date")
+        <uni-td>{{ item.${javaField} }}</uni-td>
+#elseif($column.list && $column.htmlType == "datetime")
+        <uni-td>{{ item.${javaField} }}</uni-td>
+#elseif($column.list && $column.htmlType == "imageUpload")
+        <uni-td>
+          <u-album :urls="addBaseUrl(item.${javaField}.split(','))"></u-album>
+        </uni-td>
+#elseif($column.list && "" != $column.dictType)
+#if($column.htmlType == "checkbox")
+        <uni-td>
+          <dict-tag :options="${javaField}Options" :value="item.${javaField} ? item.${javaField}.split(',') : []"/>
+        </uni-td>
+#else
+        <uni-td>
+          <dict-tag :options="${javaField}Options" :value="item.${javaField}"/>
+        </uni-td>
+#end
+#elseif($column.list && "" != $javaField)
+        <uni-td>{{ item.${javaField} }}</uni-td>
+#end
+#end
+      </uni-tr>
+    </uni-table>
+  </view>
+</template>
+
+<script setup>
+import  config  from "@/config"
+import { list${BusinessName}} from "@/api/${moduleName}/${businessName}";
+import {onLoad,onShow} from "@dcloudio/uni-app";
+import { ref } from "vue";
+#if(${dicts} != '')
+import DictTag from "@/components/dict-tag/dict-tag; 
+import { getDicts } from "@/api/system/dict/data";
+#end
+
+#foreach($column in $columns)    
+#set($javaField=$column.javaField)
+#if($column.list && "" != $column.dictType)
+const ${javaField}Options = ref([])
+#end
+#end      
+// 总条数
+const total = ref(0);
+const loading = ref(true)
+// ${functionName}表格数据
+const ${businessName}List = ref([])
+// 查询参数
+const queryParams = ref({
+        pageNum: 1,
+        pageSize: 10,
+#foreach ($column in $columns)
+#if($column.query)
+        $column.javaField: null#if($foreach.count != $columns.size()),#end
+#end
+#end
+      })
+onLoad(()=>{
+#foreach($column in $columns)   
+#set($javaField=$column.javaField) 
+#if($column.list && "" != $column.dictType)  
+    getDicts(${column.dictType}).then(response => {
+      ${javaField}Options.value = response.data;
+    });
+#end
+#end
+})
+onShow(()=>{
+  getList();
+})
+
+function addBaseUrl(arr){
+	return arr.map(item => config.baseUrl+item)
+}
+/** 查询${functionName}列表 */
+function  getList() {
+#foreach ($column in $columns)
+#if(($column.htmlType == "datetime" || $column.htmlType == "date" || $column.htmlType == "time") && $column.queryType == "BETWEEN")
+  queryParams.value.params = {};
+#break
+#end
+#end
+#foreach ($column in $columns)
+#if(($column.htmlType == "datetime" || $column.htmlType == "date" || $column.htmlType == "time") && $column.queryType == "BETWEEN")
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+      if (null != daterange${AttrName}.value && '' != daterange${AttrName}.value) {
+        queryParams.value.params["begin${AttrName}"] = daterange${AttrName}.value[0];
+        queryParams.value.params["end${AttrName}"] = daterange${AttrName}.value[1];
+      }
+#end
+#end
+      list${BusinessName}(queryParams.value).then(response => {
+        ${businessName}List.value = response.rows;
+        total.value = response.total;
+        loading.value = false;
+      });
+}
+/** 查看详情按钮操作 */
+function handleShow(${pkColumn.javaField}) {
+  tab.navigateTo("/pages/${moduleName}/${businessName}/show?${pkColumn.javaField}=" + ${pkColumn.javaField})
+}
+/** 查看详情按钮操作 */
+function handleEdit(${pkColumn.javaField}) {
+  tab.navigateTo("/pages/${moduleName}/${businessName}/edit?${pkColumn.javaField}=" + ${pkColumn.javaField})
+}
+function handleAdd(${pkColumn.javaField}) {
+  tab.navigateTo("/pages/${moduleName}/${businessName}/edit")
+}
+function navigateTo(url){
+  tab.navigateTo(url)
+}
+</script>

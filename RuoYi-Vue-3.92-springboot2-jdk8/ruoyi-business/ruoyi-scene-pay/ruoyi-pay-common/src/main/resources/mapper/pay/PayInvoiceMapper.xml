@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pay.mapper.PayInvoiceMapper">
+    
+    <resultMap type="PayInvoice" id="PayInvoiceResult">
+        <result property="invoiceId"    column="invoice_id"    />
+        <result property="orderNumber"    column="order_number"    />
+        <result property="invoiceType"    column="invoice_type"    />
+        <result property="invoiceHeader"    column="invoice_header"    />
+        <result property="invoiceNumber"    column="invoice_number"    />
+        <result property="invoicePhone"    column="invoice_phone"    />
+        <result property="invoiceEmail"    column="invoice_email"    />
+        <result property="invoiceRemark"    column="invoice_remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectPayInvoiceVo">
+        select invoice_id, order_number, invoice_type, invoice_header, invoice_number, invoice_phone, invoice_email, invoice_remark, create_by, create_time, update_by, update_time, remark from pay_invoice
+    </sql>
+
+    <select id="selectPayInvoiceList" parameterType="PayInvoice" resultMap="PayInvoiceResult">
+        <include refid="selectPayInvoiceVo"/>
+        <where>  
+            <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
+            <if test="invoiceType != null  and invoiceType != ''"> and invoice_type = #{invoiceType}</if>
+            <if test="invoiceHeader != null  and invoiceHeader != ''"> and invoice_header = #{invoiceHeader}</if>
+            <if test="invoiceNumber != null  and invoiceNumber != ''"> and invoice_number = #{invoiceNumber}</if>
+            <if test="invoicePhone != null  and invoicePhone != ''"> and invoice_phone = #{invoicePhone}</if>
+            <if test="invoiceEmail != null  and invoiceEmail != ''"> and invoice_email = #{invoiceEmail}</if>
+            <if test="invoiceRemark != null  and invoiceRemark != ''"> and invoice_remark = #{invoiceRemark}</if>
+        </where>
+    </select>
+    
+    <select id="selectPayInvoiceByInvoiceId" parameterType="Long" resultMap="PayInvoiceResult">
+        <include refid="selectPayInvoiceVo"/>
+        where pay_invoice.invoice_id = #{invoiceId}
+    </select>
+        
+    <insert id="insertPayInvoice" parameterType="PayInvoice">
+        insert into pay_invoice
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="invoiceId != null">invoice_id,</if>
+            <if test="orderNumber != null">order_number,</if>
+            <if test="invoiceType != null">invoice_type,</if>
+            <if test="invoiceHeader != null">invoice_header,</if>
+            <if test="invoiceNumber != null">invoice_number,</if>
+            <if test="invoicePhone != null">invoice_phone,</if>
+            <if test="invoiceEmail != null">invoice_email,</if>
+            <if test="invoiceRemark != null">invoice_remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="invoiceId != null">#{invoiceId},</if>
+            <if test="orderNumber != null">#{orderNumber},</if>
+            <if test="invoiceType != null">#{invoiceType},</if>
+            <if test="invoiceHeader != null">#{invoiceHeader},</if>
+            <if test="invoiceNumber != null">#{invoiceNumber},</if>
+            <if test="invoicePhone != null">#{invoicePhone},</if>
+            <if test="invoiceEmail != null">#{invoiceEmail},</if>
+            <if test="invoiceRemark != null">#{invoiceRemark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePayInvoice" parameterType="PayInvoice">
+        update pay_invoice
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderNumber != null">order_number = #{orderNumber},</if>
+            <if test="invoiceType != null">invoice_type = #{invoiceType},</if>
+            <if test="invoiceHeader != null">invoice_header = #{invoiceHeader},</if>
+            <if test="invoiceNumber != null">invoice_number = #{invoiceNumber},</if>
+            <if test="invoicePhone != null">invoice_phone = #{invoicePhone},</if>
+            <if test="invoiceEmail != null">invoice_email = #{invoiceEmail},</if>
+            <if test="invoiceRemark != null">invoice_remark = #{invoiceRemark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where pay_invoice.invoice_id = #{invoiceId}
+    </update>
+
+    <delete id="deletePayInvoiceByInvoiceId" parameterType="Long">
+        delete from pay_invoice where invoice_id = #{invoiceId}
+    </delete>
+
+    <delete id="deletePayInvoiceByInvoiceIds" parameterType="String">
+        delete from pay_invoice where invoice_id in 
+        <foreach item="invoiceId" collection="array" open="(" separator="," close=")">
+            #{invoiceId}
+        </foreach>
+    </delete>
+</mapper>

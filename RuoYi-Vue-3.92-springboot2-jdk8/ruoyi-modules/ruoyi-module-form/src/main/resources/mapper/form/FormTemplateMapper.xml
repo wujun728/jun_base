@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.form.mapper.FormTemplateMapper">
+    
+    <resultMap type="FormTemplate" id="FormTemplateResult">
+        <result property="formId" column="form_id" />
+        <result property="formName" column="form_name" />
+        <result property="formSchema" column="form_schema" />
+        <result property="formVersion" column="form_version" />
+        <result property="formStatus" column="form_status" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateBy" column="update_by" />
+        <result property="updateTime" column="update_time" />
+        <result property="remark" column="remark" />
+        <result property="delFlag" column="del_flag" />
+    </resultMap>
+
+    <sql id="selectFormTemplateVo">
+        select 
+            ft.form_id,
+            ft.form_name,
+            ft.form_schema,
+            ft.form_version,
+            ft.form_status,
+            ft.create_by,
+            ft.create_time,
+            ft.update_by,
+            ft.update_time,
+            ft.remark,
+            ft.del_flag
+        from form_template ft
+        left join sys_user su on su.user_name = ft.create_by
+    </sql>
+
+    <select id="selectFormTemplateList" parameterType="FormTemplate" resultMap="FormTemplateResult">
+        <include refid="selectFormTemplateVo"/>
+        <where>
+            <if test="formName != null  and formName != ''"> and ft.form_name like concat('%', #{formName}, '%')</if>
+            <if test="formSchema != null  and formSchema != ''"> and ft.form_schema = #{formSchema}</if>
+            <if test="formVersion != null  and formVersion != ''"> and ft.form_version = #{formVersion}</if>
+            <if test="formStatus != null  and formStatus != ''"> and ft.form_status = #{formStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectFormTemplateByFormId" parameterType="Long" resultMap="FormTemplateResult">
+        <include refid="selectFormTemplateVo"/>
+        where ft.form_id = #{formId}
+    </select>
+        
+    <insert id="insertFormTemplate" parameterType="FormTemplate" useGeneratedKeys="true" keyProperty="formId">
+        insert into form_template
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="formName != null and formName != ''">form_name,</if>
+            <if test="formSchema != null and formSchema != ''">form_schema,</if>
+            <if test="formVersion != null and formVersion != ''">form_version,</if>
+            <if test="formStatus != null and formStatus != ''">form_status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="delFlag != null">del_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="formName != null and formName != ''">#{formName},</if>
+            <if test="formSchema != null and formSchema != ''">#{formSchema},</if>
+            <if test="formVersion != null and formVersion != ''">#{formVersion},</if>
+            <if test="formStatus != null and formStatus != ''">#{formStatus},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFormTemplate" parameterType="FormTemplate">
+        update form_template
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="formName != null and formName != ''">form_name = #{formName},</if>
+            <if test="formSchema != null and formSchema != ''">form_schema = #{formSchema},</if>
+            <if test="formVersion != null and formVersion != ''">form_version = #{formVersion},</if>
+            <if test="formStatus != null and formStatus != ''">form_status = #{formStatus},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+        </trim>
+        where form_template.form_id = #{formId}
+    </update>
+
+    <delete id="deleteFormTemplateByFormId" parameterType="Long">
+        delete from form_template where form_id = #{formId}
+    </delete>
+
+    <delete id="deleteFormTemplateByFormIds" parameterType="String">
+        delete from form_template where form_id in 
+        <foreach item="formId" collection="array" open="(" separator="," close=")">
+            #{formId}
+        </foreach>
+    </delete>
+</mapper>

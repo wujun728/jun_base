@@ -1,0 +1,85 @@
+<template>
+  <view>
+    <uni-card :is-shadow="false" is-full>
+#foreach($column in $columns)
+#set($javaField=$column.javaField)
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#if($column.pk)
+      <uni-section title="${comment}" :sub-title="${businessName}.${javaField}" type="line"></uni-section>
+#elseif($column.list && $column.htmlType == "time")
+      <uni-section title="${comment}" :sub-title="${businessName}.${javaField}" type="line"></uni-section>
+#elseif($column.list && $column.htmlType == "date")
+      <uni-section title="${comment}" :sub-title="${businessName}.${javaField}" type="line"></uni-section>
+#elseif($column.list && $column.htmlType == "datetime")
+      <uni-section title="${comment}" :sub-title="${businessName}.${javaField}" type="line"></uni-section>
+#elseif($column.list && $column.htmlType == "imageUpload")
+      <uni-section title="${comment}" type="line">
+        <u-album :urls="addBaseUrl(${businessName}.${javaField}.split(','))"></u-album>
+      </uni-section>
+#elseif($column.list && "" != $column.dictType)
+#if($column.htmlType == "checkbox")
+      <dict-tag :options="dict.type.${column.dictType}" :value="${businessName}.${javaField} ? ${businessName}.${javaField}.split(',') : []"/>
+#else
+      <dict-tag :options="dict.type.${column.dictType}" :value="${businessName}.${javaField}"/>
+#end
+#elseif($column.list && "" != $javaField)
+      <uni-section title="${comment}" :sub-title="${businessName}.${javaField}" type="line"></uni-section>
+#end
+#end
+    </uni-card>
+  </view>
+</template>
+
+<script setup>
+import  config  from "@/config"
+import { get${BusinessName} } from "@/api/${moduleName}/${businessName}";
+import {onLoad,onShow} from "@dcloudio/uni-app";
+import { ref } from "vue";
+#if(${dicts} != '')
+import DictTag from "@/components/dict-tag/dict-tag; 
+import { getDicts } from "@/api/system/dict/data";
+#end
+
+#foreach($column in $columns)    
+#set($javaField=$column.javaField)
+#if("" != $column.dictType)
+const ${javaField}Options = ref([])
+#end
+#end
+// 表单参数
+const ${businessName} = ref({
+#foreach ($column in $columns)
+#if($column.htmlType == "checkbox")
+  $column.javaField: []#if($foreach.count != $columns.size()),#end
+#elseif($column.htmlType == "imageUpload")
+  $column.javaField: ""#if($foreach.count != $columns.size()),#end
+#else
+  $column.javaField: null#if($foreach.count != $columns.size()),#end
+#end
+#end
+})
+
+onLoad(() => {
+#foreach($column in $columns)   
+#set($javaField=$column.javaField) 
+#if($column.list && "" != $column.dictType)  
+  getDicts(${column.dictType}).then(response => {
+    ${javaField}Options.value = response.data;
+  });
+#end
+#end  
+})
+onShow(params => {
+  get${BusinessName}(params.${pkColumn.javaField}).then(res=>{
+    ${businessName}.value = res.data
+  })
+})
+function addBaseUrl(arr){
+  return arr.map(item => config.baseUrl+item)
+}
+</script>

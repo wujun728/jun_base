@@ -1,0 +1,19 @@
+{
+    "properties": [
+        {
+            "name": "tfa.phone.dysms.access-key-id",
+            "type": "java.lang.String",
+            "description": "阿里云短信 AccessKey ID"
+        },
+        {
+            "name": "tfa.phone.dysms.access-key-secret",
+            "type": "java.lang.String",
+            "description": "阿里云短信 AccessKey Secret"
+        },
+        {
+            "name": "tfa.phone.dysms.template",
+            "type": "java.util.Map<java.lang.String, com.geek.tfa.phone.domain.DySmsTemplate>",
+            "description": "短信模板"
+        }
+    ]
+}

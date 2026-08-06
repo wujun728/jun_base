@@ -1,0 +1,56 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="Administrator (generated)" id="1764223194862-6">
+        <createTable remarks="消息表" tableName="message_system">
+            <column autoIncrement="true" name="message_id" remarks="主键" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="message_title" remarks="标题" type="VARCHAR(64)"/>
+            <column name="create_by" remarks="创建者" type="VARCHAR(64)"/>
+            <column name="create_time" remarks="创建时间" type="datetime(0)"/>
+            <column name="send_mode" remarks="发送方式(0平台 1手机号 2 邮箱)" type="VARCHAR(100)"/>
+            <column name="code" remarks="号码" type="VARCHAR(100)"/>
+            <column name="message_content" remarks="消息内容" type="TEXT"/>
+            <column name="message_recipient" remarks="接收人" type="VARCHAR(100)"/>
+            <column name="message_status" remarks="消息状态(0未读 1已读)" type="VARCHAR(64)"/>
+            <column name="message_type" remarks="消息类型" type="VARCHAR(64)"/>
+            <column name="update_by" remarks="更新者" type="VARCHAR(64)"/>
+            <column name="update_time" remarks="更新时间" type="datetime(0)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(500)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-7">
+        <createTable remarks="模版表" tableName="message_template">
+            <column autoIncrement="true" name="template_id" remarks="主键" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="template_name" remarks="模版名称" type="VARCHAR(100)"/>
+            <column name="template_code" remarks="模版CODE" type="VARCHAR(64)"/>
+            <column name="template_type" remarks="模版类型" type="VARCHAR(64)"/>
+            <column name="template_content" remarks="模版内容" type="TEXT"/>
+            <column name="template_variable" remarks="变量属性" type="TEXT"/>
+            <column name="create_by" remarks="创建者" type="VARCHAR(64)"/>
+            <column name="create_time" remarks="创建时间" type="datetime(0)"/>
+            <column name="update_by" remarks="更新者" type="VARCHAR(64)"/>
+            <column name="update_time" remarks="更新时间" type="datetime(0)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(500)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-8">
+        <createTable remarks="变量表" tableName="message_variable">
+            <column autoIncrement="true" name="variable_id" remarks="主键" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="variable_name" remarks="变量名称" type="VARCHAR(100)"/>
+            <column name="variable_type" remarks="变量类型" type="VARCHAR(64)"/>
+            <column name="variable_content" remarks="变量内容" type="VARCHAR(100)"/>
+            <column name="create_by" remarks="创建者" type="VARCHAR(64)"/>
+            <column name="create_time" remarks="创建时间" type="datetime(0)"/>
+            <column name="update_by" remarks="更新者" type="VARCHAR(64)"/>
+            <column name="update_time" remarks="更新时间" type="datetime(0)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(500)"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

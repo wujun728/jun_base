@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.form.mapper.FormDataMapper">
+    
+    <resultMap type="FormData" id="FormDataResult">
+        <result property="dataId" column="data_id" />
+        <result property="formId" column="form_id" />
+        <result property="formVersion" column="form_version" />
+        <result property="dataContent" column="data_content" />
+        <result property="formSchema" column="form_schema" />
+        <result property="status" column="status" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateBy" column="update_by" />
+        <result property="updateTime" column="update_time" />
+        <result property="remark" column="remark" />
+        <result property="delFlag" column="del_flag" />
+        <result property="formName" column="form_name" />
+    </resultMap>
+
+    <sql id="selectFormDataVo">
+        select 
+            fd.data_id,
+            fd.form_id,
+            fd.form_version,
+            fd.data_content,
+            fd.status,
+            fd.create_by,
+            fd.create_time,
+            fd.update_by,
+            fd.update_time,
+            fd.remark,
+            fd.del_flag,
+            ft.form_name
+        from form_data fd
+        left join form_template ft on ft.form_id = fd.form_id
+        left join sys_user su on su.user_name = fd.create_by
+    </sql>
+
+    <select id="selectFormDataList" parameterType="FormData" resultMap="FormDataResult">
+        <include refid="selectFormDataVo"/>
+        <where>
+            <if test="formId != null "> and fd.form_id = #{formId}</if>
+            <if test="formVersion != null  and formVersion != ''"> and fd.form_version = #{formVersion}</if>
+            <if test="dataContent != null  and dataContent != ''"> and fd.data_content = #{dataContent}</if>
+            <if test="status != null  and status != ''"> and fd.status = #{status}</if>
+            <if test="formName != null  and formName != ''"> and ft.form_name like concat('%', #{formName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectFormDataByDataId" parameterType="Long" resultMap="FormDataResult">
+        select 
+            fd.data_id,
+            fd.form_id,
+            fd.form_version,
+            fd.data_content,
+            fd.status,
+            fd.create_by,
+            fd.create_time,
+            fd.update_by,
+            fd.update_time,
+            fd.remark,
+            fd.del_flag,
+            ft.form_name,
+            ft.form_schema
+        from form_data fd
+        left join form_template ft on ft.form_id = fd.form_id
+        left join sys_user su on su.user_name = fd.create_by
+        where fd.data_id = #{dataId}
+    </select>
+        
+    <insert id="insertFormData" parameterType="FormData" useGeneratedKeys="true" keyProperty="dataId">
+        insert into form_data
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="formId != null">form_id,</if>
+            <if test="formVersion != null and formVersion != ''">form_version,</if>
+            <if test="dataContent != null and dataContent != ''">data_content,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="delFlag != null">del_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="formId != null">#{formId},</if>
+            <if test="formVersion != null and formVersion != ''">#{formVersion},</if>
+            <if test="dataContent != null and dataContent != ''">#{dataContent},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFormData" parameterType="FormData">
+        update form_data
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="formId != null">form_id = #{formId},</if>
+            <if test="formVersion != null and formVersion != ''">form_version = #{formVersion},</if>
+            <if test="dataContent != null and dataContent != ''">data_content = #{dataContent},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+        </trim>
+        where form_data.data_id = #{dataId}
+    </update>
+
+    <delete id="deleteFormDataByDataId" parameterType="Long">
+        delete from form_data where data_id = #{dataId}
+    </delete>
+
+    <delete id="deleteFormDataByDataIds" parameterType="String">
+        delete from form_data where data_id in 
+        <foreach item="dataId" collection="array" open="(" separator="," close=")">
+            #{dataId}
+        </foreach>
+    </delete>
+</mapper>

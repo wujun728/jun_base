@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.auth.common.mapper.OauthUserMapper">
+
+    <resultMap type="OauthUser" id="OauthUserResult">
+        <result property="id" column="id" />
+        <result property="uuid" column="uuid" />
+        <result property="userId" column="user_id" />
+        <result property="source" column="source" />
+        <result property="accessToken" column="access_token" />
+        <result property="expireIn" column="expire_in" />
+        <result property="refreshToken" column="refresh_token" />
+        <result property="openId" column="open_id" />
+        <result property="uid" column="uid" />
+        <result property="accessCode" column="access_code" />
+        <result property="unionId" column="union_id" />
+        <result property="scope" column="scope" />
+        <result property="tokenType" column="token_type" />
+        <result property="idToken" column="id_token" />
+        <result property="macAlgorithm" column="mac_algorithm" />
+        <result property="macKey" column="mac_key" />
+        <result property="code" column="code" />
+        <result property="oauthToken" column="oauth_token" />
+        <result property="oauthTokenSecret" column="oauth_token_secret" />
+        <result property="userName" column="user_name" />
+        <result property="deptName" column="dept_name" />
+    </resultMap>
+
+    <sql id="selectOauthUserVo">
+        select id, uuid, source, access_token, expire_in, refresh_token, open_id, uid, access_code, union_id, scope, token_type, id_token, mac_algorithm, mac_key, code, oauth_token, oauth_token_secret, sys_user.user_name, sys_dept.dept_name from oauth_user
+        left join sys_user on oauth_user.user_id = sys_user.user_id
+        left join sys_dept on sys_user.dept_id = sys_dept.dept_id
+    </sql>
+
+    <select id="checkUserNameUnique" parameterType="String" resultType="int">
+		select count(1) from sys_user where user_name = #{userName} and del_flag = '0' limit 1
+    </select>
+
+    <select id="checkPhoneUnique" parameterType="String" resultType="int">
+		select count(1) from sys_user where phonenumber = #{phonenumber} and del_flag = '0' limit 1
+    </select>
+
+    <select id="checkEmailUnique" parameterType="String" resultType="int">
+		select count(1) from sys_user where email = #{email} and del_flag = '0' limit 1
+    </select>
+
+    <select id="checkAuthUser" parameterType="OauthUser" resultType="int">
+		select count(1) from oauth_user where user_id=#{userId} and source=#{source} limit 1
+    </select>
+
+    <select id="selectOauthUserList" parameterType="OauthUser" resultMap="OauthUserResult">
+        <include refid="selectOauthUserVo"/>
+        <where>
+            <if test="uuid != null  and uuid != ''"> and uuid = #{uuid}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="source != null  and source != ''"> and source = #{source}</if>
+            <if test="accessToken != null  and accessToken != ''"> and access_token = #{accessToken}</if>
+            <if test="expireIn != null "> and expire_in = #{expireIn}</if>
+            <if test="refreshToken != null  and refreshToken != ''"> and refresh_token = #{refreshToken}</if>
+            <if test="openId != null  and openId != ''"> and open_id = #{openId}</if>
+            <if test="uid != null  and uid != ''"> and uid = #{uid}</if>
+            <if test="accessCode != null  and accessCode != ''"> and access_code = #{accessCode}</if>
+            <if test="unionId != null  and unionId != ''"> and union_id = #{unionId}</if>
+            <if test="scope != null  and scope != ''"> and scope = #{scope}</if>
+            <if test="tokenType != null  and tokenType != ''"> and token_type = #{tokenType}</if>
+            <if test="idToken != null  and idToken != ''"> and id_token = #{idToken}</if>
+            <if test="macAlgorithm != null  and macAlgorithm != ''"> and mac_algorithm = #{macAlgorithm}</if>
+            <if test="macKey != null  and macKey != ''"> and mac_key = #{macKey}</if>
+            <if test="code != null  and code != ''"> and code = #{code}</if>
+            <if test="oauthToken != null  and oauthToken != ''"> and oauth_token = #{oauthToken}</if>
+            <if test="oauthTokenSecret != null  and oauthTokenSecret != ''"> and oauth_token_secret = #{oauthTokenSecret}</if>
+        </where>
+    </select>
+
+    <select id="selectOauthUserById" parameterType="Long" resultMap="OauthUserResult">
+        <include refid="selectOauthUserVo"/>
+        where oauth_user.id = #{id}
+    </select>
+
+    <select id="selectOauthUserByUserId" parameterType="Long" resultMap="OauthUserResult">
+        <include refid="selectOauthUserVo"/>
+        where oauth_user.user_id = #{user_id}
+    </select>
+
+    <select id="selectOauthUserByUUID" parameterType="String" resultMap="OauthUserResult">
+        <include refid="selectOauthUserVo"/>
+        where oauth_user.uuid = #{uuid}
+    </select>
+
+    <insert id="insertOauthUser" parameterType="OauthUser">
+        insert into oauth_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="uuid != null and uuid != ''">uuid,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="source != null and source != ''">source,</if>
+            <if test="accessToken != null and accessToken != ''">access_token,</if>
+            <if test="expireIn != null">expire_in,</if>
+            <if test="refreshToken != null">refresh_token,</if>
+            <if test="openId != null">open_id,</if>
+            <if test="uid != null">uid,</if>
+            <if test="accessCode != null">access_code,</if>
+            <if test="unionId != null">union_id,</if>
+            <if test="scope != null">scope,</if>
+            <if test="tokenType != null">token_type,</if>
+            <if test="idToken != null">id_token,</if>
+            <if test="macAlgorithm != null">mac_algorithm,</if>
+            <if test="macKey != null">mac_key,</if>
+            <if test="code != null">code,</if>
+            <if test="oauthToken != null">oauth_token,</if>
+            <if test="oauthTokenSecret != null">oauth_token_secret,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="uuid != null and uuid != ''">#{uuid},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="source != null and source != ''">#{source},</if>
+            <if test="accessToken != null and accessToken != ''">#{accessToken},</if>
+            <if test="expireIn != null">#{expireIn},</if>
+            <if test="refreshToken != null">#{refreshToken},</if>
+            <if test="openId != null">#{openId},</if>
+            <if test="uid != null">#{uid},</if>
+            <if test="accessCode != null">#{accessCode},</if>
+            <if test="unionId != null">#{unionId},</if>
+            <if test="scope != null">#{scope},</if>
+            <if test="tokenType != null">#{tokenType},</if>
+            <if test="idToken != null">#{idToken},</if>
+            <if test="macAlgorithm != null">#{macAlgorithm},</if>
+            <if test="macKey != null">#{macKey},</if>
+            <if test="code != null">#{code},</if>
+            <if test="oauthToken != null">#{oauthToken},</if>
+            <if test="oauthTokenSecret != null">#{oauthTokenSecret},</if>
+        </trim>
+    </insert>
+
+    <update id="updateOauthUser" parameterType="OauthUser">
+        update oauth_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="uuid != null and uuid != ''">uuid = #{uuid},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="source != null and source != ''">source = #{source},</if>
+            <if test="accessToken != null and accessToken != ''">access_token = #{accessToken},</if>
+            <if test="expireIn != null">expire_in = #{expireIn},</if>
+            <if test="refreshToken != null">refresh_token = #{refreshToken},</if>
+            <if test="openId != null">open_id = #{openId},</if>
+            <if test="uid != null">uid = #{uid},</if>
+            <if test="accessCode != null">access_code = #{accessCode},</if>
+            <if test="unionId != null">union_id = #{unionId},</if>
+            <if test="scope != null">scope = #{scope},</if>
+            <if test="tokenType != null">token_type = #{tokenType},</if>
+            <if test="idToken != null">id_token = #{idToken},</if>
+            <if test="macAlgorithm != null">mac_algorithm = #{macAlgorithm},</if>
+            <if test="macKey != null">mac_key = #{macKey},</if>
+            <if test="code != null">code = #{code},</if>
+            <if test="oauthToken != null">oauth_token = #{oauthToken},</if>
+            <if test="oauthTokenSecret != null">oauth_token_secret = #{oauthTokenSecret},</if>
+        </trim>
+        where oauth_user.id = #{id}
+    </update>
+
+    <delete id="deleteOauthUserById" parameterType="Long">
+        delete from oauth_user where id = #{id}
+    </delete>
+
+    <delete id="deleteOauthUserByIds" parameterType="String">
+        delete from oauth_user where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

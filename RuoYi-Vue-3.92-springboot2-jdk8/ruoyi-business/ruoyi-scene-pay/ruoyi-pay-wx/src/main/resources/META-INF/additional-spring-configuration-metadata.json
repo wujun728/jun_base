@@ -1,0 +1,39 @@
+{
+    "properties": [
+        {
+            "name": "pay.wechat.enabled",
+            "type": "java.lang.Boolean",
+            "description": "是否启用微信支付"
+        },
+        {
+            "name": "pay.wechat.appId",
+            "type": "java.lang.String",
+            "description": "微信支付appid"
+        },
+        {
+            "name": "pay.wechat.apiV3Key",
+            "type": "java.lang.String",
+            "description": "微信支付apiV3Key"
+        },
+        {
+            "name": "pay.wechat.privateKeyPath",
+            "type": "java.lang.String",
+            "description": "微信支付私钥，可以直接用字符串，也可以是基于classpath的文件路径"
+        },
+        {
+            "name": "pay.wechat.merchantId",
+            "type": "java.lang.String",
+            "description": "微信支付merchantId"
+        },
+        {
+            "name": "pay.wechat.merchantSerialNumber",
+            "type": "java.lang.String",
+            "description": "微信支付merchantSerialNumber"
+        },
+        {
+            "name": "pay.wechat.notifyUrl",
+            "type": "java.lang.String",
+            "description": "微信支付回调地址"
+        }
+    ]
+}

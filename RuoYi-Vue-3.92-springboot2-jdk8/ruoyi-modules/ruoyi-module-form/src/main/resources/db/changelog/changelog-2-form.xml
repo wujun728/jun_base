@@ -1,0 +1,47 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="Administrator (generated)" id="1764223194862-1">
+        <createTable remarks="表单数据表" tableName="form_data">
+            <column autoIncrement="true" name="data_id" remarks="数据ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="form_id" remarks="关联的表单ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="form_version" remarks="表单版本（与模板表版本一致）" type="VARCHAR(10)"/>
+            <column name="data_content" remarks="表单数据内容（JSON格式）" type="JSON">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="draft" name="status" remarks="数据状态（draft, submitted, approved, rejected）" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="create_by" remarks="创建者" type="VARCHAR(64)"/>
+            <column name="create_time" remarks="创建时间" type="datetime(0)"/>
+            <column defaultValue="" name="update_by" remarks="更新者" type="VARCHAR(64)"/>
+            <column name="update_time" remarks="更新时间" type="datetime(0)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(255)"/>
+            <column defaultValue="0" name="del_flag" remarks="删除标志（0代表存在 2代表删除）" type="CHAR(1)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-2">
+        <createTable remarks="表单模板表" tableName="form_template">
+            <column autoIncrement="true" name="form_id" remarks="表单ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="form_name" remarks="表单名称" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="form_schema" remarks="表单JSON Schema（vForm配置）" type="JSON"/>
+            <column defaultValue="1.0.0" name="form_version" remarks="表单版本（语义化版本）" type="VARCHAR(10)"/>
+            <column defaultValue="0" name="form_status" remarks="发布状态（0: 草稿, 1: 已发布, 2: 已停用）" type="VARCHAR(2)"/>
+            <column defaultValue="" name="create_by" remarks="创建者" type="VARCHAR(64)"/>
+            <column name="create_time" remarks="创建时间" type="datetime(0)"/>
+            <column defaultValue="" name="update_by" remarks="更新者" type="VARCHAR(64)"/>
+            <column name="update_time" remarks="更新时间" type="datetime(0)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(255)"/>
+            <column defaultValue="0" name="del_flag" remarks="删除标志（0代表存在 2代表删除）" type="CHAR(1)"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

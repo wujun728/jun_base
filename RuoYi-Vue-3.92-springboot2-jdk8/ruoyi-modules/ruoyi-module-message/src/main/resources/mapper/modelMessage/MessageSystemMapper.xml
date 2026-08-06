@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.modelMessage.mapper.MessageSystemMapper">
+    
+    <resultMap type="MessageSystem" id="MessageSystemResult">
+        <result property="messageId"    column="message_id"    />
+        <result property="messageTitle"    column="message_title"    />
+        <result property="messageContent"    column="message_content"    />
+        <result property="messageStatus"    column="message_status"    />
+        <result property="messageType"    column="message_type"    />
+        <result property="messageRecipient"    column="message_recipient"    />
+        <result property="sendMode"    column="send_mode"    />
+        <result property="code"    column="code"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    /> 
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectMessageSystemVo">
+        select message_id, message_title, message_content, message_status, message_type, create_by, create_time, update_by, update_time, remark, message_recipient, send_mode, `code` from message_system 
+    </sql>
+
+    <select id="selectMessageSystemList" parameterType="MessageSystem" resultMap="MessageSystemResult">
+        <include refid="selectMessageSystemVo"/>
+        <where>  
+            <if test="messageTitle != null  and messageTitle != ''"> and message_title = #{messageTitle}</if>
+            <if test="messageStatus != null  and messageStatus != ''"> and message_status = #{messageStatus}</if>
+            <if test="messageType != null  and messageType != ''"> and message_type = #{messageType}</if>
+            <if test="createBy != null and createBy != '' or messageRecipient != null and messageRecipient != ''">
+            and (create_by = #{createBy} or message_recipient = #{messageRecipient})
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+    
+    <select id="selectMessageSystemByMessageId" parameterType="Long" resultMap="MessageSystemResult">
+        <include refid="selectMessageSystemVo"/>
+        where message_system.message_id = #{messageId}
+    </select>
+        
+    <insert id="insertMessageSystem" parameterType="MessageSystem" useGeneratedKeys="true" keyProperty="messageId">
+        insert into message_system
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="messageTitle != null">message_title,</if>
+            <if test="messageContent != null">message_content,</if>
+            <if test="messageStatus != null">message_status,</if>
+            <if test="messageType != null">message_type,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="messageRecipient != null">message_recipient,</if>
+            <if test="sendMode != null">send_mode,</if>
+             <if test="code != null">code,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="messageTitle != null">#{messageTitle},</if>
+            <if test="messageContent != null">#{messageContent},</if>
+            <if test="messageStatus != null">#{messageStatus},</if>
+            <if test="messageType != null">#{messageType},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="messageRecipient != null">#{messageRecipient},</if>
+            <if test="sendMode != null">#{sendMode},</if>
+            <if test="code != null">#{code},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMessageSystem" parameterType="MessageSystem">
+        update message_system
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="messageTitle != null">message_title = #{messageTitle},</if>
+            <if test="messageContent != null">message_content = #{messageContent},</if>
+            <if test="messageStatus != null">message_status = #{messageStatus},</if>
+            <if test="messageType != null">message_type = #{messageType},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="messageRecipient != null">message_recipient = #{messageRecipient},</if>
+            <if test="sendMode != null">send_mode = #{sendMode},</if>
+            <if test="code != null">code = #{code},</if>
+        </trim>
+        where message_system.message_id = #{messageId}
+    </update>
+
+    <delete id="deleteMessageSystemByMessageId" parameterType="Long">
+        delete from message_system where message_id = #{messageId}
+    </delete>
+
+    <delete id="deleteMessageSystemByMessageIds" parameterType="String">
+        delete from message_system where message_id in 
+        <foreach item="messageId" collection="array" open="(" separator="," close=")">
+            #{messageId}
+        </foreach>
+    </delete>
+
+    <!-- 批量发送信息 --> 
+    <insert id="batchInsertMessageSystem" parameterType="java.util.List">
+    INSERT INTO message_system (message_title, message_content, message_status, message_type, message_recipient, 
+        send_mode, `code`, create_by, create_time, update_by, update_time, remark) VALUES
+        <foreach collection="list" item="item" separator=",">
+            ( #{item.messageTitle}, #{item.messageContent}, #{item.messageStatus}, #{item.messageType}, 
+                #{item.messageRecipient}, #{item.sendMode}, #{item.code}, #{item.createBy}, NOW(), #{item.updateBy}, 
+                NOW(), #{item.remark} )
+        </foreach>
+    </insert>
+
+    <select id="selectUserBySendMode" resultType="com.ruoyi.common.core.domain.entity.SysUser">
+        SELECT user_id, dept_id, user_name, phonenumber, email FROM sys_user
+        <where>
+            <if test="filterType == 'phone'">
+                AND phonenumber IS NOT NULL AND phonenumber != ''
+            </if>
+            <if test="filterType == 'email'">
+                AND email IS NOT NULL AND email != ''
+            </if>
+        </where>
+    </select>  
+</mapper>

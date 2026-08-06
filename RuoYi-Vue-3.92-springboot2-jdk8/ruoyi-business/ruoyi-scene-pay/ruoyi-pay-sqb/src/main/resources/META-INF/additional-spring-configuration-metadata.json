@@ -1,0 +1,49 @@
+{
+    "properties": [
+        {
+            "name": "pay.sqb.enabled",
+            "type": "java.lang.Boolean",
+            "description": "启用收钱吧支付"
+        },
+        {
+            "name": "pay.sqb.appId",
+            "type": "java.lang.String",
+            "description": "收钱吧appId"
+        },
+        {
+            "name": "pay.sqb.apiDomain",
+            "type": "java.lang.String",
+            "description": "收钱吧apiDomain"
+        },
+        {
+            "name": "pay.sqb.terminalSn",
+            "type": "java.lang.String",
+            "description": "收钱吧terminalSn"
+        },
+        {
+            "name": "pay.sqb.terminalKey",
+            "type": "java.lang.String",
+            "description": "收钱吧terminalKey"
+        },
+        {
+            "name": "pay.sqb.vendorSn",
+            "type": "java.lang.String",
+            "description": "收钱吧vendorSn"
+        },
+        {
+            "name": "pay.sqb.vendorKey",
+            "type": "java.lang.String",
+            "description": "收钱吧vendorKey"
+        },
+        {
+            "name": "pay.sqb.publicKey",
+            "type": "java.lang.String",
+            "description": "收钱吧公钥，可以直接用字符串，也可以是基于classpath的文件路径"
+        },
+        {
+            "name": "pay.sqb.notifyUrl",
+            "type": "java.lang.String",
+            "description": "收钱吧支付回调地址"
+        }
+    ]
+}

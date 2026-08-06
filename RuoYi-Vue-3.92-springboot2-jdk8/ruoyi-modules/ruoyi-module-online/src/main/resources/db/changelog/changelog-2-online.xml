@@ -1,0 +1,28 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="Administrator (generated)" id="1764223194862-10">
+        <createTable remarks="在线接口" tableName="online_mb">
+            <column autoIncrement="true" name="mb_id" remarks="主键" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="tag" remarks="标签名" type="VARCHAR(255)"/>
+            <column name="tag_id" remarks="标签id" type="VARCHAR(255)"/>
+            <column name="parameter_type" remarks="参数类型" type="VARCHAR(255)"/>
+            <column name="result_map" remarks="结果类型" type="VARCHAR(255)"/>
+            <column name="sql_text" remarks="sql语句" type="VARCHAR(255)"/>
+            <column name="path" remarks="请求路径" type="VARCHAR(255)"/>
+            <column name="method" remarks="请求方式" type="VARCHAR(255)"/>
+            <column name="result_type" remarks="响应类型" type="VARCHAR(255)"/>
+            <column name="actuator" remarks="执行器" type="VARCHAR(255)"/>
+            <column name="user_id" remarks="是否需要userId" type="CHAR(1)"/>
+            <column name="dept_id" remarks="是否需要deptId" type="CHAR(1)"/>
+            <column name="permission_type" remarks="许可类型" type="VARCHAR(255)"/>
+            <column name="permission_value" remarks="许可值" type="VARCHAR(255)"/>
+            <column defaultValue="0" name="del_flag" remarks="删除标志（0代表存在 1代表删除）" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

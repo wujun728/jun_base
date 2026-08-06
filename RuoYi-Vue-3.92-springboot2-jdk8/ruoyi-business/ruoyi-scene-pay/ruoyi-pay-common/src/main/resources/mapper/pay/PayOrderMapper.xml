@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pay.mapper.PayOrderMapper">
+
+    <resultMap type="PayOrder" id="PayOrderResult">
+        <result property="orderId" column="order_id" />
+        <result property="orderNumber" column="order_number" />
+        <result property="thirdNumber" column="third_number" />
+        <result property="orderStatus" column="order_status" />
+        <result property="totalAmount" column="total_amount" />
+        <result property="actualAmount" column="actual_amount" />
+        <result property="orderContent" column="order_content" />
+        <result property="orderMessage" column="order_message" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateBy" column="update_by" />
+        <result property="updateTime" column="update_time" />
+        <result property="remark" column="remark" />
+        <result property="payType" column="pay_type" />
+        <result property="payTime" column="pay_time" />
+        <result property="payBy" column="pay_by" />
+    </resultMap>
+
+    <sql id="selectPayOrderVo">
+        select order_id, order_number,third_number, order_status, total_amount, actual_amount, order_content, order_message, pay_type, pay_time, pay_by, create_by, create_time, update_by, update_time, remark from pay_order
+    </sql>
+
+    <select id="selectPayOrderList" parameterType="PayOrder" resultMap="PayOrderResult">
+        <include refid="selectPayOrderVo"/>
+        <where>
+            <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
+            <if test="thirdNumber != null  and thirdNumber != ''"> and third_number = #{thirdNumber}</if>
+            <if test="orderStatus != null  and orderStatus != ''"> and order_status = #{orderStatus}</if>
+            <if test="totalAmount != null  and totalAmount != ''"> and total_amount = #{totalAmount}</if>
+            <if test="actualAmount != null  and actualAmount != ''"> and actual_amount = #{actualAmount}</if>
+            <if test="orderContent != null  and orderContent != ''"> and order_content = #{orderContent}</if>
+            <if test="orderMessage != null  and orderMessage != ''"> and order_message = #{orderMessage}</if>
+            <if test="payType != null  and payType != ''"> and pay_type = #{payType}</if>
+            <if test="payTime != null"> and pay_time = #{payTime}</if>
+            <if test="payBy != null  and payBy != ''"> and pay_by = #{payBy}</if>
+        </where>
+    </select>
+
+    <select id="selectPayOrderByOrderId" parameterType="Long" resultMap="PayOrderResult">
+        <include refid="selectPayOrderVo"/>
+        where pay_order.order_id = #{orderId}
+    </select>
+
+    <select id="selectPayOrderByOrderNumber" parameterType="String" resultMap="PayOrderResult">
+        <include refid="selectPayOrderVo"/>
+        where pay_order.order_number = #{orderNumber}
+    </select>
+
+    <insert id="insertPayOrder" parameterType="PayOrder" useGeneratedKeys="true" keyProperty="orderId">
+        insert into pay_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderNumber != null">order_number,</if>
+            <if test="thirdNumber != null">third_number,</if>
+            <if test="orderStatus != null">order_status,</if>
+            <if test="totalAmount != null">total_amount,</if>
+            <if test="actualAmount != null">actual_amount,</if>
+            <if test="orderContent != null">order_content,</if>
+            <if test="orderMessage != null">order_message,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="payType != null">pay_type,</if>
+            <if test="payTime != null">pay_time,</if>
+            <if test="payBy != null">pay_by,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderNumber != null">#{orderNumber},</if>
+            <if test="thirdNumber != null">#{thirdNumber},</if>
+            <if test="orderStatus != null">#{orderStatus},</if>
+            <if test="totalAmount != null">#{totalAmount},</if>
+            <if test="actualAmount != null">#{actualAmount},</if>
+            <if test="orderContent != null">#{orderContent},</if>
+            <if test="orderMessage != null">#{orderMessage},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="payType != null">#{payType},</if>
+            <if test="payTime != null">#{payTime},</if>
+            <if test="payBy != null">#{payBy},</if>
+        </trim>
+    </insert>
+
+    <update id="updatePayOrder" parameterType="PayOrder">
+        update pay_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderNumber != null">order_number = #{orderNumber},</if>
+            <if test="thirdNumber != null">third_number = #{thirdNumber},</if>
+            <if test="orderStatus != null">order_status = #{orderStatus},</if>
+            <if test="totalAmount != null">total_amount = #{totalAmount},</if>
+            <if test="actualAmount != null">actual_amount = #{actualAmount},</if>
+            <if test="orderContent != null">order_content = #{orderContent},</if>
+            <if test="orderMessage != null">order_message = #{orderMessage},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="payType != null">pay_type = #{payType},</if>
+            <if test="payTime != null">pay_time = #{payTime},</if>
+            <if test="payBy != null">pay_by = #{payBy},</if>
+        </trim>
+        where pay_order.order_id = #{orderId}
+    </update>
+
+    <delete id="deletePayOrderByOrderId" parameterType="Long">
+        delete from pay_order where order_id = #{orderId}
+    </delete>
+
+    <delete id="deletePayOrderByOrderNumber" parameterType="String"> 
+            delete from pay_order where order_number= #{orderNumber} 
+    </delete>
+
+    <delete id="deletePayOrderByOrderIds" parameterType="String">
+        delete from pay_order where order_id in 
+        <foreach item="orderId" collection="array" open="(" separator="," close=")">
+            #{orderId}
+        </foreach>
+    </delete>
+
+    <update id="updateStatus" parameterType="String">
+        update pay_order set order_status = #{orderStatus} where order_number = #{orderNumber}
+    </update>
+</mapper>

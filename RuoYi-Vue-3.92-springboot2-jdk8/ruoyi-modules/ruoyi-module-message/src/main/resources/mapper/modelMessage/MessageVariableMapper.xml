@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.modelMessage.mapper.MessageVariableMapper">
+    
+    <resultMap type="MessageVariable" id="MessageVariableResult">
+        <result property="variableId"    column="variable_id"    />
+        <result property="variableName"    column="variable_name"    />
+        <result property="variableType"    column="variable_type"    />
+        <result property="variableContent"    column="variable_content"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectMessageVariableVo">
+        select variable_id, variable_name, variable_type, variable_content, create_by, create_time, update_by, update_time, remark from message_variable
+    </sql>
+
+    <select id="selectMessageVariableList" parameterType="MessageVariable" resultMap="MessageVariableResult">
+        <include refid="selectMessageVariableVo"/>
+        <where>  
+            <if test="variableName != null  and variableName != ''"> and variable_name like concat('%', #{variableName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectMessageVariableByVariableId" parameterType="Long" resultMap="MessageVariableResult">
+        <include refid="selectMessageVariableVo"/>
+        where message_variable.variable_id = #{variableId}
+    </select>
+        
+    <insert id="insertMessageVariable" parameterType="MessageVariable" useGeneratedKeys="true" keyProperty="variableId">
+        insert into message_variable
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="variableName != null">variable_name,</if>
+            <if test="variableType != null">variable_type,</if>
+            <if test="variableContent != null">variable_content,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="variableName != null">#{variableName},</if>
+            <if test="variableType != null">#{variableType},</if>
+            <if test="variableContent != null">#{variableContent},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMessageVariable" parameterType="MessageVariable">
+        update message_variable
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="variableName != null">variable_name = #{variableName},</if>
+            <if test="variableType != null">variable_type = #{variableType},</if>
+            <if test="variableContent != null">variable_content = #{variableContent},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where message_variable.variable_id = #{variableId}
+    </update>
+
+    <delete id="deleteMessageVariableByVariableId" parameterType="Long">
+        delete from message_variable where variable_id = #{variableId}
+    </delete>
+
+    <delete id="deleteMessageVariableByVariableIds" parameterType="String">
+        delete from message_variable where variable_id in 
+        <foreach item="variableId" collection="array" open="(" separator="," close=")">
+            #{variableId}
+        </foreach>
+    </delete>
+
+    <!-- 查询在使用模版签名时用到了那些变量一一赋值 -->
+    <select id="selectMessageVariables" parameterType="java.util.List" resultType="MessageVariable">
+        SELECT variable_id, variable_name, variable_type, variable_content FROM message_variable
+        WHERE variable_content IN
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        OR variable_name IN
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+</mapper>

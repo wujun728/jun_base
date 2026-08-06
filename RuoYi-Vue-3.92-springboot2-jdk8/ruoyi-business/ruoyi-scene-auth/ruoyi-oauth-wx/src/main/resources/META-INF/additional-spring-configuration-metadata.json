@@ -1,0 +1,34 @@
+{
+    "properties": [
+        {
+            "name": "oauth.wx.miniapp.app-id",
+            "type": "java.lang.String",
+            "description": "微信小程序appid"
+        },
+        {
+            "name": "oauth.wx.miniapp.app-secret",
+            "type": "java.lang.String",
+            "description": "微信小程序appSecret"
+        },
+        {
+            "name": "oauth.wx.miniapp.url",
+            "type": "java.lang.String",
+            "description": "微信小程序认证地址"
+        },
+        {
+            "name": "oauth.wx.pub.app-id",
+            "type": "java.lang.String",
+            "description": "微信公众号appid"
+        },
+        {
+            "name": "oauth.wx.pub.app-secret",
+            "type": "java.lang.String",
+            "description": "微信公众号appSecret"
+        },
+        {
+            "name": "oauth.wx.pub.url",
+            "type": "java.lang.String",
+            "description": "微信公众号认证地址"
+        }
+    ]
+}

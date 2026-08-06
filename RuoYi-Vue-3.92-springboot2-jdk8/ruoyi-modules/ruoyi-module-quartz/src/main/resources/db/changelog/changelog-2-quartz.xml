@@ -1,0 +1,302 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet author="Administrator (generated)" id="1764223194862-13">
+        <createTable remarks="Blob类型的触发器表" tableName="qrtz_blob_triggers">
+            <column name="sched_name" remarks="调度名称" type="VARCHAR(120)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="trigger_name" remarks="qrtz_triggers表trigger_name的外键" type="VARCHAR(200)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="trigger_group" remarks="qrtz_triggers表trigger_group的外键" type="VARCHAR(200)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="blob_data" remarks="存放持久化Trigger对象" type="BLOB"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-14">
+        <createTable remarks="日历信息表" tableName="qrtz_calendars">
+            <column name="sched_name" remarks="调度名称" type="VARCHAR(120)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="calendar_name" remarks="日历名称" type="VARCHAR(200)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="calendar" remarks="存放持久化calendar对象" type="BLOB">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-15">
+        <createTable remarks="Cron类型的触发器表" tableName="qrtz_cron_triggers">
+            <column name="sched_name" remarks="调度名称" type="VARCHAR(120)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="trigger_name" remarks="qrtz_triggers表trigger_name的外键" type="VARCHAR(200)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="trigger_group" remarks="qrtz_triggers表trigger_group的外键" type="VARCHAR(200)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="cron_expression" remarks="cron表达式" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="time_zone_id" remarks="时区" type="VARCHAR(80)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-16">
+        <createTable remarks="已触发的触发器表" tableName="qrtz_fired_triggers">
+            <column name="sched_name" remarks="调度名称" type="VARCHAR(120)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="entry_id" remarks="调度器实例id" type="VARCHAR(95)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="trigger_name" remarks="qrtz_triggers表trigger_name的外键" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="trigger_group" remarks="qrtz_triggers表trigger_group的外键" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="instance_name" remarks="调度器实例名" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fired_time" remarks="触发的时间" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sched_time" remarks="定时器制定的时间" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="priority" remarks="优先级" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="state" remarks="状态" type="VARCHAR(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="job_name" remarks="任务名称" type="VARCHAR(200)"/>
+            <column name="job_group" remarks="任务组名" type="VARCHAR(200)"/>
+            <column name="is_nonconcurrent" remarks="是否并发" type="VARCHAR(1)"/>
+            <column name="requests_recovery" remarks="是否接受恢复执行" type="VARCHAR(1)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-17">
+        <createTable remarks="任务详细信息表" tableName="qrtz_job_details">
+            <column name="sched_name" remarks="调度名称" type="VARCHAR(120)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="job_name" remarks="任务名称" type="VARCHAR(200)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="job_group" remarks="任务组名" type="VARCHAR(200)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="description" remarks="相关介绍" type="VARCHAR(250)"/>
+            <column name="job_class_name" remarks="执行任务类名称" type="VARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_durable" remarks="是否持久化" type="VARCHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_nonconcurrent" remarks="是否并发" type="VARCHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_update_data" remarks="是否更新数据" type="VARCHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="requests_recovery" remarks="是否接受恢复执行" type="VARCHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="job_data" remarks="存放持久化job对象" type="BLOB"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-18">
+        <createTable remarks="存储的悲观锁信息表" tableName="qrtz_locks">
+            <column name="sched_name" remarks="调度名称" type="VARCHAR(120)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="lock_name" remarks="悲观锁名称" type="VARCHAR(40)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-19">
+        <createTable remarks="暂停的触发器表" tableName="qrtz_paused_trigger_grps">
+            <column name="sched_name" remarks="调度名称" type="VARCHAR(120)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="trigger_group" remarks="qrtz_triggers表trigger_group的外键" type="VARCHAR(200)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-20">
+        <createTable remarks="调度器状态表" tableName="qrtz_scheduler_state">
+            <column name="sched_name" remarks="调度名称" type="VARCHAR(120)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="instance_name" remarks="实例名称" type="VARCHAR(200)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="last_checkin_time" remarks="上次检查时间" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="checkin_interval" remarks="检查间隔时间" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-21">
+        <createTable remarks="简单触发器的信息表" tableName="qrtz_simple_triggers">
+            <column name="sched_name" remarks="调度名称" type="VARCHAR(120)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="trigger_name" remarks="qrtz_triggers表trigger_name的外键" type="VARCHAR(200)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="trigger_group" remarks="qrtz_triggers表trigger_group的外键" type="VARCHAR(200)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="repeat_count" remarks="重复的次数统计" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="repeat_interval" remarks="重复的间隔时间" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="times_triggered" remarks="已经触发的次数" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-22">
+        <createTable remarks="同步机制的行锁表" tableName="qrtz_simprop_triggers">
+            <column name="sched_name" remarks="调度名称" type="VARCHAR(120)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="trigger_name" remarks="qrtz_triggers表trigger_name的外键" type="VARCHAR(200)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="trigger_group" remarks="qrtz_triggers表trigger_group的外键" type="VARCHAR(200)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="str_prop_1" remarks="String类型的trigger的第一个参数" type="VARCHAR(512)"/>
+            <column name="str_prop_2" remarks="String类型的trigger的第二个参数" type="VARCHAR(512)"/>
+            <column name="str_prop_3" remarks="String类型的trigger的第三个参数" type="VARCHAR(512)"/>
+            <column name="int_prop_1" remarks="int类型的trigger的第一个参数" type="INT"/>
+            <column name="int_prop_2" remarks="int类型的trigger的第二个参数" type="INT"/>
+            <column name="long_prop_1" remarks="long类型的trigger的第一个参数" type="BIGINT"/>
+            <column name="long_prop_2" remarks="long类型的trigger的第二个参数" type="BIGINT"/>
+            <column name="dec_prop_1" remarks="decimal类型的trigger的第一个参数" type="DECIMAL(13, 4)"/>
+            <column name="dec_prop_2" remarks="decimal类型的trigger的第二个参数" type="DECIMAL(13, 4)"/>
+            <column name="bool_prop_1" remarks="Boolean类型的trigger的第一个参数" type="VARCHAR(1)"/>
+            <column name="bool_prop_2" remarks="Boolean类型的trigger的第二个参数" type="VARCHAR(1)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-23">
+        <createTable remarks="触发器详细信息表" tableName="qrtz_triggers">
+            <column name="sched_name" remarks="调度名称" type="VARCHAR(120)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="trigger_name" remarks="触发器的名字" type="VARCHAR(200)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="trigger_group" remarks="触发器所属组的名字" type="VARCHAR(200)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="job_name" remarks="qrtz_job_details表job_name的外键" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="job_group" remarks="qrtz_job_details表job_group的外键" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" remarks="相关介绍" type="VARCHAR(250)"/>
+            <column name="next_fire_time" remarks="上一次触发时间（毫秒）" type="BIGINT"/>
+            <column name="prev_fire_time" remarks="下一次触发时间（默认为-1表示不触发）" type="BIGINT"/>
+            <column name="priority" remarks="优先级" type="INT"/>
+            <column name="trigger_state" remarks="触发器状态" type="VARCHAR(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="trigger_type" remarks="触发器的类型" type="VARCHAR(8)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_time" remarks="开始时间" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_time" remarks="结束时间" type="BIGINT"/>
+            <column name="calendar_name" remarks="日程表名称" type="VARCHAR(200)"/>
+            <column name="misfire_instr" remarks="补偿执行的策略" type="SMALLINT"/>
+            <column name="job_data" remarks="存放持久化job对象" type="BLOB"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-31">
+        <createTable remarks="定时任务调度表" tableName="sys_job">
+            <column autoIncrement="true" name="job_id" remarks="任务ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="job_name" remarks="任务名称" type="VARCHAR(64)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValue="DEFAULT" name="job_group" remarks="任务组名" type="VARCHAR(64)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="invoke_target" remarks="调用目标字符串" type="VARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="cron_expression" remarks="cron执行表达式" type="VARCHAR(255)"/>
+            <column defaultValue="3" name="misfire_policy" remarks="计划执行错误策略（1立即执行 2执行一次 3放弃执行）" type="VARCHAR(20)"/>
+            <column defaultValue="1" name="concurrent" remarks="是否并发执行（0允许 1禁止）" type="CHAR(1)"/>
+            <column defaultValue="0" name="status" remarks="状态（0正常 1暂停）" type="CHAR(1)"/>
+            <column defaultValue="" name="create_by" remarks="创建者" type="VARCHAR(64)"/>
+            <column name="create_time" remarks="创建时间" type="datetime(0)"/>
+            <column defaultValue="" name="update_by" remarks="更新者" type="VARCHAR(64)"/>
+            <column name="update_time" remarks="更新时间" type="datetime(0)"/>
+            <column defaultValue="" name="remark" remarks="备注信息" type="VARCHAR(500)"/>
+        </createTable>
+        <loadData tableName="sys_job" file="../../db/data/sys_job.csv" separator="," encoding="UTF-8" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-32">
+        <createTable remarks="定时任务调度日志表" tableName="sys_job_log">
+            <column autoIncrement="true" name="job_log_id" remarks="任务日志ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="job_name" remarks="任务名称" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="job_group" remarks="任务组名" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="invoke_target" remarks="调用目标字符串" type="VARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="job_message" remarks="日志信息" type="VARCHAR(500)"/>
+            <column defaultValue="0" name="status" remarks="执行状态（0正常 1失败）" type="CHAR(1)"/>
+            <column defaultValue="" name="exception_info" remarks="异常信息" type="VARCHAR(2000)"/>
+            <column name="create_time" remarks="创建时间" type="datetime(0)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Administrator (generated)" id="1764223194862-50">
+        <createIndex associatedWith="" indexName="sched_name" tableName="qrtz_triggers">
+            <column name="sched_name"/>
+            <column name="job_name"/>
+            <column name="job_group"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-51">
+        <addForeignKeyConstraint baseColumnNames="sched_name,trigger_name,trigger_group" baseTableName="qrtz_blob_triggers" constraintName="qrtz_blob_triggers_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="sched_name,trigger_name,trigger_group" referencedTableName="qrtz_triggers" validate="true"/>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-52">
+        <addForeignKeyConstraint baseColumnNames="sched_name,trigger_name,trigger_group" baseTableName="qrtz_cron_triggers" constraintName="qrtz_cron_triggers_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="sched_name,trigger_name,trigger_group" referencedTableName="qrtz_triggers" validate="true"/>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-53">
+        <addForeignKeyConstraint baseColumnNames="sched_name,trigger_name,trigger_group" baseTableName="qrtz_simple_triggers" constraintName="qrtz_simple_triggers_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="sched_name,trigger_name,trigger_group" referencedTableName="qrtz_triggers" validate="true"/>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-54">
+        <addForeignKeyConstraint baseColumnNames="sched_name,trigger_name,trigger_group" baseTableName="qrtz_simprop_triggers" constraintName="qrtz_simprop_triggers_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="sched_name,trigger_name,trigger_group" referencedTableName="qrtz_triggers" validate="true"/>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-55">
+        <addForeignKeyConstraint baseColumnNames="sched_name,job_name,job_group" baseTableName="qrtz_triggers" constraintName="qrtz_triggers_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="sched_name,job_name,job_group" referencedTableName="qrtz_job_details" validate="true"/>
+    </changeSet>
+</databaseChangeLog>
