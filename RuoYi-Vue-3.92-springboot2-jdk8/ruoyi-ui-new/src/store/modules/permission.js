@@ -30,7 +30,7 @@ const permission = {
   },
   actions: {
     // 生成路由
-    GenerateRoutes({ commit }) {
+    GenerateRoutes({ commit, dispatch }) {
       return new Promise(resolve => {
         // 向后端请求路由数据
         getRouters().then(res => {
@@ -45,6 +45,7 @@ const permission = {
           commit('SET_SIDEBAR_ROUTERS', constantRoutes.concat(sidebarRoutes))
           commit('SET_DEFAULT_ROUTES', sidebarRoutes)
           commit('SET_TOPBAR_ROUTES', sidebarRoutes)
+          dispatch('getMenus', null, { root: true })
           resolve(rewriteRoutes)
         })
       })
