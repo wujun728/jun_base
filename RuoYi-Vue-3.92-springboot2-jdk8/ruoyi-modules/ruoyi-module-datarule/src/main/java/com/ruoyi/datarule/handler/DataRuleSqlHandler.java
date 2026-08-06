@@ -47,7 +47,6 @@ public class DataRuleSqlHandler {
         groupTemplate = new GroupTemplate(resourceLoader, configuration);
     }
 
-
     private final DataRuleHandler dataRuleHandler;
 
     private DbType getDataSourceType() {

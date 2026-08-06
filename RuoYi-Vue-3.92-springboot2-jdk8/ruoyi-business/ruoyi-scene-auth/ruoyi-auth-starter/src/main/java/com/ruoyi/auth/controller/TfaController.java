@@ -18,13 +18,13 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.model.LoginBody;
 import com.ruoyi.common.core.domain.model.RegisterBody;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.PostConstruct;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Api;
+import javax.annotation.PostConstruct;
 
 @RestController
 @RequestMapping("/auth/{channel}") // dySms mail
-@Tag(name = "【第三方认证】双因素认证")
+@Api(tags = "【第三方认证】双因素认证")
 public class TfaController extends BaseController {
 
     @Autowired(required = false)
@@ -42,7 +42,7 @@ public class TfaController extends BaseController {
         }
     }
 
-    @Operation(summary = "发送注册验证码")
+    @ApiOperation("发送注册验证码")
     @PostMapping("/send/register")
     @Anonymous
     public AjaxResult sendRegister(@PathVariable String channel, @RequestBody RegisterBody registerBody) {
@@ -51,7 +51,7 @@ public class TfaController extends BaseController {
         return success();
     }
 
-    @Operation(summary = "验证注册验证码")
+    @ApiOperation("验证注册验证码")
     @PostMapping("/verify/register")
     @Anonymous
     public AjaxResult verifyRegister(@PathVariable String channel, @RequestBody RegisterBody registerBody) {
@@ -60,7 +60,7 @@ public class TfaController extends BaseController {
         return success();
     }
 
-    @Operation(summary = "发送登录验证码")
+    @ApiOperation("发送登录验证码")
     @PostMapping("/send/login")
     @Anonymous
     public AjaxResult sendLogin(@PathVariable String channel, @RequestBody LoginBody loginBody,
@@ -70,7 +70,7 @@ public class TfaController extends BaseController {
         return success();
     }
 
-    @Operation(summary = "验证登录验证码")
+    @ApiOperation("验证登录验证码")
     @PostMapping("/verify/login")
     @Anonymous
     public AjaxResult verifyLogin(@PathVariable String channel, @RequestBody LoginBody loginBody,
@@ -79,7 +79,7 @@ public class TfaController extends BaseController {
         return success(tfaService.doLoginVerify(loginBody, autoRegister));
     }
 
-    @Operation(summary = "发送绑定验证码")
+    @ApiOperation("发送绑定验证码")
     @PostMapping("/send/bind")
     public AjaxResult send(@PathVariable String channel, @RequestBody LoginBody loginBody) {
         TfaService tfaService = tfaServiceMap.get("auth:service:" + channel);
@@ -87,7 +87,7 @@ public class TfaController extends BaseController {
         return success();
     }
 
-    @Operation(summary = "验证绑定验证码")
+    @ApiOperation("验证绑定验证码")
     @PostMapping("/verify/bind") // 发送验证码
     public AjaxResult verify(@PathVariable String channel, @RequestBody LoginBody loginBody) {
         TfaService tfaService = tfaServiceMap.get("auth:service:" + channel);
@@ -95,7 +95,7 @@ public class TfaController extends BaseController {
         return success();
     }
 
-    @Operation(summary = "发送重置验证码")
+    @ApiOperation("发送重置验证码")
     @PostMapping("/send/reset")
     public AjaxResult sendReset(@PathVariable String channel, @RequestBody RegisterBody registerBody) {
         TfaService tfaService = tfaServiceMap.get("auth:service:" + channel);
@@ -103,7 +103,7 @@ public class TfaController extends BaseController {
         return success();
     }
 
-    @Operation(summary = "验证重置验证码")
+    @ApiOperation("验证重置验证码")
     @PostMapping("/verify/reset")
     public AjaxResult verifyReset(@PathVariable String channel, @RequestBody RegisterBody registerBody) {
         TfaService tfaService = tfaServiceMap.get("auth:service:" + channel);

@@ -30,7 +30,6 @@ public class FileNameLengthLimitExceededException extends FileUploadException {
         return length;
     }
 
-
     public int getMaxLength() {
         return maxLength;
     }

@@ -13,7 +13,6 @@ import com.ruoyi.common.core.domain.BaseEntity;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.online.mapper.OnlineDbMapper;
 
-
 /**
  * mysql数据库Controller接口
  * 

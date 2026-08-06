@@ -1,16 +1,17 @@
-package com.ruoyi.flowable.domain.dto;
+﻿package com.ruoyi.flowable.domain.dto;
 import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * <p>流程定义<p>
+ * <p>娴佺▼瀹氫箟<p>
  *
  * @author Tony
  * @date 2021-04-03
@@ -18,39 +19,38 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "流程定义")
+@Api(tags = "娴佺▼瀹氫箟")
 public class FlowProcDefDto implements Serializable {
 
-    @Schema(title = "流程id")
+    @ApiModelProperty("娴佺▼id")
     private String id;
 
-    @Schema(title = "流程名称")
+    @ApiModelProperty("娴佺▼鍚嶇О")
     private String name;
 
-    @Schema(title = "流程key")
+    @ApiModelProperty("娴佺▼key")
     private String flowKey;
 
-    @Schema(title = "流程分类")
+    @ApiModelProperty("娴佺▼鍒嗙被")
     private String category;
 
-    @Schema(title = "配置表单名称")
+    @ApiModelProperty("閰嶇疆琛ㄥ崟鍚嶇О")
     private String formName;
 
-    @Schema(title = "配置表单id")
+    @ApiModelProperty("閰嶇疆琛ㄥ崟id")
     private Long formId;
 
-    @Schema(title = "版本")
+    @ApiModelProperty("鐗堟湰")
     private int version;
 
-    @Schema(title = "部署ID")
+    @ApiModelProperty("閮ㄧ讲ID")
     private String deploymentId;
 
-    @Schema(title = "流程定义状态: 1:激活 , 2:中止")
+    @ApiModelProperty("娴佺▼瀹氫箟鐘舵€? 1:婵€娲?, 2:涓")
     private int suspensionState;
 
-    @Schema(title = "部署时间")
+    @ApiModelProperty("閮ㄧ讲鏃堕棿")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date deploymentTime;
-
 
 }

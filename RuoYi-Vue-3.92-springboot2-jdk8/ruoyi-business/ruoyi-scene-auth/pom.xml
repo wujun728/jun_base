@@ -109,11 +109,12 @@
 
     <modules>
         <module>ruoyi-auth-common</module>
-        <module>ruoyi-tfa-email</module>
-        <module>ruoyi-tfa-phone</module>
-        <module>ruoyi-oauth-wx</module>
-        <module>ruoyi-oauth-justauth</module>
-        <module>ruoyi-auth-starter</module>
+        <!-- TODO: 以下模块依赖SB3的CacheUtils/jakarta.mail等，待SB2适配后启用 -->
+        <!-- <module>ruoyi-tfa-email</module> -->
+        <!-- <module>ruoyi-tfa-phone</module> -->
+        <!-- <module>ruoyi-oauth-wx</module> -->
+        <!-- <module>ruoyi-oauth-justauth</module> -->
+        <!-- <module>ruoyi-auth-starter</module> -->
     </modules>
     <packaging>pom</packaging>
 </project>

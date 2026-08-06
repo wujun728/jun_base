@@ -1,7 +1,5 @@
 package com.ruoyi.flowable.mapper;
 
-
-
 import java.util.List;
 
 import com.ruoyi.flowable.domain.SysDeployForm;
@@ -62,8 +60,6 @@ public interface SysDeployFormMapper
      * @return 结果
      */
     public int deleteSysDeployFormByIds(Long[] ids);
-
-
 
     /**
      * 查询流程挂着的表单

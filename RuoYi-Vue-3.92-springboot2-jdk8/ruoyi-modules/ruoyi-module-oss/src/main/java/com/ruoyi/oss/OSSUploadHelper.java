@@ -15,7 +15,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -151,7 +151,6 @@ public class OSSUploadHelper {
         String filename = extractFilename(file, baseDir, needDatePath);
         return ossClient.upload(file.getInputStream(), filename);
     }
-
 
     /**
      * 以默认配置进行文件上传
@@ -354,7 +353,6 @@ public class OSSUploadHelper {
         }
         return false;
     }
-
 
     public void delete(HttpServletRequest request, String filename) throws IOException {
         if (StringUtils.isEmpty(filename)) {

@@ -1,32 +1,32 @@
-package com.ruoyi.flowable.domain.vo;
+﻿package com.ruoyi.flowable.domain.vo;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.Api;
 import lombok.Data;
 
 /**
- * <p>流程任务<p>
+ * <p>娴佺▼浠诲姟<p>
  *
  * @author Tony
  * @date 2021-04-03
  */
 @Data
-@Schema(description = "工作流任务相关--请求参数")
+@Api(tags = "宸ヤ綔娴佷换鍔＄浉鍏?-璇锋眰鍙傛暟")
 public class FlowQueryVo {
 
-    @Schema(title = "流程名称")
+    @ApiModelProperty("娴佺▼鍚嶇О")
     private String name;
 
-    @Schema(title = "开始时间")
+    @ApiModelProperty("寮€濮嬫椂闂?)
     private String startTime;
 
-    @Schema(title = "结束时间")
+    @ApiModelProperty("缁撴潫鏃堕棿")
     private String endTime;
 
-    @Schema(title = "当前页码")
+    @ApiModelProperty("褰撳墠椤电爜")
     private Integer pageNum;
 
-    @Schema(title = "每页条数")
+    @ApiModelProperty("姣忛〉鏉℃暟")
     private Integer pageSize;
-
 
 }

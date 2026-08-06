@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.ruoyi.oauth.justauth.utils.JustAuthUtils;
 
-import jakarta.annotation.PostConstruct;
+import javax.annotation.PostConstruct;
 import me.zhyd.oauth.cache.AuthDefaultStateCache;
 import me.zhyd.oauth.cache.AuthStateCache;
 import me.zhyd.oauth.request.AuthRequest;

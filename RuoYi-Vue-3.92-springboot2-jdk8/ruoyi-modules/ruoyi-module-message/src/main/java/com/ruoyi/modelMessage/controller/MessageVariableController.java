@@ -22,9 +22,9 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.modelMessage.domain.MessageVariable;
 import com.ruoyi.modelMessage.service.IMessageVariableService;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Api;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 变量管理Controller
@@ -34,7 +34,7 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @RestController
 @RequestMapping("/modelMessage/variable")
-@Tag(name = "【变量管理】管理")
+@Api(tags = "【变量管理】管理")
 public class MessageVariableController extends BaseController
 {
     @Autowired
@@ -43,7 +43,7 @@ public class MessageVariableController extends BaseController
     /**
      * 查询变量管理列表
      */
-    @Operation(summary = "查询变量管理列表")
+    @ApiOperation("查询变量管理列表")
     //@PreAuthorize("@ss.hasPermi('modelMessage:variable:list')")
     @GetMapping("/list")
     public TableDataInfo list(MessageVariable messageVariable)
@@ -56,7 +56,7 @@ public class MessageVariableController extends BaseController
     /**
      * 导出变量管理列表
      */
-    @Operation(summary = "导出变量管理列表")
+    @ApiOperation("导出变量管理列表")
     @PreAuthorize("@ss.hasPermi('modelMessage:variable:export')")
     @Log(title = "变量管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -70,7 +70,7 @@ public class MessageVariableController extends BaseController
     /**
      * 获取变量管理详细信息
      */
-    @Operation(summary = "获取变量管理详细信息")
+    @ApiOperation("获取变量管理详细信息")
     //@PreAuthorize("@ss.hasPermi('modelMessage:variable:query')")
     @GetMapping(value = "/{variableId}")
     public AjaxResult getInfo(@PathVariable("variableId") Long variableId)
@@ -81,7 +81,7 @@ public class MessageVariableController extends BaseController
     /**
      * 新增变量管理
      */
-    @Operation(summary = "新增变量管理")
+    @ApiOperation("新增变量管理")
     //@PreAuthorize("@ss.hasPermi('modelMessage:variable:add')")
     @Log(title = "变量管理", businessType = BusinessType.INSERT)
     @PostMapping
@@ -93,7 +93,7 @@ public class MessageVariableController extends BaseController
     /**
      * 修改变量管理
      */
-    @Operation(summary = "修改变量管理")
+    @ApiOperation("修改变量管理")
     //@PreAuthorize("@ss.hasPermi('modelMessage:variable:edit')")
     @Log(title = "变量管理", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -105,7 +105,7 @@ public class MessageVariableController extends BaseController
     /**
      * 删除变量管理
      */
-    @Operation(summary = "删除变量管理")
+    @ApiOperation("删除变量管理")
     //@PreAuthorize("@ss.hasPermi('modelMessage:variable:remove')")
     @Log(title = "变量管理", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{variableIds}")
@@ -117,7 +117,7 @@ public class MessageVariableController extends BaseController
     /**
      * 查询变量
      */
-    @Operation(summary = "查询变量下拉框")
+    @ApiOperation("查询变量下拉框")
     @GetMapping("/selectMessageVariable")
     public AjaxResult selectMessageVariable() {
        return success(messageVariableService.selectMessageVariable());

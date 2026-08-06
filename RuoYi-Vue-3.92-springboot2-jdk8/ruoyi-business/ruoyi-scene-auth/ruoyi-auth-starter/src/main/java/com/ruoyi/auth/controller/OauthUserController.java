@@ -22,9 +22,9 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Api;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 第三方认证Controller
@@ -34,7 +34,7 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @RestController
 @RequestMapping("/system/oauth")
-@Tag(name = "【第三方认证】管理")
+@Api(tags = "【第三方认证】管理")
 public class OauthUserController extends BaseController {
     @Autowired
     private IOauthUserService oauthUserService;
@@ -42,7 +42,7 @@ public class OauthUserController extends BaseController {
     /**
      * 查询第三方认证列表
      */
-    @Operation(summary = "查询第三方认证列表")
+    @ApiOperation("查询第三方认证列表")
     @PreAuthorize("@ss.hasPermi('system:oauth:list')")
     @GetMapping("/list")
     public TableDataInfo list(OauthUser oauthUser) {
@@ -54,7 +54,7 @@ public class OauthUserController extends BaseController {
     /**
      * 导出第三方认证列表
      */
-    @Operation(summary = "导出第三方认证列表")
+    @ApiOperation("导出第三方认证列表")
     @PreAuthorize("@ss.hasPermi('system:oauth:export')")
     @Log(title = "第三方认证", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -67,7 +67,7 @@ public class OauthUserController extends BaseController {
     /**
      * 获取第三方认证详细信息
      */
-    @Operation(summary = "获取第三方认证详细信息")
+    @ApiOperation("获取第三方认证详细信息")
     @PreAuthorize("@ss.hasPermi('system:oauth:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id) {
@@ -77,7 +77,7 @@ public class OauthUserController extends BaseController {
     /**
      * 新增第三方认证
      */
-    @Operation(summary = "新增第三方认证")
+    @ApiOperation("新增第三方认证")
     @PreAuthorize("@ss.hasPermi('system:oauth:add')")
     @Log(title = "第三方认证", businessType = BusinessType.INSERT)
     @PostMapping
@@ -88,7 +88,7 @@ public class OauthUserController extends BaseController {
     /**
      * 修改第三方认证
      */
-    @Operation(summary = "修改第三方认证")
+    @ApiOperation("修改第三方认证")
     @PreAuthorize("@ss.hasPermi('system:oauth:edit')")
     @Log(title = "第三方认证", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -99,7 +99,7 @@ public class OauthUserController extends BaseController {
     /**
      * 删除第三方认证
      */
-    @Operation(summary = "删除第三方认证")
+    @ApiOperation("删除第三方认证")
     @PreAuthorize("@ss.hasPermi('system:oauth:remove')")
     @Log(title = "第三方认证", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")

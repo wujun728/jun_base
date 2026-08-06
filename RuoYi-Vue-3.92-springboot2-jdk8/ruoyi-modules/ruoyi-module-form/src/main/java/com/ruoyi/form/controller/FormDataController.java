@@ -22,9 +22,9 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.form.domain.FormData;
 import com.ruoyi.form.service.IFormDataService;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Api;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 单数据Controller
@@ -34,7 +34,7 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @RestController
 @RequestMapping("/form/data")
-@Tag(name = "【单数据】管理")
+@Api(tags = "【单数据】管理")
 public class FormDataController extends BaseController
 {
     @Autowired
@@ -43,7 +43,7 @@ public class FormDataController extends BaseController
     /**
      * 查询单数据列表
      */
-    @Operation(summary = "查询单数据列表")
+    @ApiOperation("查询单数据列表")
     @PreAuthorize("@ss.hasPermi('form:data:list')")
     @GetMapping("/list")
     public TableDataInfo list(FormData formData)
@@ -56,7 +56,7 @@ public class FormDataController extends BaseController
     /**
      * 导出单数据列表
      */
-    @Operation(summary = "导出单数据列表")
+    @ApiOperation("导出单数据列表")
     @PreAuthorize("@ss.hasPermi('form:data:export')")
     @Log(title = "单数据", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -70,7 +70,7 @@ public class FormDataController extends BaseController
     /**
      * 获取单数据详细信息
      */
-    @Operation(summary = "获取单数据详细信息")
+    @ApiOperation("获取单数据详细信息")
     @PreAuthorize("@ss.hasPermi('form:data:query')")
     @GetMapping(value = "/{dataId}")
     public AjaxResult getInfo(@PathVariable("dataId") Long dataId)
@@ -81,7 +81,7 @@ public class FormDataController extends BaseController
     /**
      * 新增单数据
      */
-    @Operation(summary = "新增单数据")
+    @ApiOperation("新增单数据")
     @PreAuthorize("@ss.hasPermi('form:data:add')")
     @Log(title = "单数据", businessType = BusinessType.INSERT)
     @PostMapping
@@ -94,7 +94,7 @@ public class FormDataController extends BaseController
     /**
      * 修改单数据
      */
-    @Operation(summary = "修改单数据")
+    @ApiOperation("修改单数据")
     @PreAuthorize("@ss.hasPermi('form:data:edit')")
     @Log(title = "单数据", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -107,7 +107,7 @@ public class FormDataController extends BaseController
     /**
      * 删除单数据
      */
-    @Operation(summary = "删除单数据")
+    @ApiOperation("删除单数据")
     @PreAuthorize("@ss.hasPermi('form:data:remove')")
     @Log(title = "单数据", businessType = BusinessType.DELETE)
     @DeleteMapping("/{dataIds}")

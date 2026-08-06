@@ -1,17 +1,18 @@
-package com.ruoyi.flowable.domain.dto;
+﻿package com.ruoyi.flowable.domain.dto;
 
 import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.Api;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  * <p>
- * 工作流任务
+ * 宸ヤ綔娴佷换鍔?
  * <p>
  *
  * @author Tony
@@ -19,85 +20,85 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@Schema(description = "工作流任务相关-返回参数")
+@Api(tags = "宸ヤ綔娴佷换鍔＄浉鍏?杩斿洖鍙傛暟")
 public class FlowTaskDto implements Serializable {
 
-    @Schema(title = "任务编号")
+    @ApiModelProperty("浠诲姟缂栧彿")
     private String taskId;
 
-    @Schema(title = "任务执行编号")
+    @ApiModelProperty("浠诲姟鎵ц缂栧彿")
     private String executionId;
 
-    @Schema(title = "任务名称")
+    @ApiModelProperty("浠诲姟鍚嶇О")
     private String taskName;
 
-    @Schema(title = "任务Key")
+    @ApiModelProperty("浠诲姟Key")
     private String taskDefKey;
 
-    @Schema(title = "任务执行人Id")
+    @ApiModelProperty("浠诲姟鎵ц浜篒d")
     private Long assigneeId;
 
-    @Schema(title = "部门名称")
+    @ApiModelProperty("閮ㄩ棬鍚嶇О")
     private String deptName;
 
-    @Schema(title = "流程发起人部门名称")
+    @ApiModelProperty("娴佺▼鍙戣捣浜洪儴闂ㄥ悕绉?)
     private String startDeptName;
 
-    @Schema(title = "任务执行人名称")
+    @ApiModelProperty("浠诲姟鎵ц浜哄悕绉?)
     private String assigneeName;
-    @Schema(title = "任务执行人部门")
+    @ApiModelProperty("浠诲姟鎵ц浜洪儴闂?)
     private String assigneeDeptName;;
 
-    @Schema(title = "流程发起人Id")
+    @ApiModelProperty("娴佺▼鍙戣捣浜篒d")
     private String startUserId;
 
-    @Schema(title = "流程发起人名称")
+    @ApiModelProperty("娴佺▼鍙戣捣浜哄悕绉?)
     private String startUserName;
 
-    @Schema(title = "流程类型")
+    @ApiModelProperty("娴佺▼绫诲瀷")
     private String category;
 
-    @Schema(title = "流程变量信息")
+    @ApiModelProperty("娴佺▼鍙橀噺淇℃伅")
     private Object variables;
 
-    @Schema(title = "局部变量信息")
+    @ApiModelProperty("灞€閮ㄥ彉閲忎俊鎭?)
     private Object taskLocalVars;
 
-    @Schema(title = "流程部署编号")
+    @ApiModelProperty("娴佺▼閮ㄧ讲缂栧彿")
     private String deployId;
 
-    @Schema(title = "流程ID")
+    @ApiModelProperty("娴佺▼ID")
     private String procDefId;
 
-    @Schema(title = "流程key")
+    @ApiModelProperty("娴佺▼key")
     private String procDefKey;
 
-    @Schema(title = "流程定义名称")
+    @ApiModelProperty("娴佺▼瀹氫箟鍚嶇О")
     private String procDefName;
 
-    @Schema(title = "流程定义内置使用版本")
+    @ApiModelProperty("娴佺▼瀹氫箟鍐呯疆浣跨敤鐗堟湰")
     private int procDefVersion;
 
-    @Schema(title = "流程实例ID")
+    @ApiModelProperty("娴佺▼瀹炰緥ID")
     private String procInsId;
 
-    @Schema(title = "历史流程实例ID")
+    @ApiModelProperty("鍘嗗彶娴佺▼瀹炰緥ID")
     private String hisProcInsId;
 
-    @Schema(title = "任务耗时")
+    @ApiModelProperty("浠诲姟鑰楁椂")
     private String duration;
 
-    @Schema(title = "任务意见")
+    @ApiModelProperty("浠诲姟鎰忚")
     private FlowCommentDto comment;
 
-    @Schema(title = "候选执行人")
+    @ApiModelProperty("鍊欓€夋墽琛屼汉")
     private String candidate;
 
-    @Schema(title = "任务创建时间")
+    @ApiModelProperty("浠诲姟鍒涘缓鏃堕棿")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
-    @Schema(title = "任务完成时间")
+    @ApiModelProperty("浠诲姟瀹屾垚鏃堕棿")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date finishTime;
 

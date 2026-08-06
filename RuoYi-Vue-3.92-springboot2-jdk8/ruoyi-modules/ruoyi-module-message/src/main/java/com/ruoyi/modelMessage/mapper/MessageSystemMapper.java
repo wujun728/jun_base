@@ -85,7 +85,6 @@ public interface MessageSystemMapper
     @Update("update message_system set message_status = 1 where message_id = #{messageId} and message_recipient = #{userName}")
     public int updateState(Long messageId, String userName);
 
-    
      /**
      * 根据部门ID获取所有符合条件的用户信息。
      *

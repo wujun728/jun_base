@@ -22,9 +22,9 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.online.domain.OnlineMb;
 import com.ruoyi.online.service.IOnlineMbService;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Api;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * mybatis在线接口Controller
@@ -34,7 +34,7 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @RestController
 @RequestMapping("/online/mb")
-@Tag(name = "【mybatis在线接口】管理")
+@Api(tags = "【mybatis在线接口】管理")
 public class OnlineMbController extends BaseController
 {
     @Autowired
@@ -43,7 +43,7 @@ public class OnlineMbController extends BaseController
     /**
      * 查询mybatis在线接口列表
      */
-    @Operation(summary = "查询mybatis在线接口列表")
+    @ApiOperation("查询mybatis在线接口列表")
     @PreAuthorize("@ss.hasPermi('online:mb:list')")
     @GetMapping("/list")
     public TableDataInfo list(OnlineMb onlineMb)
@@ -56,7 +56,7 @@ public class OnlineMbController extends BaseController
     /**
      * 导出mybatis在线接口列表
      */
-    @Operation(summary = "导出mybatis在线接口列表")
+    @ApiOperation("导出mybatis在线接口列表")
     @PreAuthorize("@ss.hasPermi('online:mb:export')")
     @Log(title = "mybatis在线接口", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -70,7 +70,7 @@ public class OnlineMbController extends BaseController
     /**
      * 获取mybatis在线接口详细信息
      */
-    @Operation(summary = "获取mybatis在线接口详细信息")
+    @ApiOperation("获取mybatis在线接口详细信息")
     @PreAuthorize("@ss.hasPermi('online:mb:query')")
     @GetMapping(value = "/{mbId}")
     public AjaxResult getInfo(@PathVariable("mbId") Long mbId)
@@ -81,7 +81,7 @@ public class OnlineMbController extends BaseController
     /**
      * 新增mybatis在线接口
      */
-    @Operation(summary = "新增mybatis在线接口")
+    @ApiOperation("新增mybatis在线接口")
     @PreAuthorize("@ss.hasPermi('online:mb:add')")
     @Log(title = "mybatis在线接口", businessType = BusinessType.INSERT)
     @PostMapping
@@ -93,7 +93,7 @@ public class OnlineMbController extends BaseController
     /**
      * 修改mybatis在线接口
      */
-    @Operation(summary = "修改mybatis在线接口")
+    @ApiOperation("修改mybatis在线接口")
     @PreAuthorize("@ss.hasPermi('online:mb:edit')")
     @Log(title = "mybatis在线接口", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -105,7 +105,7 @@ public class OnlineMbController extends BaseController
     /**
      * 删除mybatis在线接口
      */
-    @Operation(summary = "删除mybatis在线接口")
+    @ApiOperation("删除mybatis在线接口")
     @PreAuthorize("@ss.hasPermi('online:mb:remove')")
     @Log(title = "mybatis在线接口", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{mbIds}")

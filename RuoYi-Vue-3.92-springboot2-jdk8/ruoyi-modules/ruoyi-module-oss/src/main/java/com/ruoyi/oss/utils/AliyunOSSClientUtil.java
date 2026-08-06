@@ -143,5 +143,4 @@ public class AliyunOSSClientUtil {
         return "text/html";
     }
 
-
 }

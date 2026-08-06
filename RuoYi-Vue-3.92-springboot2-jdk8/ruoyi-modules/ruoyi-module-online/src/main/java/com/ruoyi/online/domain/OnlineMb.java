@@ -6,84 +6,67 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
 /**
  * mybatis在线接口对象 online_mb
  * 
  * @author Dftre
  * @date 2024-01-26
  */
-@Schema(description = "mybatis在线接口对象")
 public class OnlineMb extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /** 主键 */
-    @Schema(title = "主键")
     private Long mbId;
 
     /** 标签名 */
-    @Schema(title = "标签名")
     @Excel(name = "标签名")
     private String tag;
 
     /** 标签id */
-    @Schema(title = "标签id")
     @Excel(name = "标签id")
     private String tagId;
 
     /** 参数类型 */
-    @Schema(title = "参数类型")
     @Excel(name = "参数类型")
     private String parameterType;
 
     /** 结果类型 */
-    @Schema(title = "结果类型")
     @Excel(name = "结果类型")
     private String resultMap;
 
     /** sql语句 */
-    @Schema(title = "sql语句")
     @Excel(name = "sql语句")
     private String sqlText;
 
     /** 请求路径 */
-    @Schema(title = "请求路径")
     @Excel(name = "请求路径")
     private String path;
 
     /** 请求方式 */
-    @Schema(title = "请求方式")
     @Excel(name = "请求方式")
     private String method;
 
     /** 响应类型 */
-    @Schema(title = "响应类型")
     @Excel(name = "响应类型")
     private String resultType;
     
     /** 执行器 */
-    @Schema(title = "执行器")
     @Excel(name = "执行器")
     private String actuator;
 
     /** 是否需要userId */
-    @Schema(title = "是否需要userId")
     @Excel(name = "是否需要userId")
     private String userId;
 
     /** 是否需要deptId */
-    @Schema(title = "是否需要deptId")
     @Excel(name = "是否需要deptId")
     private String deptId;
 
     /** 许可类型 */
-    @Schema(title = "许可类型")
     @Excel(name = "许可类型")
     private String permissionType;
 
     /** 许可值 */
-    @Schema(title = "许可值")
     @Excel(name = "许可值")
     private String permissionValue;
 

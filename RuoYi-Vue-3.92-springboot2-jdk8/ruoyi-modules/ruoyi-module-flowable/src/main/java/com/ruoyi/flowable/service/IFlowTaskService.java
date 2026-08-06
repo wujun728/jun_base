@@ -28,7 +28,6 @@ public interface IFlowTaskService {
      */
     void taskReject(FlowTaskVo flowTaskVo);
 
-
     /**
      * 退回任务
      *
@@ -79,14 +78,12 @@ public interface IFlowTaskService {
      */
     void resolveTask(FlowTaskVo flowTaskVo);
 
-
     /**
      * 转办任务
      *
      * @param flowTaskVo 请求实体参数
      */
     void assignTask(FlowTaskVo flowTaskVo);
-
 
     /**
      * 多实例加签
@@ -122,7 +119,6 @@ public interface IFlowTaskService {
      */
     AjaxResult revokeProcess(FlowTaskVo flowTaskVo);
 
-
     /**
      * 代办任务列表
      *
@@ -130,7 +126,6 @@ public interface IFlowTaskService {
      * @return
      */
     List<FlowTaskDto> todoList(FlowQueryVo queryVo);
-
 
     /**
      * 已办任务列表
@@ -206,7 +201,6 @@ public interface IFlowTaskService {
      * @return
      */
     AjaxResult flowTaskForm(String taskId) throws Exception;
-
 
     /**
      * 流程节点信息

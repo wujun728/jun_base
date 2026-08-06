@@ -1,22 +1,23 @@
-package com.ruoyi.flowable.domain.vo;
+﻿package com.ruoyi.flowable.domain.vo;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.Api;
 import lombok.Data;
 
 /**
- * <p>可退回节点<p>
+ * <p>鍙€€鍥炶妭鐐?p>
  *
  * @author tony
  * @date 2022-04-23 11:01:52
  */
 @Data
-@Schema(description = "可退回节点")
+@Api(tags = "鍙€€鍥炶妭鐐?)
 public class ReturnTaskNodeVo {
 
-    @Schema(title = "任务Id")
+    @ApiModelProperty("浠诲姟Id")
     private String id;
 
-    @Schema(title = "用户Id")
+    @ApiModelProperty("鐢ㄦ埛Id")
     private String name;
 
 }

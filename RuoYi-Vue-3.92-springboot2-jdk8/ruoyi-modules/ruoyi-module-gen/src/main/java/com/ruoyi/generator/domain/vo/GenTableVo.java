@@ -11,7 +11,7 @@ import com.ruoyi.generator.domain.GenColumn;
 import com.ruoyi.generator.domain.GenJoin;
 import com.ruoyi.generator.domain.GenTable;
 
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;

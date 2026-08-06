@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-
 @Configuration
 @AllArgsConstructor
 public class DataScopeConfiguration {
@@ -24,7 +23,6 @@ public class DataScopeConfiguration {
         dataRuleHandler.init();
         return dataRuleHandler;
     }
-
 
     @Bean
     @ConditionalOnBean(DataRuleHandler.class)

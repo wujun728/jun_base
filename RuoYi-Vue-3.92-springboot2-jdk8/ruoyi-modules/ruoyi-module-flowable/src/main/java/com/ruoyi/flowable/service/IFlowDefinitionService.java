@@ -16,7 +16,6 @@ public interface IFlowDefinitionService {
 
     boolean exist(String processDefinitionKey);
 
-
     /**
      * 流程定义列表
      *
@@ -53,7 +52,6 @@ public interface IFlowDefinitionService {
 
     AjaxResult startProcessInstanceById(String procDefId, Map<String, Object> variables);
 
-
     /**
      * 激活或挂起流程定义
      *
@@ -62,14 +60,12 @@ public interface IFlowDefinitionService {
      */
     void updateState(Integer state, String deployId);
 
-
     /**
      * 删除流程定义
      *
      * @param deployId 流程部署ID act_ge_bytearray 表中 deployment_id值
      */
     void delete(String deployId);
-
 
     /**
      * 读取图片文件

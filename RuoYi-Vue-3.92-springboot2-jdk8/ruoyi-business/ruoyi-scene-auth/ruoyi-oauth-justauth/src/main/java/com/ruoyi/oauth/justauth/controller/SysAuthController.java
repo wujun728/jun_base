@@ -27,7 +27,7 @@ import com.ruoyi.framework.web.service.TokenService;
 import com.ruoyi.oauth.justauth.config.JustAuthConfig;
 import com.ruoyi.system.service.ISysUserService;
 
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import me.zhyd.oauth.model.AuthCallback;
 import me.zhyd.oauth.model.AuthResponse;
 import me.zhyd.oauth.model.AuthUser;

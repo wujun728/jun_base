@@ -32,8 +32,8 @@ import com.ruoyi.pay.service.IPayOrderService;
 import com.ruoyi.pay.sqb.config.SqbConfig;
 import com.ruoyi.pay.sqb.service.ISqbPayService;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;

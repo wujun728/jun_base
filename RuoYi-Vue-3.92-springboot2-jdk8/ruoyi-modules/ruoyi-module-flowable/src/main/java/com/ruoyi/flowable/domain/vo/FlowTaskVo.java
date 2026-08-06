@@ -1,55 +1,56 @@
-package com.ruoyi.flowable.domain.vo;
+﻿package com.ruoyi.flowable.domain.vo;
 
 import java.util.List;
 import java.util.Map;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.Api;
 import lombok.Data;
 
 /**
- * <p>流程任务<p>
+ * <p>娴佺▼浠诲姟<p>
  *
  * @author Tony
  * @date 2021-04-03
  */
 @Data
-@Schema(description = "工作流任务相关--请求参数")
+@Api(tags = "宸ヤ綔娴佷换鍔＄浉鍏?-璇锋眰鍙傛暟")
 public class FlowTaskVo {
 
-    @Schema(title = "任务Id")
+    @ApiModelProperty("浠诲姟Id")
     private String taskId;
 
-    @Schema(title = "用户Id")
+    @ApiModelProperty("鐢ㄦ埛Id")
     private String userId;
 
-    @Schema(title = "任务意见")
+    @ApiModelProperty("浠诲姟鎰忚")
     private String comment;
 
-    @Schema(title = "流程实例Id")
+    @ApiModelProperty("娴佺▼瀹炰緥Id")
     private String instanceId;
 
-    @Schema(title = "节点")
+    @ApiModelProperty("鑺傜偣")
     private String targetKey;
 
     private String deploymentId;
-    @Schema(title = "流程环节定义ID")
+    @ApiModelProperty("娴佺▼鐜妭瀹氫箟ID")
     private String defId;
 
-    @Schema(title = "子执行流ID")
+    @ApiModelProperty("瀛愭墽琛屾祦ID")
     private String currentChildExecutionId;
 
-    @Schema(title = "子执行流是否已执行")
+    @ApiModelProperty("瀛愭墽琛屾祦鏄惁宸叉墽琛?)
     private Boolean flag;
 
-    @Schema(title = "流程变量信息")
+    @ApiModelProperty("娴佺▼鍙橀噺淇℃伅")
     private Map<String, Object> variables;
 
-    @Schema(title = "审批人")
+    @ApiModelProperty("瀹℃壒浜?)
     private String assignee;
 
-    @Schema(title = "候选人")
+    @ApiModelProperty("鍊欓€変汉")
     private List<String> candidateUsers;
 
-    @Schema(title = "审批组")
+    @ApiModelProperty("瀹℃壒缁?)
     private List<String> candidateGroups;
 }

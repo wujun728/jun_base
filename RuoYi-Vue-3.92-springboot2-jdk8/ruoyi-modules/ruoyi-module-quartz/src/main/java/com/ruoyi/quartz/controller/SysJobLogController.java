@@ -20,7 +20,7 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.quartz.domain.SysJobLog;
 import com.ruoyi.quartz.service.ISysJobLogService;
 
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 调度日志操作处理
@@ -68,7 +68,6 @@ public class SysJobLogController extends BaseController
     {
         return success(jobLogService.selectJobLogById(jobLogId));
     }
-
 
     /**
      * 删除定时任务调度日志

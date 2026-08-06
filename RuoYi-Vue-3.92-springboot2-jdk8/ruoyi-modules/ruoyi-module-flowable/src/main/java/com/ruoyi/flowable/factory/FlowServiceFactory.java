@@ -10,9 +10,8 @@ import org.flowable.engine.TaskService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import jakarta.annotation.Resource;
+import javax.annotation.Resource;
 import lombok.Getter;
-
 
 /**
  * flowable 引擎注入封装

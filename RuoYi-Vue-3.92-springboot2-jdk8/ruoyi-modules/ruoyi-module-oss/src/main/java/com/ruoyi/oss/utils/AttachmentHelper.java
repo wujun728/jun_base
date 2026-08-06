@@ -10,8 +10,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.HttpServletRequest;
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
@@ -37,7 +37,6 @@ public class AttachmentHelper {
         uploadHelper = new OSSUploadHelper();
         uploadHelper.init(ossConfig);
     }
-
 
     public String upload(HttpServletRequest request, MultipartFile file) throws FileSizeLimitExceededException,
             IOException, FileNameLengthLimitExceededException, InvalidExtensionException {

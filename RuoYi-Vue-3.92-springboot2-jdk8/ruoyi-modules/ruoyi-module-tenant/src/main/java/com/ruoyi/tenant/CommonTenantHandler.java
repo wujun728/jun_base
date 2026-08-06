@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.StringValue;
 
-
 @AllArgsConstructor
 public class CommonTenantHandler implements TenantLineHandler {
 

@@ -22,9 +22,9 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.modelMessage.domain.MessageTemplate;
 import com.ruoyi.modelMessage.service.IMessageTemplateService;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Api;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 模版管理Controller
@@ -34,7 +34,7 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @RestController
 @RequestMapping("/modelMessage/template")
-@Tag(name = "【模版管理】管理")
+@Api(tags = "【模版管理】管理")
 public class MessageTemplateController extends BaseController
 {
     @Autowired
@@ -43,7 +43,7 @@ public class MessageTemplateController extends BaseController
     /**
      * 查询模版管理列表
      */
-    @Operation(summary = "查询模版管理列表")
+    @ApiOperation("查询模版管理列表")
     //@PreAuthorize("@ss.hasPermi('modelMessage:template:list')")
     @GetMapping("/list")
     public TableDataInfo list(MessageTemplate messageTemplate)
@@ -56,7 +56,7 @@ public class MessageTemplateController extends BaseController
     /**
      * 导出模版管理列表
      */
-    @Operation(summary = "导出模版管理列表")
+    @ApiOperation("导出模版管理列表")
     @PreAuthorize("@ss.hasPermi('modelMessage:template:export')")
     @Log(title = "模版管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -70,7 +70,7 @@ public class MessageTemplateController extends BaseController
     /**
      * 获取模版管理详细信息
      */
-    @Operation(summary = "获取模版管理详细信息")
+    @ApiOperation("获取模版管理详细信息")
     //@PreAuthorize("@ss.hasPermi('modelMessage:template:query')")
     @GetMapping(value = "/{templateId}")
     public AjaxResult getInfo(@PathVariable("templateId") Long templateId)
@@ -81,7 +81,7 @@ public class MessageTemplateController extends BaseController
     /**
      * 新增模版管理
      */
-    @Operation(summary = "新增模版管理")
+    @ApiOperation("新增模版管理")
     //@PreAuthorize("@ss.hasPermi('modelMessage:template:add')")
     @Log(title = "模版管理", businessType = BusinessType.INSERT)
     @PostMapping
@@ -93,7 +93,7 @@ public class MessageTemplateController extends BaseController
     /**
      * 修改模版管理
      */
-    @Operation(summary = "修改模版管理")
+    @ApiOperation("修改模版管理")
     //@PreAuthorize("@ss.hasPermi('modelMessage:template:edit')")
     @Log(title = "模版管理", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -105,7 +105,7 @@ public class MessageTemplateController extends BaseController
     /**
      * 删除模版管理
      */
-    @Operation(summary = "删除模版管理")
+    @ApiOperation("删除模版管理")
     //@PreAuthorize("@ss.hasPermi('modelMessage:template:remove')")
     @Log(title = "模版管理", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{templateIds}")
@@ -118,7 +118,7 @@ public class MessageTemplateController extends BaseController
      * 查询模版签名
      * @return 模版信息列表
      */
-    @Operation(summary = "查询模版下拉框")
+    @ApiOperation("查询模版下拉框")
     @GetMapping("/selecTemplates")
     public AjaxResult selecTemplates() {
         return success(messageTemplateService.selecTemplates());

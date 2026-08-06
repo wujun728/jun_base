@@ -23,12 +23,10 @@ public class ProcessConstants {
      */
     public static final String ASSIGNEE = "assignee";
 
-
     /**
      * 候选人
      */
     public static final String CANDIDATE_USERS = "candidateUsers";
-
 
     /**
      * 审批组
@@ -70,11 +68,9 @@ public class ProcessConstants {
      */
     public static final String PROCESS_INITIATOR = "INITIATOR";
 
-
     /**
      * 流程跳过
      */
     public static final String FLOWABLE_SKIP_EXPRESSION_ENABLED = "_FLOWABLE_SKIP_EXPRESSION_ENABLED";
-
 
 }

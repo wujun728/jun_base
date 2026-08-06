@@ -11,7 +11,6 @@ import com.ruoyi.modelMessage.domain.MessageTemplate;
 import com.ruoyi.modelMessage.mapper.MessageTemplateMapper;
 import com.ruoyi.modelMessage.service.IMessageTemplateService;
 
-
 /**
  * 模版管理Service业务层处理
  * 

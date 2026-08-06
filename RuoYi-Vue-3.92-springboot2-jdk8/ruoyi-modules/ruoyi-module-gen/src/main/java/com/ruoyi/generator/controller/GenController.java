@@ -41,7 +41,7 @@ import com.ruoyi.generator.service.IGenColumnService;
 import com.ruoyi.generator.service.IGenJoinService;
 import com.ruoyi.generator.service.IGenTableService;
 
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 代码生成 操作处理

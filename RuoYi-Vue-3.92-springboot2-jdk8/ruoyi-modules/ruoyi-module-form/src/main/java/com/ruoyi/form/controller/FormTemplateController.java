@@ -22,9 +22,9 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.form.domain.FormTemplate;
 import com.ruoyi.form.service.IFormTemplateService;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Api;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 单模板Controller
@@ -34,7 +34,7 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @RestController
 @RequestMapping("/form/template")
-@Tag(name = "【单模板】管理")
+@Api(tags = "【单模板】管理")
 public class FormTemplateController extends BaseController
 {
     @Autowired
@@ -43,7 +43,7 @@ public class FormTemplateController extends BaseController
     /**
      * 查询单模板列表
      */
-    @Operation(summary = "查询单模板列表")
+    @ApiOperation("查询单模板列表")
     @PreAuthorize("@ss.hasPermi('form:template:list')")
     @GetMapping("/list")
     public TableDataInfo list(FormTemplate formTemplate)
@@ -56,7 +56,7 @@ public class FormTemplateController extends BaseController
     /**
      * 导出单模板列表
      */
-    @Operation(summary = "导出单模板列表")
+    @ApiOperation("导出单模板列表")
     @PreAuthorize("@ss.hasPermi('form:template:export')")
     @Log(title = "单模板", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -70,7 +70,7 @@ public class FormTemplateController extends BaseController
     /**
      * 获取单模板详细信息
      */
-    @Operation(summary = "获取单模板详细信息")
+    @ApiOperation("获取单模板详细信息")
     @PreAuthorize("@ss.hasPermi('form:template:query')")
     @GetMapping(value = "/{formId}")
     public AjaxResult getInfo(@PathVariable("formId") Long formId)
@@ -81,7 +81,7 @@ public class FormTemplateController extends BaseController
     /**
      * 新增单模板
      */
-    @Operation(summary = "新增单模板")
+    @ApiOperation("新增单模板")
     @PreAuthorize("@ss.hasPermi('form:template:add')")
     @Log(title = "单模板", businessType = BusinessType.INSERT)
     @PostMapping
@@ -93,7 +93,7 @@ public class FormTemplateController extends BaseController
     /**
      * 修改单模板
      */
-    @Operation(summary = "修改单模板")
+    @ApiOperation("修改单模板")
     @PreAuthorize("@ss.hasPermi('form:template:edit')")
     @Log(title = "单模板", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -105,7 +105,7 @@ public class FormTemplateController extends BaseController
     /**
      * 删除单模板
      */
-    @Operation(summary = "删除单模板")
+    @ApiOperation("删除单模板")
     @PreAuthorize("@ss.hasPermi('form:template:remove')")
     @Log(title = "单模板", businessType = BusinessType.DELETE)
     @DeleteMapping("/{formIds}")

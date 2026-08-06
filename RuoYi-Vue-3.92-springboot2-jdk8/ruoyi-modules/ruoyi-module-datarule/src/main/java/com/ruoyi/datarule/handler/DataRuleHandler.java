@@ -21,7 +21,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class DataRuleHandler {
 
-
     HashMap<String, List<String>> roleDataRuleModelHashMap = new HashMap<>();
     HashMap<String, DataRuleModel> dataRuleModelHashMap = new HashMap<>();
     HashMap<String, Map<String, Object>> userModelHashMap = new HashMap<>();
@@ -64,7 +63,6 @@ public class DataRuleHandler {
         });
         return idList;
     }
-
 
     public void refreshTreeEntity(String tableName) {
         List<TreeEntityModel> treeEntityModelList = jdbcTemplate.query(String.format("select * from %s where del_flag = ?", tableName), new Object[]{0}, new BeanPropertyRowMapper<>(TreeEntityModel.class));

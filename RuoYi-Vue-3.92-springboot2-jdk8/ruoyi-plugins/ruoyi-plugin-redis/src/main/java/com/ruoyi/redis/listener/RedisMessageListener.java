@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.ruoyi.redis.annotation.RedisListener;
 
-import jakarta.annotation.PreDestroy;
+import javax.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

@@ -22,12 +22,10 @@ import org.apache.ibatis.reflection.SystemMetaObject;
 import java.sql.Connection;
 import java.util.Properties;
 
-
 @Slf4j
 @RequiredArgsConstructor
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
 public class DataRuleInterceptor implements Interceptor {
-
 
     private final DataRuleSqlHandler dataRuleSqlHandler;
     private final DataRuleHandler dataRuleHandler;
@@ -102,6 +100,5 @@ public class DataRuleInterceptor implements Interceptor {
     public void setProperties(Properties properties) {
 
     }
-
 
 }

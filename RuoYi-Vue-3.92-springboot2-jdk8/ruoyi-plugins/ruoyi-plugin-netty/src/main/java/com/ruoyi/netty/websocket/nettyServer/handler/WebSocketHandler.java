@@ -29,7 +29,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.util.concurrent.GlobalEventExecutor;
-import jakarta.annotation.PostConstruct;
+import javax.annotation.PostConstruct;
 
 @Component
 public class WebSocketHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {

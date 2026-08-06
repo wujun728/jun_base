@@ -21,15 +21,15 @@ import com.ruoyi.pay.domain.PayOrder;
 import com.ruoyi.pay.service.IPayOrderService;
 import com.ruoyi.pay.service.PayService;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiParams;
+import io.swagger.annotations.Api;
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-@Tag(name = "支付业务")
+@Api(tags = "支付业务")
 @RequestMapping("/pay")
 @RestController
 public class PayController extends BaseController {
@@ -55,9 +55,9 @@ public class PayController extends BaseController {
     }
 
     @Operation(summary = "获取支付链接", description = "也不一定是链接，比如支付宝是一串表单代码")
-    @Parameters({
-            @Parameter(name = "channel", description = "支付方式", required = true),
-            @Parameter(name = "orderNumber", description = "订单号", required = true)
+    @ApiParams({
+            @ApiParam(name = "channel", description = "支付方式", required = true),
+            @ApiParam(name = "orderNumber", description = "订单号", required = true)
     })
     @GetMapping("/{channel}/url/{orderNumber}")
     public R<String> url(@PathVariable String channel, @PathVariable String orderNumber) throws Exception {
@@ -67,10 +67,10 @@ public class PayController extends BaseController {
     }
 
     @Anonymous
-    @Operation(summary = "支付/退款回调")
-    @Parameters({
-            @Parameter(name = "channel", description = "支付方式", required = true),
-            @Parameter(name = "type", description = "通知类型", required = false)
+    @ApiOperation("支付/退款回调")
+    @ApiParams({
+            @ApiParam(name = "channel", description = "支付方式", required = true),
+            @ApiParam(name = "type", description = "通知类型", required = false)
     })
     @RequestMapping({
             "/{channel}/notify",
@@ -96,10 +96,10 @@ public class PayController extends BaseController {
         return payService.notify(request, response, payOrder, type);
     }
 
-    @Operation(summary = "查询支付状态")
-    @Parameters({
-            @Parameter(name = "channel", description = "支付方式", required = true),
-            @Parameter(name = "orderNumber", description = "订单号", required = true)
+    @ApiOperation("查询支付状态")
+    @ApiParams({
+            @ApiParam(name = "channel", description = "支付方式", required = true),
+            @ApiParam(name = "orderNumber", description = "订单号", required = true)
     })
     @PostMapping("/query/{orderNumber}")
     public R<PayOrder> query(@PathVariable(name = "orderNumber") String orderNumber)
@@ -113,10 +113,10 @@ public class PayController extends BaseController {
         return R.ok(payService.query(payOrder));
     }
 
-    @Operation(summary = "退款")
+    @ApiOperation("退款")
     @PostMapping("/refund/{orderNumber}")
-    @Parameters({
-            @Parameter(name = "channel", description = "支付方式", required = true),
+    @ApiParams({
+            @ApiParam(name = "channel", description = "支付方式", required = true),
     })
     public AjaxResult refund(@PathVariable(name = "orderNumber") String orderNumber) {
         PayOrder payOrder = payOrderService.selectPayOrderByOrderNumber(orderNumber);

@@ -26,9 +26,9 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.modelMessage.domain.MessageSystem;
 import com.ruoyi.modelMessage.service.IMessageSystemService;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Api;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 消息管理Controller
@@ -38,7 +38,7 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @RestController
 @RequestMapping("/modelMessage/messageSystem")
-@Tag(name = "【消息管理】管理")
+@Api(tags = "【消息管理】管理")
 public class MessageSystemController extends BaseController
 {
     @Autowired
@@ -47,7 +47,7 @@ public class MessageSystemController extends BaseController
     /**
      * 查询消息管理列表
      */
-    @Operation(summary = "查询消息管理列表")
+    @ApiOperation("查询消息管理列表")
     //@PreAuthorize("@ss.hasPermi('modelMessage:messageSystem:list')")
     @GetMapping("/list")
     public TableDataInfo list(MessageSystem messageSystem)
@@ -62,7 +62,7 @@ public class MessageSystemController extends BaseController
     /**
      * 导出消息管理列表
      */
-    @Operation(summary = "导出消息管理列表")
+    @ApiOperation("导出消息管理列表")
     @PreAuthorize("@ss.hasPermi('modelMessage:messageSystem:export')")
     @Log(title = "消息管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -76,7 +76,7 @@ public class MessageSystemController extends BaseController
     /**
      * 获取消息管理详细信息
      */
-    @Operation(summary = "获取消息管理详细信息")
+    @ApiOperation("获取消息管理详细信息")
     //@PreAuthorize("@ss.hasPermi('modelMessage:messageSystem:query')")
     @GetMapping(value = "/{messageId}")
     public AjaxResult getInfo(@PathVariable("messageId") Long messageId)
@@ -87,7 +87,7 @@ public class MessageSystemController extends BaseController
     /**
      * 修改消息管理
      */
-    @Operation(summary = "修改消息管理")
+    @ApiOperation("修改消息管理")
     //@PreAuthorize("@ss.hasPermi('modelMessage:messageSystem:edit')")
     @Log(title = "消息管理", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -101,7 +101,7 @@ public class MessageSystemController extends BaseController
     /**
      * 删除消息管理
      */
-    @Operation(summary = "删除消息管理")
+    @ApiOperation("删除消息管理")
     //@PreAuthorize("@ss.hasPermi('modelMessage:messageSystem:remove')")
     @Log(title = "消息管理", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{messageIds}")
@@ -113,7 +113,7 @@ public class MessageSystemController extends BaseController
     /**
      * 批量发送消息
      */
-    @Operation(summary = "批量发送消息")
+    @ApiOperation("批量发送消息")
     @Log(title = "批量发送消息", businessType = BusinessType.INSERT)
     @PostMapping
     @Transactional
@@ -130,7 +130,7 @@ public class MessageSystemController extends BaseController
     /**
      * 点击信息详情状态调整为已读
      */
-    @Operation(summary = "点击信息详情状态调整为已读")
+    @ApiOperation("点击信息详情状态调整为已读")
     @PostMapping("/{messageId}")
     public AjaxResult update(@PathVariable Long messageId){
         return success(messageSystemService.updateState(messageId));
@@ -144,7 +144,7 @@ public class MessageSystemController extends BaseController
      * @param sendMode 可选参数，当查询特定发送方式的用户时使用（phone/email）
      * @return 查询结果
      */
-    @Operation(summary = "统一查询系统资源信息")
+    @ApiOperation("统一查询系统资源信息")
     @GetMapping("/systemResource")
     public AjaxResult getSystemResource(@RequestParam String type, @RequestParam(required = false) Long id,
             @RequestParam(required = false) String sendMode) {

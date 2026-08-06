@@ -1,4 +1,4 @@
-package com.ruoyi.pay.domain;
+﻿package com.ruoyi.pay.domain;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -6,57 +6,58 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.Api;
 
 /**
- * 发票对象 pay_invoice
+ * 鍙戠エ瀵硅薄 pay_invoice
  * 
  * @author geek
  * @date 2024-06-11
  */
-@Schema(description = "发票对象")
+@Api(tags = "鍙戠エ瀵硅薄")
 public class PayInvoice extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
 
-    /** 发票id */
-    @Schema(title = "发票id")
+    /** 鍙戠エid */
+    @ApiModelProperty("鍙戠エid")
     private Long invoiceId;
 
-    /** 订单号 */
-    @Schema(title = "订单号")
-    @Excel(name = "订单号")
+    /** 璁㈠崟鍙?*/
+    @ApiModelProperty("璁㈠崟鍙?)
+    @Excel(name = "璁㈠崟鍙?)
     private String orderNumber;
 
-    /** 发票类型 */
-    @Schema(title = "发票类型")
-    @Excel(name = "发票类型")
+    /** 鍙戠エ绫诲瀷 */
+    @ApiModelProperty("鍙戠エ绫诲瀷")
+    @Excel(name = "鍙戠エ绫诲瀷")
     private String invoiceType;
 
-    /** 发票抬头 */
-    @Schema(title = "发票抬头")
-    @Excel(name = "发票抬头")
+    /** 鍙戠エ鎶ご */
+    @ApiModelProperty("鍙戠エ鎶ご")
+    @Excel(name = "鍙戠エ鎶ご")
     private String invoiceHeader;
 
-    /** 纳税人识别号 */
-    @Schema(title = "纳税人识别号")
-    @Excel(name = "纳税人识别号")
+    /** 绾崇◣浜鸿瘑鍒彿 */
+    @ApiModelProperty("绾崇◣浜鸿瘑鍒彿")
+    @Excel(name = "绾崇◣浜鸿瘑鍒彿")
     private String invoiceNumber;
 
-    /** 收票人手机号 */
-    @Schema(title = "收票人手机号")
-    @Excel(name = "收票人手机号")
+    /** 鏀剁エ浜烘墜鏈哄彿 */
+    @ApiModelProperty("鏀剁エ浜烘墜鏈哄彿")
+    @Excel(name = "鏀剁エ浜烘墜鏈哄彿")
     private String invoicePhone;
 
-    /** 收票人邮箱 */
-    @Schema(title = "收票人邮箱")
-    @Excel(name = "收票人邮箱")
+    /** 鏀剁エ浜洪偖绠?*/
+    @ApiModelProperty("鏀剁エ浜洪偖绠?)
+    @Excel(name = "鏀剁エ浜洪偖绠?)
     private String invoiceEmail;
 
-    /** 发票备注 */
-    @Schema(title = "发票备注")
-    @Excel(name = "发票备注")
+    /** 鍙戠エ澶囨敞 */
+    @ApiModelProperty("鍙戠エ澶囨敞")
+    @Excel(name = "鍙戠エ澶囨敞")
     private String invoiceRemark;
     public void setInvoiceId(Long invoiceId) 
     {

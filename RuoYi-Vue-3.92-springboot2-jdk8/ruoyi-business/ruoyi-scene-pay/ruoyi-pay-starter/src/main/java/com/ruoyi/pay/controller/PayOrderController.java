@@ -23,9 +23,9 @@ import com.ruoyi.common.utils.uuid.Seq;
 import com.ruoyi.pay.domain.PayOrder;
 import com.ruoyi.pay.service.IPayOrderService;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Api;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 订单Controller
@@ -35,7 +35,7 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @RestController
 @RequestMapping("/pay/order")
-@Tag(name = "【订单】管理")
+@Api(tags = "【订单】管理")
 public class PayOrderController extends BaseController
 {
     @Autowired
@@ -44,7 +44,7 @@ public class PayOrderController extends BaseController
     /**
      * 查询订单列表
      */
-    @Operation(summary = "查询订单列表")
+    @ApiOperation("查询订单列表")
     @PreAuthorize("@ss.hasPermi('pay:order:list')")
     @GetMapping("/list")
     public TableDataInfo list(PayOrder payOrder)
@@ -57,7 +57,7 @@ public class PayOrderController extends BaseController
     /**
      * 导出订单列表
      */
-    @Operation(summary = "导出订单列表")
+    @ApiOperation("导出订单列表")
     @PreAuthorize("@ss.hasPermi('pay:order:export')")
     @Log(title = "订单", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -71,7 +71,7 @@ public class PayOrderController extends BaseController
     /**
      * 获取订单详细信息
      */
-    @Operation(summary = "获取订单详细信息")
+    @ApiOperation("获取订单详细信息")
     @PreAuthorize("@ss.hasPermi('pay:order:query')")
     @GetMapping(value = "/{orderId}")
     public AjaxResult getInfo(@PathVariable("orderId") Long orderId)
@@ -82,7 +82,7 @@ public class PayOrderController extends BaseController
     /**
      * 新增订单
      */
-    @Operation(summary = "新增订单")
+    @ApiOperation("新增订单")
     @PreAuthorize("@ss.hasPermi('pay:order:add')")
     @Log(title = "订单", businessType = BusinessType.INSERT)
     @PostMapping
@@ -98,7 +98,7 @@ public class PayOrderController extends BaseController
     /**
      * 修改订单
      */
-    @Operation(summary = "修改订单")
+    @ApiOperation("修改订单")
     @PreAuthorize("@ss.hasPermi('pay:order:edit')")
     @Log(title = "订单", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -110,7 +110,7 @@ public class PayOrderController extends BaseController
     /**
      * 删除订单
      */
-    @Operation(summary = "通过订单号删除订单")
+    @ApiOperation("通过订单号删除订单")
     @PreAuthorize("@ss.hasPermi('pay:order:remove')")
     @Log(title = "订单", businessType = BusinessType.DELETE)
 	@DeleteMapping("/orderNumber/{orderNumber}")
@@ -122,7 +122,7 @@ public class PayOrderController extends BaseController
     /**
      * 删除订单
      */
-    @Operation(summary = "删除订单")
+    @ApiOperation("删除订单")
     @PreAuthorize("@ss.hasPermi('pay:order:remove')")
     @Log(title = "订单", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{orderIds}")

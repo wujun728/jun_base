@@ -22,9 +22,9 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.pay.domain.PayInvoice;
 import com.ruoyi.pay.service.IPayInvoiceService;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Api;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 发票Controller
@@ -34,7 +34,7 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @RestController
 @RequestMapping("/pay/invoice")
-@Tag(name = "【发票】管理")
+@Api(tags = "【发票】管理")
 public class PayInvoiceController extends BaseController
 {
     @Autowired
@@ -43,7 +43,7 @@ public class PayInvoiceController extends BaseController
     /**
      * 查询发票列表
      */
-    @Operation(summary = "查询发票列表")
+    @ApiOperation("查询发票列表")
     @PreAuthorize("@ss.hasPermi('pay:invoice:list')")
     @GetMapping("/list")
     public TableDataInfo list(PayInvoice payInvoice)
@@ -56,7 +56,7 @@ public class PayInvoiceController extends BaseController
     /**
      * 导出发票列表
      */
-    @Operation(summary = "导出发票列表")
+    @ApiOperation("导出发票列表")
     @PreAuthorize("@ss.hasPermi('pay:invoice:export')")
     @Log(title = "发票", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -70,7 +70,7 @@ public class PayInvoiceController extends BaseController
     /**
      * 获取发票详细信息
      */
-    @Operation(summary = "获取发票详细信息")
+    @ApiOperation("获取发票详细信息")
     @PreAuthorize("@ss.hasPermi('pay:invoice:query')")
     @GetMapping(value = "/{invoiceId}")
     public AjaxResult getInfo(@PathVariable("invoiceId") Long invoiceId)
@@ -81,7 +81,7 @@ public class PayInvoiceController extends BaseController
     /**
      * 新增发票
      */
-    @Operation(summary = "新增发票")
+    @ApiOperation("新增发票")
     @PreAuthorize("@ss.hasPermi('pay:invoice:add')")
     @Log(title = "发票", businessType = BusinessType.INSERT)
     @PostMapping
@@ -93,7 +93,7 @@ public class PayInvoiceController extends BaseController
     /**
      * 修改发票
      */
-    @Operation(summary = "修改发票")
+    @ApiOperation("修改发票")
     @PreAuthorize("@ss.hasPermi('pay:invoice:edit')")
     @Log(title = "发票", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -105,7 +105,7 @@ public class PayInvoiceController extends BaseController
     /**
      * 删除发票
      */
-    @Operation(summary = "删除发票")
+    @ApiOperation("删除发票")
     @PreAuthorize("@ss.hasPermi('pay:invoice:remove')")
     @Log(title = "发票", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{invoiceIds}")

@@ -11,13 +11,14 @@
     <packaging>pom</packaging>
     <description>基础插件</description>
     <modules>
-        <module>ruoyi-plugin-redis</module>
-        <module>ruoyi-plugin-ehcache</module>
-        <module>ruoyi-plugin-minio</module>
+        <!-- TODO: 以下插件依赖SB3的ruoyi-common扩展类(Message/StorageFactory/TtlCacheManager等)，待SB2 ruoyi-common升级后启用 -->
+        <!-- <module>ruoyi-plugin-redis</module> -->
+        <!-- <module>ruoyi-plugin-ehcache</module> -->
+        <!-- <module>ruoyi-plugin-minio</module> -->
+        <!-- <module>ruoyi-plugin-rabbitmq</module> -->
+        <!-- <module>ruoyi-plugin-websocket</module> -->
+        <!-- <module>ruoyi-plugin-alioss</module> -->
         <module>ruoyi-plugin-netty</module>
-        <module>ruoyi-plugin-rabbitmq</module>
-        <module>ruoyi-plugin-websocket</module>
-        <module>ruoyi-plugin-alioss</module>
         <module>ruoyi-plugins-starter</module>
     </modules>
 </project>

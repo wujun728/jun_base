@@ -28,9 +28,9 @@ import com.ruoyi.flowable.domain.vo.FlowQueryVo;
 import com.ruoyi.flowable.domain.vo.FlowTaskVo;
 import com.ruoyi.flowable.service.IFlowTaskService;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Api;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -42,7 +42,7 @@ import lombok.extern.slf4j.Slf4j;
  * @date 2021-04-03
  */
 @Slf4j
-@Tag(name = "工作流流程任务管理")
+@Api(tags = "工作流流程任务管理")
 @RestController
 @RequestMapping("/flowable/task")
 public class FlowTaskController extends BaseController {
@@ -50,71 +50,71 @@ public class FlowTaskController extends BaseController {
     @Autowired
     private IFlowTaskService flowTaskService;
 
-    @Operation(summary = "我发起的流程")
+    @ApiOperation("我发起的流程")
     @GetMapping(value = "/myProcess")
     public TableDataInfo myProcess(FlowQueryVo queryVo) {
         List<FlowTaskDto> myProcess = flowTaskService.myProcess(queryVo);
         return getDataTable(myProcess);
     }
 
-    @Operation(summary = "取消申请")
+    @ApiOperation("取消申请")
     @Log(title = "取消申请", businessType = BusinessType.UPDATE)
     @PostMapping(value = "/stopProcess")
     public AjaxResult stopProcess(@RequestBody FlowTaskVo flowTaskVo) {
         return flowTaskService.stopProcess(flowTaskVo);
     }
 
-    @Operation(summary = "撤回流程")
+    @ApiOperation("撤回流程")
     @Log(title = "撤回流程", businessType = BusinessType.UPDATE)
     @PostMapping(value = "/revokeProcess")
     public AjaxResult revokeProcess(@RequestBody FlowTaskVo flowTaskVo) {
         return flowTaskService.revokeProcess(flowTaskVo);
     }
 
-    @Operation(summary = "获取待办列表")
+    @ApiOperation("获取待办列表")
     @GetMapping(value = "/todoList")
     public TableDataInfo todoList(FlowQueryVo queryVo) {
         return getDataTable(flowTaskService.todoList(queryVo));
     }
 
-    @Operation(summary = "获取已办任务")
+    @ApiOperation("获取已办任务")
     @GetMapping(value = "/finishedList")
     public TableDataInfo finishedList(FlowQueryVo queryVo) {
         return getDataTable(flowTaskService.finishedList(queryVo));
     }
 
-    @Operation(summary = "流程历史流转记录")
+    @ApiOperation("流程历史流转记录")
     @GetMapping(value = "/flowRecord")
     public AjaxResult flowRecord(String procInsId, String deployId) {
         return flowTaskService.flowRecord(procInsId, deployId);
     }
 
-    @Operation(summary = "根据任务ID查询挂载的表单信息")
+    @ApiOperation("根据任务ID查询挂载的表单信息")
     @GetMapping(value = "/getTaskForm")
     public AjaxResult getTaskForm(String taskId) {
         return flowTaskService.getTaskForm(taskId);
     }
 
-    @Operation(summary = "流程初始化表单")
+    @ApiOperation("流程初始化表单")
     @GetMapping(value = "/flowFormData")
     public AjaxResult flowFormData(String deployId) {
         return flowTaskService.flowFormData(deployId);
     }
 
-    @Operation(summary = "获取流程变量")
+    @ApiOperation("获取流程变量")
     @GetMapping(value = "/processVariables/{taskId}")
     public AjaxResult processVariables(@PathVariable String taskId) {
         return flowTaskService.processVariables(taskId);
     }
 
-    @Operation(summary = "审批任务")
+    @ApiOperation("审批任务")
     @Log(title = "审批任务", businessType = BusinessType.UPDATE)
     @PostMapping(value = "/complete")
     public AjaxResult complete(@RequestBody FlowTaskVo flowTaskVo) {
         return flowTaskService.complete(flowTaskVo);
     }
 
-    @Operation(summary = "驳回任务")
+    @ApiOperation("驳回任务")
     @Log(title = "驳回任务", businessType = BusinessType.UPDATE)
     @PostMapping(value = "/reject")
     public AjaxResult taskReject(@RequestBody FlowTaskVo flowTaskVo) {
@@ -122,7 +122,7 @@ public class FlowTaskController extends BaseController {
         return AjaxResult.success();
     }
 
-    @Operation(summary = "退回任务")
+    @ApiOperation("退回任务")
     @Log(title = "退回任务", businessType = BusinessType.UPDATE)
     @PostMapping(value = "/return")
     public AjaxResult taskReturn(@RequestBody FlowTaskVo flowTaskVo) {
@@ -130,13 +130,13 @@ public class FlowTaskController extends BaseController {
         return AjaxResult.success();
     }
 
-    @Operation(summary = "获取所有可回退的节点")
+    @ApiOperation("获取所有可回退的节点")
     @PostMapping(value = "/returnList")
     public AjaxResult findReturnTaskList(@RequestBody FlowTaskVo flowTaskVo) {
         return flowTaskService.findReturnTaskList(flowTaskVo);
     }
 
-    @Operation(summary = "删除任务")
+    @ApiOperation("删除任务")
     @Log(title = "删除任务", businessType = BusinessType.DELETE)
     @DeleteMapping(value = "/delete")
     public AjaxResult delete(@RequestBody FlowTaskVo flowTaskVo) {
@@ -144,35 +144,35 @@ public class FlowTaskController extends BaseController {
         return AjaxResult.success();
     }
 
-    @Operation(summary = "认领/签收任务")
+    @ApiOperation("认领/签收任务")
     @PostMapping(value = "/claim")
     public AjaxResult claim(@RequestBody FlowTaskVo flowTaskVo) {
         flowTaskService.claim(flowTaskVo);
         return AjaxResult.success();
     }
 
-    @Operation(summary = "取消认领/签收任务")
+    @ApiOperation("取消认领/签收任务")
     @PostMapping(value = "/unClaim")
     public AjaxResult unClaim(@RequestBody FlowTaskVo flowTaskVo) {
         flowTaskService.unClaim(flowTaskVo);
         return AjaxResult.success();
     }
 
-    @Operation(summary = "委派任务")
+    @ApiOperation("委派任务")
     @PostMapping(value = "/delegateTask")
     public AjaxResult delegate(@RequestBody FlowTaskVo flowTaskVo) {
         flowTaskService.delegateTask(flowTaskVo);
         return AjaxResult.success();
     }
 
-    @Operation(summary = "任务归还")
+    @ApiOperation("任务归还")
     @PostMapping(value = "/resolveTask")
     public AjaxResult resolveTask(@RequestBody FlowTaskVo flowTaskVo) {
         flowTaskService.resolveTask(flowTaskVo);
         return AjaxResult.success();
     }
 
-    @Operation(summary = "转办任务")
+    @ApiOperation("转办任务")
     @PostMapping(value = "/assignTask")
     public AjaxResult assign(@RequestBody FlowTaskVo flowTaskVo) {
         flowTaskService.assignTask(flowTaskVo);
@@ -180,26 +180,26 @@ public class FlowTaskController extends BaseController {
     }
 
     @PostMapping(value = "/addMultiInstanceExecution")
-    @Operation(summary = "多实例加签")
+    @ApiOperation("多实例加签")
     public AjaxResult addMultiInstanceExecution(@RequestBody FlowTaskVo flowTaskVo) {
         flowTaskService.addMultiInstanceExecution(flowTaskVo);
         return AjaxResult.success("加签成功");
     }
 
     @PostMapping(value = "/deleteMultiInstanceExecution")
-    @Operation(summary = "多实例减签")
+    @ApiOperation("多实例减签")
     public AjaxResult deleteMultiInstanceExecution(@RequestBody FlowTaskVo flowTaskVo) {
         flowTaskService.deleteMultiInstanceExecution(flowTaskVo);
         return AjaxResult.success("减签成功");
     }
 
-    @Operation(summary = "获取下一节点")
+    @ApiOperation("获取下一节点")
     @PostMapping(value = "/nextFlowNode")
     public AjaxResult getNextFlowNode(@RequestBody FlowTaskVo flowTaskVo) {
         return flowTaskService.getNextFlowNode(flowTaskVo);
     }
 
-    @Operation(summary = "流程发起时获取下一节点")
+    @ApiOperation("流程发起时获取下一节点")
     @PostMapping(value = "/nextFlowNodeByStart")
     public AjaxResult getNextFlowNodeByStart(@RequestBody FlowTaskVo flowTaskVo) {
         return flowTaskService.getNextFlowNodeByStart(flowTaskVo);

@@ -16,8 +16,8 @@ import com.ruoyi.pay.alipay.service.IAliPayService;
 import com.ruoyi.pay.domain.PayOrder;
 import com.ruoyi.pay.service.IPayOrderService;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Service("pay:service:alipay")
 @ConditionalOnProperty(prefix = "pay.alipay", name = "enabled", havingValue = "true")

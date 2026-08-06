@@ -8,7 +8,6 @@ import java.lang.annotation.Target;
 
 import com.ruoyi.modelMessage.enums.MessageType;
 
-
 //自定义消息系统注解
 @Target({ ElementType.PARAMETER, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)

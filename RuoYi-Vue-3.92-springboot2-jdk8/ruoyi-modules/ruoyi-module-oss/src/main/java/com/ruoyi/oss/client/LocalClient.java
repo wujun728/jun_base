@@ -44,7 +44,6 @@ public class LocalClient extends AbstractOSSClient {
         uploadFilePath = localConfig.getUploadFilePath();
     }
 
-
     /**
      * 判断文件地址保存文件
      *

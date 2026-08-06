@@ -10,13 +10,11 @@ public class DataRuleModel implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-
     public static final int ALL = 1; //  全部
     public static final int OWN = 2; //  本人可见
     public static final int OWN_ORG = 3; //  所在机构可见
     public static final int OWN_ORG_CHILDREN = 4; //  所在机构及子级可见
     public static final int CUSTOM = 5; //  自定义
-
 
     private String id;
 

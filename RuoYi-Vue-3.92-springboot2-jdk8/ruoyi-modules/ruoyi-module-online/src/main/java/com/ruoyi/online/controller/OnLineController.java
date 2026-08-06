@@ -23,8 +23,8 @@ import com.ruoyi.online.domain.OnlineMb;
 import com.ruoyi.online.service.IOnlineMbService;
 import com.ruoyi.online.utils.SqlMapper;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 在线接口

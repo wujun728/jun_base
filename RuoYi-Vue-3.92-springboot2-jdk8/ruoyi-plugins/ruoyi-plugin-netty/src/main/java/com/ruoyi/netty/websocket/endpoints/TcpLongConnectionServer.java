@@ -30,8 +30,8 @@ import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.CharsetUtil;
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 /**
  * 一个简单的 TCP 长连接服务示例：\n
@@ -191,7 +191,8 @@ public class TcpLongConnectionServer {
 
         @Override
         public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-            if (evt instanceof IdleStateEvent idle) {
+            if (evt instanceof IdleStateEvent) {
+                IdleStateEvent idle = (IdleStateEvent) evt;
                 if (idle.state() == IdleState.READER_IDLE) {
                     log.debug("Close idle connection: {}", ctx.channel().remoteAddress());
                     ctx.writeAndFlush("ERR:IDLE_TIMEOUT\n").addListener(ChannelFutureListener.CLOSE);

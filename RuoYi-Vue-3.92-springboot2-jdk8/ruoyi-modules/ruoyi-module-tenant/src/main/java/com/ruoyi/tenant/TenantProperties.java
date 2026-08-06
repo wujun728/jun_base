@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
 @Data
 public class TenantProperties {
 
@@ -25,7 +24,6 @@ public class TenantProperties {
      * 多租户系统数据表
      */
     private List<String> ignoreTables = new ArrayList<>();
-
 
     private TenantProperties() {
     }

@@ -1,4 +1,4 @@
-package com.ruoyi.pay.domain;
+﻿package com.ruoyi.pay.domain;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -6,70 +6,71 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.Api;
 
 /**
- * 订单对象 pay_order
+ * 璁㈠崟瀵硅薄 pay_order
  * 
  * @author geek
  * @date 2024-06-11
  */
-@Schema(description = "订单对象")
+@Api(tags = "璁㈠崟瀵硅薄")
 public class PayOrder extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
-    /** 订单ID */
-    @Schema(title = "订单ID")
+    /** 璁㈠崟ID */
+    @ApiModelProperty("璁㈠崟ID")
     private Long orderId;
 
-    /** 订单号 */
-    @Schema(title = "商户订单号")
-    @Excel(name = "商户订单号")
+    /** 璁㈠崟鍙?*/
+    @ApiModelProperty("鍟嗘埛璁㈠崟鍙?)
+    @Excel(name = "鍟嗘埛璁㈠崟鍙?)
     private String orderNumber;
 
-    /** 第三方订单号 */
-    @Schema(title = "第三方订单号")
-    @Excel(name = "第三方订单号")
+    /** 绗笁鏂硅鍗曞彿 */
+    @ApiModelProperty("绗笁鏂硅鍗曞彿")
+    @Excel(name = "绗笁鏂硅鍗曞彿")
     private String thirdNumber;
 
-    /** 订单状态 */
-    @Schema(title = "订单状态")
-    @Excel(name = "订单状态")
+    /** 璁㈠崟鐘舵€?*/
+    @ApiModelProperty("璁㈠崟鐘舵€?)
+    @Excel(name = "璁㈠崟鐘舵€?)
     private String orderStatus;
 
-    /** 订单总金额 */
-    @Schema(title = "订单总金额")
-    @Excel(name = "订单总金额")
+    /** 璁㈠崟鎬婚噾棰?*/
+    @ApiModelProperty("璁㈠崟鎬婚噾棰?)
+    @Excel(name = "璁㈠崟鎬婚噾棰?)
     private String totalAmount;
 
-    /** 实际支付金额 */
-    @Schema(title = "实际支付金额")
-    @Excel(name = "实际支付金额")
+    /** 瀹為檯鏀粯閲戦 */
+    @ApiModelProperty("瀹為檯鏀粯閲戦")
+    @Excel(name = "瀹為檯鏀粯閲戦")
     private String actualAmount;
 
-    /** 订单内容 */
-    @Schema(title = "订单内容")
-    @Excel(name = "订单内容")
+    /** 璁㈠崟鍐呭 */
+    @ApiModelProperty("璁㈠崟鍐呭")
+    @Excel(name = "璁㈠崟鍐呭")
     private String orderContent;
 
-    /** 负载信息 */
-    @Schema(title = "负载信息")
-    @Excel(name = "负载信息")
+    /** 璐熻浇淇℃伅 */
+    @ApiModelProperty("璐熻浇淇℃伅")
+    @Excel(name = "璐熻浇淇℃伅")
     private String orderMessage;
 
-    /** 支付方式 */
-    @Schema(title = "支付方式")
-    @Excel(name = "支付方式")
+    /** 鏀粯鏂瑰紡 */
+    @ApiModelProperty("鏀粯鏂瑰紡")
+    @Excel(name = "鏀粯鏂瑰紡")
     private String payType;
 
-    /** 支付时间 */
-    @Schema(title = "支付时间")
-    @Excel(name = "支付时间")
+    /** 鏀粯鏃堕棿 */
+    @ApiModelProperty("鏀粯鏃堕棿")
+    @Excel(name = "鏀粯鏃堕棿")
     private java.util.Date payTime;
 
-    /** 支付人 */
-    @Schema(title = "支付人")
-    @Excel(name = "支付人")
+    /** 鏀粯浜?*/
+    @ApiModelProperty("鏀粯浜?)
+    @Excel(name = "鏀粯浜?)
     private String payBy;
 
     public void setOrderId(Long orderId) {

@@ -6,30 +6,24 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
 /**
  * 消息管理对象 message_system
  * 
  * @author ruoyi
  * @date 2024-12-21
  */
-@Schema(description = "消息管理对象")
 public class MessageSystem extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 主键 */
-    @Schema(title = "主键")
     private Long messageId;
 
     /** 标题 */
-    @Schema(title = "标题")
     @Excel(name = "标题")
     private String messageTitle;
 
     /** 消息内容 */
-    @Schema(title = "消息内容")
     @Excel(name = "消息内容")
     private String messageContent;
 
@@ -39,12 +33,10 @@ public class MessageSystem extends BaseEntity
     private String messageStatus;
 
     /** 消息类型 */
-    @Schema(title = "消息类型")
     @Excel(name = "消息类型")
     private String messageType;
 
      /** 消息类型 */
-     @Schema(title = "接收人")
      @Excel(name = "接收人")
      private String messageRecipient; 
 
@@ -54,7 +46,6 @@ public class MessageSystem extends BaseEntity
     private String sendMode;
 
     /** 号码 */
-    @Schema(title = "号码")
     @Excel(name = "号码")
     private String code;
 
@@ -84,7 +75,6 @@ public class MessageSystem extends BaseEntity
         return messageId;
     }
 
-
     public void setMessageTitle(String messageTitle) 
     {
         this.messageTitle = messageTitle;
@@ -94,7 +84,6 @@ public class MessageSystem extends BaseEntity
     {
         return messageTitle;
     }
-
 
     public void setMessageContent(String messageContent) 
     {
@@ -106,7 +95,6 @@ public class MessageSystem extends BaseEntity
         return messageContent;
     }
 
-
     public void setMessageStatus(String messageStatus) 
     {
         this.messageStatus = messageStatus;
@@ -116,7 +104,6 @@ public class MessageSystem extends BaseEntity
     {
         return messageStatus;
     }
-
 
     public void setMessageType(String messageType) 
     {
@@ -155,5 +142,4 @@ public class MessageSystem extends BaseEntity
             .toString();
     }
 
-    
 }

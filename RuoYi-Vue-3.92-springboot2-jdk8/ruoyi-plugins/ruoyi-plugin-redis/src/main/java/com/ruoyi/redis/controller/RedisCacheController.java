@@ -19,8 +19,8 @@ import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.StringUtils;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Api;
 
 
 /**
@@ -28,7 +28,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  * 
  * @author ruoyi
  */
-@Tag(name = "缓存监控")
+@Api(tags = "缓存监控")
 @RestController
 @SuppressWarnings(value = { "unchecked", "rawtypes" })
 @ConditionalOnProperty(prefix = "spring.cache", name = { "type" }, havingValue = "redis", matchIfMissing = false)
@@ -38,7 +38,7 @@ public class RedisCacheController {
     private RedisTemplate redisTemplate;
     
 
-    @Operation(summary = "获取缓存信息")
+    @ApiOperation("获取缓存信息")
     @PreAuthorize("@ss.hasPermi('monitor:cache:list')")
     @GetMapping()
     public AjaxResult getInfo() throws Exception {

@@ -9,7 +9,6 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.io.InputStream;
 
-
 public class QiniuOSSClient extends AbstractOSSClient {
 
     private UploadManager uploadManager;
@@ -26,7 +25,6 @@ public class QiniuOSSClient extends AbstractOSSClient {
     public void init(String propertiesName) {
 
     }
-
 
     @Override
     public void init(OssConfig config) {

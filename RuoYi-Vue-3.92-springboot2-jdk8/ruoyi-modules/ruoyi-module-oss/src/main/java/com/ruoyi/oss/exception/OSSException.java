@@ -10,7 +10,6 @@ public class OSSException extends RuntimeException {
         super();
     }
 
-
     public OSSException(String message) {
         super(message);
     }
@@ -19,11 +18,9 @@ public class OSSException extends RuntimeException {
         super(message, cause);
     }
 
-
     public OSSException(Throwable cause) {
         super(cause);
     }
-
 
     protected OSSException(String message, Throwable cause,
                            boolean enableSuppression,

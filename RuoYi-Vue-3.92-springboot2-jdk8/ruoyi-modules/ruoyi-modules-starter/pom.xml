@@ -16,14 +16,10 @@
             <groupId>com.ruoyi</groupId>
             <artifactId>ruoyi-module-form</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.ruoyi</groupId>
-            <artifactId>ruoyi-module-tenant</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.ruoyi</groupId>
-            <artifactId>ruoyi-module-flowable</artifactId>
-        </dependency>
+        <!-- TODO: tenant依赖LoginUser扩展，待SB2升级后启用 -->
+        <!-- <dependency><groupId>com.ruoyi</groupId><artifactId>ruoyi-module-tenant</artifactId></dependency> -->
+        <!-- TODO: flowable待适配 -->
+        <!-- <dependency><groupId>com.ruoyi</groupId><artifactId>ruoyi-module-flowable</artifactId></dependency> -->
         <!-- TODO: 适配后启用
         <dependency><groupId>com.ruoyi</groupId><artifactId>ruoyi-module-message</artifactId></dependency>
         <dependency><groupId>com.ruoyi</groupId><artifactId>ruoyi-module-online</artifactId></dependency>

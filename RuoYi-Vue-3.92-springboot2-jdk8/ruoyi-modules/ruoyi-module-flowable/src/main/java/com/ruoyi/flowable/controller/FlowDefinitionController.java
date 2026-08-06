@@ -40,10 +40,10 @@ import com.ruoyi.flowable.service.ISysExpressionService;
 import com.ruoyi.system.service.ISysRoleService;
 import com.ruoyi.system.service.ISysUserService;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.Resource;
-import jakarta.servlet.http.HttpServletResponse;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Api;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -55,7 +55,7 @@ import lombok.extern.slf4j.Slf4j;
  * @date 2021-04-03
  */
 @Slf4j
-@Tag(name = "流程定义")
+@Api(tags = "流程定义")
 @RestController
 @RequestMapping("/flowable/definition")
 public class FlowDefinitionController extends BaseController {
@@ -75,7 +75,7 @@ public class FlowDefinitionController extends BaseController {
     private ISysDeployFormService sysDeployFormService;
 
     @GetMapping(value = "/list")
-    @Operation(summary = "流程定义列表")
+    @ApiOperation("流程定义列表")
     public TableDataInfo list(
             @RequestParam Integer pageNum,
             @RequestParam Integer pageSize,
@@ -83,7 +83,7 @@ public class FlowDefinitionController extends BaseController {
         return getDataTable(flowDefinitionService.list(name, pageNum, pageSize));
     }
 
-    @Operation(summary = "导入流程文件")
+    @ApiOperation("导入流程文件")
     @PostMapping("/import")
     public AjaxResult importFile(
             @RequestParam(required = false) String name,
@@ -109,7 +109,7 @@ public class FlowDefinitionController extends BaseController {
         return AjaxResult.success("导入成功");
     }
 
-    @Operation(summary = "读取xml文件")
+    @ApiOperation("读取xml文件")
     @GetMapping("/readXml/{deployId}")
     public AjaxResult readXml(@PathVariable String deployId) {
         try {
@@ -120,7 +120,7 @@ public class FlowDefinitionController extends BaseController {
 
     }
 
-    @Operation(summary = "读取图片文件")
+    @ApiOperation("读取图片文件")
     @GetMapping("/readImage/{deployId}")
     public void readImage(@PathVariable String deployId, HttpServletResponse response) {
         OutputStream os = null;
@@ -147,7 +147,7 @@ public class FlowDefinitionController extends BaseController {
 
     }
 
-    @Operation(summary = "保存流程设计器内的xml文件")
+    @ApiOperation("保存流程设计器内的xml文件")
     @Log(title = "流程定义", businessType = BusinessType.INSERT)
     @PostMapping("/save")
     public AjaxResult save(@RequestBody FlowSaveXmlVo vo) {
@@ -171,14 +171,14 @@ public class FlowDefinitionController extends BaseController {
         return AjaxResult.success("导入成功");
     }
 
-    @Operation(summary = "发起流程")
+    @ApiOperation("发起流程")
     @Log(title = "发起流程", businessType = BusinessType.INSERT)
     @PostMapping("/start/{procDefId}")
     public AjaxResult start(@PathVariable String procDefId, @RequestBody Map<String, Object> variables) {
         return flowDefinitionService.startProcessInstanceById(procDefId, variables);
     }
 
-    @Operation(summary = "激活或挂起流程定义")
+    @ApiOperation("激活或挂起流程定义")
     @Log(title = "激活/挂起流程", businessType = BusinessType.UPDATE)
     @PutMapping(value = "/updateState")
     public AjaxResult updateState(@RequestParam Integer state, @RequestParam String deployId) {
@@ -186,7 +186,7 @@ public class FlowDefinitionController extends BaseController {
         return AjaxResult.success();
     }
 
-    @Operation(summary = "删除流程")
+    @ApiOperation("删除流程")
     @Log(title = "删除流程", businessType = BusinessType.DELETE)
     @DeleteMapping(value = "/{deployIds}")
     public AjaxResult delete(@PathVariable String[] deployIds) {
@@ -196,21 +196,21 @@ public class FlowDefinitionController extends BaseController {
         return AjaxResult.success();
     }
 
-    @Operation(summary = "指定流程办理人员列表")
+    @ApiOperation("指定流程办理人员列表")
     @GetMapping("/userList")
     public AjaxResult userList(SysUser user) {
         List<SysUser> list = userService.selectUserList(user);
         return AjaxResult.success(list);
     }
 
-    @Operation(summary = "指定流程办理组列表")
+    @ApiOperation("指定流程办理组列表")
     @GetMapping("/roleList")
     public AjaxResult roleList(SysRole role) {
         List<SysRole> list = sysRoleService.selectRoleList(role);
         return AjaxResult.success(list);
     }
 
-    @Operation(summary = "指定流程达式列表")
+    @ApiOperation("指定流程达式列表")
     @GetMapping("/expList")
     public AjaxResult expList(SysExpression sysExpression) {
         List<SysExpression> list = sysExpressionService.selectSysExpressionList(sysExpression);

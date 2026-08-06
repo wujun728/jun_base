@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.ruoyi.netty.websocket.nettyServer.NettyWebSocketServer;
 
-import jakarta.annotation.PreDestroy;
+import javax.annotation.PreDestroy;
 
 @Component
 public class NettyServerRunner implements ApplicationRunner {

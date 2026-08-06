@@ -56,11 +56,12 @@ public class RedisPubSubConfig implements ApplicationListener<ContextRefreshedEv
         for (String beanName : beanNames) {
             Object bean = context.getBean(beanName);
 
-            if (!(bean instanceof MessageListener listener)) {
+            if (!(bean instanceof MessageListener)) {
                 throw new IllegalStateException(
                         "@RedisListener The annotated class must implement the MessageListener interface. Bean Name: "
                                 + beanName);
             }
+            MessageListener listener = (MessageListener) bean;
 
             RedisListener annotation = bean.getClass().getAnnotation(RedisListener.class);
             String channelPattern = annotation.value();
