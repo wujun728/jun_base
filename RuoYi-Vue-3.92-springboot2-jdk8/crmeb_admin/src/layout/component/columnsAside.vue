@@ -89,8 +89,9 @@ export default {
     // 菜单高亮点击事件
     onColumnsAsideMenuClick(v) {
       let { path, redirect } = v;
-      if (v.children.length) {
-        this.$router.push(findFirstNonNullChildren(v.children).path);
+      if (v.children && v.children.length) {
+        let firstChild = findFirstNonNullChildren(v.children);
+        this.$router.push(firstChild ? firstChild.path : path);
       } else {
         this.$router.push(path);
       }

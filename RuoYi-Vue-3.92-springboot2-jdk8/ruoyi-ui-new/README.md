@@ -5,8 +5,7 @@
 git clone https://gitee.com/y_project/RuoYi-Vue
 
 # 进入项目目录
-cd ruoyi-ui-new
-cd D:\workspace_github_v1\devops\jun_base_elementui\RuoYi-Vue-3.92-springboot2-jdk8\ruoyi-ui-new\
+cd ruoyi-ui
 
 # 安装依赖
 npm install

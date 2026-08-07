@@ -24,7 +24,7 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  transpileDependencies: ['element-ui', 'vuex', 'js-cookie', '@babel', 'resize-detector'],
+  transpileDependencies: ['element-ui', 'vuex', 'js-cookie', '@babel', 'resize-detector', 'quill'],
   publicPath: '/',
   outputDir: 'dist',
   assetsDir: 'static',
@@ -33,6 +33,15 @@ module.exports = {
   devServer: {
     port: port,
     open: false,
+    proxy: {
+      [process.env.VUE_APP_BASE_API]: {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        pathRewrite: {
+          ['^' + process.env.VUE_APP_BASE_API]: ''
+        }
+      }
+    },
     overlay: {
       warnings: false,
       errors: true,

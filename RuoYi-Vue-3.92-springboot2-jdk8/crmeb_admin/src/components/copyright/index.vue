@@ -6,36 +6,12 @@
   </div>
 </template>
 <script>
-// +----------------------------------------------------------------------
-// | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
-// +----------------------------------------------------------------------
-// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
-// +----------------------------------------------------------------------
-// | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
-// +----------------------------------------------------------------------
-// | Author: CRMEB Team <admin@crmeb.com>
-// +----------------------------------------------------------------------
-
-import { getCopyrightInfo } from '@/libs/copyPublic';
-
 export default {
   name: 'i-copyright',
   data() {
     return {
-      copyright: 'Copyright © 2025 西安众邦网络科技有限公司',
-      copyrightNew: '',
+      copyrightNew: 'Copyright © 2018-2026 RuoYi. All Rights Reserved.',
     };
-  },
-  mounted() {
-    this.getVersion();
-  },
-  methods: {
-    getVersion() {
-      getCopyrightInfo().then((res) => {
-        const data = res || {};
-        this.copyrightNew = data.companyName ? data.companyName : this.copyright;
-      });
-    },
   },
 };
 </script>

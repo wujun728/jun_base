@@ -173,6 +173,26 @@ const actions = {
   updateVisitedView({ commit }, view) {
     commit('UPDATE_VISITED_VIEW', view);
   },
+  delLeftTags({ dispatch, state }, view) {
+    return new Promise((resolve) => {
+      const targetIndex = state.visitedViews.findIndex(v => v.path === view.path);
+      if (targetIndex > -1) {
+        state.visitedViews = state.visitedViews.filter((v, i) => i >= targetIndex || v.meta.affix);
+        Cache.local.setJSON('visitedViews', [...state.visitedViews]);
+      }
+      resolve([...state.visitedViews]);
+    });
+  },
+  delRightTags({ dispatch, state }, view) {
+    return new Promise((resolve) => {
+      const targetIndex = state.visitedViews.findIndex(v => v.path === view.path);
+      if (targetIndex > -1) {
+        state.visitedViews = state.visitedViews.filter((v, i) => i <= targetIndex || v.meta.affix);
+        Cache.local.setJSON('visitedViews', [...state.visitedViews]);
+      }
+      resolve([...state.visitedViews]);
+    });
+  },
 };
 
 export default {

@@ -1,79 +1,86 @@
-// +----------------------------------------------------------------------
-// | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
-// +----------------------------------------------------------------------
-// | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
-// +----------------------------------------------------------------------
-// | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
-// +----------------------------------------------------------------------
-// | Author: CRMEB Team <admin@crmeb.com>
-// +----------------------------------------------------------------------
-
 import axios from 'axios';
 import { MessageBox, Message } from 'element-ui';
 import store from '@/store';
 import { getToken } from '@/utils/auth';
-import SettingMer from '@/utils/settingMer';
-import { isPhone } from '@/libs/wechat';
+import { saveAs } from 'file-saver';
+
 const service = axios.create({
-  baseURL: SettingMer.apiBaseURL,
-  timeout: 60000, // 过期时间
+  baseURL: process.env.VUE_APP_BASE_API,
+  timeout: 60000,
 });
 
-// request interceptor
 service.interceptors.request.use(
   (config) => {
-    // 发送请求之前做的
     const token = !store.getters.token ? sessionStorage.getItem('token') : store.getters.token;
-    config.headers['X-Source'] = 'df07addc462f7f8f';
     if (token) {
-      config.headers['Authori-zation'] = token;
+      config.headers['Authorization'] = 'Bearer ' + token;
     }
-    if (/get/i.test(config.method)) {
-      config.params = config.params || {};
-      config.params.temp = Date.parse(new Date()) / 1000;
+    if (config.method === 'get' && config.params) {
+      let url = config.url + '?' + tansParams(config.params);
+      url = url.slice(0, -1);
+      config.params = {};
+      config.url = url;
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  },
+  (error) => Promise.reject(error),
 );
 
-// response interceptor
+function tansParams(params) {
+  let result = '';
+  for (const propName of Object.keys(params)) {
+    const value = params[propName];
+    if (value !== null && value !== '' && typeof value !== 'undefined') {
+      if (typeof value === 'object') {
+        for (const key of Object.keys(value)) {
+          if (value[key] !== null && value[key] !== '' && typeof value[key] !== 'undefined') {
+            result += encodeURIComponent(propName + '[' + key + ']') + '=' + encodeURIComponent(value[key]) + '&';
+          }
+        }
+      } else {
+        result += encodeURIComponent(propName) + '=' + encodeURIComponent(value) + '&';
+      }
+    }
+  }
+  return result;
+}
+
 service.interceptors.response.use(
   (response) => {
+    if (response.config.responseType === 'blob' || response.config.responseType === 'arraybuffer') {
+      return response.data;
+    }
     const res = response.data;
-    // if the custom code is not 20000, it is judged as an error.
     if (res.code === 401) {
-      // to re-login
       Message.error('无效的会话，或者登录已过期，请重新登录。');
       if (window.location.pathname !== '/login') location.href = '/login';
     } else if (res.code === 403) {
       Message.error('没有权限访问。');
     }
-    if (![0, 200].includes(res.code) && res.code !== 401) {
-      if (isPhone()) {
-        //移动端
-        return Promise.reject(res || 'Error');
-      }
-      Message({
-        message: res.message || 'Error',
-        type: 'error',
-        duration: 5 * 1000,
-      });
-      return Promise.reject();
-    } else {
-      return res.data;
+    if (res.code !== 200 && res.code !== 0) {
+      Message({ message: res.msg || res.message || 'Error', type: 'error', duration: 5 * 1000 });
+      return Promise.reject(res);
     }
+    return res;
   },
   (error) => {
-    Message({
-      message: error.message,
-      type: 'error',
-      duration: 5 * 1000,
-    });
+    Message({ message: error.message, type: 'error', duration: 5 * 1000 });
     return Promise.reject(error);
   },
 );
 
 export default service;
+
+export function download(url, params, filename, config) {
+  return service.post(url, params, {
+    transformRequest: [(p) => tansParams(p)],
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    responseType: 'blob',
+    ...config
+  }).then((data) => {
+    saveAs(data, filename);
+  }).catch((r) => {
+    console.error(r);
+    Message.error('下载文件出现错误，请联系管理员！');
+  });
+}

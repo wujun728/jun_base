@@ -18,6 +18,7 @@ import Element from 'element-ui';
 import './theme/element-variables.scss';
 
 import '@/theme/index.scss'; // global css
+import '@/assets/styles/ruoyi.scss'; // ruoyi page css
 import '@/assets/fonts/font.css'; // font css
 import '@/assets/iconfont/iconfont';
 import '@/assets/iconfont/iconfont.css';
@@ -28,7 +29,8 @@ import 'swiper/dist/css/swiper.css';
 import 'vue-ydui/dist/ydui.base.css';
 import Viewer from 'v-viewer';
 import 'viewerjs/dist/viewer.css';
-import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree } from '@/utils/parsing';
+import { parseTime, resetForm, addDateRange } from '@/utils/parsing';
+import { selectDictLabel, selectDictLabels, handleTree } from '@/utils/ruoyi';
 // 懒加载
 import VueLazyload from 'vue-lazyload';
 
@@ -44,16 +46,14 @@ import couponFrom from './components/couponList/couponFrom';
 import articleFrom from './components/articleList/articleFrom';
 import UploadIndex from '@/components/uploadPicture/index.vue';
 import UploadFile from '@/components/Upload/uploadFile.vue';
-import common_wrapper from '@/views/design/theme_editor/components/mobilePage/common_wrapper.vue';
+// import common_wrapper from '@/views/design/theme_editor/components/mobilePage/common_wrapper.vue';
 import Pagination from '@/components/Pagination';
-// import VueUeditorWrap from 'vue-ueditor-wrap'
 import iconFrom from './components/iconFrom';
 import TimeSelect from '@/components/TimeSelect';
 import dialog from '@/libs/dialog';
 import scroll from '@/libs/loading';
 import schema from 'async-validator';
-import Debounce from './libs/debounce.js'; //防抖自定义指令
-// 切勿更改 此组件为表单生成中使用的图片上传组件
+import Debounce from './libs/debounce.js';
 import SelfUpload from '@/components/uploadPicture/forGenrator/index.vue';
 import util from '@/utils/utils';
 import modalParserFrom from '@/libs/modal-parserFrom';
@@ -64,17 +64,31 @@ import { modalSure } from '@/libs/public';
 import { HandlePrice } from '@/utils/public';
 import timeOptions from '@/libs/timeOptions';
 import { loadScriptQueue } from '@/components/FormGenerator/utils/loadScript';
-import './icons'; // icon
-import './permission'; // permission control
-import './utils/error-log'; // error integralLog
-import * as filters from './filters'; // global filters
+import './icons';
+import './permission';
+import './utils/error-log';
+import * as filters from './filters';
 import { parseQuery } from '@/utils';
 import * as Auth from '@/libs/wechat';
 import * as constants from '@/utils/constants.js';
 import * as selfUtil from '@/utils/ZBKJIutil.js';
 import SettingMer from '@/utils/settingMer';
 import plugins from './plugins';
-import directive from './directive'; //directive
+import directive from './directive';
+
+// === RuoYi 全局组件 ===
+import DictTag from '@/components/DictTag';
+import RightToolbar from '@/components/RightToolbar';
+// import Editor from '@/components/Editor'; // quill requires newer babel
+import FileUpload from '@/components/FileUpload';
+import ImageUpload from '@/components/ImageUpload';
+import ImagePreview from '@/components/ImagePreview';
+import DictData from '@/components/DictData';
+
+// === RuoYi 全局方法 ===
+import { getDicts } from "@/api/system/dict/data";
+import { getConfigKey } from "@/api/system/config";
+import { download } from '@/utils/request';
 
 Vue.use(Element, {
   size: Cookies.get('size') || 'small', // set element-ui default size
@@ -102,13 +116,30 @@ Vue.use(Viewer, {
 Vue.use(plugins);
 Vue.use(directive);
 
+// === RuoYi 全局组件注册 ===
+Vue.component('DictTag', DictTag);
+Vue.component('RightToolbar', RightToolbar);
+// Vue.component('Editor', Editor); // quill requires newer babel
+Vue.component('FileUpload', FileUpload);
+Vue.component('ImageUpload', ImageUpload);
+Vue.component('ImagePreview', ImagePreview);
+DictData.install();
+
+// === RuoYi 全局方法挂载 ===
+Vue.prototype.getDicts = getDicts;
+Vue.prototype.getConfigKey = getConfigKey;
+Vue.prototype.download = download;
+Vue.prototype.addDateRange = addDateRange;
+Vue.prototype.selectDictLabel = selectDictLabel;
+Vue.prototype.selectDictLabels = selectDictLabels;
+
 Vue.component('attrFrom', attrFrom);
 Vue.component('UploadIndex', UploadIndex);
 Vue.component('SelfUpload', SelfUpload);
 Vue.component('iconFrom', iconFrom);
 Vue.component('uploadFile', UploadFile);
 Vue.component('timeSelect', TimeSelect);
-Vue.component('common_wrapper', common_wrapper);
+// Vue.component('common_wrapper', common_wrapper);
 Vue.component('Pagination', Pagination);
 Vue.prototype.$modalParserFrom = modalParserFrom;
 Vue.prototype.$modalSure = modalSure;

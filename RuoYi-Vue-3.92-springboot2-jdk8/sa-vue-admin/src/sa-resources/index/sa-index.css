@@ -1,0 +1,166 @@
+/* index样式(局部样式) */
+*{margin: 0; padding: 0; }
+html,body{height: 100%; background-color: #EEE;} 
+.app{height: 100%; font-size: 16px; font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;}
+/* .app *{transition: all 0.2s !important; } */
+
+
+/* 左边 */
+.nav-left{
+	width: 200px;
+	height: 100%;
+	position: fixed;
+	left: 0px;
+	z-index: 110;
+	overflow: hidden;
+	transition: all 0.2s;
+}
+.nav-left *{transition: all 0.2s !important; }
+/* 左上 logo部分 */
+.nav-left-top{width: 100%; height: 85px; overflow: hidden; line-height: 85px; cursor: pointer; transform: none;}
+.nav-left .admin-logo{width: 40px; height: 40px; border-radius: 50%; vertical-align: middle; margin: 0.5em; margin-left: 1em; margin-right: 0.7em;}
+/* ==== .nav-left-top:hover{color: #FFF;} */
+
+/* 左下 */
+.nav-left-bottom{
+	width: 100%;
+	height: calc(100% - 80px);
+	overflow: hidden;
+}
+.nav-left-bottom i[class^=el-icon-]{font-size: 16px;}
+
+/* 1 2 配合，把滚动条隐藏 */
+.nav-left .menu-box-1{width: 220px; height: 100%; overflow-y: auto;}
+.nav-left .menu-box-2{width: 201px;}
+
+.nav-left .el-submenu__title .menu-name{margin-left: 4px;}
+
+/* 尺寸调整, 二级和三级的左内边距向右扩大 */
+.nav-left .el-submenu__title,.nav-left .el-menu-item{height: 45px !important; line-height: 45px !important;}
+.nav-left .el-submenu .el-menu-item,.nav-left .el-submenu .el-submenu  .el-submenu__title{height: 40px !important; line-height: 40px !important; padding-left: 4em !important;}
+
+.nav-left .el-submenu .el-submenu .el-menu-item{padding-left: 5em !important;}
+
+/* 隐藏右边框 */
+.nav-left .el-menu{border: 0px;}
+
+
+/* -------- 右边 --------- */
+.nav-right{
+	width: calc(100% - 200px);
+	height: 100%;
+	position: fixed;
+	left: 200px; 
+	transition: all 0.2s;
+}
+
+/* 第一行建筑物 */
+.nav-right-1{position: relative; height: 49px; line-height: 49px; border-bottom: 1px #DDD solid; }
+.nav-right-1 *{transition: all 0.2s;}
+
+.nav-right-1 .tools-left{border: 0px #000 solid; float: left;}
+.nav-right-1 .tools-right{float: right;}
+.nav-right-1 .tool-fox{padding: 0 1em; margin-right: 4px; display: inline-block; cursor: pointer;}
+.nav-right-1 .tool-fox i{margin-right: 3px;}
+
+.nav-right-1 .user-info{position: relative; top: -2px;}
+.nav-right-1 .user-avatar{width: 30px; height: 30px; border-radius: 50%; vertical-align: middle;}
+.nav-right-1 .user-info .user-name{font-size: 0.9em;} 
+
+
+/*800px之下*/
+@media(max-width: 800px) {
+	.nav-right-1 .tools-right{display: none;}
+}
+
+/* 第二行建筑物 */
+.nav-right-2,.nav-right-bre{height: 35px; position: relative; z-index: 110; box-shadow: 0 2px 2px #CCC;}
+.nav-right-2>div{height: 100%; position: absolute;}
+
+.nav-right-bre{line-height: 35px; padding-left: 1em; background-color: #FFF; cursor: pointer; display: none;}
+.nav-right-bre .el-breadcrumb__item{line-height: 35px; font-size: 13px; }
+/* .nav-right-bre .el-breadcrumb__item:hover{cursor: pointer; text-decoration: underline;} */
+
+.nav-right-2 .towards-left,.nav-right-2 .towards-right{width: 24px; text-align: center; background-color: #FFF; cursor: pointer; line-height: 35px;} 
+.nav-right-2 .towards-left{border-right: 1px #eee solid;}
+.nav-right-2 .towards-right{border-left: 1px #eee solid; right: 0px;}
+.nav-right-2 .towards-left:hover i,.nav-right-2 .towards-right:hover i{font-size: 1.1em;font-weight: bold;}
+
+.nav-right-2 .towards-middle{width: 10000px; overflow: auto;/* calc(100% - 50px) */ left: 25px;background-color: #EEE;}
+.nav-right-2 .tab-title-box{display: inline-block; position: absolute; left: 0px; transition: all 0.2s;}
+.nav-right-2 .tab-title{font-size: 13px; cursor: pointer; float: left; transition: all 0.15s;white-space: nowrap;overflow: hidden;text-decoration: none; color: #333;}
+.nav-right-2 .tab-title-2{padding: 0px 10px; height: 35px; margin-right: 1px; background-color: #FFF; line-height: 35px; }
+.nav-right-2 .tab-title-2{transition: padding 0.1s, margin 0.1s;}
+.nav-right-2 .tab-title-2 *{transition: all 0.0s;}
+/* .tab-title .el-icon-caret-right{color: #EEE; font-size: 1.7em; position: relative; top: 4px;} */
+.nav-right-2 .tab-title .el-icon-close{display: inline-block; border-radius: 50%; padding: 1px; color: #ccc; margin-left: -4px;}
+.nav-right-2 .tab-title .el-icon-close:hover{background-color: red; color: #FFF;}
+.nav-right-2 .tab-title span{display: inline-block; margin-left: 10px; margin-right: 10px;}
+.nav-right-2 .tab-title:hover span,.nav-right-2 .tab-native span{font-weight: bold;}
+
+/* 第三杠 */
+.nav-right-3{width: 100%; height: calc(100% - 85px); position: relative; overflow: hidden;}
+.sa-swiper{width: 100%; height: 100%;}
+.view-fox{width: 100%; height: 100%; overflow: auto; background-color: #EEE;}
+.view-fox>*{width: 100%; height: 100%; overflow: auto;}
+
+/* .fas{transition: all 0s;} */
+.at-form-fox,
+.at-form-fox *{transition: all 0s;}
+
+/* 右键菜单 样式 */
+.right-box {
+	position: fixed;
+	z-index: 2147483647;
+	transition: max-height 0.2s;
+	outline:none;
+	max-height: 0px;
+	overflow: hidden;
+	box-shadow: 3px 3px 3px #666;
+}
+.right-box-2{font-size: 0.8em; padding: 0.5em 0; border: 1px #aaa solid; border-radius: 1px; background-color: #FFF;}
+.right-box-2>div {line-height: 2.2em; padding-left: 0.7em; padding-right: 1.8em; cursor: pointer; white-space: nowrap;}
+.right-box-2>div:hover {background-color: #ddd;color: #2D8CF0;}
+.right-box-2>div i{ margin-right: 8px;}
+
+
+/* 菜单折叠时候样式调整 */
+.fold .nav-left{width: 64px;}
+.fold .nav-left .admin-logo{width: 40px; height: 40px; margin-left: 0.8em;}
+.fold .nav-right{width: calc(100% - 64px); left: 64px; }
+/* .app .is_fold_right.nav-right{width: calc(100% - 64px); left: 64px; } */
+
+/* .nav-right-3 包裹了太多iframe，不能让它参与动画，因为实在太TM卡了 */
+.nav-right-3{ /* 修改为fixed布局 */ width: calc(100% - 200px); left: 200px; position: fixed;} 
+.is_fold_right .nav-right-3{width: calc(100% - 64px); left: 64px;}
+
+
+
+/* 菜单折叠时 部分元素隐藏 */
+.fold .nav-left .nav-title,
+.fold .nav-left .menu-name,
+.fold .nav-left .el-submenu__icon-arrow
+{display: none;}
+
+/* 最高层级 */
+.z-index-max{z-index: 2147483647;}
+
+
+/* 遮罩样式 */
+.shade-fox{position: absolute; z-index: 1000000; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); color: #FFF; top: 0px;}
+.shade-fox{display: flex; justify-content: center; align-items: center}
+
+
+/* 如果是隐藏tabbar模式 */
+.hide-tabbar .nav-right-2{display: none;}
+.hide-tabbar .nav-right-bre{display: block;}
+.hide-tabbar .nav-right-1{border-bottom: 1px #eeeeee solid;}
+
+
+/* 去除掉便签的大边框 */
+.layui-layer-input{outline: 0; box-shadow: none !important; padding: 0.5em !important; font-family: 'Times New Roman', Times, serif;}
+
+/* 
+	所有污染样式:
+	.nav-* .at-form-fox  .shade-fox
+ */

@@ -12,81 +12,29 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie';
-import { getSiteLogoApi } from '@/api/systemConfig';
 export default {
   name: 'layoutLogo',
   data() {
-    return {
-      platMerLoginInfo: {},
-    };
+    return {};
   },
   computed: {
     maxLogo() {
-      return (
-        this.platMerLoginInfo.siteLogoSquare ||
-        this.platMerLoginInfo.siteLogoLeftTop ||
-        this.platMerLoginInfo.logoSquare ||
-        this.platMerLoginInfo.logo_square ||
-        this.platMerLoginInfo.logo ||
-        this.platMerLoginInfo.loginLogo ||
-        ''
-      );
+      return '';
     },
     minLogo() {
-      return (
-        this.platMerLoginInfo.siteLogoLeftTop ||
-        this.platMerLoginInfo.siteLogoSquare ||
-        this.platMerLoginInfo.logoLeftTop ||
-        this.platMerLoginInfo.logo_square ||
-        this.platMerLoginInfo.logo ||
-        this.platMerLoginInfo.loginLogo ||
-        ''
-      );
+      return '';
     },
-    // 获取布局配置信息
     getThemeConfig() {
       return this.$store.state.themeConfig.themeConfig;
     },
-    // 设置 logo 是否显示
     setShowLogo() {
       let { isCollapse, layout } = this.$store.state.themeConfig.themeConfig;
       return !isCollapse || layout === 'classic' || document.body.clientWidth < 1000;
     },
   },
-  mounted() {
-    this.getLogoInfo();
-  },
   methods: {
-    getLogoInfo() {
-      getSiteLogoApi()
-        .then((res) => {
-          this.platMerLoginInfo = res || {};
-        })
-        .catch(() => {
-          const logoInfo = Cookies.get('logoInfo');
-          this.platMerLoginInfo = this.parseLogoInfo(logoInfo);
-        });
-    },
-    parseLogoInfo(logoInfo) {
-      if (!logoInfo) return {};
-      try {
-        return JSON.parse(logoInfo);
-      } catch (e) {
-        return {};
-      }
-    },
-    // logo 点击实现菜单展开/收起
     onThemeConfigChange() {
-      // if (
-      //   this.$store.state.themeConfig.themeConfig.layout == 'columns' &&
-      //   !this.$store.state.user.childMenuList.length &&
-      //   this.$store.state.themeConfig.themeConfig.isCollapse
-      // )
-      //   return;
-      // if (this.$store.state.themeConfig.themeConfig.layout === 'transverse' || this.$store.state.themeConfig.themeConfig.layout === 'classic') return false;
-      // this.$store.state.themeConfig.themeConfig.isCollapse = !this.$store.state.themeConfig.themeConfig.isCollapse;
-      this.$router.push(`/dashboard`);
+      this.$router.push('/dashboard');
     },
   },
 };

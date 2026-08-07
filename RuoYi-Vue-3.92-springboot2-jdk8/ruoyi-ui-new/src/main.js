@@ -7,7 +7,6 @@ import './assets/styles/element-variables.scss'
 
 import '@/assets/styles/index.scss' // global css
 import '@/assets/styles/ruoyi.scss' // ruoyi css
-import '@/theme/index.scss' // crmeb layout theme css
 import App from './App'
 import store from './store'
 import router from './router'
@@ -48,9 +47,6 @@ Vue.prototype.selectDictLabels = selectDictLabels
 Vue.prototype.download = download
 Vue.prototype.handleTree = handleTree
 
-// 事件总线（CRMEB layout 依赖）
-Vue.prototype.bus = new Vue()
-
 // 全局组件挂载
 Vue.component('DictTag', DictTag)
 Vue.component('Pagination', Pagination)
@@ -64,8 +60,17 @@ Vue.use(directive)
 Vue.use(plugins)
 DictData.install()
 
+/**
+ * If you don't want to use mock-server
+ * you want to use MockJs for mock api
+ * you can execute: mockXHR()
+ *
+ * Currently MockJs will be used in the production environment,
+ * please remove it before going online! ! !
+ */
+
 Vue.use(Element, {
-  size: Cookies.get('size') || 'small' // set element-ui default size
+  size: Cookies.get('size') || 'medium' // set element-ui default size
 })
 
 Vue.config.productionTip = false
