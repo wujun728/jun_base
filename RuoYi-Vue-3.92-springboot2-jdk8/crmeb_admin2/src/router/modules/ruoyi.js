@@ -1,0 +1,126 @@
+import Layout from '@/layout'
+
+export default [
+  {
+    path: '/system',
+    component: Layout,
+    redirect: '/system/user',
+    meta: { title: '系统管理', icon: 'system' },
+    children: [
+      {
+        path: 'user',
+        name: 'SystemUser',
+        component: () => import('@/views/system/user/index'),
+        meta: { title: '用户管理', icon: 'user' },
+        hidden: true,
+      },
+      {
+        path: 'role',
+        name: 'SystemRole',
+        component: () => import('@/views/system/role/index'),
+        meta: { title: '角色管理', icon: 'peoples' },
+        hidden: true,
+      },
+      {
+        path: 'menu',
+        name: 'SystemMenu',
+        component: () => import('@/views/system/menu/index'),
+        meta: { title: '菜单管理', icon: 'tree-table' },
+        hidden: true,
+      },
+      {
+        path: 'dept',
+        name: 'SystemDept',
+        component: () => import('@/views/system/dept/index'),
+        meta: { title: '部门管理', icon: 'tree' },
+        hidden: true,
+      },
+      {
+        path: 'post',
+        name: 'SystemPost',
+        component: () => import('@/views/system/post/index'),
+        meta: { title: '岗位管理', icon: 'post' },
+        hidden: true,
+      },
+      {
+        path: 'dict',
+        name: 'SystemDict',
+        component: () => import('@/views/system/dict/index'),
+        meta: { title: '字典管理', icon: 'dict' },
+        hidden: true,
+      },
+      {
+        path: 'config',
+        name: 'SystemConfig',
+        component: () => import('@/views/system/config/index'),
+        meta: { title: '参数设置', icon: 'edit' },
+        hidden: true,
+      },
+      {
+        path: 'notice',
+        name: 'SystemNotice',
+        component: () => import('@/views/system/notice/index'),
+        meta: { title: '通知公告', icon: 'message' },
+        hidden: true,
+      },
+    ],
+  },
+  {
+    path: '/monitor',
+    component: Layout,
+    redirect: '/monitor/online',
+    meta: { title: '系统监控', icon: 'monitor' },
+    children: [
+      {
+        path: 'online',
+        name: 'MonitorOnline',
+        component: () => import('@/views/monitor/online/index'),
+        meta: { title: '在线用户', icon: 'online' },
+        hidden: true,
+      },
+      {
+        path: 'job',
+        name: 'MonitorJob',
+        component: () => import('@/views/monitor/job/index'),
+        meta: { title: '定时任务', icon: 'job' },
+        hidden: true,
+      },
+      {
+        path: 'druid',
+        name: 'MonitorDruid',
+        component: () => import('@/views/monitor/druid/index'),
+        meta: { title: '数据监控', icon: 'druid' },
+        hidden: true,
+      },
+      {
+        path: 'server',
+        name: 'MonitorServer',
+        component: () => import('@/views/monitor/server/index'),
+        meta: { title: '服务监控', icon: 'server' },
+        hidden: true,
+      },
+      {
+        path: 'cache',
+        name: 'MonitorCache',
+        component: () => import('@/views/monitor/cache/index'),
+        meta: { title: '缓存监控', icon: 'cache' },
+        hidden: true,
+      },
+    ],
+  },
+  {
+    path: '/tool',
+    component: Layout,
+    redirect: '/tool/gen',
+    meta: { title: '系统工具', icon: 'tool' },
+    children: [
+      {
+        path: 'gen',
+        name: 'ToolGen',
+        component: () => import('@/views/tool/gen/index'),
+        meta: { title: '代码生成', icon: 'code' },
+        hidden: true,
+      },
+    ],
+  },
+]
