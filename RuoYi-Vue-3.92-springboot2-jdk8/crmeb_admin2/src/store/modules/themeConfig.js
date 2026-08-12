@@ -67,6 +67,8 @@ const themeConfigModule = {
       isGrayscale: false,
       // 是否开启色弱模式
       isInvert: false,
+      // 页面圆角（px，0 为直角）
+      pageRadius: 4,
       /**
        * 其它设置
        */

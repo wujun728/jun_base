@@ -55,11 +55,18 @@ body,
   font-size: 14px;
 }
 
+/* 页面圆角（默认值，布局配置抽屉可动态调整） */
+:root {
+  --page-radius: 4px;
+}
+
 /* 主布局样式
 ------------------------------- */
 .layout-container {
   width: 100%;
   height: 100%;
+  border-radius: var(--page-radius);
+  overflow: hidden;
 
   .layout-aside {
     background: var(--prev-bg-menuBar);

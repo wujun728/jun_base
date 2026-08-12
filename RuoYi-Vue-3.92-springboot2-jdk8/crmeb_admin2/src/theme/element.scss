@@ -35,7 +35,22 @@
 .el-button {
   font-weight: 400 !important;
   padding: 9px 15px !important;
-  border-radius: 4px;
+  border-radius: var(--page-radius, 4px);
+}
+
+/* 表单输入框
+------------------------------- */
+.el-input__inner,
+.el-textarea__inner {
+  border-radius: var(--page-radius, 4px);
+}
+
+.el-input-group__prepend {
+  border-radius: var(--page-radius, 0) 0 0 var(--page-radius, 0);
+}
+
+.el-input-group__append {
+  border-radius: 0 var(--page-radius, 0) var(--page-radius, 0) 0;
 }
 
 .el-button.is-loading {

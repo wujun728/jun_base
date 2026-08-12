@@ -189,6 +189,20 @@
             <el-switch v-model="getThemeConfig.isInvert" :width="35" @change="onAddFilterChange('invert')"> </el-switch>
           </div>
         </div>
+        <div class="layout-breadcrumb-seting-bar-flex mt15">
+          <div class="layout-breadcrumb-seting-bar-flex-label">页面圆角</div>
+          <div class="layout-breadcrumb-seting-bar-flex-value">
+            <el-slider
+              v-model="getThemeConfig.pageRadius"
+              :min="0"
+              :max="24"
+              :step="1"
+              style="width: 150px"
+              @input="onPageRadiusInput"
+              @change="onPageRadiusChange"
+            />
+          </div>
+        </div>
         <!-- 其它设置 -->
         <el-divider :content-position="contentPosotion">其它设置</el-divider>
         <div class="layout-breadcrumb-seting-bar-flex mt15">
@@ -612,6 +626,14 @@ export default {
     // 关闭弹窗时，初始化变量
     onDrawerClose() {
       this.$store.state.themeConfig.themeConfig.isDrawer = false;
+      this.setLocalThemeConfig();
+    },
+    // 页面圆角-实时预览（不与主题一起保存）
+    onPageRadiusInput(val) {
+      document.documentElement.style.setProperty('--page-radius', val + 'px');
+    },
+    // 页面圆角-拖动结束，与主题配置一起保存
+    onPageRadiusChange() {
       this.setLocalThemeConfig();
     },
     // 灰色模式/色弱模式
