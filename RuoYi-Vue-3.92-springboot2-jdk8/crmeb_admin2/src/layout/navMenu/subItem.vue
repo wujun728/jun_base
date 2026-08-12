@@ -15,11 +15,15 @@
         <sub-item :chil="val.children" />
       </el-submenu>
       <template v-else>
-        <el-menu-item :index="val.path" :key="val.path">
-          <template>
+        <el-menu-item :index="val.path" :key="val.path" v-if="!val.isLink || (val.isLink && val.isIframe)">
+          <svg-icon :icon-class="val.icon" class-name="menu-icon" />
+          <span>{{ val.title }}</span>
+        </el-menu-item>
+        <el-menu-item :key="val.path" v-else>
+          <a :href="val.isLink" target="_blank" style="display:block;padding:0 20px;">
             <svg-icon :icon-class="val.icon" class-name="menu-icon" />
             <span>{{ val.title }}</span>
-          </template>
+          </a>
         </el-menu-item>
       </template>
     </template>

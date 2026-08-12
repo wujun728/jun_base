@@ -69,9 +69,14 @@ export default {
     },
     // 当前菜单选中时
     onHandleSelect(item) {
-      let { path, redirect } = item;
-      if (redirect) this.$router.push(redirect);
-      else this.$router.push(path);
+      let { path, redirect, isLink, isIframe } = item;
+      if (isLink && !isIframe) {
+        window.open(isLink, '_blank');
+      } else if (redirect) {
+        this.$router.push(redirect);
+      } else {
+        this.$router.push(path);
+      }
       this.closeSearch();
     },
     // input 失去焦点时

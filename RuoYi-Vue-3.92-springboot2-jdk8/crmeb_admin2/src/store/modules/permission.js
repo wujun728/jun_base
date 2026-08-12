@@ -68,6 +68,8 @@ function transformRuoYiMenu(menuList, parentId = 0, parentPath = '') {
       isMenu: !(item.meta && item.meta.menuType === 'F'),
       perms: (item.meta && item.meta.perms) || '',
       redirect: '',
+      isLink: (item.meta && item.meta.link) || '',
+      isIframe: (item.meta && item.meta.isFrame) === '1' || false,
     };
     if (item.children && item.children.length > 0) {
       transformed.childList = transformRuoYiMenu(item.children, id, fullPath);
