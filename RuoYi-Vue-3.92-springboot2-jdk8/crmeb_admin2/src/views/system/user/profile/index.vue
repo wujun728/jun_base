@@ -76,7 +76,7 @@ export default {
     }
   },
   created() {
-    const activeTab = this.$route.params && this.$route.params.activeTab
+    const activeTab = this.$route.params.activeTab || this.$route.query.activeTab
     if (activeTab) {
       this.selectedTab = activeTab
     }

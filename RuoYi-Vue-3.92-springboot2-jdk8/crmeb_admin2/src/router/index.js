@@ -51,6 +51,21 @@ export const constantRoutes = [
       },
     ],
   },
+  {
+    // 个人中心 / 修改密码
+    path: '/user',
+    component: Layout,
+    hidden: true,
+    redirect: 'noredirect',
+    children: [
+      {
+        path: 'profile',
+        component: () => import('@/views/system/user/profile/index'),
+        name: 'Profile',
+        meta: { title: '个人中心', icon: 'user' },
+      },
+    ],
+  },
   { path: '*', redirect: '/404', hidden: true },
 ];
 

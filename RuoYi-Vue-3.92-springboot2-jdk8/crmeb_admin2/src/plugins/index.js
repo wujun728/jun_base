@@ -2,6 +2,7 @@ import auth from './auth';
 import cache from './cache';
 import modal from './modal';
 import download from './download';
+import tab from './tab';
 
 export default {
   install(Vue) {
@@ -13,5 +14,7 @@ export default {
     Vue.prototype.$modal = modal;
     // 下载文件
     Vue.prototype.$download = download;
+    // 页签操作
+    Vue.prototype.$tab = tab;
   },
 };

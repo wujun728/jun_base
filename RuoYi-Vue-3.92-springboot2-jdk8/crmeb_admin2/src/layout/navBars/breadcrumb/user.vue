@@ -163,9 +163,9 @@ export default {
             .catch(() => {});
         }, 150);
       } else if (path === 'password') {
-        this.$router.push(`/maintain/user`);
+        this.$router.push(`/user/profile`);
       } else if (path === 'users') {
-        this.$router.push(`/maintain/update`);
+        this.$router.push(`/user/profile?activeTab=resetPwd`);
       }
     },
   },

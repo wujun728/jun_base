@@ -54,7 +54,7 @@ export default {
         });
       }
       //个人中心、修改密码
-      if (['MaintainUser', 'MaintainUpdate'].includes(to.name)) {
+      if (to.name === 'Profile') {
         this.bus.$emit('oneCatName', '控制台');
       }
     },
