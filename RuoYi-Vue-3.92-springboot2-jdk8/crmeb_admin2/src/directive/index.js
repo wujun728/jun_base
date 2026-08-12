@@ -15,6 +15,7 @@ import dialogDragWidth from './dialog/dragWidth';
 import dialogDragHeight from './dialog/dragHeight';
 import copy from './copy/copy';
 import dbClick from './module/dbClick';
+import clipboard from './module/clipboard';
 
 const install = function (Vue) {
   Vue.directive('hasRole', hasRole);
@@ -24,6 +25,7 @@ const install = function (Vue) {
   Vue.directive('dialogDragHeight', dialogDragHeight);
   Vue.directive('copy', copy);
   Vue.directive('dbClick', dbClick);
+  Vue.directive('clipboard', clipboard);
 };
 
 if (window.Vue) {
