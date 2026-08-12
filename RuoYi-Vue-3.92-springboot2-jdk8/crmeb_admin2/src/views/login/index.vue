@@ -98,8 +98,9 @@
 import Cookies from 'js-cookie';
 import { validUsername } from '@/utils/validate';
 import '@/assets/js/canvas-nest.min.js';
-import { getLoginPicApi, getCodeImg } from '@/api/user';
+import { getCodeImg } from '@/api/user';
 import logoImg from '@/assets/imgs/index_logo.png';
+import swiperFallbackImg from '@/assets/imgs/user_bg.png';
 import VerifitionVerify from './verifition/Verify.vue';
 export default {
   name: 'Login',
@@ -257,7 +258,7 @@ export default {
     },
     getInfo() {
       this.loginLogo = logoImg;
-      this.swiperList = [];
+      this.swiperList = [{ pic: swiperFallbackImg }];
     },
     checkCapslock(e) {
       const { key } = e;

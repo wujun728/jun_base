@@ -36,7 +36,7 @@ export function getCodeImg() {
 
 export function getLoginPicApi() {
   return request({
-    url: '/captchaImage',
+    url: '/admin/getLoginPic',
     method: 'get',
   });
 }

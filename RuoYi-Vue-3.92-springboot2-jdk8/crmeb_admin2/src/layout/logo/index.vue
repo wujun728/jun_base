@@ -13,6 +13,7 @@
 
 <script>
 import Cookies from 'js-cookie';
+import defaultLogo from '@/assets/logo/logo.png';
 export default {
   name: 'layoutLogo',
   data() {
@@ -29,7 +30,7 @@ export default {
         this.platMerLoginInfo.logo_square ||
         this.platMerLoginInfo.logo ||
         this.platMerLoginInfo.loginLogo ||
-        ''
+        defaultLogo
       );
     },
     minLogo() {
@@ -40,7 +41,7 @@ export default {
         this.platMerLoginInfo.logo_square ||
         this.platMerLoginInfo.logo ||
         this.platMerLoginInfo.loginLogo ||
-        ''
+        defaultLogo
       );
     },
     // 获取布局配置信息
