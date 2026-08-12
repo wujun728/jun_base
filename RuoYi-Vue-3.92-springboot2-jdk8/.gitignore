@@ -18,6 +18,7 @@ target/
 .project
 .settings
 .springBeans
+.playwright-mcp
 
 ### IntelliJ IDEA ###
 .idea
