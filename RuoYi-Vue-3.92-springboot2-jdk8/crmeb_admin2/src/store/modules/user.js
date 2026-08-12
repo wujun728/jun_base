@@ -5,6 +5,8 @@ import Cookies from 'js-cookie';
 import { Loading } from 'element-ui';
 import * as roleApi from '@/api/roleApi.js';
 import { formatFlatteningRoutes } from '@/utils/system.js';
+import { isHttp, isEmpty } from '@/utils/validate.js';
+import defAva from '@/assets/imgs/default_avatar.png';
 
 const ICON_MAP = {
   'system': 'setting',
@@ -130,7 +132,11 @@ const actions = {
 
           commit('SET_ROLES', roles);
           commit('SET_NAME', user.userName || user.nickName || '');
-          commit('SET_AVATAR', user.avatar || '');
+          let avatar = user.avatar || '';
+          if (!isHttp(avatar)) {
+            avatar = isEmpty(avatar) ? defAva : process.env.VUE_APP_BASE_API + avatar;
+          }
+          commit('SET_AVATAR', avatar);
           commit('SET_INTRODUCTION', user.nickName || '');
           commit('SET_PERMISSIONS', permissions);
           resolve({ roles, permissions, user });

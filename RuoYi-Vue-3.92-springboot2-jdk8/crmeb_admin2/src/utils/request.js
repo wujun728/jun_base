@@ -9,11 +9,13 @@
 // +----------------------------------------------------------------------
 
 import axios from 'axios';
-import { Message } from 'element-ui';
+import { Loading, Message } from 'element-ui';
 import store from '@/store';
 import { getToken } from '@/utils/auth';
 import SettingMer from '@/utils/settingMer';
-import { tansParams } from '@/utils/ruoyi';
+import { tansParams, blobValidate } from '@/utils/ruoyi';
+import { saveAs } from 'file-saver';
+import errorCode from '@/utils/errorCode';
 const service = axios.create({
   baseURL: SettingMer.apiBaseURL,
   timeout: 60000,
@@ -44,6 +46,10 @@ service.interceptors.request.use(
 // response interceptor
 service.interceptors.response.use(
   (response) => {
+    // 二进制数据则直接返回
+    if (response.config.responseType === 'blob' || response.config.responseType === 'arraybuffer') {
+      return response.data;
+    }
     const res = response.data;
     // 若依返回 code 字段，统一添加 status 字段兼容 CRMEB
     if (res.code !== undefined) {
@@ -75,5 +81,37 @@ service.interceptors.response.use(
     return Promise.reject(error);
   },
 );
+
+let downloadLoadingInstance;
+
+// 通用下载方法
+export function download(url, params, filename, config) {
+  downloadLoadingInstance = Loading.service({ text: '正在下载数据，请稍候', spinner: 'el-icon-loading', background: 'rgba(0, 0, 0, 0.7)' });
+  return service
+    .post(url, params, {
+      transformRequest: [(params) => { return tansParams(params); }],
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      responseType: 'blob',
+      ...config,
+    })
+    .then(async (data) => {
+      const isBlob = blobValidate(data);
+      if (isBlob) {
+        const blob = new Blob([data]);
+        saveAs(blob, filename);
+      } else {
+        const resText = await data.text();
+        const rspObj = JSON.parse(resText);
+        const errMsg = errorCode[rspObj.code] || rspObj.msg || errorCode['default'];
+        Message.error(errMsg);
+      }
+      downloadLoadingInstance.close();
+    })
+    .catch((r) => {
+      console.error(r);
+      Message.error('下载文件出现错误，请联系管理员！');
+      downloadLoadingInstance.close();
+    });
+}
 
 export default service;

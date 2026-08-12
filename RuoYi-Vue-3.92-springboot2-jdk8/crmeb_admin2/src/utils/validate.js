@@ -28,6 +28,26 @@ export function isExternal(path) {
 }
 
 /**
+ * @param {string} value
+ * @returns {Boolean}
+ */
+export function isEmpty(value) {
+  if (value == null || value == '' || value == undefined || value == 'undefined') {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * 判断 url 是否是 http 或 https
+ * @param {string} url
+ * @returns {Boolean}
+ */
+export function isHttp(url) {
+  return url.indexOf('http://') !== -1 || url.indexOf('https://') !== -1;
+}
+
+/**
  * @param {string} str
  * @returns {Boolean}
  */

@@ -8,7 +8,7 @@
     ></i>
     <el-breadcrumb class="layout-navbars-breadcrumb-hide" v-if="isShowcrumb" :style="{ display: isShowBreadcrumb }">
       <transition-group name="breadcrumb" mode="out-in">
-        <el-breadcrumb-item v-for="(v, k) in [...breadCrumbList, ...crumbPast]" :key="v.id">
+        <el-breadcrumb-item v-for="(v, k) in [...breadCrumbList, ...crumbPast]" :key="v.id + '_' + k">
           <span v-if="k == 1" class="layout-navbars-breadcrumb-span">
             <i
               :class="`el-icon-${v.icon}`"

@@ -55,7 +55,7 @@ export const asyncRoutes = [
       },
       {
         path: 'log',
-        component: () => import('@/views/monitor/operlog/index'),
+        component: () => import('@/components/ParentView'),
         name: 'SystemLog',
         meta: { title: '日志管理', icon: 'log' },
         children: [
@@ -75,7 +75,7 @@ export const asyncRoutes = [
       },
       {
         path: 'monitor',
-        component: () => import('@/views/monitor/online/index'),
+        component: () => import('@/components/ParentView'),
         name: 'SystemMonitor',
         meta: { title: '系统监控', icon: 'monitor' },
         children: [
