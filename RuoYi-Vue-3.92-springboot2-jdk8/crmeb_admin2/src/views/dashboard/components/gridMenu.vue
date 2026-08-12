@@ -36,8 +36,8 @@ export default {
     return {
       quickLinks: [
         { bgColor: '#1890FF', icon: 'user', title: '用户管理', url: '/system/user' },
-        { bgColor: '#1BBE6B', icon: 'peoples', title: '角色管理', url: '/system/role' },
-        { bgColor: '#EF9C20', icon: 'tree', title: '菜单管理', url: '/system/menu' },
+        { bgColor: '#1BBE6B', icon: 's-custom', title: '角色管理', url: '/system/role' },
+        { bgColor: '#EF9C20', icon: 'menu', title: '菜单管理', url: '/system/menu' },
         { bgColor: '#F56C6C', icon: 'share', title: '部门管理', url: '/system/dept' },
         { bgColor: '#A277FF', icon: 'collection', title: '字典管理', url: '/system/dict' },
         { bgColor: '#E8B600', icon: 'edit', title: '参数设置', url: '/system/config' },
