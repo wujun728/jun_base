@@ -12,14 +12,14 @@
       <template v-for="val in menuList">
         <el-submenu :index="val.path" v-if="val.children && val.children.length > 0" :key="val.path">
           <template slot="title">
-            <i class="ivu-icon" :class="val.icon ? 'el-icon-' + val.icon : ''"></i>
+            <svg-icon :icon-class="val.icon" class-name="menu-icon" />
             <span>{{ val.title }}</span>
           </template>
           <SubItem :chil="val.children" />
         </el-submenu>
         <template v-else>
           <el-menu-item :index="val.path" :key="val.path">
-            <i class="ivu-icon" :class="val.icon ? 'el-icon-' + val.icon : ''"></i>
+            <svg-icon :icon-class="val.icon" class-name="menu-icon" />
             <template slot="title">
               <span>{{ val.title }}</span>
             </template>

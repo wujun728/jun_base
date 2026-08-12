@@ -13,7 +13,7 @@
           :title="v.title"
         >
           <div :class="setColumnsAsidelayout">
-            <i :class="'el-icon-' + v.icon"></i>
+            <svg-icon :icon-class="v.icon || 'menu'" class-name="menu-icon" />
             <div class="font13">
               {{
                 v.title && v.title.length >= 4
@@ -226,6 +226,11 @@ export default {
       z-index: 1;
       .columns-vertical {
         margin: auto;
+        .svg-icon {
+          font-size: 20px;
+          width: 1em;
+          height: 1em;
+        }
         .columns-vertical-title {
           padding-top: 1px;
         }
@@ -237,7 +242,7 @@ export default {
         align-items: center;
         justify-content: center;
         padding: 0 5px;
-        i {
+        .svg-icon {
           margin-right: 3px;
         }
         a {

@@ -9,7 +9,7 @@
     <template v-for="val in chil">
       <el-submenu :index="val.path" :key="val.path" v-if="val.children && val.children.length > 0">
         <template slot="title">
-          <i class="ivu-icon" :class="'el-icon-' + val.icon"></i>
+          <svg-icon :icon-class="val.icon" class-name="menu-icon" />
           <span>{{ val.title }}</span>
         </template>
         <sub-item :chil="val.children" />
@@ -17,7 +17,7 @@
       <template v-else>
         <el-menu-item :index="val.path" :key="val.path">
           <template>
-            <i class="ivu-icon" :class="val.icon ? 'el-icon-' + val.icon : ''"></i>
+            <svg-icon :icon-class="val.icon" class-name="menu-icon" />
             <span>{{ val.title }}</span>
           </template>
         </el-menu-item>

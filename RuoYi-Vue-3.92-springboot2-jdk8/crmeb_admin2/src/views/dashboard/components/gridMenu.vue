@@ -7,7 +7,7 @@
           <div class="nav_grid">
             <div class="nav_grid_item" v-for="(item, index) in quickLinks" :key="index" @click="$router.push(item.url)">
               <div class="pic_badge" :style="{ backgroundColor: item.bgColor }">
-                <i :class="'el-icon-' + item.icon"></i>
+                <svg-icon :icon-class="item.icon" class-name="menu-icon" />
               </div>
               <p>{{ item.title }}</p>
             </div>
@@ -20,7 +20,7 @@
           <div class="nav_grid">
             <div class="nav_grid_item" v-for="(item, index) in sysInfo" :key="index" @click="$router.push(item.url)">
               <div class="pic_badge" :style="{ backgroundColor: item.bgColor }">
-                <i :class="'el-icon-' + item.icon"></i>
+                <svg-icon :icon-class="item.icon" class-name="menu-icon" />
               </div>
               <p>{{ item.title }}</p>
             </div>
@@ -36,23 +36,23 @@ export default {
     return {
       quickLinks: [
         { bgColor: '#1890FF', icon: 'user', title: '用户管理', url: '/system/user' },
-        { bgColor: '#1BBE6B', icon: 's-custom', title: '角色管理', url: '/system/role' },
-        { bgColor: '#EF9C20', icon: 'menu', title: '菜单管理', url: '/system/menu' },
-        { bgColor: '#F56C6C', icon: 'share', title: '部门管理', url: '/system/dept' },
-        { bgColor: '#A277FF', icon: 'collection', title: '字典管理', url: '/system/dict' },
+        { bgColor: '#1BBE6B', icon: 'peoples', title: '角色管理', url: '/system/role' },
+        { bgColor: '#EF9C20', icon: 'tree-table', title: '菜单管理', url: '/system/menu' },
+        { bgColor: '#F56C6C', icon: 'tree', title: '部门管理', url: '/system/dept' },
+        { bgColor: '#A277FF', icon: 'dict', title: '字典管理', url: '/system/dict' },
         { bgColor: '#E8B600', icon: 'edit', title: '参数设置', url: '/system/config' },
         { bgColor: '#4BCAD5', icon: 'message', title: '通知公告', url: '/system/notice' },
-        { bgColor: '#1890FF', icon: 'document', title: '日志管理', url: '/system/log/operlog' },
+        { bgColor: '#1890FF', icon: 'log', title: '日志管理', url: '/system/log/operlog' },
       ],
       sysInfo: [
-        { bgColor: '#1890FF', icon: 'connection', title: '在线用户', url: '/system/monitor/online' },
-        { bgColor: '#1BBE6B', icon: 'timer', title: '定时任务', url: '/system/monitor/job' },
-        { bgColor: '#EF9C20', icon: 'odometer', title: '数据监控', url: '/system/monitor/druid' },
-        { bgColor: '#F56C6C', icon: 'cpu', title: '服务监控', url: '/system/monitor/server' },
-        { bgColor: '#A277FF', icon: 'coin', title: '缓存监控', url: '/system/monitor/cache' },
-        { bgColor: '#E8B600', icon: 'document-copy', title: '代码生成', url: '/tool/gen' },
-        { bgColor: '#4BCAD5', icon: 'document-add', title: '表单构建', url: '/tool/build' },
-        { bgColor: '#1890FF', icon: 'connection', title: '系统接口', url: '/tool/swagger' },
+        { bgColor: '#1890FF', icon: 'online', title: '在线用户', url: '/system/monitor/online' },
+        { bgColor: '#1BBE6B', icon: 'job', title: '定时任务', url: '/system/monitor/job' },
+        { bgColor: '#EF9C20', icon: 'druid', title: '数据监控', url: '/system/monitor/druid' },
+        { bgColor: '#F56C6C', icon: 'server', title: '服务监控', url: '/system/monitor/server' },
+        { bgColor: '#A277FF', icon: 'redis', title: '缓存监控', url: '/system/monitor/cache' },
+        { bgColor: '#E8B600', icon: 'code', title: '代码生成', url: '/tool/gen' },
+        { bgColor: '#4BCAD5', icon: 'build', title: '表单构建', url: '/tool/build' },
+        { bgColor: '#1890FF', icon: 'swagger', title: '系统接口', url: '/tool/swagger' },
       ],
     };
   },
@@ -118,8 +118,10 @@ export default {
     align-items: center;
     color: #fff;
     border-radius: 4px;
-    i {
+    .svg-icon {
       font-size: 30px;
+      width: 1em;
+      height: 1em;
     }
   }
   p {

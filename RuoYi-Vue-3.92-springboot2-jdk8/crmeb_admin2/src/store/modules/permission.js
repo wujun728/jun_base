@@ -1,35 +1,6 @@
 import { asyncRoutes, constantRoutes } from '@/router';
 import * as roleApi from '@/api/roleApi.js';
 
-const ICON_MAP = {
-  'system': 'setting',
-  'user': 'user',
-  'peoples': 's-custom',
-  'tree-table': 'menu',
-  'tree': 'share',
-  'post': 'office-building',
-  'dict': 'collection',
-  'edit': 'edit',
-  'message': 'message',
-  'monitor': 'monitor',
-  'online': 'connection',
-  'job': 'timer',
-  'druid': 'odometer',
-  'server': 'cpu',
-  'redis': 'coin',
-  'redis-list': 'tickets',
-  'log': 'document',
-  'tool': 's-tools',
-  'code': 'document-copy',
-  'guide': 'guide',
-  'build': 'document-add',
-  'swagger': 'connection',
-  'form': 'document',
-  'logininfor': 'reading',
-  'cache': 's-data',
-  'dashboard': 's-home',
-};
-
 const state = {
   routes: [],
   addRoutes: [],
@@ -86,7 +57,7 @@ function transformRuoYiMenu(menuList, parentId = 0, parentPath = '') {
       title: (item.meta && item.meta.title) || item.name || '',
       url: fullPath || item.path || '',
       component: item.component || '',
-      icon: ICON_MAP[rawIcon] || rawIcon || 'menu',
+      icon: rawIcon || 'menu',
       sort: (item.meta && item.meta.orderNum) || index,
       type: (item.meta && item.meta.menuType) || 'M',
       hidden: !!item.hidden,

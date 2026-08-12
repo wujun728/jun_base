@@ -140,6 +140,16 @@
   margin-left: 3px;
 }
 
+/* vertical el menu icon */
+.el-menu-item .svg-icon,
+.el-submenu__title .svg-icon {
+  margin-right: 8px;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+}
+
 .el-menu--horizontal .el-menu--popup {
   min-width: 120px !important;
 }

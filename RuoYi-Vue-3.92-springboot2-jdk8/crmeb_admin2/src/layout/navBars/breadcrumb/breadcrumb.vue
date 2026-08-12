@@ -10,16 +10,16 @@
       <transition-group name="breadcrumb" mode="out-in">
         <el-breadcrumb-item v-for="(v, k) in [...breadCrumbList, ...crumbPast]" :key="v.id + '_' + k">
           <span v-if="k == 1" class="layout-navbars-breadcrumb-span">
-            <i
-              :class="`el-icon-${v.icon}`"
-              class="ivu-icon layout-navbars-breadcrumb-iconfont"
+            <svg-icon
+              :icon-class="v.icon"
+              class-name="layout-navbars-breadcrumb-iconfont"
               v-if="getThemeConfig.isBreadcrumbIcon"
             />{{ v.title }}
           </span>
           <a v-else @click.prevent="onBreadcrumbClick(v)">
-            <i
-              :class="`el-icon-${v.icon}`"
-              class="ivu-icon layout-navbars-breadcrumb-iconfont"
+            <svg-icon
+              :icon-class="v.icon"
+              class-name="layout-navbars-breadcrumb-iconfont"
               v-if="getThemeConfig.isBreadcrumbIcon"
             />{{ v.title }}
           </a>
