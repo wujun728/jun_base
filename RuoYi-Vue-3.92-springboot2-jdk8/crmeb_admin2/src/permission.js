@@ -45,7 +45,13 @@ router.beforeEach(async (to, from, next) => {
           const accessRoutes = await store.dispatch('permission/generateRoutes');
           router.addRoutes(accessRoutes);
           await store.dispatch('user/getMenus');
-          next({ ...to, replace: true });
+          // 保存原始URL，如果从404回来则尝试跳回原始路径
+          const originalPath = window.location.pathname;
+          if (to.path === '/404' && originalPath !== '/404' && originalPath !== '/') {
+            next({ path: originalPath, replace: true });
+          } else {
+            next({ ...to, replace: true });
+          }
         } catch (error) {
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken');

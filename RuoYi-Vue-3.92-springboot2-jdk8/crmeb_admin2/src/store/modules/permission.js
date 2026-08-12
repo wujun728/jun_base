@@ -1,6 +1,35 @@
 import { asyncRoutes, constantRoutes } from '@/router';
 import * as roleApi from '@/api/roleApi.js';
 
+const ICON_MAP = {
+  'system': 'setting',
+  'user': 'user',
+  'peoples': 'peoples',
+  'tree-table': 'tree',
+  'tree': 'share',
+  'post': 'post-office',
+  'dict': 'collection',
+  'edit': 'edit',
+  'message': 'message',
+  'monitor': 'monitor',
+  'online': 'connection',
+  'job': 'timer',
+  'druid': 'odometer',
+  'server': 'cpu',
+  'redis': 'coin',
+  'redis-list': 'tickets',
+  'log': 'document',
+  'tool': 'tools',
+  'code': 'document-copy',
+  'guide': 'guide',
+  'build': 'document-add',
+  'swagger': 'connection',
+  'form': 'document',
+  'logininfor': 'reading',
+  'cache': 's-data',
+  'dashboard': 's-home',
+};
+
 const state = {
   routes: [],
   addRoutes: [],
@@ -49,6 +78,7 @@ function transformRuoYiMenu(menuList, parentId = 0, parentPath = '') {
     const id = (item.meta && item.meta.menuId) || item.id || index + 1;
     const rawPath = item.path || '';
     const fullPath = parentPath ? (rawPath.startsWith('/') ? rawPath : parentPath + '/' + rawPath) : rawPath;
+    const rawIcon = (item.meta && item.meta.icon) || '';
     const transformed = {
       id,
       pid: parentId,
@@ -56,7 +86,7 @@ function transformRuoYiMenu(menuList, parentId = 0, parentPath = '') {
       title: (item.meta && item.meta.title) || item.name || '',
       url: fullPath || item.path || '',
       component: item.component || '',
-      icon: (item.meta && item.meta.icon) || '',
+      icon: ICON_MAP[rawIcon] || rawIcon || 'menu',
       sort: (item.meta && item.meta.orderNum) || index,
       type: (item.meta && item.meta.menuType) || 'M',
       hidden: !!item.hidden,
@@ -101,7 +131,7 @@ function comRouter(menus, asyncRouter, hasLeft) {
     if (_hasPromise.length > 0) {
       const newRouter = { ...router };
       if (router.children && router.children.length > 0) {
-        newRouter.children = comRouter(menus, router.children, router.path);
+        newRouter.children = comRouter(menus, router.children, _leftUrl);
       }
       res.push(newRouter);
     }

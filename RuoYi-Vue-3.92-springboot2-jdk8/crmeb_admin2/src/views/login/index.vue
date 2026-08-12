@@ -99,6 +99,7 @@ import Cookies from 'js-cookie';
 import { validUsername } from '@/utils/validate';
 import '@/assets/js/canvas-nest.min.js';
 import { getLoginPicApi, getCodeImg } from '@/api/user';
+import logoImg from '@/assets/imgs/index_logo.png';
 import VerifitionVerify from './verifition/Verify.vue';
 export default {
   name: 'Login',
@@ -255,12 +256,8 @@ export default {
       }
     },
     getInfo() {
-      getLoginPicApi().then((res) => {
-        this.swiperList = res.banner;
-        this.loginLogo = res.loginLogo;
-        this.backgroundImages = res.backgroundImage;
-        localStorage.setItem('singleAdminSiteName', res.siteName);
-      });
+      this.loginLogo = logoImg;
+      this.swiperList = [];
     },
     checkCapslock(e) {
       const { key } = e;

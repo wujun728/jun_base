@@ -60,6 +60,9 @@ export default {
     routesList() {
       this.$store.state.user.menuList;
     },
+    menuList() {
+      return this.$store.state.user.menuList;
+    },
     ...mapState('menu', ['activePath']),
   },
   beforeDestroy() {
@@ -108,20 +111,16 @@ export default {
     setFilterRoutes() {
       if (this.$store.state.user.menuList.length <= 0) return false;
       this.columnsAsideList = this.filterRoutesFun(this.$store.state.user.menuList);
-      const resData = this.setSendChildren(getHeaderName(this.$route, this.columnsAsideList));
-      if (!resData.children) {
-        this.bus.$emit('setSendColumnsChildren', []);
+      const headerName = getHeaderName(this.$route, this.columnsAsideList);
+      const resData = this.setSendChildren(headerName || this.columnsAsideList[0].path);
+      if (!resData.children || resData.children.length === 0) {
         this.$store.commit('user/childMenuList', []);
-
         this.$store.state.themeConfig.themeConfig.isCollapse = true;
         return false;
       }
       this.bus.$emit('oneCatName', resData.item[0].title);
       this.onColumnsAsideDown(resData.item[0].k);
-      // 刷新时，初始化一个路由设置自动收起菜单
-      resData.children.length > 0
-        ? (this.$store.state.themeConfig.themeConfig.isCollapse = false)
-        : (this.$store.state.themeConfig.themeConfig.isCollapse = true);
+      this.$store.state.themeConfig.themeConfig.isCollapse = false;
       this.bus.$emit('setSendColumnsChildren', resData.children || []);
       this.$store.commit('user/childMenuList', resData.children || []);
     },
@@ -161,6 +160,17 @@ export default {
     },
   },
   watch: {
+    // 监听菜单数据变化，重新渲染
+    menuList: {
+      handler(val) {
+        if (val && val.length > 0) {
+          this.$nextTick(() => {
+            this.setFilterRoutes();
+          });
+        }
+      },
+      immediate: false,
+    },
     // 监听 vuex 数据变化
     '$store.state': {
       handler(val) {
@@ -176,7 +186,10 @@ export default {
       handler(to) {
         this.setColumnsMenuHighlight(to.path);
         let HeadName = getHeaderName(to, this.columnsAsideList);
-        let asideList = getMenuSider(this.columnsAsideList, HeadName)[0].children;
+        if (!HeadName && this.columnsAsideList.length > 0) {
+          HeadName = this.columnsAsideList[0].path;
+        }
+        let asideList = (getMenuSider(this.columnsAsideList, HeadName)[0] && getMenuSider(this.columnsAsideList, HeadName)[0].children) || [];
         const resData = this.setSendChildren(HeadName);
         if (resData.item) {
           this.onColumnsAsideDown(resData.item[0].k);

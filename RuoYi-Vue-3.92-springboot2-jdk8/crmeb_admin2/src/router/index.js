@@ -4,7 +4,7 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 import Layout from '@/layout';
-import ruoyiRouter from './modules/ruoyi';
+import { asyncRoutes } from './modules/asyncRoutes';
 
 export const constantRoutes = [
   {
@@ -51,11 +51,10 @@ export const constantRoutes = [
       },
     ],
   },
-  ...ruoyiRouter,
   { path: '*', redirect: '/404', hidden: true },
 ];
 
-export const asyncRoutes = [];
+export { asyncRoutes };
 
 const createRouter = () =>
   new Router({
