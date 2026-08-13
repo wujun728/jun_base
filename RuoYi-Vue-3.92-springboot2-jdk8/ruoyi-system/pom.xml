@@ -23,13 +23,6 @@
             <artifactId>ruoyi-common</artifactId>
         </dependency>
 
-        <!-- 数据权限模块 -->
-        <dependency>
-            <groupId>com.ruoyi</groupId>
-            <artifactId>ruoyi-module-datarule</artifactId>
-            <version>${ruoyi.version}</version>
-        </dependency>
-
     </dependencies>
 
 </project>

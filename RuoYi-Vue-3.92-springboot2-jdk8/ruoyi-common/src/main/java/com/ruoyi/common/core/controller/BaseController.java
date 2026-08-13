@@ -20,6 +20,7 @@ import com.ruoyi.common.utils.PageUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.sql.SqlUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 /**
  * web层通用数据处理
@@ -74,6 +75,15 @@ public class BaseController
     protected void clearPage()
     {
         PageUtils.clearPage();
+    }
+
+    /**
+     * 获取 MyBatis-Plus 分页对象
+     */
+    protected <T> Page<T> getPage()
+    {
+        PageDomain pageDomain = TableSupport.buildPageRequest();
+        return new Page<>(pageDomain.getPageNum(), pageDomain.getPageSize());
     }
 
     /**

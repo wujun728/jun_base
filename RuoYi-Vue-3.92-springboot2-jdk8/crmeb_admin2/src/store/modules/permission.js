@@ -1,5 +1,7 @@
-import { asyncRoutes, constantRoutes } from '@/router';
+import { constantRoutes } from '@/router';
 import * as roleApi from '@/api/roleApi.js';
+import Layout from '@/layout';
+import ParentView from '@/components/ParentView';
 
 const state = {
   routes: [],
@@ -27,18 +29,17 @@ const actions = {
       let menusAll = await roleApi.menuListApi();
       const menuData = Array.isArray(menusAll) ? menusAll : (menusAll.data || []);
 
-      let menus = transformRuoYiMenu(menuData);
-      const flatMenus = flattenMenu(menus);
+      const menus = transformRuoYiMenu(menuData);
+      const sidebarRoutes = filterAsyncRouter(menus);
 
-      const accessedRoutes = comRouter(flatMenus, asyncRoutes);
-      commit('SET_ROUTES', menus);
+      commit('SET_ROUTES', sidebarRoutes);
       commit('SET_TOPBAR_ROUTES', menus);
       if (this.state.settings && this.state.settings.topNav) {
         commit('SET_SIDEBAR_ROUTERS', state.sidebarRouters.length ? state.sidebarRouters : (menus[0] && menus[0].childList));
       } else {
         commit('SET_SIDEBAR_ROUTERS', menus);
       }
-      resolve(accessedRoutes);
+      resolve(sidebarRoutes);
     });
   },
 };
@@ -82,35 +83,34 @@ function transformRuoYiMenu(menuList, parentId = 0, parentPath = '') {
   });
 }
 
-function flattenMenu(menuList) {
-  const result = [];
-  function walk(items) {
-    items.forEach((item) => {
-      result.push(item);
-      if (item.children && item.children.length > 0) {
-        walk(item.children);
+function filterAsyncRouter(asyncRouterMap) {
+  return asyncRouterMap.filter(route => {
+    if (route.component) {
+      if (route.component === 'Layout') {
+        route.component = Layout;
+      } else if (route.component === 'ParentView') {
+        route.component = ParentView;
+      } else {
+        route.component = loadView(route.component);
       }
-    });
-  }
-  walk(menuList);
-  return result;
+    }
+    if (route.children && route.children.length > 0) {
+      route.children = filterAsyncRouter(route.children);
+    } else {
+      delete route.children;
+      delete route.redirect;
+    }
+    return true;
+  });
 }
 
-function comRouter(menus, asyncRouter, hasLeft) {
-  const res = [];
-  asyncRouter.forEach((router) => {
-    const _leftUrl = hasLeft ? hasLeft + '/' + router.path : router.path;
-    const _hasPromise = menus.filter((item) => item.url && item.url.startsWith(_leftUrl));
-    if (_hasPromise.length > 0) {
-      const newRouter = { ...router };
-      if (router.children && router.children.length > 0) {
-        newRouter.children = comRouter(menus, router.children, _leftUrl);
-      }
-      res.push(newRouter);
-    }
-  });
-  return res;
-}
+export const loadView = (view) => {
+  if (process.env.NODE_ENV === 'development') {
+    return (resolve) => require([`@/views/${view}`], resolve);
+  } else {
+    return () => import(`@/views/${view}`);
+  }
+};
 
 export default {
   namespaced: true,
