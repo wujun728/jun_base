@@ -32,8 +32,12 @@ public class DataRuleInterceptor implements Interceptor {
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
-        //未取到用户则放行
-        LoginUser principal = SecurityUtils.getLoginUser();
+        LoginUser principal = null;
+        try {
+            principal = SecurityUtils.getLoginUser();
+        } catch (Exception e) {
+            return invocation.proceed();
+        }
         if (principal == null) {
             return invocation.proceed();
         }

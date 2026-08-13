@@ -113,20 +113,20 @@ public class MyBatisConfig
         return resources.toArray(new Resource[resources.size()]);
     }
 
-    @Bean
-    public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception
-    {
-        String typeAliasesPackage = env.getProperty("mybatis.typeAliasesPackage");
-        String mapperLocations = env.getProperty("mybatis.mapperLocations");
-        String configLocation = env.getProperty("mybatis.configLocation");
-        typeAliasesPackage = setTypeAliasesPackage(typeAliasesPackage);
-        VFS.addImplClass(SpringBootVFS.class);
-
-        final SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
-        sessionFactory.setDataSource(dataSource);
-        sessionFactory.setTypeAliasesPackage(typeAliasesPackage);
-        sessionFactory.setMapperLocations(resolveMapperLocations(StringUtils.split(mapperLocations, ",")));
-        sessionFactory.setConfigLocation(new DefaultResourceLoader().getResource(configLocation));
-        return sessionFactory.getObject();
-    }
+    //    @Bean
+//    public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception
+//    {
+//        String typeAliasesPackage = env.getProperty("mybatis-plus.type-aliases-package");
+//        String mapperLocations = env.getProperty("mybatis-plus.mapper-locations");
+//        String configLocation = env.getProperty("mybatis-plus.config-location");
+//        typeAliasesPackage = setTypeAliasesPackage(typeAliasesPackage);
+//        VFS.addImplClass(SpringBootVFS.class);
+//
+//        final SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
+//        sessionFactory.setDataSource(dataSource);
+//        sessionFactory.setTypeAliasesPackage(typeAliasesPackage);
+//        sessionFactory.setMapperLocations(resolveMapperLocations(StringUtils.split(mapperLocations, ",")));
+//        sessionFactory.setConfigLocation(new DefaultResourceLoader().getResource(configLocation));
+//        return sessionFactory.getObject();
+//    }
 }

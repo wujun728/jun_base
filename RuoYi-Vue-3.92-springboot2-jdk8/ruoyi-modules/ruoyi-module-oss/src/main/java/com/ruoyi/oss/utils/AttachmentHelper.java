@@ -34,8 +34,12 @@ public class AttachmentHelper {
 
     @PostConstruct
     public void initHelper() {
-        uploadHelper = new OSSUploadHelper();
-        uploadHelper.init(ossConfig);
+        try {
+            uploadHelper = new OSSUploadHelper();
+            uploadHelper.init(ossConfig);
+        } catch (Exception e) {
+            // OSS配置未就绪时跳过，首次文件上传时再初始化
+        }
     }
 
     public String upload(HttpServletRequest request, MultipartFile file) throws FileSizeLimitExceededException,

@@ -59,6 +59,13 @@
             <artifactId>ruoyi-system</artifactId>
         </dependency>
 
+        <!-- 多租户模块 -->
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-module-tenant</artifactId>
+            <version>${ruoyi.version}</version>
+        </dependency>
+
     </dependencies>
 
 </project>

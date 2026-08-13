@@ -300,4 +300,27 @@ public class FileUtils
         String baseName = FilenameUtils.getBaseName(fileName);
         return baseName;
     }
+
+    /**
+     * 判断是否为绝对路径
+     */
+    public static boolean isAbsolutePath(String filename)
+    {
+        if (filename == null) return false;
+        File file = new File(filename);
+        return file.isAbsolute();
+    }
+
+    /**
+     * 创建文件（含父目录）
+     */
+    public static boolean createFile(String filename)
+    {
+        File file = new File(filename);
+        if (file.exists()) return true;
+        File parent = file.getParentFile();
+        if (parent != null && !parent.exists()) parent.mkdirs();
+        try { return file.createNewFile(); }
+        catch (IOException e) { return false; }
+    }
 }

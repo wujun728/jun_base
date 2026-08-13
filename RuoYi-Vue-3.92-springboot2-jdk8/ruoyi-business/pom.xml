@@ -14,8 +14,7 @@
 
     <modules>
         <module>ruoyi-scene-auth</module>
-        <!-- TODO: 以下模块依赖SB3特定类，待SB2适配后启用 -->
+        <module>ruoyi-biz-demo</module>
         <!-- <module>ruoyi-scene-pay</module> -->
-        <!-- <module>ruoyi-biz-demo</module> -->
     </modules>
 </project>

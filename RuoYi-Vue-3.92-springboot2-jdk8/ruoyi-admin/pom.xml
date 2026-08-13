@@ -61,6 +61,34 @@
             <artifactId>ruoyi-generator</artifactId>
         </dependency>
 
+        <!-- 多租户模块 -->
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-module-tenant</artifactId>
+            <version>${ruoyi.version}</version>
+        </dependency>
+
+        <!-- 数据权限模块 -->
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-module-datarule</artifactId>
+            <version>${ruoyi.version}</version>
+        </dependency>
+
+        <!-- 对象存储模块 -->
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-module-oss</artifactId>
+            <version>${ruoyi.version}</version>
+        </dependency>
+
+        <!-- 业务演示模块 -->
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-biz-demo</artifactId>
+            <version>${ruoyi.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

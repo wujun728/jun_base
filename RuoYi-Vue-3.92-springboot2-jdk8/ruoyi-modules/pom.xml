@@ -14,11 +14,10 @@
 
     <modules>
         <module>ruoyi-module-form</module>
-        <!-- TODO: 以下模块依赖SB3扩展类(LoginUser/PropertiesUtil/Flowable8/beetl3等)，待SB2升级后启用 -->
-        <!-- <module>ruoyi-module-tenant</module> -->
-        <!-- <module>ruoyi-module-oss</module> -->
+        <module>ruoyi-module-tenant</module>
+        <module>ruoyi-module-oss</module>
+        <module>ruoyi-module-datarule</module>
         <!-- <module>ruoyi-module-flowable</module> -->
-        <!-- <module>ruoyi-module-datarule</module> -->
         <!-- <module>ruoyi-module-online</module> -->
         <!-- <module>ruoyi-module-message</module> -->
         <module>ruoyi-modules-starter</module>

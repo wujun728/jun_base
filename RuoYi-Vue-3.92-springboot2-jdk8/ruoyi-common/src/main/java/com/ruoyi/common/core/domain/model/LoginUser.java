@@ -71,6 +71,8 @@ public class LoginUser implements UserDetails
      */
     private SysUser user;
 
+    private String tenantId;
+
     public LoginUser()
     {
     }
@@ -256,6 +258,16 @@ public class LoginUser implements UserDetails
     public void setUser(SysUser user)
     {
         this.user = user;
+    }
+
+    public String getTenantId()
+    {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId)
+    {
+        this.tenantId = tenantId;
     }
 
     @Override
