@@ -22,7 +22,6 @@
         <druid.version>1.2.28</druid.version>
         <yauaa.version>7.32.0</yauaa.version>
         <swagger.version>3.0.0</swagger.version>
-        <kaptcha.version>2.3.3</kaptcha.version>
         <pagehelper.boot.version>1.4.7</pagehelper.boot.version>
         <fastjson.version>2.0.62</fastjson.version>
         <oshi.version>7.3.0</oshi.version>
@@ -179,13 +178,6 @@
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt</artifactId>
                 <version>${jwt.version}</version>
-            </dependency>
-
-            <!-- 验证码 -->
-            <dependency>
-                <groupId>pro.fessional</groupId>
-                <artifactId>kaptcha</artifactId>
-                <version>${kaptcha.version}</version>
             </dependency>
 
             <!-- MyBatis-Plus -->
