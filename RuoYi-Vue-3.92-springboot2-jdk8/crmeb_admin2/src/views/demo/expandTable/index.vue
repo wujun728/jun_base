@@ -153,12 +153,9 @@
 
 <script>
 import { listExpandTable, getExpandTable, delExpandTable, addExpandTable, updateExpandTable, exportExpandTable } from "@/api/demo/expandTable/expandTable";
-import BaiduMapPoint from '../../../components/BaiduMap/baiduMapPoint'
-import UploadImage from '../../../components/Upload/uploadImage'
 
 export default {
   name: "ExpandTable",
-  components: {UploadImage, BaiduMapPoint },
   data() {
     return {
       // 遮罩层

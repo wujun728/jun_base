@@ -37,10 +37,10 @@ public class SysTenantController extends BaseController {
     @GetMapping("/list")
     public TableDataInfo list(HttpServletRequest request) {
         QueryWrapper<SysTenant> queryWrapper = new QueryWrapper<>();
-        queryWrapper.orderByDesc("a.create_time");
+        queryWrapper.orderByDesc("create_time");
         String tenantId = request.getParameter("tenantId");
         if (!StringUtils.isEmpty(tenantId)) {
-            queryWrapper.eq("a.tenant_id", tenantId);
+            queryWrapper.eq("tenant_id", tenantId);
         }
         String contact = request.getParameter("contact");
         if (!StringUtils.isEmpty(contact)) {
@@ -67,10 +67,10 @@ public class SysTenantController extends BaseController {
     @GetMapping("/export")
     public AjaxResult export(HttpServletRequest request) {
         QueryWrapper<SysTenant> queryWrapper = new QueryWrapper<>();
-        queryWrapper.orderByDesc("a.create_time");
+        queryWrapper.orderByDesc("create_time");
         String tenantId = request.getParameter("tenantId");
         if (!StringUtils.isEmpty(tenantId)) {
-            queryWrapper.eq("a.tenant_id", tenantId);
+            queryWrapper.eq("tenant_id", tenantId);
         }
         String contact = request.getParameter("contact");
         if (!StringUtils.isEmpty(contact)) {

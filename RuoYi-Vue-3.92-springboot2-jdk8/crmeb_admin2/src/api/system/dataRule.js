@@ -52,18 +52,34 @@ export function exportDataRule(query) {
   })
 }
 
-export function updateRoleDataRules(data) {
+export function getDataRuleModels(query) {
   return request({
-    url: '/system/dataRule/updateRules',
-    method: 'post',
-    data
+    url: '/system/dataRule/models',
+    method: 'get',
+    params: query
   })
 }
 
-export function fetchRoleDataRuleList(data) {
+export function getDataRuleVariables(query) {
   return request({
-    url: '/system/dataRule/roleDataRuleList',
+    url: '/system/dataRule/variables',
     method: 'get',
-    params: data
+    params: query
+  })
+}
+
+export function getDataRuleRoles(query) {
+  return request({
+    url: '/system/dataRule/roles',
+    method: 'get',
+    params: query
+  })
+}
+
+export function getDataRuleFields(tableName) {
+  return request({
+    url: '/system/dataRule/fields',
+    method: 'get',
+    params: { tableName }
   })
 }

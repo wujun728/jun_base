@@ -59,6 +59,10 @@ function transformRuoYiMenu(menuList, parentId = 0, parentPath = '') {
       url: fullPath || item.path || '',
       component: item.component || '',
       icon: rawIcon || 'menu',
+      meta: {
+        title: (item.meta && item.meta.title) || item.name || '',
+        icon: rawIcon || '',
+      },
       sort: (item.meta && item.meta.orderNum) || index,
       type: (item.meta && item.meta.menuType) || 'M',
       hidden: !!item.hidden,

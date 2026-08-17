@@ -68,13 +68,6 @@
             <version>${ruoyi.version}</version>
         </dependency>
 
-        <!-- 数据权限模块 -->
-        <dependency>
-            <groupId>com.ruoyi</groupId>
-            <artifactId>ruoyi-module-datarule</artifactId>
-            <version>${ruoyi.version}</version>
-        </dependency>
-
         <!-- 对象存储模块 -->
         <dependency>
             <groupId>com.ruoyi</groupId>
@@ -86,6 +79,13 @@
         <dependency>
             <groupId>com.ruoyi</groupId>
             <artifactId>ruoyi-biz-demo</artifactId>
+            <version>${ruoyi.version}</version>
+        </dependency>
+
+        <!-- 数据权限模块 -->
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-module-datarule</artifactId>
             <version>${ruoyi.version}</version>
         </dependency>
 
