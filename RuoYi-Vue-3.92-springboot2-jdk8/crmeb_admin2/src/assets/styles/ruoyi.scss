@@ -172,6 +172,11 @@
   margin-left: 10px !important;
 }
 
+/* 圆形图标按钮（RightToolbar 搜索/刷新/列显隐）恢复标准正方尺寸 */
+.el-button--mini.is-circle {
+  padding: 7px !important;
+}
+
 /** 表格更多操作下拉样式 */
 .el-table .el-dropdown-link,.el-table .el-dropdown-selfdefine {
 	cursor: pointer;
