@@ -2,7 +2,6 @@
 import Vue from 'vue';
 import '@babel/polyfill';
 import '@/styles/index.scss';
-import '@/assets/styles/ruoyi.scss';
 // import '@/assets/styles/ruoyi-index.scss'; // 文件不存在，已注释
 // import 'babel-polyfill'
 import Cookies from 'js-cookie';
@@ -11,6 +10,7 @@ import Element from 'element-ui';
 import './theme/element-variables.scss';
 
 import '@/theme/index.scss'; // global css
+import '@/assets/styles/ruoyi.scss'; // ruoyi css
 import '@/assets/fonts/font.css'; // font css
 import '@/assets/iconfont/iconfont';
 import '@/assets/iconfont/iconfont.css';
