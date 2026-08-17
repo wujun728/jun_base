@@ -47,6 +47,7 @@ import store from './store';
 import router from './router';
 import base from '@/components/base/index'; // 公共组件
 import UploadFile from '@/components/Upload/uploadFile.vue';
+import Editor from '@/components/Editor';
 import TimeSelect from '@/components/TimeSelect';
 import dialog from '@/libs/dialog';
 import scroll from '@/libs/loading';
@@ -110,6 +111,7 @@ Vue.prototype.download = download;
 Vue.component('Pagination', Pagination);
 Vue.component('RightToolbar', RightToolbar);
 Vue.component('DictTag', DictTag);
+Vue.component('Editor', Editor);
 
 DictData.install();
 

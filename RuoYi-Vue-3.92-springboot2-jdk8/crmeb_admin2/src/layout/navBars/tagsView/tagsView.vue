@@ -45,6 +45,9 @@
 import Contextmenu from '@/layout/navBars/tagsView/contextmenu';
 import { mapMutations } from 'vuex';
 
+// 主页固定标签页（默认打开、不可关闭）
+const HOME_TAB = { path: '/dashboard', name: 'Dashboard', meta: { title: '主页', icon: 'dashboard', isAffix: true }, query: {} };
+
 export default {
   name: 'tagsView',
   components: { Contextmenu },
@@ -114,6 +117,7 @@ export default {
     if (!this.$store.state.menu.tagNavList.length) {
       this.getTagsViewRoutes();
     }
+    this.ensureHomeTab();
     if (this.$store.state.menu.tagNavList.length) {
       if (this.$refs.tagsView && this.$refs.tagsView.offsetWidth < this.$refs.scrollbarRef.$refs.wrap.scrollWidth) {
         this.scrollTagIcon = true;
@@ -256,6 +260,13 @@ export default {
 
       this.initTagsViewList();
     },
+    // 确保主页固定标签页存在（处理刷新后从 localStorage 恢复等场景）
+    ensureHomeTab() {
+      const list = this.$store.state.menu.tagNavList || [];
+      if (!list.some((v) => v.path === HOME_TAB.path)) {
+        this.setTagNavList([{ ...HOME_TAB }, ...list]);
+      }
+    },
     // 存储 tagsViewList 到浏览器临时缓存中，页面刷新时，保留记录
     addBrowserSetSession(tagNavList) {
       this.setTagNavList(tagNavList);
@@ -270,6 +281,10 @@ export default {
       this.tagsViewRoutesList.map((v) => {
         if (v.meta && v.meta.isAffix) arr.push({ ...v });
       });
+      // 主页固定标签页默认存在且不可关闭
+      if (!arr.some((v) => v.path === HOME_TAB.path)) {
+        arr.unshift({ ...HOME_TAB });
+      }
       // }
       this.setTagNavList(arr);
       // 初始化当前元素(li)的下标
@@ -329,25 +344,22 @@ export default {
     },
     // 2、关闭当前 tagsView：当前项 `tags-view` icon 关闭时点击，如果是设置了固定的（isAffix），不可以关闭
     closeCurrentTagsView(path) {
-      this.tagsViewList.map((v, k, arr) => {
-        if (!v.meta.isAffix) {
-          if (v.path === path) {
-            this.tagsViewList.splice(k, 1);
-            setTimeout(() => {
-              // 最后一个
-              if (this.tagsViewList.length === k)
-                this.$router.push({
-                  path: arr[arr.length - 1].path,
-                  query: arr[arr.length - 1].query,
-                });
-              // 否则，跳转到下一个
-              else this.$router.push({ path: arr[k].path, query: arr[k].query });
-            }, 0);
-          }
-        }
-      });
+      const index = this.tagsViewList.findIndex((v) => v.path === path);
+      if (index === -1) return;
+      const tag = this.tagsViewList[index];
+      if (tag.meta && tag.meta.isAffix) return;
+      this.tagsViewList.splice(index, 1);
       this.setTagNavList(this.tagsViewList);
-      //   this.addBrowserSetSession(this.tagNavList);
+      // 若关闭的是当前激活页签，跳转到最近一个可关闭页签，否则跳回主页固定标签页
+      if (path === this.tagsRoutePath) {
+        const closables = this.tagsViewList.filter((v) => !(v.meta && v.meta.isAffix));
+        if (closables.length > 0) {
+          const target = closables[closables.length - 1];
+          this.$router.push({ path: target.path, query: target.query || {} });
+        } else {
+          this.$router.push(HOME_TAB.path);
+        }
+      }
     },
     // 3、关闭其它 tagsView：如果是设置了固定的（isAffix），不进行关闭
     closeOtherTagsView(path, query) {

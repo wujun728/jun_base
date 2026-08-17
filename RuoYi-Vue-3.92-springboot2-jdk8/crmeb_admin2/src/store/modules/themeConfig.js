@@ -81,7 +81,8 @@ const themeConfigModule = {
       // 分栏高亮风格：可选值"<columns-round|columns-card>"，默认 columns-round
       columnsAsideStyle: 'columns-card',
       // 分栏布局风格：可选值"<columns-horizontal|columns-vertical>"，默认 columns-horizontal
-      columnsAsideLayout: 'columns-horizontal',
+      columnsAsideLayout: 'columns-vertical',
+//      columnsAsideLayout: 'columns-horizontal',
 
       /**
        * 布局切换
