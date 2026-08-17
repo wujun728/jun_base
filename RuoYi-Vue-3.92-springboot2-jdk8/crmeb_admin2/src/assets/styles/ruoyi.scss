@@ -500,3 +500,13 @@
   position: relative;
   float: right;
 }
+
+/* 补齐 RuoYi 全局基础样式（crmeb 缺失 assets/styles/index.scss） */
+label {
+  font-weight: 700;
+}
+
+.app-container {
+  padding: 20px;
+  background-color: #ffffff;
+}
