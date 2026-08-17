@@ -45,10 +45,10 @@ router.beforeEach(async (to, from, next) => {
           const accessRoutes = await store.dispatch('permission/generateRoutes');
           router.addRoutes(accessRoutes);
           await store.dispatch('user/getMenus');
-          // 保存原始URL，如果从404回来则尝试跳回原始路径
-          const originalPath = window.location.pathname;
-          if (to.path === '/404' && originalPath !== '/404' && originalPath !== '/') {
-            next({ path: originalPath, replace: true });
+          // 若因动态路由尚未加载而落到 /404，则跳回原始目标路径
+          const redirectFullPath = to.redirectedFrom;
+          if (to.path === '/404' && redirectFullPath && redirectFullPath !== '/404' && redirectFullPath !== '/') {
+            next({ path: redirectFullPath, replace: true });
           } else {
             next({ ...to, replace: true });
           }
@@ -68,7 +68,7 @@ router.beforeEach(async (to, from, next) => {
       next();
     } else {
       // other pages that do not have permission to access are redirected to the login page.
-      next(`/login?redirect=${to.path}`);
+      next(`/login?redirect=${to.redirectedFrom || to.fullPath}`);
       NProgress.done();
     }
   }

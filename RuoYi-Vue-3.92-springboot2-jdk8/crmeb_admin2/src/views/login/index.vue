@@ -313,14 +313,6 @@ export default {
           loading.close();
           this.disabled = true;
           this.getUrl();
-          this.$store
-            .dispatch('user/getMenus', {
-              that: this,
-            })
-            .then((res) => {
-              this.$router.push({ path: this.redirect || '/dashboard', query: this.otherQuery });
-              //location.reload();
-            });
         })
         .catch(async (err) => {
           await this.onBlurAccount();
