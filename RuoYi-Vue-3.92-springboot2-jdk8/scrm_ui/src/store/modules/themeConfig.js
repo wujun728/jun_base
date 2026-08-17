@@ -17,7 +17,7 @@ const themeConfigModule = {
       menuBgColor: '#282c34',
       // 是否开启深色模式
       isIsDark: false,
-      themeStyle: 'theme-2',
+      themeStyle: 'theme-1',
       /**
        * 菜单 / 顶栏
        * 请注意：
