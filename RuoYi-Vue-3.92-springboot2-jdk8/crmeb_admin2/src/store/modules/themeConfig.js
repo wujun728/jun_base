@@ -96,7 +96,7 @@ const themeConfigModule = {
        * 全局网站标题 / 副标题
        */
       // 网站主标题（菜单导航、浏览器当前网页标题）
-      globalTitle: 'crmeb-admin',
+      globalTitle: 'scrm-admin',
       // 网站副标题（登录页顶部文字）
       globalViceTitle: '',
       // 网站描述（登录页顶部文字）

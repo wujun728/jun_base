@@ -26,6 +26,8 @@ target/
 *.iml
 *.ipr
 
+*.bak
+
 ### JRebel ###
 rebel.xml
 
