@@ -69,20 +69,20 @@
       <module name="ruoyi-admin" options="" />
       <module name="ruoyi-auth-common" options="" />
       <module name="ruoyi-auth-starter" options="-parameters" />
-      <module name="ruoyi-biz-demo" options="-parameters" />
+      <module name="ruoyi-biz-demo" options="" />
       <module name="ruoyi-business" options="" />
       <module name="ruoyi-common" options="" />
       <module name="ruoyi-framework" options="" />
       <module name="ruoyi-generator" options="" />
-      <module name="ruoyi-module-datarule" options="-parameters" />
+      <module name="ruoyi-module-datarule" options="" />
       <module name="ruoyi-module-flowable" options="-parameters" />
       <module name="ruoyi-module-form" options="" />
       <module name="ruoyi-module-gen" options="-parameters" />
       <module name="ruoyi-module-message" options="-parameters" />
       <module name="ruoyi-module-online" options="-parameters" />
-      <module name="ruoyi-module-oss" options="-parameters" />
+      <module name="ruoyi-module-oss" options="" />
       <module name="ruoyi-module-quartz" options="-parameters" />
-      <module name="ruoyi-module-tenant" options="-parameters" />
+      <module name="ruoyi-module-tenant" options="" />
       <module name="ruoyi-modules" options="" />
       <module name="ruoyi-modules-starter" options="" />
       <module name="ruoyi-oa-biz-sdk" options="-parameters" />

@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(set -e)",
+      "Bash(mkdir -p __TRACKED_VAR__/core/cache __TRACKED_VAR__/core/file/storage)",
+      "Bash(cp __TRACKED_VAR__/core/cache/TtlCacheManager.java __TRACKED_VAR__/core/cache/)",
+      "Bash(cp __TRACKED_VAR__/core/cache/TimedValue.java __TRACKED_VAR__/core/cache/)",
+      "Bash(cp __TRACKED_VAR__/core/file/storage/StorageFactory.java __TRACKED_VAR__/core/file/storage/)",
+      "Bash(mkdir -p __TRACKED_VAR__/ruoyi-common/src/main/java/com/ruoyi/common/core/file/domain)",
+      "Bash(cp __TRACKED_VAR__/ruoyi-common/src/main/java/com/ruoyi/common/core/file/domain/SysFilePartETag.java __TRACKED_VAR__/ruoyi-common/src/main/java/com/ruoyi/common/core/file/domain/)",
+      "Bash(mkdir -p __TRACKED_VAR__/ruoyi-plugins)",
+      "Bash(cp -r __TRACKED_VAR__/ruoyi-plugins/__TRACKED_VAR__ __TRACKED_VAR__/ruoyi-plugins/)",
+      "Bash(mvn -q -DskipTests -Dmaven.test.skip=true clean compile)",
+      "Bash(grep -rn \"configLocation\\\\|mapperLocations\\\\|typeAliasesPackage\" ruoyi-admin/src/main/resources/application.yml)",
+      "Bash(find . -name \"mybatis-config.xml\")",
+      "Bash(cp -r __TRACKED_VAR__/ruoyi-modules/ruoyi-module-tenant __TRACKED_VAR__/ruoyi-modules/)",
+      "Bash(cp -r __TRACKED_VAR__/ruoyi-modules/ruoyi-module-datarule __TRACKED_VAR__/ruoyi-modules/)"
+    ]
+  }
+}
