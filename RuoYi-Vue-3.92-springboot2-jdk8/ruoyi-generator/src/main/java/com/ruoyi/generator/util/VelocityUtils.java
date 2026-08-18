@@ -10,6 +10,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.constant.GenConstants;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.generator.config.GenConfig;
 import com.ruoyi.generator.domain.GenTable;
 import com.ruoyi.generator.domain.GenTableColumn;
 
@@ -148,30 +149,35 @@ public class VelocityUtils
         String tplCategory = table.getTplCategory();
         JSONObject paramsObj = JSONObject.parseObject(table.getOptions());
         boolean isView = genView(paramsObj);
-        String useWebType = "vm/vue";
-        String apiTemplate = "vm/js/api.js.vm";
+        String tplDir = GenConfig.getTemplateDir();
+        if (StringUtils.isEmpty(tplDir))
+        {
+            tplDir = "vm";
+        }
+        String useWebType = tplDir + "/vue";
+        String apiTemplate = tplDir + "/js/api.js.vm";
         if (StringUtils.equals(ELEMENT_PLUS, tplWebType))
         {
-            useWebType = "vm/vue/v3";
+            useWebType = tplDir + "/vue/v3";
         }
         else if (StringUtils.equals(ELEMENT_PLUS_TYPESSRIPT, tplWebType))
         {
-            useWebType = "vm/vue/v3ts";
-            apiTemplate = "vm/ts/api.ts.vm";
+            useWebType = tplDir + "/vue/v3ts";
+            apiTemplate = tplDir + "/ts/api.ts.vm";
         }
         List<String> templates = new ArrayList<String>();
-        templates.add("vm/java/domain.java.vm");
-        templates.add("vm/java/mapper.java.vm");
-        templates.add("vm/java/service.java.vm");
-        templates.add("vm/java/serviceImpl.java.vm");
-        templates.add("vm/java/controller.java.vm");
-        templates.add("vm/xml/mapper.xml.vm");
-        templates.add("vm/sql/sql.vm");
+        templates.add(tplDir + "/java/domain.java.vm");
+        templates.add(tplDir + "/java/mapper.java.vm");
+        templates.add(tplDir + "/java/service.java.vm");
+        templates.add(tplDir + "/java/serviceImpl.java.vm");
+        templates.add(tplDir + "/java/controller.java.vm");
+        templates.add(tplDir + "/xml/mapper.xml.vm");
+        templates.add(tplDir + "/sql/sql.vm");
         templates.add(apiTemplate);
         if (StringUtils.equals(ELEMENT_PLUS_TYPESSRIPT, tplWebType))
         {
-            templates.add("vm/ts/type.ts.vm");
-            templates.add("vm/ts/index.ts.vm");
+            templates.add(tplDir + "/ts/type.ts.vm");
+            templates.add(tplDir + "/ts/index.ts.vm");
         }
         if (GenConstants.TPL_CRUD.equals(tplCategory))
         {
@@ -184,7 +190,7 @@ public class VelocityUtils
         else if (GenConstants.TPL_SUB.equals(tplCategory))
         {
             templates.add(useWebType + "/index.vue.vm");
-            templates.add("vm/java/sub-domain.java.vm");
+            templates.add(tplDir + "/java/sub-domain.java.vm");
         }
         if (isView)
         {

@@ -30,6 +30,9 @@ public class GenConfig
     /** 是否允许生成文件覆盖到本地（自定义路径） */
     public static boolean allowOverwrite;
 
+    /** 代码生成模板目录 */
+    public static String templateDir;
+
     public static String getAuthor()
     {
         return author;
@@ -83,5 +86,16 @@ public class GenConfig
     public void setAllowOverwrite(boolean allowOverwrite)
     {
         GenConfig.allowOverwrite = allowOverwrite;
+    }
+
+    public static String getTemplateDir()
+    {
+        return templateDir;
+    }
+
+    @Value("${templateDir}")
+    public void setTemplateDir(String templateDir)
+    {
+        GenConfig.templateDir = templateDir;
     }
 }

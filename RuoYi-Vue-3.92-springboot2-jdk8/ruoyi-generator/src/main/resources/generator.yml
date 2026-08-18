@@ -10,3 +10,5 @@ gen:
   tablePrefix: sys_
   # 是否允许生成文件覆盖到本地（自定义路径），默认不允许
   allowOverwrite: false
+  # 代码生成模板目录（vm：原始模板；vm-mybatis-plus：Lombok + MyBatis-Plus 模板）
+  templateDir: vm
