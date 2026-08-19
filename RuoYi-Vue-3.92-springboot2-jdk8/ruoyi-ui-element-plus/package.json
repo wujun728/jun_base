@@ -45,7 +45,7 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",
-    "@vueup/vue-quill": "^1.2.0",
+    "@vueup/vue-quill": "1.2.0",
     "@vueuse/core": "^14.3.0",
     "@wangeditor-next/editor": "^5.7.12",
     "@wangeditor-next/editor-for-vue": "^5.1.14",

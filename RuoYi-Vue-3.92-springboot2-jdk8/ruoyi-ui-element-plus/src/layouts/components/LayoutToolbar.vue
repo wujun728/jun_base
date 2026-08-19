@@ -112,7 +112,7 @@ const toolbarToneClass = computed(() => {
   }
 
   const isHeaderMenuLayout = layout === LayoutMode.TOP || layout === LayoutMode.MIX;
-  if (isHeaderMenuLayout && sidebarColorScheme === SidebarColor.CLASSIC_BLUE) {
+  if (isHeaderMenuLayout && sidebarColorScheme !== SidebarColor.MINIMAL_WHITE) {
     return "layout-toolbar--light";
   }
 

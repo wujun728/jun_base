@@ -26,7 +26,7 @@ const hamburgerClass = computed(() => {
   // 如果是混合布局 && 侧边栏配色方案是经典蓝
   if (
     layout.value === LayoutMode.MIX &&
-    settingsStore.sidebarColorScheme === SidebarColor.CLASSIC_BLUE
+    settingsStore.sidebarColorScheme !== SidebarColor.MINIMAL_WHITE
   ) {
     return "hamburger--white";
   }

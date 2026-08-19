@@ -111,7 +111,7 @@ const isLogoCollapsed = computed(() => width.value < 768);
 const useMenuColors = computed(
   () =>
     settingsStore.resolvedTheme === ThemeMode.DARK ||
-    settingsStore.sidebarColorScheme === SidebarColor.CLASSIC_BLUE
+    settingsStore.sidebarColorScheme !== SidebarColor.MINIMAL_WHITE
 );
 </script>
 
@@ -297,7 +297,8 @@ const useMenuColors = computed(
 }
 
 :global(html.dark),
-:global(html.sidebar-color-blue) {
+:global(html.sidebar-color-blue),
+:global(html.sidebar-color-antd-dark) {
   .layout-header__menu {
     :deep(.el-menu--horizontal) {
       .el-menu-item {

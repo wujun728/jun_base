@@ -1,4 +1,4 @@
-import { ThemeMode } from "@/enums";
+import { SidebarColor, ThemeMode } from "@/enums";
 import { themeColorNames } from "@/settings";
 
 const SYSTEM_DARK_MEDIA = "(prefers-color-scheme: dark)";
@@ -90,10 +90,13 @@ export function toggleDarkMode(isDark) {
   }
 }
 
-export function toggleSidebarColor(isBlueSidebar) {
-  if (isBlueSidebar) {
-    document.documentElement.classList.add("sidebar-color-blue");
-  } else {
-    document.documentElement.classList.remove("sidebar-color-blue");
+export function toggleSidebarColor(scheme) {
+  const root = document.documentElement;
+  root.classList.remove("sidebar-color-blue", "sidebar-color-antd-dark");
+
+  if (scheme === SidebarColor.CLASSIC_BLUE) {
+    root.classList.add("sidebar-color-blue");
+  } else if (scheme === SidebarColor.ANTD_DARK) {
+    root.classList.add("sidebar-color-antd-dark");
   }
 }

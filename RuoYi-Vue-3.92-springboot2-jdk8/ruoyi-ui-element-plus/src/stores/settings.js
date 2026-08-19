@@ -1,4 +1,4 @@
-import { SidebarColor, ThemeMode, TagsViewStyle } from "@/enums/settings";
+import { ThemeMode, TagsViewStyle } from "@/enums/settings";
 import {
   applyTheme,
   generateThemeColors,
@@ -93,7 +93,7 @@ export const useSettingsStore = defineStore("setting", () => {
     { immediate: true, deep: true }
   );
 
-  watch(sidebarColorScheme, (v) => toggleSidebarColor(v === SidebarColor.CLASSIC_BLUE), {
+  watch(sidebarColorScheme, (v) => toggleSidebarColor(v), {
     immediate: true,
   });
 

@@ -20,6 +20,7 @@ export const ThemeMode = {
 export const SidebarColor = {
   CLASSIC_BLUE: "classic-blue",
   MINIMAL_WHITE: "minimal-white",
+  ANTD_DARK: "antd-dark",
 };
 
 /**

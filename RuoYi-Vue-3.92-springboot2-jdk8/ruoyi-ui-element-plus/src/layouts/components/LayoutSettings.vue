@@ -159,6 +159,9 @@
             <el-radio :value="SidebarColor.CLASSIC_BLUE">
               {{ t("settings.classicBlue") }}
             </el-radio>
+            <el-radio :value="SidebarColor.ANTD_DARK">
+              {{ t("settings.antdDark") }}
+            </el-radio>
           </el-radio-group>
         </div>
       </section>
@@ -366,7 +369,12 @@ function handleThemeColorChange(name, color) {
 }
 
 function setSidebarColor(value) {
-  if (value !== SidebarColor.CLASSIC_BLUE && value !== SidebarColor.MINIMAL_WHITE) return;
+  const valid = [
+    SidebarColor.CLASSIC_BLUE,
+    SidebarColor.MINIMAL_WHITE,
+    SidebarColor.ANTD_DARK,
+  ];
+  if (!valid.includes(value)) return;
   settingsStore.sidebarColorScheme = value;
 }
 

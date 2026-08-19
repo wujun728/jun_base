@@ -37,6 +37,18 @@ html.sidebar-color-blue {
   --sidebar-logo-text-color: #fff;
 }
 
+// Ant Design 深蓝黑侧边栏（AntD Layout.Sider dark 配色）
+html.sidebar-color-antd-dark {
+  --menu-background: #001529;
+  --menu-text: rgba(255, 255, 255, 0.65);
+  --menu-active-text: #ffffff;
+  --menu-active-bg: #1677ff;
+  --menu-hover: rgba(255, 255, 255, 0.08);
+  --menu-border: rgba(255, 255, 255, 0.1);
+  --sidebar-logo-background: #002140;
+  --sidebar-logo-text-color: #fff;
+}
+
 // 暗黑主题
 html.dark {
   --menu-background: var(--el-bg-color-overlay);

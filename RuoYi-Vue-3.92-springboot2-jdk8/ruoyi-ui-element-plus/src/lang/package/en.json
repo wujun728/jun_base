@@ -111,6 +111,7 @@
     "fade-scale": "Fade Scale",
     "classicBlue": "Classic Blue",
     "minimalWhite": "Minimal White",
+    "antdDark": "AntD Dark",
     "copyConfig": "Copy Config",
     "resetConfig": "Reset Default",
     "copySuccess": "Configuration copied to clipboard",

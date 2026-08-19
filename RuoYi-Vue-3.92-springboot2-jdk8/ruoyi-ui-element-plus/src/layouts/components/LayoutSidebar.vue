@@ -56,7 +56,8 @@ const sidebarColorScheme = computed(() => settingsStore.sidebarColorScheme);
 
 const menuThemeProps = computed(() => {
   const isDarkOrClassicBlue =
-    theme.value === ThemeMode.DARK || sidebarColorScheme.value === SidebarColor.CLASSIC_BLUE;
+    theme.value === ThemeMode.DARK ||
+    sidebarColorScheme.value !== SidebarColor.MINIMAL_WHITE;
 
   return {
     backgroundColor: isDarkOrClassicBlue ? variables["menu-background"] : undefined,
