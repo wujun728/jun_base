@@ -1,0 +1,89 @@
+<!-- 注意这里不需要写`<html><body>`这些东西，它是一个html片段，不是完整的html页面 -->
+<form id="grantRoleForm" lay-filter="grantRoleForm" class="layui-form model-form">
+    <input name="id" type="hidden"/>
+    <div class="layui-form-item">
+        <label class="layui-form-label">授权角色</label>
+        <div class="layui-input-block">
+            <div id="roleSelectBox"></div>
+        </div>
+    </div>
+    <div class="layui-form-item text-right">
+        <button class="layui-btn layui-btn-primary" type="button" ew-event="closeDialog">取消</button>
+        <button class="layui-btn" lay-filter="formSubmitBtn" lay-submit>保存</button>
+    </div>
+</form>
+
+<script>
+    layui.use(['layer', 'form', 'admin', 'xnUtil', 'zTree'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var admin = layui.admin;
+        var xnUtil = layui.xnUtil;
+
+        var grantData = admin.getLayerData('#grantRoleForm').data;
+
+        // 渲染远程数据下拉
+        var grantRoleRenderIns = {};
+        // admin.req(getProjectUrl() + 'sysRole/dropDown', function(res){
+        // admin.req( 'dropDown.json', function(res){
+        admin.req( getProjectUrl() + '/dev-api/system/user/authRole/'+grantData.userId, function(res){
+            grantRoleRenderIns = xmSelect.render({
+                el: '#roleSelectBox',
+                name: 'grantRoleIdList',
+                data: res.roles,
+                toolbar: {
+                    show: true
+                },
+                filterable: true,
+                paging: true,
+                pageSize: 10,
+                radio: false,
+                prop: {
+                    name: 'roleName',
+                    value: 'roleId'
+                },
+                model: {
+                    label: {
+                        type: 'block',
+                        block: {
+                            //最大显示数量, 0:不限制
+                            showCount: 3
+                        }
+                    }
+                },
+                tips: '请选择角色'
+            });
+        }, {async: false});
+
+        if(grantData !== null && grantData !== undefined) {
+            form.val('grantRoleForm', grantData);
+            // 获取已授权的角色id集合
+            // admin.req(getProjectUrl() + 'sysUser/ownRole?id=' + grantData.id, function(res){
+            admin.req( '/dev-api/system/user/authRole/'+grantData.userId, function(res){
+                var ids = res.user.roles.map(function (d) {
+                        return /* {"id":  */d.roleId/* } */;
+                    });
+                grantRoleRenderIns.setValue(ids);
+            });
+        }
+
+        // 表单提交事件
+        form.on('submit(formSubmitBtn)', function (data) {
+            layer.load(2);
+            var roleIds = data.field.grantRoleIdList;
+            //data.field.grantRoleIdList = data.field.grantRoleIdList.split(',');
+            debugger;
+            //var url = getProjectUrl() + 'sysUser/grantRole';
+            var url = getProjectUrl() + '/dev-api/system/user/authRole?userId='+grantData.userId+'&roleIds='+roleIds;
+            admin.req(url, JSON.stringify(data.field), function(res){
+                layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                    admin.putLayerData('formOk', true, '#grantRoleForm');
+                    admin.closeDialog('#grantRoleForm');
+                });
+            }, 'PUT');
+            return false;
+        });
+
+    });
+</script>

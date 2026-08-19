@@ -1,0 +1,68 @@
+<!-- 注意这里不需要写`<html><body>`这些东西，它是一个html片段，不是完整的html页面 -->
+<form id="grantDataForm" lay-filter="grantDataForm" class="layui-form model-form">
+    <input name="id" type="hidden"/>
+    <div class="layui-form-item" id="defineDataTreeBox">
+        <label class="layui-form-label">授权数据</label>
+        <div class="layui-input-block">
+            <ul id="grantOrgTree" class="ztree"></ul>
+        </div>
+    </div>
+    <div class="layui-form-item text-right">
+        <button class="layui-btn layui-btn-primary" type="button" ew-event="closeDialog">取消</button>
+        <button class="layui-btn" lay-filter="formSubmitBtn" lay-submit>保存</button>
+    </div>
+</form>
+
+<script>
+    layui.use(['layer', 'form', 'admin', 'xnUtil', 'zTree'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var admin = layui.admin;
+        var xnUtil = layui.xnUtil;
+
+        var grantData = admin.getLayerData('#grantDataForm').data;
+        form.val('grantDataForm', grantData);
+
+        // 获取机构树
+        // admin.req(getProjectUrl() + 'sysOrg/tree', function(res){
+        admin.req( 'tree.json', function(res){
+            // 渲染树
+            var zTree = $.fn.zTree.init($('#grantOrgTree'), {
+                check: {enable: true, chkboxType: {"Y": "s", "N": "s" }},
+                data: {
+                    key: {name: 'title'},
+                    simpleData: {enable: true, rootPId: 0}
+                }
+            }, xnUtil.handleNoChildrenZtreeData(xnUtil.handleZtreeDataOpen(res.data)));
+
+            // 获取已授权的机构id集合
+            // admin.req(getProjectUrl() + 'sysUser/ownData?id=' + grantData.id, function(res){
+            admin.req( 'ownData.json?id=' + grantData.id, function(res){
+                // 设置默认选择
+                res.data.forEach(function (value) {
+                    zTree.checkNode(zTree.getNodeByParam( "id", value), true);
+                })
+            });
+        });
+
+        // 表单提交事件
+        form.on('submit(formSubmitBtn)', function (data) {
+            layer.load(2);
+            var grantOrgIdList = [];
+            var url = getProjectUrl() + 'sysUser/grantData';
+            $.fn.zTree.getZTreeObj("grantOrgTree").getCheckedNodes(true).forEach(function (value) {
+                grantOrgIdList.push(value.id);
+            });
+            data.field.grantOrgIdList = grantOrgIdList;
+            admin.req(url, JSON.stringify(data.field), function(res){
+                layer.msg(res.message, {icon: 1, time: 1000}, function () {
+                    admin.putLayerData('formOk', true, '#grantDataForm');
+                    admin.closeDialog('#grantDataForm');
+                });
+            }, 'post');
+            return false;
+        });
+
+    });
+</script>

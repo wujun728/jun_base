@@ -1,0 +1,125 @@
+<!-- 注意这里不需要写`<html><body>`这些东西，它是一个html片段，不是完整的html页面 -->
+<form id="addOrUpdateForm" lay-filter="addOrUpdateForm" class="layui-form model-form">
+    <input name="id" type="hidden"/>
+    <input name="menuCheckStrictly" type="hidden"/>
+    <input name="deptCheckStrictly" type="hidden"/>
+    <input name="dataScope" type="hidden"/>
+    <input name="admin" type="hidden"/>
+    <input name="flag" type="hidden"/>
+    <input name="roleId" type="hidden"/>
+    <div class="layui-form-item">
+        <label class="layui-form-label layui-form-required">角色名称</label>
+        <div class="layui-input-block">
+            <input name="roleName" class="layui-input" placeholder="请输入角色名称" lay-verType="tips" lay-verify="required" required/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label layui-form-required">权限字符</label>
+        <div class="layui-input-block">
+            <input name="roleKey" class="layui-input" placeholder="请输入角色编码" lay-verType="tips" lay-verify="required" required/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label layui-form-required">排序</label>
+        <div class="layui-input-block">
+            <input name="roleSort" class="layui-input" type="number" placeholder="请输入排序" lay-verType="tips" lay-verify="required" required/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">状态</label>
+        <div class="layui-input-block">
+                <input type="radio"  name="status" value="0" title="正常" />
+                <input type="radio"  name="status" value="1" title="停用"  />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">备注</label>
+        <div class="layui-input-block">
+            <textarea name="remark" placeholder="请输入备注" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">菜单权限：</label>
+        <div class="layui-input-block">
+            <ul id="grantOrgTree" class="ztree"></ul>
+        </div>
+    </div>
+    <div class="layui-form-item text-right">
+        <button class="layui-btn layui-btn-primary" type="button" ew-event="closeDialog">取消</button>
+        <button class="layui-btn" lay-filter="formSubmitBtn" lay-submit>保存</button>
+    </div>
+</form>
+
+<script>
+    layui.use(['layer', 'form', 'admin', 'xnUtil', 'zTree'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var xnUtil = layui.xnUtil;
+        var admin = layui.admin;
+
+        var editData = admin.getLayerData('#addOrUpdateForm').data;
+        form.val('addOrUpdateForm', editData);
+
+        if(editData !== null && editData !== undefined) {
+            admin.req( '/dev-api/system/menu/roleMenuTreeselect/'+editData.roleId, function(res){
+                // 渲染树
+                var zTree = $.fn.zTree.init($('#grantOrgTree'), {
+                    check: {enable: true, chkboxType: {"Y": "s", "N": "s" }},
+                    data: {
+                        key: {name: 'label'},
+                        simpleData: {enable: true, rootPId: 0}
+                    }
+                }, xnUtil.handleNoChildrenZtreeData(xnUtil.handleZtreeDataOpen(res.menus)));
+
+                // 获取已授权的机构id集合
+                admin.req( '/dev-api/system/menu/roleMenuTreeselect/'+editData.roleId , function(res){
+                    // 设置默认选择
+                    res.checkedKeys.forEach(function (value) {
+                        zTree.checkNode(zTree.getNodeByParam( "id", value), true);
+                    });
+                });
+                zTree.expandAll(false);
+            });
+        } else {
+            $('input[type="radio"][name="status"]').eq("0").prop('checked', true);
+            admin.req( '/dev-api/system/menu/treeselect', function(res){
+                // 渲染树
+                var zTree = $.fn.zTree.init($('#grantOrgTree'), {
+                    check: {enable: true, chkboxType: {"Y": "s", "N": "s" }},
+                    data: {
+                        key: {name: 'label'},
+                        simpleData: {enable: true, rootPId: 0}
+                    }
+                }, xnUtil.handleNoChildrenZtreeData(xnUtil.handleZtreeDataOpen(res.data)));
+                zTree.expandAll(false);
+            });
+        }
+        // 表单提交事件
+        form.on('submit(formSubmitBtn)', function (data) {
+            layer.load(2);
+            //var url = editData ? getProjectUrl() + 'sysRole/edit' : getProjectUrl() + 'sysRole/add';
+            var method = editData ? 'PUT' : 'POST';
+            var url = '/dev-api/system/role';
+
+            var grantOrgIdList = [];
+            $.fn.zTree.getZTreeObj("grantOrgTree").getCheckedNodes(true).forEach(function (value) {
+                grantOrgIdList.push(value.id);
+            });
+            data.field.menuIds = grantOrgIdList;
+
+            admin.req(url, JSON.stringify(data.field), function(res){
+                if(res.code == 200 || res.code == 0 ){
+                    layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                        admin.putLayerData('formOk', true, '#addOrUpdateForm');
+                        admin.closeDialog('#addOrUpdateForm');
+                    });
+                }else{
+                    layer.msg(res.msg, {icon: 2, time: 1000}, function () {  });
+                }
+            }, method);
+            return false;
+        });
+
+    });
+</script>

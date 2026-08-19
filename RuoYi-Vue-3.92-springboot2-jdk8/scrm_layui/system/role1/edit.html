@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('角色修改')" />
+	<style>
+		.menuTree{
+			max-height: 200px;
+			width: 92%;
+			display: inline-block;
+			position: absolute;
+			top:100%;
+			z-index: 100;
+		}
+	</style>
+</head>
+<body>
+<div class="container">
+	<form class="layui-form mt20" lay-filter="form-role" th:object="${role}">
+		<input id="roleId" name="roleId" type="hidden" th:value="*{roleId}"/>
+		<div class="layui-form-item">
+			<label class="layui-form-label"><span class="required-msg ">*</span>角色名称：</label>
+			<div class="layui-input-block">
+				<input class="layui-input min-input" type="text" name="roleName" lay-verify="required|roleName" lay-verType="tips" autocomplete="off" th:value="*{roleName}" />
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label"><span class="required-msg ">*</span>权限字符：</label>
+			<div class="layui-input-block">
+				<input class="layui-input min-input" type="text" name="roleKey" lay-verify="required|roleKey" lay-verType="tips" autocomplete="off" th:value="*{roleKey}"/>
+				<p class="form-tip"><i class="layui-icon layui-icon-tips"></i>控制器中定义的权限字符，如：@RequiresRoles("")</p>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label"><span class="required-msg ">*</span>显示顺序：</label>
+			<div class="layui-input-block">
+				<input class="layui-input min-input" type="text" name="roleSort" id="roleSort" lay-verify="number" lay-verType="tips" autocomplete="off" th:value="*{roleSort}"/>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">状态：</label>
+			<div class="layui-input-block">
+				<div class="onoffswitch">
+					<input type="checkbox" th:checked="${role.status == '1' ? true : false}" id="status" name="status" lay-skin="switch">
+				</div>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">备注：</label>
+			<div class="layui-input-block">
+				<textarea class="layui-textarea min-input" id="remark" name="remark">[[${role.remark}]]</textarea>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">菜单权限：</label>
+			<div class="layui-input-block">
+				<div id="menuTrees" class="eleTree menuTree" lay-filter="treeMenu"></div>
+			</div>
+		</div>
+		<div class="layui-form-item layui-hide">
+			<div class="layui-input-block">
+				<button class="layui-btn" lay-submit lay-filter="btn-edit" id="btn-edit">保存</button>
+			</div>
+		</div>
+	</form>
+</div>
+<th:block th:include="include :: footer" />
+<script th:src="@{/js/system/role_form.js}"></script>
+</body>
+</html>

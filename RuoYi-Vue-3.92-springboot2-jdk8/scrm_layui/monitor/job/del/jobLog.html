@@ -1,0 +1,205 @@
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('定时任务日志')"/>
+    <style>
+        .layui-table-cell .layui-form-checkbox[lay-skin=primary]{top:4px;}
+    </style>
+</head>
+<body>
+<div class="layui-layout layui-layout-iframe">
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <!--search form-->
+            <form class="layui-form toolbar" id="searchForm">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">任务名称</label>
+                        <div class="layui-input-inline">
+                            <input class="layui-input" type="text" name="jobName" placeholder="" autocomplete="off" th:value="${job!=null?job.jobName:''}">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">任务分组</label>
+                        <div class="layui-input-inline">
+                            <select name="jobGroup" th:with="type=${@dict.getType('sys_job_group')}">
+                                <option value="">所有</option>
+                                <th:block th:if="${job==null}"><option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option></th:block>
+                                <th:block th:if="${job!=null}"><option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{job.jobGroup}"></option></th:block>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">执行状态</label>
+                        <div class="layui-input-inline input-sm">
+                            <select name="status" th:with="type=${@dict.getType('sys_common_status')}">
+                                <option value="">所有</option>
+                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="layui-inline mt5">
+                        <label class="layui-form-label">执行时间</label>
+                        <div class="layui-input-inline input-sm">
+                            <input class="layui-input" type="text" name="params[beginTime]" id="startTime" placeholder="开始时间" />
+                        </div>
+                        <span class="layui-form-mid">-</span>
+                        <div class="layui-input-inline input-sm">
+                            <input class="layui-input" type="text" name="params[endTime]" id="endTime" placeholder="结束时间"/>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button  type="button" class="layui-btn layuiadmin-btn-list" data-type="reload" lay-submit lay-filter="form-search" id="form-search"><i class="layui-icon">&#xe615;</i>搜索</button>
+                    </div>
+                </div>
+            </form>
+            <!--table actcion-->
+            <div class="layui-card-body">
+                <script type="text/html" id="table_jobLog_toolbar">
+                    <div class="layui-table-tool-temp" perm-show="system:job:add">
+                        <button class="layui-btn layui-btn-sm" lay-event="toolbar-jobLog-remove" perm-show="monitor:job:remove"><i class="layui-icon">&#xe640;</i>删除</button>
+                        <button class="layui-btn layui-btn-sm" lay-event="toolbar-job-log-clear" perm-show="monitor:job:remove"><i class="layui-icon">&#x1006;</i>清空</button>
+                    </div>
+                </script>
+                <table id="table_jobLog" lay-filter="table_jobLog"></table>
+                <script type="text/html" id="col_operation">
+                    <a perm-show="system:job:remove" href="javascript:;" lay-event="del">删除</a><span class="splitor">|</span>
+                    <a href="javascript:;" lay-event="detail">详细</a>
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('system:job:edit')}]];
+    var prefix = ctx + "monitor/jobLog";
+</script>
+<script>
+    layui.use(['common'], function () {
+        var $ = layui.jquery,
+            layer = layui.layer,
+            form = layui.form,
+            common = layui.common,
+            laydate = layui.laydate,
+            table = layui.table;
+        //页面事件列表
+        var active = {
+            reload: function () {
+                search(false);
+            },
+            remove: function (ids) {
+                common.ajaxRemove(prefix + "/remove", ids, function (res) {
+                    active['reload'].call(this);
+                });
+            }
+        };
+        //开始日期
+        var insStart = laydate.render({
+            elem: '#startTime'
+            , min: 0
+            , done: function (value, date) {
+                //更新结束日期的最小日期
+                insEnd.config.min = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+                //自动弹出结束日期的选择器
+                insEnd.config.elem[0].focus();
+            }
+        });
+        //结束日期
+        var insEnd = laydate.render({
+            elem: '#endTime'
+            , min: 0
+            , done: function (value, date) {
+                //更新开始日期的最大日期
+                insStart.config.max = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+            }
+        });
+
+        //查询表单
+        form.on('submit(form-search)', function (data) {
+            search(true);
+        });
+        //表格
+        table.render({
+            elem: '#table_jobLog'
+            , method: 'post'
+            , url: prefix + "/list" //数据接口
+            , toolbar: '#table_jobLog_toolbar'
+            , defaultToolbar: []
+            , autoSort: false 	//关闭前端排序 使用后端排序
+            , limit: getPageSize()
+            , limits: getPageList()
+            , text: getLoadErrorMsg()
+            , page: true
+            , cols: new Array([
+                {type: 'checkbox', width: 40}
+                , {field: 'jobName', title: '任务名称'}
+                , {field: 'jobGroup', title: '任务分组'}
+                , {field: 'invokeTarget', title: '调用目标字符串'}
+                , {field: 'jobMessage', title: '日志信息'}
+                , {
+                    field: 'status', align: 'center', title: '状态', width: 80,
+                    templet: function (item) {
+                        return "<input type=\"checkbox\" data-jobId='" + item.jobId + "' lay-filter='status_switch' name=\"switch\" " + (parseInt(item.status) == 1 ? "checked" : "") + " lay-skin=\"switch\" />";
+                    }
+                }
+                , {field: 'createTime', title: '创建时间', sort: true, width: 180, align: 'center'}
+                , {title: '操作', align: 'center', width: 80, toolbar: '#col_operation'}
+            ])
+        });
+        //表格工具栏按钮事件
+        table.on('toolbar(table_jobLog)', function (obj) {
+            switch (obj.event) {
+                case 'toolbar-job-log-clear':
+                    layer.confirm("确定清空所有日志么？", function (index) {
+                        common.ajax.post(prefix + "/clean", {}, function (data) {
+                            if (data.code === 0)
+                                active['reload'].call(this);
+                        });
+                        layer.close(index);
+                    });
+                    break;
+                case 'toolbar-jobLog-remove':
+                    var checks = table.checkStatus('table_jobLog');
+                    var ids = common.joinArray(checks.data, "jobLogId");
+                    active['remove'].call(this, ids);
+                    break;
+
+            }
+        });
+        //表格事件
+        table.on('tool(table_job)', function (obj) {
+            switch (obj.event) {
+                case 'del':
+                    active['remove'].call(this, obj.data.jobId);
+                    break;
+                case 'detail':
+                    layer.alert('功能开发中...');
+                    break;
+            }
+        });
+    });
+
+    //表格查询
+    function search(isResetCurr) {
+        var field = serializeJson($('#searchForm'));
+        var sortParam = getSort('table_jobLog');
+        if (sortParam) {
+            field.orderByColumn = sortParam.sortField;
+            field.isAsc = sortParam.sortMethod;
+        }
+        //执行重载
+        var options = {where: field};
+        if (isResetCurr == true) {
+            options.page = {curr: 1};
+        }
+        layui.table.reload('table_jobLog', options);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>用户管理</title>
+    <link rel="stylesheet" href="/assets/libs/layui/css/layui.css"/>
+    <link rel="stylesheet" href="/assets/module/admin.css">
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        #orgTree {
+            border: 1px solid #e6e6e6;
+            padding: 10px 5px;
+            overflow: auto;
+            height: -webkit-calc(100vh - 125px);
+            height: -moz-calc(100vh - 125px);
+            height: calc(100vh - 125px);
+        }
+
+        .layui-tree-entry .layui-tree-txt {
+            padding: 0 5px;
+            border: 1px transparent solid;
+            text-decoration: none !important;
+        }
+
+        .layui-tree-entry.ew-tree-click .layui-tree-txt {
+            background-color: #fff3e0;
+            border: 1px #FFE6B0 solid;
+        }
+    </style>
+</head>
+<body>
+<!-- 正文开始 -->
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md3">
+            <div class="layui-card">
+                <div class="layui-card-body" style="padding: 10px;">
+                    <!-- 左树 -->
+                    <div id="orgTree"></div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md9">
+            <div class="layui-card">
+                <div class="layui-card-body" style="padding: 10px;">
+                    <!-- 表格工具栏 -->
+                    <form class="layui-form toolbar">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">用户名称:</label>
+                                <!-- <label class="layui-form-label">关键词:</label> -->
+                                <div class="layui-input-inline">
+                                    <!-- <input name="searchValue" class="layui-input" placeholder="请输入姓名、账号、手机号"/> -->
+                                    <input name="userName" class="layui-input" placeholder="请输入用户名称"/>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">状态:</label>
+                                <div class="layui-input-inline">
+                                    <!-- <select name="searchStatus"></select> -->
+                                    <select name="status"></select>
+                                </div>
+                            </div>
+                            <div class="layui-inline">&emsp;
+                                <button class="layui-btn icon-btn" lay-filter="tableSearch" lay-submit>
+                                    <i class="layui-icon">&#xe615;</i>搜索
+                                </button>
+                            </div>
+                            <div class="layui-inline">&emsp;
+                                <button type="reset" class="layui-btn layui-btn-primary icon-btn">
+                                    <i class="layui-icon">&#xe669;</i>重置
+                                </button>
+                            </div>
+                            <div class="layui-inline">&emsp;
+                                <button class="layui-btn icon-btn" lay-filter="tableExport" lay-submit>
+                                    <i class="layui-icon">&#xe67d;</i>导出
+                                </button>
+                            </div>
+                            <!-- <div class="layui-inline">&emsp;
+                                <button class="layui-btn icon-btn" lay-filter="tableSelector" lay-submit>
+                                    <i class="layui-icon">&#xe609;</i>选择人员案例
+                                </button>
+                            </div> -->
+                        </div>
+                    </form>
+                    <!-- 数据表格 -->
+                    <table id="dataTable" lay-filter="dataTable"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 表格操作列 -->
+<script type="text/html" id="tableBar">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" perm-show="sysUser:edit" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" perm-show="sysUser:delete" lay-event="delete">删除</a>
+    <a class="layui-btn layui-btn-xs" lay-event="more">更多 <i class="layui-icon layui-icon-down"></i></a>
+
+    <!-- 下拉菜单 -->
+    <!-- <a class="layui-btn layui-btn-xs" data-dropdown="#dataTableDrop{{d.LAY_INDEX}}" no-shade="true">
+        更多<i class="layui-icon layui-icon-drop" style="font-size: 12px;margin-right: 0;"></i></a>
+    <ul class="dropdown-menu-nav dropdown-bottom-right layui-hide" id="dataTableDrop{{d.LAY_INDEX}}">
+        <div class="dropdown-anchor"></div>
+        <li perm-show="sysUser:grantRole"><a lay-event="grantRole">授权角色</a></li>
+        <li perm-show="sysUser:grantData"><a lay-event="grantData">授权数据</a></li>
+    </ul> -->
+</script>
+
+<!-- js部分 -->
+<script src="/assets/libs/layui/layui.js"></script>
+<script src="/assets/js/jquery.js"></script>
+<script src="/assets/js/common.js"></script>
+
+<script src="/assets/js/core.util.js"></script>
+<script>
+    layui.use(['layer', 'table', 'tableX', 'notice', 'tree', 'treeTable', 'dropdown',  'upload','xnUtil'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var table = layui.table;
+        var tableX = layui.tableX;
+        var admin = layui.admin;
+        var form = layui.form;
+        var notice = layui.notice;
+        var xnUtil = layui.xnUtil;
+        var tree = layui.tree;
+        var dropdown = layui.dropdown;
+        var upload = layui.upload;
+        var util = layui.util;
+
+        // 渲染字典下拉
+        xnUtil.rendDictDropDown(null, 'status', 'sys_normal_disable', '请选择状态', ['删除']);
+
+        /* 渲染左侧树 */
+        function renderTree() {
+            //admin.req(getProjectUrl() + '/dev-api/qixing/deptTree', function(res){
+            admin.req(getProjectUrl() + '/dev-api/system/user/deptTree', function(res){
+                tree.render({
+                    elem: '#orgTree',
+                    onlyIconControl: true,
+                    data: xnUtil.handleZtreeDataSpread(res.data),
+                    click: function (obj) {
+                        //debugger;
+                        $('#orgTree').find('.ew-tree-click').removeClass('ew-tree-click');
+                        $(obj.elem).children('.layui-tree-entry').addClass('ew-tree-click');
+                        insTb.reload({
+                            //where: {'sysEmpParam.orgId': obj.data.id},
+                            where: {deptId: obj.data.id},
+                            page: {curr: 1},
+                            url: getProjectUrl() + '/dev-api/system/user/list'
+                        });
+                    }
+                });
+            });
+        }
+
+        renderTree();
+
+        /* 渲染表格 */
+        var insTb = tableX.render({
+            elem: '#dataTable',
+            headers: {"Authorization": localStorage.getItem("Authorization")},
+            parseData: function(res){
+                return {
+                    "code": res.code==200?0:res.code, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.total, //解析数据长度
+                    "data": res.rows //解析数据列表
+                };
+            },
+            request: {
+                pageName: 'pageNum', // 页码的参数名称，默认：page
+                limitName: 'pageSize' // 每页数据条数的参数名，默认：limit
+            },
+            //url:   'page.json',
+            url: getProjectUrl() + '/dev-api/system/user/list',
+            // url: getProjectUrl() + 'sysUser/page',
+            page: true,
+            toolbar: ['<p>',
+                '<button lay-event="add" perm-show="sysUser:add" class="layui-btn layui-btn-sm icon-btn"><i class="layui-icon">&#xe654;</i>添加</button>&nbsp;',
+                '<button lay-event="import" perm-show="flowableModel:importModel" id="file-btn-upload" class="layui-btn layui-btn-sm layui-btn-warm icon-btn"><i class="layui-icon">&#xe681;</i>导入</button>&nbsp;',
+                '<button lay-event="export" perm-show="flowableModel:importModel" id="file-btn-download" class="layui-btn layui-btn-sm layui-btn-warm icon-btn"><i class="layui-icon">&#xe67d;</i>导出</button>&nbsp;',
+                '<button lay-event="delete" perm-show="sysUser:delete" class="layui-btn layui-btn-sm layui-btn-danger icon-btn"><i class="layui-icon">&#xe640;</i>删除</button>',
+                '</p>'].join(''),
+            cellMinWidth: 100,
+            cols: [
+                [
+                    {type: 'checkbox'},
+                    {field: 'LAY_INDEX', title: 'LAY_INDEX', hide:true, sort: true},
+                    {field: 'id', title: 'id', hide:true, sort: true},
+                    {field: 'admin', title: 'admin', hide:true, sort: true},
+                    {field: 'delFlag', title: 'delFlag', hide:true, sort: true},
+                    {field: 'userId', title: 'userId', hide:true, sort: true},
+                    {field: 'dept.deptId', title: 'deptId', hide:true, sort: true, templet: function (d) {  return d.dept.deptId; } },
+                    {field: 'userName', title: '账号', sort: true}, 
+                    {field: 'nickName', title: '姓名', sort: true},
+                    {field: 'sex', title: '性别', sort: true, templet: function (d) {  return xnUtil.rendDataTableDict(d.sex, 'sys_user_sex'); } },
+                    {field: 'phonenumber', title: '手机', sort: true},
+                    {field: 'status', title: '状态', sort: true, templet: function (d) {  return '<a style="color:#1e90ff;cursor: pointer" lay-event="changeStatus">' + xnUtil.rendDataTableDict(d.status, 'sys_normal_disable') + '</a>'; } },
+                    {title: '操作', toolbar: '#tableBar', align: 'center', width: 200, minWidth: 200}
+                ]
+            ],
+            done: function(res, curr, count) {
+                xnUtil.tableDone(insTb, res, curr, count);
+                // 上传
+                upload.render({
+                    elem: '#file-btn-upload',
+                    accept: 'file',
+                    headers: {"Authorization": localStorage.getItem("Authorization")},
+                    exts: 'xlsx|xls',
+                    //acceptMime: 'application/xls',
+                    // url: getProjectUrl() + 'flowableModel/importModel',
+                    url: getProjectUrl() + '/dev-api/system/user/importData?updateSupport=true',
+                    done: function(res){
+                        handleNetworkError(res);
+                        if(res.code == 200) {
+                            layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                                insTb.reload({page: {curr: 1}});
+                            });
+                        }
+                    }
+                });
+            }
+        });
+
+        /* 表格搜索 */
+        form.on('submit(tableSearch)', function (data) {
+            insTb.reload({where: data.field, page: {curr: 1}});
+            return false;
+        });
+
+        /* 人员选择 */
+        form.on('submit(tableSelector)', function (data) {
+            var layIndex = admin.open({
+                type: 2,
+                title: '选择人员',
+                // content: getProjectUrl() + 'sysUser/selectorHtml',
+                content:  'selector.html',
+                area: ['1600px', '700px'],
+                end: function () {
+                    var selectedData = admin.getLayerData(layIndex).selectedData;
+                    layer.msg('您选择的数据为：' + JSON.stringify(selectedData), {icon: 1, time: 1000}, function () {
+                        insTb.reload();
+                    });
+                },
+                success: function (layero, dIndex) {
+                    // 弹窗超出范围不出现滚动条
+                    $(layero).children('.layui-layer-content').css('overflow', 'visible');
+                    $(layero).find('[lay-submit]').focus();
+                }
+            });
+            return false;
+        });
+
+        /* 人员导出 */
+        form.on('submit(tableExport)', function (data) {
+            downLoadFileBlob( "/dev-api/system/user/export/" ,'users.xlsx',{},"POST");
+            //window.location.href = "/dev-api/monitor/operlog/export";
+            return false;
+        });
+
+        /* 表格工具条点击事件 */
+        table.on('tool(dataTable)', function (obj) {
+            var that = this;
+            var data = obj.data;
+            /* 删除 */
+            if (obj.event === 'delete') {
+                layer.confirm('确定要操作该数据吗？', {
+                    skin: 'layui-layer-admin',
+                    shade: .1
+                }, function () {
+                    admin.req(getProjectUrl() + '/dev-api/system/user/'+obj.data.userId, JSON.stringify([{'id': obj.data.id}]), function(res){
+                        layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                            insTb.reload();
+                        });
+                    }, 'delete');
+                });
+            }
+            /* 编辑 */
+            if (obj.event === 'edit') {
+                showAddOrUpdateModel(obj.data);
+            }
+
+            /* 修改状态 */
+            if (obj.event === 'changeStatus') {
+                layer.confirm('确定要' + (obj.data.status === 0?'停用':'启用') + '该用户吗？', {
+                    skin: 'layui-layer-admin',
+                    shade: .1
+                }, function () {
+                    admin.req(getProjectUrl() + '/dev-api/system/user/changeStatus', JSON.stringify({userId: obj.data.userId, status: obj.data.status === "0"?"1":"0"}), function(res){
+                        layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                            insTb.reload();
+                        });
+                    }, 'PUT');
+                });
+            }
+            if(obj.event === 'more'){
+                // 更多下拉菜单
+                dropdown.render({
+                    elem: that,
+                    show: true, // 外部事件触发即显示
+                    data: [{
+                            title: '重置密码',
+                            id: 'resetPwd'
+                        }, {
+                            title: '授权角色',
+                            id: 'grantRole'
+                        }/* ,{
+                            title: '授权数据',
+                            id: 'grantData'
+                        } */
+                        /* , {
+                            title: '删除',
+                            id: 'del'
+                        } */
+                    ],
+                    click: function(data, othis){
+                        //根据 id 做出不同操作
+                        if(data.id === 'del'){
+                            layer.confirm('真的删除行么', function(index){
+                                obj.del();
+                                layer.close(index);
+                            });
+                        }else if(data.id === 'grantRole'){
+                            showGrantRoleModel(obj.data);
+                        } else if(data.id === 'grantData'){
+                            showGrantDataModel(obj.data);
+                        } else if(data.id === 'resetPwd'){
+                            resetPwd(obj.data);
+                        }
+                    },
+                    align: 'right', // 右对齐弹出
+                    style: 'box-shadow: 1px 1px 10px rgb(0 0 0 / 12%);' //设置额外样式
+                }) 
+            }
+            /* 授权角色 */
+            /* if (obj.event === 'grantRole') {
+                showGrantRoleModel(obj.data);
+            } */
+            /* 授权数据 */
+            /* if (obj.event === 'grantData') {
+                showGrantDataModel(obj.data);
+            } */
+            //dropdown.hideAll();
+        });
+
+        /* 表格头工具栏点击事件 */
+        table.on('toolbar(dataTable)', function (obj) {
+            if (obj.event === 'add') { // 添加
+                showAddOrUpdateModel();
+            }
+            if (obj.event === 'import') { // 导入
+                //showAddOrUpdateModel();
+            }
+            if (obj.event === 'export') { // 导出
+                downLoadFileBlob( "/dev-api/system/user/export/" ,'users.xlsx',{},"POST");
+            }
+            if (obj.event === 'delete') { // 删除
+                var checkRows = table.checkStatus('dataTable');
+                if (checkRows.data.length === 0) {
+                    notice.msg('请选择要操作的数据', {icon: 2});
+                    return;
+                }
+                layer.confirm('确定要操作该数据吗？', {
+                    skin: 'layui-layer-admin',
+                    shade: .1
+                }, function () {
+                    var ids = checkRows.data.map(function (d) {
+                        return /* {"id":  */d.userId/* } */;
+                    });
+                    admin.req(getProjectUrl() + '/dev-api/system/user/'+ids, JSON.stringify(ids), function(res){
+                        layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                            insTb.reload();
+                        });
+                    }, 'delete');
+                });
+            }
+        });
+
+        // 显示表单弹窗
+        function showAddOrUpdateModel(data) {
+            var layIndex = admin.open({
+                title: (data ? '修改' : '添加') + '用户',
+                // url: getProjectUrl() + 'sysUser/form',
+                url: 'form.html',
+                area: ['1000px', '600px'],
+                data: { data: data },     // 传递数据到表单页面
+                end: function () {
+                    var layerData = admin.getLayerData(layIndex, 'formOk');
+                    if (layerData) {  // 判断表单操作成功标识
+                        insTb.reload();  // 成功刷新表格
+                    }
+                },
+                success: function (layero, dIndex) {
+                    // 弹窗超出范围出现滚动条
+                    $(layero).children('.layui-layer-content').css('overflow', 'scroll');
+                    $(layero).find('[lay-submit]').focus();
+                }
+            });
+        }
+
+        // 显示授权角色弹窗
+        function showGrantRoleModel(data) {
+            var layIndex = admin.open({
+                title: '用户授权角色',
+                // url: getProjectUrl() + 'sysUser/grantRole',
+                url:  'grantRole.html',
+                area: ['600px', '400px'],
+                data: { data: data },     // 传递数据到表单页面
+                end: function () {
+                    var layerData = admin.getLayerData(layIndex, 'formOk');
+                    if (layerData) {  // 判断表单操作成功标识
+                        insTb.reload();  // 成功刷新表格
+                    }
+                },
+                success: function (layero, dIndex) {
+                    // 弹窗超出范围不出现滚动条
+                    $(layero).children('.layui-layer-content').css('overflow', 'visible');
+                    $(layero).find('[lay-submit]').focus();
+                }
+            });
+        }
+
+        // 显示授权数据弹窗
+        function showGrantDataModel(data) {
+            var layIndex = admin.open({
+                title: '用户授权数据',
+                // url: getProjectUrl() + 'sysUser/grantData',
+                url:   'grantData.html',
+                area: ['600px', '400px'],
+                data: { data: data },     // 传递数据到表单页面
+                end: function () {
+                    var layerData = admin.getLayerData(layIndex, 'formOk');
+                    if (layerData) {  // 判断表单操作成功标识
+                        insTb.reload();  // 成功刷新表格
+                    }
+                },
+                success: function (layero, dIndex) {
+                    // 弹窗超出范围不出现滚动条
+                    $(layero).children('.layui-layer-content').css('overflow', 'visible');
+                    $(layero).find('[lay-submit]').focus();
+                }
+            });
+        }
+        function resetPwd(rowdata) {
+            layer.open({
+                type: 1,
+                resize: false,
+                shadeClose: true,
+                area: '350px',
+                title: '重置密码',
+                content: ['<ul class="layui-form layui-form-pane" style="margin: 15px;">',
+                '<li class="layui-form-item">',
+                    '<label class="layui-form-label">新密码</label>',
+                    '<div class="layui-input-block">',
+                        '<input class="layui-input" type="password"  lay-verify="required" name="password">',
+                    '</div>',
+                '</li>',
+                /* '<li class="layui-form-item">',
+                    '<label class="layui-form-label">选择框</label>',
+                    '<div class="layui-input-block">',
+                    '<select name="field2">',
+                        '<option value="A">A</option>',
+                        '<option value="B">B</option>',
+                    '<select>',
+                    '</div>',
+                '</li>', */
+                '<li class="layui-form-item" style="text-align:center;">',
+                    '<button type="submit" lay-submit lay-filter="*" class="layui-btn">提交</button>',
+                '</li>',
+                '</ul>'].join(''),
+                success: function(layero, index){
+                layero.find('.layui-layer-content').css('overflow', 'visible');
+                form.render().on('submit(*)', function(data){
+                    var field = data.field;
+                    field.userId = rowdata.userId;
+
+                    admin.req(getProjectUrl() + '/dev-api/system/user/resetPwd', JSON.stringify(field), function(res){
+                        layer.close(index); //关闭层
+                        layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                            insTb.reload();
+                        });
+                    }, 'put');
+                    // 显示填写的表单
+                    // layer.msg(layui.util.escape(JSON.stringify(field)), {
+                    //     icon: 1
+                    // });
+                });
+                }
+            });
+        }
+
+    });
+</script>
+</body>
+</html>

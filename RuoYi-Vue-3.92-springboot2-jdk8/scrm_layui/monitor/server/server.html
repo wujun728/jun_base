@@ -1,0 +1,157 @@
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- <th:block th:include="include :: header('服务监控')"/> -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <title text="服务监控"></title>
+    <link rel="shortcut icon" th:href="/favicon.ico">
+    <link rel="stylesheet" href="/assets/libs/layui/css/layui.css" />
+    <link rel="stylesheet" href="/assets/module/admin.css">
+    <link rel="stylesheet" href="/assets/css/common.css">
+</head>
+<body>
+<div class="layui-layout layui-layout-iframe">
+    <div class="layui-fluid">
+        <div class="layui-row">
+            <div class="layui-col-md6">
+                <div class="layui-card" style="margin-right: 5px;">
+                    <div class="layui-card-header pl10">CPU</div>
+                    <div class="layui-card-body">
+                        <table class="layui-table">
+                            <thead>
+                            <tr>
+                                <th width="40%">属性</th>
+                                <th>值</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>核心数</td>
+                                <td th:text="${server.cpu.cpuNum}">0个</td>
+                            </tr>
+                            <tr>
+                                <td>用户使用率</td>
+                                <td th:text="${server.cpu.used + '%'}">0%</td>
+                            </tr>
+                            <tr>
+                                <td>系统使用率</td>
+                                <td th:text="${server.cpu.sys + '%'}">0%</td>
+                            </tr>
+                            <tr>
+                                <td>当前空闲率</td>
+                                <td th:text="${server.cpu.free + '%'}">0%</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md6">
+                <div class="layui-card">
+                    <div class="layui-card-header pl10">服务器信息</div>
+                    <div class="layui-card-body">
+                        <table class="layui-table">
+                            <tbody>
+                            <tr>
+                                <td>服务器名称</td>
+                                <td th:text="${server.sys.computerName}">RuoYi</td>
+                                <td>操作系统</td>
+                                <td th:text="${server.sys.osName}">Linux</td>
+                            </tr>
+                            <tr>
+                                <td>服务器IP</td>
+                                <td th:text="${server.sys.computerIp}">127.0.0.1</td>
+                                <td>系统架构</td>
+                                <td th:text="${server.sys.osArch}">amd64</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-row">
+            <div class="layui-col-md6">
+                <div class="layui-card" style="margin-right: 5px;">
+                    <div class="layui-card-header pl10">Java虚拟机信息</div>
+                    <div class="layui-card-body">
+                        <table class="layui-table">
+                            <tbody>
+                            <tr>
+                                <td>Java名称</td>
+                                <td th:text="${server.jvm.name}">Java</td>
+                                <td>Java版本</td>
+                                <td th:text="${server.jvm.version}">1.8.0</td>
+                            </tr>
+                            <tr>
+                                <td>启动时间</td>
+                                <td th:text="${server.jvm.startTime}">2018-12-31 00:00:00</td>
+                                <td>运行时长</td>
+                                <td th:text="${server.jvm.runTime}">0天0时0分0秒</td>
+                            </tr>
+                            <tr>
+                                <td colspan="1">安装路径</td>
+                                <td colspan="3" th:text="${server.jvm.home}"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="1">项目路径</td>
+                                <td colspan="3" th:text="${server.sys.userDir}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md6">
+                <div class="layui-card">
+                    <div class="layui-card-header pl10">磁盘状态</div>
+                    <div class="layui-card-body">
+                        <table class="layui-table">
+                            <thead>
+                            <tr>
+                                <th>盘符路径</th>
+                                <th>文件系统</th>
+                                <th>盘符类型</th>
+                                <th>总大小</th>
+                                <th>可用大小</th>
+                                <th>已用大小</th>
+                                <th>已用百分比</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="sysFile : ${server.sysFiles}">
+                                <td th:text="${sysFile.dirName}">C:\</td>
+                                <td th:text="${sysFile.sysTypeName}">NTFS</td>
+                                <td th:text="${sysFile.typeName}">local</td>
+                                <td th:text="${sysFile.total}">0GB</td>
+                                <td th:text="${sysFile.free}">0GB</td>
+                                <td th:text="${sysFile.used}">0GB</td>
+                                <td th:class="${sysFile.usage gt 80} ? 'text-danger'">[[${sysFile.usage}]]%</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- <th:block th:include="include :: footer"/> -->
+    <!-- js部分 -->
+    <script src="/assets/libs/layui/layui.js"></script>
+    <script src="/assets/js/jquery.js"></script>
+    <script src="/assets/js/common.js"></script>
+
+    <script src="/assets/js/core.util.js"></script>
+    <script lang="javascript"> var ctx = "/dev-api/"; </script>
+
+    <script lang="javascript">
+        var editFlag = true; 
+        var removeFlag = true; 
+        var prefix = ctx + "monitor/operlog";
+    </script>
+</body>
+</html>

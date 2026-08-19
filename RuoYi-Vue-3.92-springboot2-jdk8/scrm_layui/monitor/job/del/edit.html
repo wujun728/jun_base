@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('定时任务修改')" />
+</head>
+<body>
+<div class="container">
+    <form class="layui-form mt20" lay-filter="form-job" th:object="${job}">
+        <input id="jobId" name="jobId" type="hidden" th:field="*{jobId}"/>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span class="required-msg ">*</span>任务名称：</label>
+            <div class="layui-input-block">
+                <input class="layui-input min-input" type="text" name="jobName" lay-verify="required" lay-verType="tips" placeholder="" autocomplete="off" th:field="*{jobName}"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">任务分组：</label>
+            <div class="layui-input-block">
+                <select name="jobGroup" class="form-control m-b" th:with="type=${@dict.getType('sys_job_group')}">
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{jobGroup}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span class="required-msg ">*</span>调用目标字符串：</label>
+            <div class="layui-input-block">
+                <input  class="layui-input min-input" type="text" name="invokeTarget" lay-verify="required" lay-verType="tips" placeholder="" autocomplete="off" th:field="*{invokeTarget}"/>
+                <p class="form-tip"><i class="layui-icon layui-icon-tips"></i>Bean调用示例：ryTask.ryParams('ry')</p>
+                <p class="form-tip"><i class="layui-icon layui-icon-tips"></i>Class类调用示例：com.ruoyi.quartz.task.RyTask.ryParams('ry')</p>
+                <p class="form-tip"><i class="layui-icon layui-icon-tips"></i>参数说明：支持字符串，布尔类型，长整型，浮点型，整型</p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span class="required-msg ">*</span>cron表达式：</label>
+            <div class="layui-input-block">
+                <input class="layui-input min-input" type="text" name="cronExpression" lay-verify="required" lay-verType="tips" placeholder="" autocomplete="off" th:field="*{cronExpression}"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">执行策略：</label>
+            <div class="layui-input-block">
+                <input type="radio" name="misfirePolicy" value="1" title="立即执行" th:field="*{misfirePolicy}"/>
+                <input type="radio" name="misfirePolicy" value="2" title="执行一次" th:field="*{misfirePolicy}"/>
+                <input type="radio" name="misfirePolicy" value="3" title="放弃执行" th:field="*{misfirePolicy}"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">并发执行：</label>
+            <div class="layui-input-block">
+                <input type="radio" name="concurrent" value="0" title="允许"  th:field="*{concurrent}"/>
+                <input type="radio" name="concurrent" value="1" title="禁止" th:checked="true" th:field="*{concurrent}"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">状态：</label>
+            <div class="layui-input-block">
+                <span th:each="dict : ${@dict.getType('sys_job_status')}">
+                    <input type="radio" th:id="${dict.dictCode}" name="status" th:value="${dict.dictValue}" th:title="${dict.dictLabel}" th:field="*{status}" />
+                </span>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">备注：</label>
+            <div class="layui-input-block">
+                <textarea class="layui-textarea min-input" type="text" name="remark" rows="3" th:field="*{remark}"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item layui-hide">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="btn-edit" id="btn-edit">保存</button>
+            </div>
+        </div>
+    </form>
+</div>
+<th:block th:include="include :: footer" />
+<script th:src="@{/js/system/config_form.js}"></script>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('system:job:edit')}]];
+</script>
+</body>
+</html>

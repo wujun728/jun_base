@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<!-- <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"> -->
+<head>
+    <!-- <th:block th:include="include :: header('用户管理')"/> -->
+
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="keywords" content="">
+	<meta name="description" content="">
+	<title text="用户管理"></title>
+	<link rel="shortcut icon" th:href="/favicon.ico">
+    <link rel="stylesheet" href="/assets/libs/layui/css/layui.css"/>
+    <link rel="stylesheet" href="/assets/module/admin.css">
+    <link rel="stylesheet" href="/assets/css/common.css">
+    <link rel="stylesheet" href="/assets/gougu/css/gougu.css">
+
+    <style>
+        .deptName{
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-layout layui-layout-iframe">
+    <div class="layui-row">
+        <!--不部门导航树-->
+        <div class="layui-col-md2">
+            <div class="layui-card">
+                <div class="layui-card-header">
+                    <span style="padding: 0 5px;"> 组织机构</span>
+                    <div class="user-dept-tree-toolbar">
+                        <a href="javascript:;" lay-event="edit"><i class="layui-icon" title="管理部门">&#xe642;</i></a>
+                        <a href="javascript:;" lay-event="expand" data-value="expand"><i class="layui-icon">&#xe61a;</i></a>
+                        <a href="javascript:;" lay-event="refresh"><i class="layui-icon">&#xe669;</i></a>
+                    </div>
+                </div>
+                <div class="eleTree deptName " lay-filter="treeDept"></div>
+            </div>
+        </div>
+        <!--table actcion-->
+        <div class="layui-col-md10">
+            <div class="layui-fluid">
+                <div class="layui-card">
+                    <!--search form-->
+                    <form class="layui-form toolbar" id="searchForm">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">登录名称</label>
+                                <div class="layui-input-inline">
+                                    <input class="layui-input" type="text" name="userName" placeholder="" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">手机号码</label>
+                                <div class="layui-input-inline">
+                                    <input class="layui-input" type="text" name="phonenumber" placeholder="" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="layui-inline mt5">
+                                <label class="layui-form-label">创建时间</label>
+                                <div class="layui-input-inline input-sm">
+                                    <input class="layui-input" type="text" name="params[beginTime]" id="startTime" placeholder="开始时间" />
+                                </div>
+                                <span class="layui-form-mid">-</span>
+                                <div class="layui-input-inline input-sm">
+                                    <input class="layui-input" type="text" name="params[endTime]" id="endTime" placeholder="结束时间"/>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">用户状态</label>
+                                <div class="layui-input-inline input-sm">
+                                    <select name="status" th:with="type=${@dict.getType('sys_normal_disable')}">
+                                        <option value="">所有</option>
+                                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <button  type="button" class="layui-btn layuiadmin-btn-list" data-type="reload"  
+                                    lay-submit lay-filter="form-search" id="form-search"><i class="layui-icon">&#xe615;</i>搜索</button>
+                            </div>
+                        </div>
+                    </form>
+                    <!--table actcion-->
+                    <div class="layui-card-body">
+                        <script type="text/html" id="table_user_toolbar">
+                            <div class="layui-table-tool-temp" perm-show="system:user:add">
+                                <button class="layui-btn layui-btn-sm" lay-event="toolbar-user-add" perm-show="system:user:add"><i class="layui-icon">&#xe654;</i>新增</button>
+                                <button class="layui-btn layui-btn-sm" lay-event="toolbar-user-remove" perm-show="system:user:remove"><i class="layui-icon">&#xe640;</i>批量删除</button>
+                            </div>
+                        </script>
+                        <table id="table_user" lay-filter="table_user"></table>
+                        <script type="text/html" id="col_operation">
+                            <a perm-show="system:user:edit" href="javascript:;" lay-event="edit">编辑</a><span class="splitor">|</span>
+                            <a perm-show="system:user:remove" href="javascript:;" lay-event="del">删除</a><span class="splitor">|</span>
+                            <a href="javascript:;" lay-event="reset">重置密码</a>
+                        </script>
+                        <script type="text/html" id="tmplUserStatus">
+                            {{#  if(d.status == 1){ }}
+                            <input type="checkbox" lay-filter="filter-switchUserStatus" value="{{d.userId}}" name="switchUserStatus" lay-skin="switch" checked>
+                            {{#  } else { }}
+                            <input type="checkbox" lay-filter="filter-switchUserStatus" value="{{d.userId}}" name="switchUserStatus" lay-skin="switch">
+                            {{#  } }}
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- <th:block th:include="include :: footer"/> -->
+
+ <!-- js部分 -->
+<script src="/assets/libs/layui/layui.js"></script>
+<script src="/assets/js/common.js"></script>
+
+<script src="/assets/js/core.util.js"></script>
+<script lang="javascript"> var ctx = "/dev-api/"; </script>
+
+<script th:inline="javascript">
+    var editFlag = true;//[[${@permission.hasPermi('system:user:edit')}]];
+    var removeFlag = true;// [[${@permission.hasPermi('system:user:remove')}]];
+    var prefix = ctx + "system/user";
+</script>
+<script>
+    var Authorization = localStorage.getItem("Authorization");
+    var tree_cur_deptId, tree_cur_pid,deptTree;
+    layui.use(['eleTree', 'common'], function () {
+        var $ = layui.jquery,
+            layer = layui.layer,
+            eleTree = layui.eleTree,
+            form = layui.form,
+            common = layui.common,
+            table = layui.table;
+        //页面事件
+        var active = {
+            reload: function () {
+                search(false);
+            },
+            remove: function (ids) {
+                common.ajaxRemove(prefix + "/remove", ids, function (res) {
+                    active['reload'].call(this);
+                });
+            }
+        };
+        //初始化树
+         deptTree = eleTree.render({
+                elem: '.deptName',
+                url: ctx + "system/dept/treeData2",
+                headers: {"Authorization": localStorage.getItem("Authorization")},
+                request: {
+                    name: "name",
+                    key: "id",
+                    children: "children",
+                    checked: "checked",
+                    disabled: "disabled",
+                    isLeaf: "isLeaf"
+                },
+                response: {
+                    statusName: "code",
+                    statusCode: 0,
+                    dataName: "data"
+                },
+                defaultExpandAll: true,
+                checkOnClickNode: true,
+                renderAfterExpand: true
+            }
+        );
+        eleTree.on("nodeClick(treeDept)", function (d) {
+            tree_cur_deptId = d.data.currentData.id;
+            tree_cur_pid = d.data.currentData.pId;
+            active['reload'].call(this);
+        });
+        //部门树工具栏事件
+        $(".user-dept-tree-toolbar [lay-event=edit]").click(function () {
+            window.open(ctx+'/system/dept');
+        });
+        $(".user-dept-tree-toolbar [lay-event=refresh]").click(function () {
+            deptTree.reload();
+        });
+        $(".user-dept-tree-toolbar [lay-event=expand]").click(function () {
+            var dataValue=$.trim($(this).attr('data-value'));
+            if(dataValue=='expand'){
+                deptTree.unExpandAll();
+                $(this).attr('data-value','eclipse');
+                $(this).find('i').html('&#xe61a;');
+            }else{
+                deptTree.expandAll();
+                $(this).attr('data-value','expand');
+                $(this).find('i').html('&#xe619;');
+            }
+        });
+
+        //用户状态
+        form.on('switch(filter-switchUserStatus)', function (obj) {
+            var datas = layui.table.cache.table_user;
+            var index = $(obj.elem).parents('tr').index();
+            var orgChecked = datas[index].status == 1 ? true : false;
+            var checked = obj.elem.checked;
+            common.ajax.post(prefix + '/changeStatus', {
+                userId: obj.value,
+                status: checked ? 1 : 0
+            }, function (res) {
+                if (res.code != 0) {
+                    layer.alert(res.msg);
+                    $(obj.elem).attr('checked', orgChecked);
+                    layui.form.render('checkbox');//重新渲染
+                }
+            });
+        });
+        //表格
+        table.render({
+            elem: '#table_user'
+            , method: 'get'
+            , url: prefix + "/list"   //数据接口
+            ,headers: {"Authorization": localStorage.getItem("Authorization")}
+            , toolbar: '#table_user_toolbar'
+            , defaultToolbar: ['filter', 'exports']
+            , autoSort: false 	//关闭前端排序 使用后端排序
+            , limit: getPageSize()
+            , limits: getPageList()
+            , text: getLoadErrorMsg()
+            , page: true
+            , done: function () {
+                //$('.layui-col-md2').css('height', $('.layui-col-md10').outerHeight() + 'px');
+                //$('.eleTree.deptName').css('height', ($('.layui-col-md2').outerHeight()-$('.layui-col-md2 .layui-card-header').outerHeight()-30) + 'px');
+            }
+            // 将原始数据解析成 table 组件所规定的数据格式
+            ,request: {
+                pageName: 'pageNum', // 页码的参数名称，默认：page
+                limitName: 'pageSize' // 每页数据条数的参数名，默认：limit
+           },
+            response: {
+                statusCode: 200 // 重新规定成功的状态码为 200，table 组件默认为 0
+            },
+            parseData: function(res){
+                return {
+                    "code": res.code, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.total, //解析数据长度
+                    "data": res.rows //解析数据列表
+                };
+            }
+            , cols: new Array([
+                //{type: 'checkbox', width: 40}
+                {type: 'checkbox'},
+                {field: 'id', title: 'id', hide:true, sort: true}
+                , {field: 'userName', title: '登录名称'}
+                , {field: 'nickName', title: '用户名称'}
+                , {field: 'dept.deptName', title: '部门'}
+                , {field: 'phonenumber', title: '手机',width:120}
+                , {visible: editFlag == 'hidden' ? false : true, title: '用户状态', align: 'center', templet: '#tmplUserStatus', width: 90}
+                , {field: 'createTime', title: '创建时间', width: 160, sort: true}
+                , {title: '操作', align: 'center', toolbar: '#col_operation',width: 170}
+            ])
+        });
+        //监听工具栏
+        table.on('toolbar(table_user)', function (obj) {
+            switch (obj.event) {
+                case 'toolbar-user-remove':
+                    var checks = table.checkStatus('table_user');
+                    var ids = common.joinArray(checks.data, "roleId");
+                    active['remove'].call(this, ids);
+                    break;
+                case 'toolbar-user-add':
+                    showSaveDialog('新增用户', 'add.html', 'btn-add');
+                    break;
+            }
+        });
+
+        //监听事件
+        table.on('tool(table_user)', function (obj) {
+            switch (obj.event) {
+                case 'del':
+                    common.ajaxRemove(ctx + "system/user/remove", obj.data.userId, function (res) {
+                        active['reload'].call(this);
+                    });
+                    break;
+                case 'reset':
+                    var url = ctx + '/system/user/resetPwd';
+                    layer.confirm('确定重置该用户密码为123456么？', function (index) {
+                        common.ajax.post(url, {
+                            userId: obj.data.userId,
+                            loginName: obj.data.loginName,
+                            password: "123456"
+                        }, function (res) {
+                            if(res.code == 0 || res.code == 200){
+                                layer.alert("重置密码操作成功！");
+                            } else {
+                                layer.alert("重置密码操作失败！");
+                            }
+                            layer.close(index);
+                        });
+                    });
+                    break;
+                case 'edit':
+         //CoreUtil.setData("biz_rowdata",data);
+         //tool.side("/qixing_oa/pjcontract/edit.html?types="+obj.id);
+                    showSaveDialog('修改用户', prefix + '/edit/' + obj.data.userId, 'btn-edit');
+                    break;
+            }
+        });
+        //监听排序事件
+        table.on('sort(table_user)', function (obj) {
+            var field = serializeJson($('#searchForm'));
+            field.deptId= tree_cur_deptId;
+            field.parentId= tree_cur_pid;
+            field.orderByColumn = obj.field ;
+            field.isAsc = obj.type;
+            table.reload('table_user', {where: field,page:{curr: 1}});//执行重载
+        });
+
+        /* 表格搜索 */
+        form.on('submit(form-search)', function (data) {
+            //insTb.reload({where: data.field, page: {curr: 1}});
+            search(false);
+            return false;
+        });
+
+
+    });
+
+    //展示保存表单弹出层
+    function showSaveDialog(title, url, formSubmitBtnId) {
+        let that = this;
+			if (that.loading == true) {
+				return false;
+			}
+        that.loading = true;
+        var sideWidth = '80%';
+        var layIndex = layer.open({
+            type: 2,
+            title: title,
+            offset: 'r',
+            anim: 'slideLeft',
+            closeBtn: 0,
+            content: url,
+            area: [sideWidth, '100%'],
+            skin:'layui-layer-gougu-admin',
+            end: function(){
+                $('body').removeClass('right-open');
+                if (layui.pageTable) {
+                    //layui.pageTable.resize('test');
+                }
+                //if(ft){
+                //    ft();
+                //}
+            },
+            success: function (obj, index) {
+                var btn = '<div data-index="'+index+'" class="express-close" title="关闭">关闭</div>';
+                obj.append(btn);
+                $('body').addClass('right-open');
+                that.loading = false;
+                obj.on('click','.express-close', function () {					
+                    layer.close(index);
+                })
+            }
+            //
+            ,btn: ["保存", "取消"],
+            yes: function (index, layero) {
+                var submitID = formSubmitBtnId;//表单提交按钮id
+                var submit = layero.find('iframe').contents().find('#' + submitID);//button obj
+                layero.find('iframe')[0].contentWindow.successCallback = function () {
+                    parent.layer.closeAll();
+                    parent.search(); //刷新表格数据
+                    parent.layer.alert('保存成功');
+                };
+                submit.trigger('click');
+            }
+            , cancel: function (index, layero) {
+                layui.layer.close(index);
+                return false;
+            }
+        });
+
+        
+    }
+
+    //表格查询
+    function search(isResetCurr) {
+        var field = serializeJson($('#searchForm'));
+        field.deptId= tree_cur_deptId;
+        field.parentId= tree_cur_pid;
+        var sortParam = getSort('table_user');
+        if (sortParam) {
+            field.orderByColumn = sortParam.sortField;
+            field.isAsc = sortParam.sortMethod;
+        }
+        //执行重载
+        var options = {where: field};
+        if (isResetCurr == true) {
+            options.page = {curr: 1};
+        }
+        layui.table.reload('table_user', options);
+    }
+</script>
+</body>
+</html>

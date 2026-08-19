@@ -1,0 +1,122 @@
+<!-- 注意这里不需要写`<html><body>`这些东西，它是一个html片段，不是完整的html页面 -->
+<form id="grantMenuForm" lay-filter="grantMenuForm" class="layui-form model-form">
+    <input name="id" type="hidden"/>
+    <div class="layui-form-item">
+        <label class="layui-form-label">菜单选择</label>
+        <div class="layui-input-block" id="grantMenuBox">
+        </div>
+    </div>
+    <div class="layui-form-item text-right">
+        <button class="layui-btn layui-btn-primary" type="button" ew-event="closeDialog">取消</button>
+        <button class="layui-btn" lay-filter="formSubmitBtn" lay-submit>保存</button>
+    </div>
+</form>
+
+<!-- 授权菜单渲染模板 -->
+<script id="grantMenu" type="text/html">
+   <table class="layui-table" lay-size="sm">
+       <tbody>
+       {{# layui.each(d, function(index, item){ }}
+           <tr>
+               <td><input type="checkbox" name="menuCheckBox" value="{{item.id}}" lay-skin="primary" lay-data="{{item.id}}" lay-filter="checkBoxFilter"> {{item.title}}</td>
+               {{# if(item.children&&item.children.length>0){ }}
+                   <td>
+                       {{# if(item.children&&item.children.length>0){
+                            getSubMenus(item.children);
+                       } }}
+                   </td>
+               {{# } }}
+           </tr>
+       {{# }); }}
+       </tbody>
+   </table>
+
+   {{# function getSubMenus(children){ }}
+        <table class="layui-table" lay-size="sm" lay-skin="nob">
+           {{# layui.each(children, function(index, subItem){ }}
+           <tr>
+               <td><input type="checkbox" name="menuCheckBox" value="{{subItem.id}}" lay-skin="primary" lay-data="{{subItem.id}}" lay-filter="checkBoxFilter"> {{subItem.title}}</td>
+               {{# if(subItem.children&&subItem.children.length>0){ }}
+                   <td>
+                       {{# if(subItem.children&&subItem.children.length>0){
+                            getSubMenus(subItem.children);
+                       } }}
+                   </td>
+               {{# } }}
+           </tr>
+           {{# }); }}
+        </table>
+   {{# } }}
+</script>
+
+<script>
+    layui.use(['layer', 'form', 'admin', 'xnUtil', 'zTree', 'laytpl'], function () {
+        var $ = layui.jquery;
+        var form = layui.form;
+        var admin = layui.admin;
+        var laytpl = layui.laytpl;
+
+        var grantData = admin.getLayerData('#grantMenuForm').data;
+        form.val('grantMenuForm', grantData);
+
+        // 获取菜单树
+        admin.req(getProjectUrl() + '/system/role/treeForGrant.json', function(res){
+            //渲染授权菜单
+            laytpl(grantMenu.innerHTML).render(res.data, function (html) {
+                $('#grantMenuBox').append(html);
+                form.render();
+                $(".layui-form-checkbox").css("margin-top", "0");
+                $(".layui-table tbody tr").hover(function () {
+                    $(this).css("background-color", "white");
+                })
+
+                //获取已经授权的菜单，并回显复选框
+                admin.req(getProjectUrl() + '/system/role/ownMenu.json?id=' + grantData.id, function(res){
+                    var checkboxes = $('body').find("input[name='menuCheckBox']");
+                    checkboxes.each(function (index, item) {
+                        var layData = $(item).attr("lay-data");
+                        if(res.data.indexOf(layData) !== -1) {
+                            $(item).prop("checked", true);
+                        }
+                    });
+                    form.render();
+                    $(".layui-form-checkbox").css("margin-top", "0");
+                }, {async: false});
+
+                form.on('checkbox(checkBoxFilter)', function(data){
+                    var nextTd = $(this).parent().next();
+                    var nextTdCheckBoxs = $(nextTd).find("input[type=checkbox]");
+                    if(data.elem.checked) {
+                        $(nextTdCheckBoxs).prop("checked", true);
+                    } else {
+                        $(nextTdCheckBoxs).prop("checked", false);
+                    }
+                    form.render();
+                    $(".layui-form-checkbox").css("margin-top", "0");
+                });
+            });
+        });
+
+        // 表单提交事件
+        form.on('submit(formSubmitBtn)', function (data) {
+            var grantMenuIdList = [];
+            var checkboxes = $('body').find("input[name='menuCheckBox']");
+            checkboxes.each(function (index, item) {
+                var checked = item.checked;
+                if(checked) {
+                    var layData = $(item).attr("lay-data");
+                    grantMenuIdList.push(layData);
+                }
+            })
+            data.field.grantMenuIdList = grantMenuIdList;
+            delete data.field.menuCheckBox;
+            admin.req(getProjectUrl() + "sysRole/grantMenu", JSON.stringify(data.field), function(res){
+                layer.msg(res.message, {icon: 1, time: 1000}, function () {
+                    admin.putLayerData('formOk', true, '#grantMenuForm');
+                    admin.closeDialog('#grantMenuForm');
+                });
+            }, 'post');
+            return false;
+        });
+    });
+</script>

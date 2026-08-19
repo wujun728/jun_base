@@ -1,0 +1,346 @@
+<!-- 注意这里不需要写`<html><body>`这些东西，它是一个html片段，不是完整的html页面 -->
+<form id="addOrUpdateForm" lay-filter="addOrUpdateForm" class="layui-form model-form">
+    <div class="layui-col-md12">
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend>基本信息</legend>
+        </fieldset>
+    </div>
+    <div class="layui-col-md6">
+        <input name="id" type="hidden"/>
+        <div class="layui-form-item">
+            <label class="layui-form-label layui-form-required">账号</label>
+            <div class="layui-input-block">
+                <input name="account" class="layui-input" placeholder="请输入账号" lay-verType="tips" lay-verify="required" required/>
+            </div>
+        </div>
+        <div id="passwordFormItemBox" class="layui-form-item" hidden>
+            <label class="layui-form-label layui-form-required">密码</label>
+            <div class="layui-input-block">
+                <input name="password" type="password" class="layui-input" placeholder="请输入密码" lay-verType="tips" lay-verify="required|psw" required/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">昵称</label>
+            <div class="layui-input-block">
+                <input name="nickName" class="layui-input" placeholder="请输入昵称"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label layui-form-required">性别</label>
+            <div class="layui-input-block">
+                <div id="sexBox"></div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label layui-form-required">手机号</label>
+            <div class="layui-input-block">
+                <input name="phone" class="layui-input" placeholder="请输入手机号" lay-verType="tips" lay-verify="required|phoneX" required/>
+            </div>
+        </div>
+    </div>
+    <div class="layui-col-md6">
+        <div class="layui-form-item">
+            <label class="layui-form-label layui-form-required">姓名</label>
+            <div class="layui-input-block">
+                <input name="name" class="layui-input" placeholder="请输入姓名" lay-verType="tips" lay-verify="required" required/>
+            </div>
+        </div>
+        <div id="rePasswordFormItemBox" class="layui-form-item" hidden>
+            <label class="layui-form-label layui-form-required">重复密码</label>
+            <div class="layui-input-block">
+                <input name="rePassword" type="password" class="layui-input" placeholder="请输入重复密码" lay-verType="tips"
+                       lay-verify="required|equalTo" lay-equalTo="input[name=password]" required/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">生日</label>
+            <div class="layui-input-block">
+                <input id="birthdayBox" name="birthday" placeholder="请选择生日" autocomplete="off"
+                       class="layui-input date-icon"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">邮箱</label>
+            <div class="layui-input-block">
+                <input name="email" class="layui-input" placeholder="请输入邮箱" lay-verType="tips" lay-verify="emailX"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">电话</label>
+            <div class="layui-input-block">
+                <input name="tel" class="layui-input" placeholder="请输入电话"/>
+            </div>
+        </div>
+    </div>
+    <div class="layui-col-md12">
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+            <legend>员工信息</legend>
+        </fieldset>
+    </div>
+    <div class="layui-col-md6">
+        <div class="layui-form-item">
+            <label class="layui-form-label layui-form-required">机构</label>
+            <div class="layui-input-block">
+                <div id="orgSelectBox" class="ew-xmselect-tree"></div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-col-md6">
+        <div class="layui-form-item">
+            <label class="layui-form-label">工号</label>
+            <div class="layui-input-block">
+                <input id="jobNumInputBox" name="sysEmpParam.jobNum" class="layui-input" placeholder="请输入工号"/>
+            </div>
+        </div>
+    </div>
+    <div class="layui-col-md12">
+        <div class="layui-form-item">
+            <label class="layui-form-label layui-form-required">职位</label>
+            <div class="layui-input-block">
+                <div id="posIdListBox"></div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-col-md12">
+        <div class="layui-form-item">
+            <label class="layui-form-label">附属信息</label>
+            <button class="layui-btn layui-btn-sm icon-btn" id="extAddButton" type="button">
+                <i class="layui-icon">&#xe654;</i>添加信息
+            </button>
+            <div class="layui-input-block">
+                <table id="extTable" lay-filter="extTable"></table>
+            </div>
+        </div>
+    </div>
+    <div class="layui-col-md12" style="margin-bottom: 20px;">
+        <div class="layui-form-item text-right">
+            <button class="layui-btn layui-btn-primary" type="button" ew-event="closeDialog">取消</button>
+            <button class="layui-btn" lay-filter="formSubmitBtn" lay-submit>保存</button>
+        </div>
+    </div>
+</form>
+
+<!-- 表格操作列 -->
+<script type="text/html" id="extTableBar">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="extEdit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="extDelete">删除</a>
+</script>
+
+<script>
+    layui.use(['layer', 'form', 'admin', 'table', 'tableX', 'xnUtil', 'xmSelect', 'laydate'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var table = layui.table;
+        var tableX = layui.tableX;
+        var admin = layui.admin;
+        var xnUtil = layui.xnUtil;
+        var xmSelect = layui.xmSelect;
+        var laydate = layui.laydate;
+
+        var editData = admin.getLayerData('#addOrUpdateForm').data;
+        var orgTreeRenderIns = {};
+        // admin.req(getProjectUrl() + 'sysOrg/tree', function(res){
+        admin.req( 'tree.json', function(res){
+            // 渲染下拉树
+            orgTreeRenderIns = xmSelect.render({
+                el: '#orgSelectBox',
+                name: 'sysEmpParam.orgId',
+                height: '250px',
+                layVerify: 'required',
+                layVerType: 'tips',
+                data: res.data,
+                initValue: editData ? (editData.sysEmpInfo?(editData.sysEmpInfo.orgId?[editData.sysEmpInfo.orgId]:[]):[]):[],
+                model: {label: {type: 'text'}},
+                prop: {
+                    name: 'title',
+                    value: 'id'
+                },
+                radio: true,
+                clickClose: true,
+                tree: {
+                    show: true,
+                    indent: 15,
+                    strict: false,
+                    expandedKeys: true
+                },
+                tips: '请选择机构'
+            });
+        }, {async: false});
+
+        //渲染日期组件
+        laydate.render({ elem: '#birthdayBox', trigger: 'click' });
+
+        // 渲染字典下拉
+        var sexDataRenderIns = xmSelect.render({
+            el: '#sexBox',
+            name: 'sex',
+            data: xnUtil.getDictDataByDictTypeCode('sex', null),
+            layVerify: 'required',
+            layVerType: 'tips',
+            radio: true,
+            clickClose: true,
+            model: { icon:'hidden', label: { type: 'text' }},
+            prop: {
+                name: 'name',
+                value: 'code'
+            },
+            tips: '请选择性别'
+        });
+
+
+        // 渲染远程数据下拉
+        var remoteDataRenderIns = {};
+        // admin.req(getProjectUrl() + 'sysPos/list', function(res){
+        admin.req('sysPosList.json', function(res){
+            remoteDataRenderIns = xmSelect.render({
+                el: '#posIdListBox',
+                name: 'sysEmpParam.posIdList',
+                data: res.data,
+                layVerify: 'required',
+                layVerType: 'tips',
+                radio: false,
+                prop: {
+                    name: 'name',
+                    value: 'id'
+                },
+                tips: '请选择职位'
+            });
+        }, {async: false});
+
+
+        /* 渲染表格 */
+        var extTableData = [];
+        var insExtTb = tableX.render({
+            elem: '#extTable',
+            data: [],
+            page: false,
+            defaultToolbar: [],
+            cellMinWidth: 100,
+            cols: [
+                [
+                    {field: 'orgId', title: 'orgId', hide:true},
+                    {field: 'posId', title: 'posId', hide:true},
+                    {field: 'orgName', title: '机构名称'},
+                    {field: 'posName', title: '职位名称'},
+                    {title: '操作', toolbar: '#extTableBar', align: 'center', width: 200, minWidth: 200}
+                ]
+            ],
+            done: function(res, curr, count) {
+                xnUtil.tableDone(insExtTb, res, curr, count);
+            }
+        });
+
+        /* 表格工具条点击事件 */
+        table.on('tool(extTable)', function (obj) {
+            /* 删除 */
+            if (obj.event === 'extDelete') {
+                for (var i = 0; i < extTableData.length; i++) {
+                    if (extTableData[i].orgId === obj.data.orgId && extTableData[i].posId === obj.data.posId) {
+                        extTableData.splice(i, 1);
+                    }
+                }
+                insExtTb.reload({data: extTableData});
+            }
+            /* 编辑 */
+            if (obj.event === 'extEdit') {
+                showExtOrgPosAddOrUpdateModel(obj.data);
+            }
+        });
+
+        /* 添加附属信息点击事件 */
+        $('#extAddButton').click(function () {
+            showExtOrgPosAddOrUpdateModel();
+        });
+
+        // 显示表单弹窗
+        function showExtOrgPosAddOrUpdateModel(data) {
+            var layIndex = admin.open({
+                offset: '150px',
+                title: (data ? '修改' : '添加') + '附属信息',
+                // url: getProjectUrl() + 'sysUser/extForm',
+                url:   'extForm.html',
+                data: { data: data },     // 传递数据到表单页面
+                end: function () {
+                    var layerData = admin.getLayerData(layIndex, 'formOk');
+                    if (layerData) {  // 判断表单操作成功标识
+                        var resultData = admin.getLayerData(layIndex, 'resultData');
+                        if(data) {
+                            for (var i = 0; i < extTableData.length; i++) {
+                                if (extTableData[i].orgId === data.orgId && extTableData[i].posId === data.posId) {
+                                    extTableData.splice(i, 1, resultData);
+                                }
+                            }
+                        } else {
+                            extTableData.push(resultData);
+                        }
+
+                        insExtTb.reload({data: extTableData}); // 成功刷新表格
+                    }
+                },
+                success: function (layero, dIndex) {
+                    // 弹窗超出范围不出现滚动条
+                    $(layero).children('.layui-layer-content').css('overflow', 'visible');
+                    $(layero).find('[lay-submit]').focus();
+                }
+            });
+        }
+
+
+        if(editData !== null && editData !== undefined) {
+            $('#passwordFormItemBox').remove();
+            $('#rePasswordFormItemBox').remove();
+            admin.req(getProjectUrl() + 'sysUser/detail?id=' + editData.id, function(res){
+                form.val('addOrUpdateForm', res.data);
+                remoteDataRenderIns.setValue(res.data.sysEmpInfo.positions.map(function (item) {
+                    return item.posId;
+                }));
+                sexDataRenderIns.setValue([res.data.sex]);
+                //重载表格
+                extTableData = res.data.sysEmpInfo.extOrgPos;
+                insExtTb.reload({data: extTableData});
+                //工号输入框回显工号
+                $('#jobNumInputBox').val(res.data.sysEmpInfo.jobNum);
+            });
+        } else {
+            $('#passwordFormItemBox').removeAttr("hidden");
+            $('#rePasswordFormItemBox').removeAttr("hidden");
+        }
+
+        // 表单提交事件
+        form.on('submit(formSubmitBtn)', function (data) {
+            layer.load(2);
+            var url = editData ? getProjectUrl() + 'sysUser/edit' : getProjectUrl() + 'sysUser/add';
+            var sysEmpParam = {};
+            $.each(data.field, function(key, value) {
+                if(key.indexOf('sysEmpParam') === 0) {
+                    if(key === 'sysEmpParam.posIdList') {
+                        value = value.split(',');
+                    }
+                    sysEmpParam[key.split('.')[1]] = value;
+                    delete data.field[key];
+                }
+            })
+            var extIds = [];
+            extTableData.forEach(function (value) {
+                var tempObj = {};
+                tempObj.orgId = value.orgId;
+                tempObj.posId = value.posId;
+                extIds.push(tempObj);
+            })
+            sysEmpParam.orgName = orgTreeRenderIns.getValue()[0].title;
+            sysEmpParam.extIds = extIds;
+            data.field.sysEmpParam = sysEmpParam;
+            //日期格式处理，修复空字符串转换日期导致的bug
+            data.field.birthday === ''?data.field.birthday = null:data.field.birthday = data.field.birthday;
+            admin.req(url, JSON.stringify(data.field), function(res){
+                layer.msg(res.message, {icon: 1, time: 1000}, function () {
+                    admin.putLayerData('formOk', true, '#addOrUpdateForm');
+                    admin.closeDialog('#addOrUpdateForm');
+                });
+            }, 'post');
+            return false;
+        });
+
+    });
+</script>

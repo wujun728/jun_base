@@ -1,0 +1,127 @@
+<!-- 注意这里不需要写`<html><body>`这些东西，它是一个html片段，不是完整的html页面 -->
+<form id="addOrUpdateForm" lay-filter="addOrUpdateForm" class="layui-form model-form">
+    <input name="id" type="hidden"/>
+    <input name="jobId" type="hidden"/>
+    <div class="layui-form-item">
+        <label class="layui-form-label layui-form-required" style="width: 100px">任务名称</label>
+        <div class="layui-input-block" style="margin-left: 130px">
+            <input name="jobName" class="layui-input" placeholder="请输入任务名称" lay-verType="tips" lay-verify="required" required/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label " style="width: 100px">任务分组</label>
+        <div class="layui-input-block" style="margin-left: 130px">
+            <!-- <input name="jobGroup" class="layui-input" placeholder="请输入任务名称" lay-verType="tips" lay-verify="required" required/> -->
+             <select name="jobGroup"></select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label layui-form-required" style="width: 100px">调用方法</label>
+        <div class="layui-input-block" style="margin-left: 130px">
+            <!-- <div id="jobGroup"></div> -->
+            <input name="invokeTarget" class="layui-input" placeholder="请输入任务名称" lay-verType="tips" lay-verify="required" required/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label layui-form-required" style="width: 100px">cron执行表达式</label>
+        <div class="layui-input-block" style="margin-left: 130px">
+            <input name="cronExpression" class="layui-input" placeholder="请输入cron执行表达式" lay-verType="tips" lay-verify="required" required/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label layui-form-required">执行策略</label>
+        <div class="layui-input-block">
+                <input type="radio"  name="misfirePolicy" value="1" title="立即执行" />
+                <input type="radio"  name="misfirePolicy" value="2" title="执行一次"  />
+                <input type="radio"  name="misfirePolicy" value="3" title="放弃执行"  />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label layui-form-required">是否并发</label>
+        <div class="layui-input-block">
+                <input type="radio"  name="concurrent" value="0" title="允许" />
+                <input type="radio"  name="concurrent" value="1" title="禁止"  />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label layui-form-required">状态</label>
+        <div class="layui-input-block">
+                <input type="radio"  name="status" value="0" title="正常" />
+                <input type="radio"  name="status" value="1" title="停用"  />
+        </div>
+    </div>
+    <!-- <div class="layui-form-item">
+        <label class="layui-form-label" style="width: 100px">备注</label>
+        <div class="layui-input-block" style="margin-left: 130px">
+            <textarea name="remark" placeholder="请输入备注" class="layui-textarea"></textarea>
+        </div>
+    </div> -->
+    <div class="layui-form-item text-right">
+        <button class="layui-btn layui-btn-primary" type="button" ew-event="closeDialog">取消</button>
+        <button class="layui-btn" lay-filter="formSubmitBtn" lay-submit>保存</button>
+    </div>
+</form>
+
+<script>
+    layui.use(['layer', 'form', 'admin', 'xnUtil', 'xmSelect'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var admin = layui.admin;
+        var xnUtil = layui.xnUtil;
+        var xmSelect = layui.xmSelect;
+
+        xnUtil.rendDictDropDown(null, 'jobGroup', 'sys_job_group', '请选择任务组名', null);
+
+        // 渲染远程数据下拉
+        /* var remoteDataRenderIns = {};
+        admin.req(getProjectUrl() + '/system/sysTimers/getActionClasses.json', function(res){
+            remoteDataRenderIns = xmSelect.render({
+                el: '#actionClassBox',
+                name: 'actionClass',
+                data: res.data,
+                layVerify: 'required',
+                layVerType: 'tips',
+                radio: true,
+                clickClose: true,
+                model: { icon:'hidden', label: { type: 'text' }},
+                prop: {
+                    name: 'code',
+                    value: 'value'
+                },
+                tips: '请选择调用方法'
+            });
+        }, {async: false}); */
+
+        var editData = admin.getLayerData('#addOrUpdateForm').data;
+        if(editData !== null && editData !== undefined) {
+            form.val('addOrUpdateForm', editData);
+            //remoteDataRenderIns.setValue([editData.actionClass]);
+        }else{
+            $('input[type="radio"][name="misfirePolicy"]').eq("1").prop('checked', true);
+            $('input[type="radio"][name="status"]').eq("0").prop('checked', true);
+            $('input[type="radio"][name="concurrent"]').eq("0").prop('checked', true);
+        }
+        form.render();
+        // 表单提交事件
+        form.on('submit(formSubmitBtn)', function (data) {
+            layer.load(2);
+            //var url = editData ? getProjectUrl() + 'sysTimers/edit' : getProjectUrl() + 'sysTimers/add';
+            var method = editData ? 'PUT' : 'POST';
+            var url = '/dev-api/monitor/job';
+
+            admin.req(url, JSON.stringify(data.field), function(res){
+                if(res.code == 200 || res.code == 0 ){
+                    layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                        admin.putLayerData('formOk', true, '#addOrUpdateForm');
+                        admin.closeDialog('#addOrUpdateForm');
+                    });
+                }else{
+                    layer.msg(res.msg, {icon: 2, time: 1000}, function () {  });
+                }
+            }, method);
+            return false;
+        });
+
+    });
+</script>

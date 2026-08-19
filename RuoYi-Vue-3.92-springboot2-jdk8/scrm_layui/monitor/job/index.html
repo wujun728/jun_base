@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>定时任务管理</title>
+    <link rel="stylesheet" href="/assets/libs/layui/css/layui.css"/>
+    <link rel="stylesheet" href="/assets/module/admin.css">
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<!-- 正文开始 -->
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <!-- 表格工具栏 -->
+            <form class="layui-form toolbar">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">任务名称:</label>
+                        <div class="layui-input-inline">
+                            <input name="jobName" class="layui-input" placeholder="请输入任务名称"/>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">任务组名:</label>
+                        <div class="layui-input-inline">
+                            <select name="jobGroup"></select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">运行状态:</label>
+                        <div class="layui-input-inline">
+                            <select name="status"></select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">&emsp;
+                        <button class="layui-btn icon-btn" lay-filter="tableSearch" lay-submit>
+                            <i class="layui-icon">&#xe615;</i>搜索
+                        </button>
+                    </div>
+                    <div class="layui-inline">&emsp;
+                        <button type="reset" class="layui-btn layui-btn-primary icon-btn">
+                            <i class="layui-icon">&#xe669;</i>重置
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <!-- 数据表格 -->
+            <table id="dataTable" lay-filter="dataTable"></table>
+        </div>
+    </div>
+</div>
+
+<!-- 表格操作列 -->
+<script type="text/html" id="tableBar">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" perm-show="job:edit" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" perm-show="job:delete" lay-event="delete">删除</a>
+</script>
+
+<!-- js部分 -->
+<script src="/assets/libs/layui/layui.js"></script>
+<script src="/assets/js/common.js"></script>
+
+<script>
+    layui.use(['layer', 'table', 'tableX', 'notice', 'xnUtil'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var table = layui.table;
+        var tableX = layui.tableX;
+        var admin = layui.admin;
+        var form = layui.form;
+        var notice = layui.notice;
+        var xnUtil = layui.xnUtil;
+
+        // 渲染字典下拉
+        xnUtil.rendDictDropDown(null, 'status', 'sys_job_status', '请选择运行状态', null);
+        xnUtil.rendDictDropDown(null, 'jobGroup', 'sys_job_group', '请选择任务组名', null);
+
+        /* 渲染表格 */
+        var insTb = tableX.render({
+            elem: '#dataTable',
+            url: getProjectUrl() + '/dev-api/monitor/job/list',
+            headers: {"Authorization": localStorage.getItem("Authorization")},
+            parseData: function(res){
+                return {
+                    "code": res.code==200?0:res.code, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.total, //解析数据长度
+                    "data": res.rows //解析数据列表
+                };
+            },
+            request: {
+                pageName: 'pageNum', // 页码的参数名称，默认：page
+                limitName: 'pageSize' // 每页数据条数的参数名，默认：limit
+            },
+            page: true,
+            toolbar: ['<p>',
+                '<button lay-event="add" perm-show="job:add" class="layui-btn layui-btn-sm icon-btn"><i class="layui-icon">&#xe654;</i>添加</button>&nbsp;',
+                '<button lay-event="delete" perm-show="job:delete" class="layui-btn layui-btn-sm layui-btn-danger icon-btn"><i class="layui-icon">&#xe640;</i>删除</button>',
+                '</p>'].join(''),
+            cellMinWidth: 100,
+            cols: [
+                [
+                    {type: 'checkbox'},
+                    {field: 'id', title: 'id', hide:true, sort: true},
+                    {field: 'concurrent', title: 'concurrent', hide:true, sort: true},
+                    {field: 'misfirePolicy', title: 'misfirePolicy', hide:true, sort: true},
+                    {field: 'nextValidTime', title: 'nextValidTime', hide:true, sort: true},
+                    {field: 'createBy', title: 'createBy', hide:true, sort: true},
+                    {field: 'createTime', title: 'createTime', hide:true, sort: true},
+                    {field: 'jobId', title: '任务编号', sort: true},
+                    {field: 'jobName', title: '任务名称', sort: true},
+                    {field: 'jobGroup', title: '任务组名', sort: true},
+                    {field: 'invokeTarget', title: '调用目标字符串', sort: true},
+                    {field: 'cronExpression', title: 'cron执行表达式', sort: true},
+                    // {field: 'remark', title: '备注', sort: true},
+                    {field: 'status', title: '状态', sort: true, templet: function (d) {  return '<a style="color:dodgerblue;cursor: pointer" lay-event="changeStatus">' + xnUtil.rendDataTableDict(d.status, 'sys_job_status') + '</a>'; } },
+                    {title: '操作', toolbar: '#tableBar', align: 'center', width: 200, minWidth: 200}
+                ]
+            ],
+            done: function(res, curr, count) {
+                xnUtil.tableDone(insTb, res, curr, count);
+            }
+        });
+
+        /* 表格搜索 */
+        form.on('submit(tableSearch)', function (data) {
+            insTb.reload({where: data.field, page: {curr: 1}});
+            return false;
+        });
+
+        /* 表格工具条点击事件 */
+        table.on('tool(dataTable)', function (obj) {
+            /* 删除 */
+            if (obj.event === 'delete') {
+                layer.confirm('确定要操作该数据吗？', {
+                    skin: 'layui-layer-admin',
+                    shade: .1
+                }, function () {
+                    admin.req(getProjectUrl() + '/dev-api/monitor/job/'+obj.data.jobId, JSON.stringify([{'id': obj.data.id}]), function(res){
+                        layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                            insTb.reload();
+                        });
+                    }, 'delete');
+                });
+            }
+            /* 编辑 */
+            if (obj.event === 'edit') {
+                showAddOrUpdateModel(obj.data);
+            }
+            /* 修改状态 */
+            if (obj.event === 'changeStatus') {
+                layer.confirm('确定要' + (obj.data.status === 1?'停止':'运行') + '该定时任务吗？', {
+                    skin: 'layui-layer-admin',
+                    shade: .1
+                }, function () {
+                    var url = '/dev-api/monitor/job/changeStatus';
+                    var stat = obj.data.status === 1 || obj.data.status === '1'? '0': '1';
+                    admin.req(getProjectUrl() + url, JSON.stringify({jobId: obj.data.jobId,status: stat}), function(res){
+                        layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                            insTb.reload();
+                        });
+                    }, 'put');
+                });
+            }
+        });
+
+        /* 表格头工具栏点击事件 */
+        table.on('toolbar(dataTable)', function (obj) {
+            if (obj.event === 'add') { // 添加
+                showAddOrUpdateModel();
+            }
+            if (obj.event === 'delete') { // 删除
+                var checkRows = table.checkStatus('dataTable');
+                if (checkRows.data.length === 0) {
+                    notice.msg('请选择要操作的数据', {icon: 2});
+                    return;
+                }
+                layer.confirm('确定要操作该数据吗？', {
+                    skin: 'layui-layer-admin',
+                    shade: .1
+                }, function () {
+                    var ids = checkRows.data.map(function (d) {
+                        return /* {"id":  */d.jobId/* } */;
+                    });
+                    admin.req(getProjectUrl() + '/dev-api/monitor/job/'+ids, JSON.stringify(ids), function(res){
+                        layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                            insTb.reload();
+                        });
+                    }, 'delete');
+                });
+            }
+        });
+
+        // 显示表单弹窗
+        function showAddOrUpdateModel(data) {
+            var layIndex = admin.open({
+                title: (data ? '修改' : '添加') + '定时任务',
+                url: getProjectUrl() + '/monitor/job/form.html',
+                area: ['800px', '600px'],
+                data: { data: data },     // 传递数据到表单页面
+                end: function () {
+                    var layerData = admin.getLayerData(layIndex, 'formOk');
+                    if (layerData) {  // 判断表单操作成功标识
+                        insTb.reload();  // 成功刷新表格
+                    }
+                },
+                success: function (layero, dIndex) {
+                    // 弹窗超出范围不出现滚动条
+                    $(layero).children('.layui-layer-content').css('overflow', 'visible');
+                    $(layero).find('[lay-submit]').focus();
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>

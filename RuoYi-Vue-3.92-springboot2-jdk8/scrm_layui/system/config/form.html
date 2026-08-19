@@ -1,0 +1,128 @@
+<!-- 注意这里不需要写`<html><body>`这些东西，它是一个html片段，不是完整的html页面 -->
+<form id="addOrUpdateForm" lay-filter="addOrUpdateForm" class="layui-form model-form">
+    <input name="id" type="hidden"/>
+    <input name="configId" type="hidden"/>
+    <div class="layui-form-item">
+        <label class="layui-form-label layui-form-required" style="width: 100px">参数名称</label>
+        <div class="layui-input-block" style="margin-left: 130px">
+            <input name="configName" class="layui-input" placeholder="请输入参数名称" lay-verType="tips" lay-verify="required" required/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label layui-form-required" style="width: 100px">参数键名</label>
+        <div class="layui-input-block" style="margin-left: 130px">
+            <input name="configKey" id="codeInput" class="layui-input" placeholder="请输入参数键名(录入后禁止修改)" lay-verType="tips录入后禁止修改" lay-verify="required" required/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label layui-form-required" style="width: 100px">参数键值</label>
+        <div class="layui-input-block" style="margin-left: 130px">
+            <input name="configValue" id="codeInput" class="layui-input" placeholder="请输入参数键值" lay-verType="tips" lay-verify="required" required/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label layui-form-required" style="width: 100px">是否系统参数</label>
+        <div class="layui-input-block" style="margin-left: 130px">
+            <div id="configTypeBox"></div>
+        </div>
+    </div>
+    <!-- <div class="layui-form-item">
+        <label class="layui-form-label layui-form-required" style="width: 100px">所属分类</label>
+        <div class="layui-input-block" style="margin-left: 130px">
+            <div id="groupCodeBox"></div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label layui-form-required" style="width: 100px">参数值</label>
+        <div class="layui-input-block" style="margin-left: 130px">
+            <input name="value" class="layui-input" placeholder="请输入参数值" lay-verType="tips" lay-verify="required" required/>
+        </div>
+    </div> -->
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width: 100px">备注</label>
+        <div class="layui-input-block" style="margin-left: 130px">
+            <textarea name="remark" placeholder="请输入备注" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item text-right">
+        <button class="layui-btn layui-btn-primary" type="button" ew-event="closeDialog">取消</button>
+        <button class="layui-btn" lay-filter="formSubmitBtn" lay-submit>保存</button>
+    </div>
+</form>
+
+<script>
+    layui.use(['layer', 'form', 'admin', 'xnUtil','xmSelect'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var admin = layui.admin;
+        var xnUtil = layui.xnUtil;
+
+        // 渲染字典下拉
+        var configTypeRenderIns = xmSelect.render({
+            el: '#configTypeBox',
+            name: 'configType',
+            data: xnUtil.getDictDataByDictTypeCode('sys_yes_no', null),
+            layVerify: 'required',
+            layVerType: 'tips',
+            radio: true,
+            clickClose: true,
+            model: { icon:'hidden', label: { type: 'text' }},
+            prop: {
+                name: 'name',
+                value: 'code'
+            },
+            tips: '请选择是否系统参数'
+        }, {async: false});
+
+        // 渲染字典下拉
+        /* var groupCodeRenderIns = xmSelect.render({
+            el: '#groupCodeBox',
+            name: 'groupCode',
+            data: xnUtil.getDictDataByDictTypeCode('consts_type', null),
+            layVerify: 'required',
+            layVerType: 'tips',
+            radio: true,
+            clickClose: true,
+            model: { icon:'hidden', label: { type: 'text' }},
+            prop: {
+                name: 'name',
+                value: 'code'
+            },
+            tips: '请选择所属分类'
+        }); */
+
+        var editData = admin.getLayerData('#addOrUpdateForm').data;
+        form.val('addOrUpdateForm', editData);
+
+        if(editData !== null && editData !== undefined) {
+            configTypeRenderIns.setValue([editData.configType]);
+            //groupCodeRenderIns.setValue([editData.groupCode]);
+            if(editData.configType === 'Y') {
+                $("#codeInput").attr("disabled", "disabled");
+                configTypeRenderIns.update({ disabled: true });
+                //groupCodeRenderIns.update({ disabled: true });
+            }
+        }
+
+        // 表单提交事件
+        form.on('submit(formSubmitBtn)', function (data) {
+            layer.load(2);
+            //var url = editData ? getProjectUrl() + 'sysConfig/edit' : getProjectUrl() + 'sysConfig/add';
+            var method = editData ? 'PUT' : 'POST';
+            var url = '/dev-api/system/config';
+            admin.req(url, JSON.stringify(data.field), function(res){
+                if(res.code == 200 || res.code == 0 ){
+                    layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                        admin.putLayerData('formOk', true, '#addOrUpdateForm');
+                        admin.closeDialog('#addOrUpdateForm');
+                    });
+                }else{
+                    layer.msg(res.msg, {icon: 2, time: 1000}, function () {  });
+                }
+            }, method);
+            return false;
+        });
+
+    });
+</script>

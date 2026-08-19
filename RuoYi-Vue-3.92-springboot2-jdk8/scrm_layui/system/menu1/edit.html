@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('菜单修改')"/>
+    <style>
+        .menuName{
+            max-height: 200px;
+            width: 92%;
+            display: none;
+            position: absolute;
+            top:100%;
+            z-index: 100;
+            border-top: none;
+        }
+        .layui-input[readonly] {
+            background-color: #e6e6e6;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <form class="layui-form mt20" lay-filter="form-menu" th:object="${menu}">
+        <input name="menuId" type="hidden" th:field="*{menuId}"   />
+        <input name="parentId" type="hidden" th:field="*{parentId}" />
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span class="required-msg ">*</span>上级菜单：</label>
+            <div class="layui-input-block">
+                <input class="layui-input min-input readonly" type="text" id="treeName" readonly th:value="${menu.parentName == null ? '无' : menu.parentName}">
+                <div class="eleTree menuName" lay-filter="menuNameTree"></div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span class="required-msg ">*</span>菜单类型：</label>
+            <div class="layui-input-block">
+                <input type="radio" name="menuType" value="M" title="目录" th:field="*{menuType}"/>
+                <input type="radio" name="menuType" value="C" title="菜单" th:field="*{menuType}"/>
+                <input type="radio" name="menuType" value="F" title="按钮" th:field="*{menuType}"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span class="required-msg ">*</span>菜单名称：</label>
+            <div class="layui-input-block">
+                <input class="layui-input min-input" type="text" name="menuName" lay-verify="required" lay-verType="tips" placeholder="" autocomplete="off" th:field="*{menuName}"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">请求地址：</label>
+            <div class="layui-input-block">
+                <input class="layui-input min-input" type="text" name="url" placeholder="" autocomplete="off" th:field="*{url}"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">权限标识：</label>
+            <div class="layui-input-block">
+                <input class="layui-input min-input" type="text" name="perms" placeholder="" autocomplete="off" th:field="*{perms}"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span class="required-msg ">*</span>显示排序：</label>
+            <div class="layui-input-block">
+                <input class="layui-input min-input" type="text" name="orderNum" placeholder="" autocomplete="off" th:field="*{orderNum}"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">图标：</label>
+            <div class="layui-input-block">
+                <input class="layui-input min-input" type="text" name="icon" placeholder="" autocomplete="off" th:field="*{icon}"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">菜单状态：</label>
+            <div class="layui-input-block">
+                <span th:each="dict : ${@dict.getType('sys_show_hide')}">
+                    <input type="radio" th:id="${dict.dictCode}" name="visible" th:value="${dict.dictValue}" th:title="${dict.dictLabel}" th:field="*{visible}"/>
+                </span>
+            </div>
+        </div>
+        <div class="layui-form-item layui-hide">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="btn-edit" id="btn-edit">保存</button>
+            </div>
+        </div>
+    </form>
+</div>
+<th:block th:include="include :: footer" />
+<script th:src="@{/js/system/menu_form.js}"></script>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('system:menu:edit')}]];
+</script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>用户选择器</title>
+    <link rel="stylesheet" href="/assets/libs/layui/css/layui.css"/>
+    <link rel="stylesheet" href="/assets/module/admin.css">
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        #orgTree {
+            border: 1px solid #e6e6e6;
+            padding: 10px 5px;
+            overflow: auto;
+            height: -webkit-calc(100vh - 125px);
+            height: -moz-calc(100vh - 125px);
+            height: calc(100vh - 125px);
+        }
+
+        .layui-tree-entry .layui-tree-txt {
+            padding: 0 5px;
+            border: 1px transparent solid;
+            text-decoration: none !important;
+        }
+
+        .layui-tree-entry.ew-tree-click .layui-tree-txt {
+            background-color: #fff3e0;
+            border: 1px #FFE6B0 solid;
+        }
+    </style>
+</head>
+<body>
+<!-- 正文开始 -->
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md2">
+            <div class="layui-card">
+                <div class="layui-card-body" style="padding: 10px;">
+                    <!-- 左树 -->
+                    <div id="orgTree"></div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md8">
+            <div class="layui-card">
+                <div class="layui-card-body" style="padding: 10px;">
+                    <!-- 表格工具栏 -->
+                    <form class="layui-form toolbar">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">关键词:</label>
+                                <div class="layui-input-inline">
+                                    <input name="searchValue" class="layui-input" placeholder="请输入姓名、账号、手机号"/>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">状态:</label>
+                                <div class="layui-input-inline">
+                                    <select name="searchStatus"></select>
+                                </div>
+                            </div>
+                            <div class="layui-inline">&emsp;
+                                <button class="layui-btn icon-btn" lay-filter="tableSearch" lay-submit>
+                                    <i class="layui-icon">&#xe615;</i>搜索
+                                </button>
+                            </div>
+                            <div class="layui-inline">&emsp;
+                                <button type="reset" class="layui-btn layui-btn-primary icon-btn">
+                                    <i class="layui-icon">&#xe669;</i>重置
+                                </button>
+                            </div>
+                            <div class="layui-inline">&emsp;
+                                <button class="layui-btn layui-btn-danger icon-btn pull-right" lay-filter="tableOk" lay-submit>
+                                    <i class="layui-icon">&#xe605;</i>确定
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- 数据表格 -->
+                    <table id="dataTable" lay-filter="dataTable"></table>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md2">
+            <div class="layui-card">
+                <div class="layui-card-body" style="padding: 10px;">
+                    <div style="border: 1px solid #e6e6e6;padding: 10px;height: 525px;">
+                        <span style="font-weight: bold">当前已选择人员：</span>
+                        <div id="selectedBox">
+                            <span class="text-muted	">暂无数据</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- js部分 -->
+<script src="/assets/libs/layui/layui.js"></script>
+<script src="/assets/js/common.js"></script>
+
+<script>
+    layui.use(['layer', 'table', 'tableX', 'notice', 'tree', 'treeTable', 'dropdown', 'xnUtil'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var table = layui.table;
+        var tableX = layui.tableX;
+        var admin = layui.admin;
+        var form = layui.form;
+        var notice = layui.notice;
+        var xnUtil = layui.xnUtil;
+        var tree = layui.tree;
+        var dropdown = layui.dropdown;
+
+        // 渲染字典下拉
+        xnUtil.rendDictDropDown(null, 'searchStatus', 'common_status', '请选择状态', ['删除']);
+
+        /* 渲染左侧树 */
+        function renderTree() {
+            // admin.req(getProjectUrl() + 'sysOrg/tree', function(res){
+            admin.req(  'tree.json', function(res){
+                tree.render({
+                    elem: '#orgTree',
+                    onlyIconControl: true,
+                    data: xnUtil.handleZtreeDataSpread(res.data),
+                    click: function (obj) {
+                        $('#orgTree').find('.ew-tree-click').removeClass('ew-tree-click');
+                        $(obj.elem).children('.layui-tree-entry').addClass('ew-tree-click');
+                        insTb.reload({
+                            where: {'sysEmpParam.orgId': obj.data.id},
+                            page: {curr: 1},
+                            // url: getProjectUrl() + 'sysUser/page'
+                            url:   'page.json'
+                        });
+                    }
+                });
+            });
+        }
+        //渲染树
+        renderTree();
+
+        //定义当前页数据
+        var currentPageData = [];
+
+        //定义已经选中的数据
+        var selectedData = [];
+        /* 渲染表格 */
+        var insTb = tableX.render({
+            elem: '#dataTable',
+            // url: getProjectUrl() + 'sysUser/page',
+            url:  'page.json',
+            page: true,
+            toolbar: [],
+            cellMinWidth: 100,
+            cols: [
+                [
+                    {type: 'checkbox'},
+                    {field: 'id', title: 'id', hide:true, sort: true},
+                    {field: 'sysEmpInfo.orgId', title: 'orgId', hide:true, sort: true, templet: function (d) {  return d.sysEmpInfo.orgId; } },
+                    {field: 'account', title: '账号', sort: true},
+                    {field: 'name', title: '姓名', sort: true},
+                    {field: 'sex', title: '性别', sort: true, templet: function (d) {  return xnUtil.rendDataTableDict(d.sex, 'sex'); } },
+                    {field: 'phone', title: '手机', sort: true},
+                    {field: 'status', title: '状态', sort: true, templet: function (d) {  return xnUtil.rendDataTableDict(d.status, 'common_status'); } },                ]
+            ]
+            ,parseData: function(res){ //res 即为原始返回的数据
+                var resultData = res.data;
+                for(var i=0;i<resultData.length;i++) {
+                    var index = selectedData.findIndex(v =>v.name == resultData[i].name && v.id === resultData[i].id);
+                    if(index === -1) {
+                        resultData[i].LAY_CHECKED = false;
+                    } else {
+                        resultData[i].LAY_CHECKED = true;
+                    }
+                }
+                return {
+                    "code": res.code, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.count, //解析数据长度
+                    //解析数据，设置是否勾选
+                    "data": res.data
+                };
+            },
+            done: function(res, curr, count) {
+                xnUtil.tableDone(insTb, res, curr, count);
+                //设置当前页数据
+                currentPageData = res.data;
+            }
+        });
+
+        /* 表格搜索 */
+        form.on('submit(tableSearch)', function (data) {
+            insTb.reload({where: data.field, page: {curr: 1}});
+            return false;
+        });
+
+        /* 表格确定 */
+        form.on('submit(tableOk)', function (data) {
+            admin.putLayerData('selectedData', JSON.stringify(selectedData));
+            admin.closeThisDialog();
+            return false;
+        });
+
+        table.on('checkbox(dataTable)', function(obj){
+            //判断是否选中，如果选中了
+            if(obj.checked) {
+                //判断是否全选，如果全选了
+                if(obj.type === 'all') {
+                    var checkData = table.checkStatus('dataTable').data;
+                    for (var i = 0; i < checkData.length; i++) {
+                        var tempData = {'name': checkData[i].name, 'id': checkData[i].id};
+                        var index = selectedData.findIndex(v =>v.name == tempData.name && v.id === tempData.id);
+                        if(index === -1) {
+                            selectedData.push(tempData);
+                        }
+                    }
+                } else {
+                    //否则是选中的一条
+                    var tempData = {'name': obj.data.name, 'id': obj.data.id};
+                    var index = selectedData.findIndex(v =>v.name == tempData.name && v.id === tempData.id);
+                    if(index === -1) {
+                        selectedData.push(tempData);
+                    }
+                }
+            } else {
+                //判断是否取消全选，如果取消全选了
+                if(obj.type === 'all') {
+                    for (var i = 0; i < currentPageData.length; i++) {
+                        var index = selectedData.findIndex(v =>v.name == currentPageData[i].name && v.id === currentPageData[i].id);
+                        if(index !== -1) {
+                            selectedData.splice(index, 1);
+                        }
+                    }
+                } else {
+                    //否则是取消选中的一条
+                    var index = selectedData.findIndex(v =>v.name == obj.data.name && v.id === obj.data.id);
+                    if(index !== -1) {
+                        selectedData.splice(index, 1);
+                    }
+                }
+            }
+            renderSelectedData(selectedData);
+        });
+
+        //渲染已选择的，格式[{'name': 'xx', 'id': '11'},{'name': 'yy', 'id': '22'}]
+        function renderSelectedData(selectedData) {
+            $('#selectedBox').empty();
+            for (var i = 0; i < selectedData.length; i++) {
+                var html = "<span class='layui-badge layui-badge-red tag' style='margin: 5px;height: 24px'><span>" + selectedData[i].name + "</span><a class='removeSelectorBtn' href='javascript:;' title='移除' lay-data='{\"name\": \"" + selectedData[i].name + "\", \"id\": \"" + selectedData[i].id + "\"}'><i style='line-height: 24px;font-size: 12px;margin-left: 5px' class='layui-icon layui-icon-close'></i></a></span>";
+                $('#selectedBox').append(html);
+            }
+            $('.removeSelectorBtn').click(function () {
+                var removeDataStr = $(this).attr('lay-data').toString();
+                var removeData = JSON.parse(removeDataStr);
+                //否则是取消选中的一条
+                var index = selectedData.findIndex(v =>v.name == removeData.name && v.id === removeData.id);
+                if(index !== -1) {
+                    selectedData.splice(index, 1);
+                    renderSelectedData(selectedData);
+                    insTb.reload();  // 刷新表格
+                }
+            })
+        }
+    });
+</script>
+</body>
+</html>

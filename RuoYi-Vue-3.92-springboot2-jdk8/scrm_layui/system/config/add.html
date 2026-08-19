@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('系统参数新增')" />
+</head>
+<body>
+<div class="container">
+    <form class="layui-form mt20" lay-filter="form-config">
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span class="required-msg ">*</span>参数名称：</label>
+            <div class="layui-input-block">
+                <input class="layui-input min-input" type="text" name="configName" lay-verify="required" lay-verType="tips" placeholder="" autocomplete="off"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span class="required-msg ">*</span>参数键名：</label>
+            <div class="layui-input-block">
+                <input class="layui-input min-input" type="text" name="configKey" lay-verify="required" lay-verType="tips" placeholder="" autocomplete="off"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span class="required-msg ">*</span>参数键值：</label>
+            <div class="layui-input-block">
+                <input class="layui-input min-input" type="text" name="configValue" lay-verify="required" lay-verType="tips" placeholder="" autocomplete="off"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">系统内置：</label>
+            <div class="layui-input-block">
+                <span th:each="dict : ${@dict.getType('sys_yes_no')}">
+                    <input type="radio" th:id="${dict.dictCode}" name="configType" th:value="${dict.dictValue}" th:title="${dict.dictLabel}" th:checked="${dict.isDefault == 'Y' ? true : false}" />
+                </span>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">备注：</label>
+            <div class="layui-input-block">
+                <textarea  class="layui-textarea min-input" rows="3" type="text" name="remark" placeholder="" autocomplete="off"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item layui-hide">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="btn-add" id="btn-add">保存</button>
+            </div>
+        </div>
+    </form>
+</div>
+<th:block th:include="include :: footer" />
+<script th:src="@{/js/system/config_form.js}"></script>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('system:config:edit')}]];
+</script>
+</body>
+</html>

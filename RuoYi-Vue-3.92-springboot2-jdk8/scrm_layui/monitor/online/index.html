@@ -1,0 +1,227 @@
+<html lang="zh" >
+<head>
+    <!-- <th:block th:include="include :: header('在线用户')"/> -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <title text="操作日志"></title>
+    <link rel="shortcut icon" th:href="/favicon.ico">
+    <link rel="stylesheet" href="/assets/libs/layui/css/layui.css" />
+    <link rel="stylesheet" href="/assets/module/admin.css">
+    <link rel="stylesheet" href="/assets/css/common.css">
+    <style>
+        .layui-table-cell .layui-form-checkbox[lay-skin=primary]{top:4px;}
+    </style>
+</head>
+<body>
+<div class="layui-layout layui-layout-iframe">
+    <div class="layui-fluid">
+        <div class="layui-card">
+            
+            <!--table actcion-->
+            <div class="layui-card-body">
+                <!--search form-->
+                <form class="layui-form toolbar" id="searchForm">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">登录地址</label>
+                            <div class="layui-input-inline">
+                                <input class="layui-input" type="text" name="ipaddr" placeholder="" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">登录名称</label>
+                            <div class="layui-input-inline">
+                                <input class="layui-input" type="text" name="userName" placeholder="" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button  type="button" class="layui-btn layuiadmin-btn-list" data-type="reload" lay-submit lay-filter="form-search" id="form-search"><i class="layui-icon">&#xe615;</i>搜索</button>
+                        </div>
+                    </div>
+                </form>
+                <script type="text/html" id="table_online_toolbar">
+                    <div class="layui-table-tool-temp" perm-show="monitor:online:batchForceLogout">
+                        <button class="layui-btn layui-btn-sm" lay-event="batch-logout">强退</button>
+                    </div>
+                </script>
+                <table id="table_online" lay-filter="table_online"></table>
+                <script type="text/html" id="col_operation">
+                    <a class="layui-btn layui-btn-primary layui-btn-xs" perm-show=""   href="javascript:;" perm-show="monitor:online:batchForceLogout" lay-event="logout">强退</a>
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- js部分 -->
+    <script src="/assets/libs/layui/layui.js"></script>
+    <script src="/assets/js/jquery.js"></script>
+    <script src="/assets/js/common.js"></script>
+
+    <script src="/assets/js/core.util.js"></script>
+    <script lang="javascript"> var ctx = "/dev-api/"; </script>
+
+    <script lang="javascript">
+        var editFlag = true; 
+        var removeFlag = true; 
+        var prefix = ctx + "monitor/online";
+    </script>
+
+<!-- <th:block th:include="include :: footer"/>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('system:online:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('system:online:remove')}]];
+    var prefix = ctx + "monitor/online";
+</script> -->
+<script>
+    layui.use(['common'], function () {
+        var $ = layui.jquery,
+            layer = layui.layer,
+            form = layui.form,
+            common = layui.common,
+            laydate = layui.laydate,
+            table = layui.table;
+        //页面事件列表
+        var active = {
+            reload: function () {
+                search(false);
+            }
+        };
+        //查询表单
+        form.on('submit(form-search)', function (data) {
+            search(true);
+        });
+        //表格
+        table.render({
+            elem: '#table_online'
+            , headers: { "Authorization": localStorage.getItem("Authorization") }
+            , parseData: function (res) {
+                    if(res.code==401){ //凭证过期重新登录
+                        layer.msg("凭证过期请重新登录", {time:1000}, function () {
+                            top.window.location.href="/login.html"
+                        });
+                    }
+                    var rowsData = res.rows.map(function (d) {
+                        d.loginTime = timeFormat(d.loginTime);
+                        return d;
+                    });
+                    return {
+                        "code": res.code == 200 ? 0 : res.code, //解析接口状态
+                        "msg": res.msg, //解析提示文本
+                        "count": res.total, //解析数据长度
+                        "data": rowsData //解析数据列表
+                    };
+                }
+            , method: 'get'
+            , url: prefix + "/list" //数据接口
+            // , toolbar: '#table_online_toolbar'
+            , defaultToolbar: ['filter', 'exports']
+            , autoSort: false 	//关闭前端排序 使用后端排序
+            , limit: getPageSize()
+            , limits: getPageList()
+            , text: getLoadErrorMsg()
+            , page: true
+            , cols: new Array([
+                {type: 'checkbox' }
+                , {field: 'tokenId', title: '会话编号'}
+                , {field: 'userName', title: '登录名称'}
+                , {field: 'deptName', title: '部门名称'}
+                , {field: 'ipaddr', title: '主机' }
+                , {field: 'loginLocation', title: '登录地点' }
+                , {field: 'browser', title: '浏览器' }
+                , {field: 'os', title: '操作系统' }
+                , {field: 'loginTime', title: '登录时间' 
+                }
+                /* , {
+                    field: 'status', title: '会话状态', align: 'center', width: 100,
+                    formatter: function (value, row, index) {
+                        if (value == 'on_line') {
+                            return '<span class="layui-btn layui-btn-xs layui-btn-radius">在线</span>';
+                        } else if (value == 'off_line') {
+                            return '<span class="layui-btn layui-btn-xs layui-btn-danger layui-btn-radius">离线</span>';
+                        }
+                    }
+                }
+                , {field: 'startTimestamp', title: '登录时间', sortable: true, width: 160}
+                , {field: 'lastAccessTime', title: '最后访问时间', sortable: true, width: 160} */
+                , {title: '操作', align: 'center', toolbar: '#col_operation', width: 80}
+            ])
+        });
+        //表格工具栏按钮事件
+        table.on('toolbar(table_online)', function (obj) {
+            switch (obj.event) {
+                case 'batch-logout':
+                    // 批量强退
+                    var checkStatus = table.checkStatus('table_online');
+                    var checkData = checkStatus.data; //得到选中的数据
+                    if (checkData.length == 0) {
+                        layer.alert('请勾选数据');
+                        return;
+                    }
+                    var ids = [];
+                    $.each(checkData, function (i, item) {
+                        ids.push(item.tokenId);
+                    });
+                    batchForcelogout(ids.join(','));
+                    break;
+            }
+        });
+        //表格事件
+        table.on('tool(table_online)', function (obj) {
+            switch (obj.event) {
+                case 'logout':
+                    batchForcelogout(obj.data.tokenId);
+                    break;
+            }
+        });
+        //监听排序事件
+        table.on('sort(table_online)', function (obj) {
+            var field = serializeJson($('#searchForm'));
+            field.orderByColumn = obj.field;
+            field.isAsc = obj.type;
+            table.reload('table_online', {where: field, page: {curr: 1}});//执行重载
+        });
+    });
+
+    //强制退出
+    function batchForcelogout(ids) {
+        layer.confirm('确定要强制选中用户下线吗？', function (index) {
+            $.ajax({
+                type: "DELETE",
+                headers: { "Authorization": localStorage.getItem("Authorization") },
+                url:  "/dev-api/monitor/online/"+ids,
+                dataType: "json",
+                //data: {ids: ids},
+                success: function (res) {
+                    layer.closeAll();
+                    if (res.code == '0'  || res.code == '200') {
+                        layer.alert('强退成功');
+                        search();
+                    } else {
+                        layer.alert(res.msg);
+                    }
+                }
+            });
+        });
+    }
+
+    //表格查询
+    function search(isResetCurr) {
+        var field = serializeJson($('#searchForm'));
+        var sortParam = getSort('table_online');
+        if (sortParam) {
+            field.orderByColumn = sortParam.sortField;
+            field.isAsc = sortParam.sortMethod;
+        }
+        //执行重载
+        var options = {where: field};
+        if (isResetCurr == true) {
+            options.page = {curr: 1};
+        }
+        layui.table.reload('table_online', options);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!-- 注意这里不需要写`<html><body>`这些东西，它是一个html片段，不是完整的html页面 -->
+<form id="addOrUpdateForm" lay-filter="addOrUpdateForm" class="layui-form model-form">
+    <div class="layui-col-md6">
+        <input name="id" type="hidden"/>
+        <input name="menuId" type="hidden"/>
+        <div class="layui-form-item">
+            <label class="layui-form-label layui-form-required">上级菜单</label>
+            <div class="layui-input-block">
+                <div id="menuSelectBox" class="ew-xmselect-tree"></div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label layui-form-required">菜单名称</label>
+            <div class="layui-input-block">
+                <input name="menuName" class="layui-input" placeholder="请输入菜单名称" lay-verType="tips" lay-verify="required" required/>
+            </div>
+        </div>
+        <!-- <div class="layui-form-item">
+            <label class="layui-form-label layui-form-required">菜单编码</label>
+            <div class="layui-input-block">
+                <input name="code" class="layui-input" placeholder="请输入菜单编码" lay-verType="tips" lay-verify="required" required/>
+            </div>
+        </div> -->
+        <div class="layui-form-item">
+            <label class="layui-form-label layui-form-required">是否外链</label>
+            <div class="layui-input-block">
+                <input type="radio"  name="isFrame" value="1" title="否"  checked="true" />
+                <input type="radio"  name="isFrame" value="0" title="是" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label layui-form-required">菜单类型</label>
+            <div class="layui-input-block">
+                <div id="menuTypeBox"></div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-col-md6">
+        <!-- <div class="layui-form-item">
+            <label class="layui-form-label " style="width: 100px">菜单权重<i class="layui-icon layui-icon-tips"
+                                                                       lay-tips="如果为业务权重，则超级管理员无法看到此菜单"
+                                                                       lay-direction="1" lay-offset="0,-10px" style="margin-left: 5px"></i></label>
+            <div class="layui-input-block" style="margin-left: 130px">
+                <div id="menuWeightBox"></div>
+            </div>
+        </div> -->
+        <!-- <div class="layui-form-item">
+            <label class="layui-form-label layui-form-required" style="width: 100px">所属应用<i class="layui-icon layui-icon-tips"
+                                                                                                             lay-tips="用户登录后菜单会以所属应用分类，在最上方导航栏显示，用以切换"
+                                                                                                             lay-direction="1" lay-offset="0,-10px" style="margin-left: 5px"></i></label>
+            <div class="layui-input-block" style="margin-left: 130px">
+                <div id="menuApplicationBox"></div>
+            </div>
+        </div> -->
+        <div class="layui-form-item">
+            <label class="layui-form-label layui-form-required" style="width: 100px">排序</label>
+            <div class="layui-input-block" style="margin-left: 130px">
+                <input name="orderNum" class="layui-input" type="number" placeholder="请输入排序" lay-verType="tips" lay-verify="required" required/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label layui-form-required">显示状态</label>
+            <div class="layui-input-block">
+                <input type="radio"  name="visible" value="0" title="显示" checked="true" />
+                <input type="radio"  name="visible" value="1" title="隐藏"  />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label layui-form-required">菜单状态</label>
+            <div class="layui-input-block">
+                <input type="radio"  name="status" value="0" title="正常" checked="true" />
+                <input type="radio"  name="status" value="1" title="停用    "  />
+            </div>
+        </div>
+        <div class="layui-form-item" id="iconBox" hidden>
+            <label class="layui-form-label" style="width: 100px">图标</label>
+            <div class="layui-input-block" style="margin-left: 130px">
+                <input name="icon" id="icon" class="layui-input" lay-filter="iconPicker" placeholder="请输入图标"/>
+            </div>
+        </div>
+        <div class="layui-form-item" id="urlBox" hidden>
+            <label class="layui-form-label" style="width: 100px">组件路径<i class="layui-icon layui-icon-tips"
+                                                                    lay-tips="填写后端页面地址，如 user "
+                                                                    lay-direction="1" lay-offset="0,-10px" style="margin-left: 5px"></i></label>
+            <div class="layui-input-block" style="margin-left: 130px">
+                <input name="path" class="layui-input" placeholder="请输入组件路径"/>
+            </div>
+            <br/>
+            <label class="layui-form-label" style="width: 100px">菜单地址<i class="layui-icon layui-icon-tips"
+                lay-tips="填写后端页面地址，如 system/user/index "
+                lay-direction="1" lay-offset="0,-10px" style="margin-left: 5px"></i></label>
+            <div class="layui-input-block" style="margin-left: 130px">
+                <input name="component" class="layui-input" placeholder="请输入菜单地址"/>
+            </div>
+        </div>
+        <div class="layui-form-item" id="permsBox" hidden>
+            <label class="layui-form-label" style="width: 100px">权限标识<i class="layui-icon layui-icon-tips"
+                                               lay-tips="如后端接口地址为/sysUser/add，则去掉第一个/，填写sysUser:add"
+                                               lay-direction="1" lay-offset="0,-10px" style="margin-left: 5px"></i></label>
+            <div class="layui-input-block" style="margin-left: 130px">
+                <input name="perms" class="layui-input" placeholder="请输入权限标识"/>
+            </div>
+        </div>
+    </div>
+    <div class="layui-col-md12">
+        <div class="layui-form-item">
+            <label class="layui-form-label">备注</label>
+            <div class="layui-input-block">
+                <textarea name="remark" placeholder="请输入备注" class="layui-textarea"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item text-right">
+        <button class="layui-btn layui-btn-primary" type="button" ew-event="closeDialog">取消</button>
+        <button class="layui-btn" lay-filter="formSubmitBtn" lay-submit>保存</button>
+    </div>
+</form>
+
+<script>
+    layui.use(['layer', 'form', 'admin', 'xnUtil', 'xmSelect', 'iconPicker'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var admin = layui.admin;
+        var xnUtil = layui.xnUtil;
+        var xmSelect = layui.xmSelect;
+        var iconPicker = layui.iconPicker;
+
+        var editData = admin.getLayerData('#addOrUpdateForm').data;
+
+        //初始化图标选择
+        iconPicker.render({
+            elem: '#icon',
+            type: 'fontClass',
+            search: true,
+            page: true,
+            limit: 12,
+            click: function (data) {
+            }
+        });
+
+        // admin.req(getProjectUrl() + '/system/menu/tree.json', function(res){
+        admin.req(getProjectUrl() + '/dev-api/qixing/menuTree', function(res){
+            // 渲染下拉树
+            xmSelect.render({
+                el: '#menuSelectBox',
+                name: 'parentId',
+                height: '250px',
+                layVerify: 'required',
+                layVerType: 'tips',
+                data: xnUtil.handleZtreeDataRootNode(res.data),
+                initValue: editData ? [editData.parentId] : [],
+                model: {label: {type: 'text'}},
+                prop: {
+                    name: 'title',
+                    value: 'id'
+                },
+                radio: true,
+                clickClose: true,
+                tree: {
+                    show: true,
+                    indent: 15,
+                    strict: false,
+                    expandedKeys: true
+                },
+                tips: '请选择上级菜单'
+            });
+        }, {async: false});
+
+        // 渲染字典下拉
+        var menuTypeDataRenderIns = xmSelect.render({
+            el: '#menuTypeBox',
+            name: 'menuType',
+            data: xnUtil.getDictDataByDictTypeCode('sys_menu_type', null),
+            layVerify: 'required',
+            layVerType: 'tips',
+            radio: true,
+            clickClose: true,
+            model: { icon:'hidden', label: { type: 'text' }},
+            prop: {
+                name: 'name',
+                value: 'code'
+            },
+            tips: '请选择菜单类型',
+            on: function (data) {
+                if(data.arr.length !== 0) {
+                    $('input[name="perms"]').val("");
+                    $('input[name="icon"]').val("");
+                    $('input[name="path"]').val("");
+                    handleMenuTypeView(data.arr[0].code);
+                }
+            }
+        });
+
+        // 渲染菜单权重下拉
+        /* var menuWeightDataRenderIns = xmSelect.render({
+            el: '#menuWeightBox',
+            name: 'weight',
+            //data: xnUtil.getDictDataByDictTypeCode('menu_weight', null),
+            data: [{name:"系统权重",code:"sys"},{name:"业务权重",code:"biz"}],
+            layVerify: 'required',
+            layVerType: 'tips',
+            radio: true,
+            clickClose: true,
+            model: { icon:'hidden', label: { type: 'text' }},
+            prop: {
+                name: 'name',
+                value: 'code'
+            },
+            tips: '请选择菜单权重'
+        }); */
+
+        // 渲染字典下拉
+        /* var menuApplicationDataRenderIns = {};
+        admin.req(getProjectUrl() + '/system/menu/app.json', function(res) {
+            menuApplicationDataRenderIns = xmSelect.render({
+                el: '#menuApplicationBox',
+                name: 'application',
+                data: res.data,
+                layVerify: 'required',
+                layVerType: 'tips',
+                radio: true,
+                clickClose: true,
+                model: {icon: 'hidden', label: {type: 'text'}},
+                prop: {
+                    name: 'name',
+                    value: 'code'
+                },
+                tips: '请选择所属应用'
+            })
+        }, {async: false}); */
+
+        form.val('addOrUpdateForm', editData);
+
+        iconPicker.checkIcon('iconPicker', 'layui-icon-app');
+
+        if(editData !== null && editData !== undefined) {
+            menuTypeDataRenderIns.setValue([editData.menuType]);
+            //menuWeightDataRenderIns.setValue([editData.weight]);
+            //menuApplicationDataRenderIns.setValue([editData.application]);
+            handleMenuTypeView(editData.menuType.toString());
+            if(editData.icon !== null && editData.icon !== undefined) {
+                iconPicker.checkIcon('iconPicker', editData.icon);
+            }
+        }
+
+        function handleMenuTypeView(type) {
+            var permsBox = $('#permsBox');
+            var permsLabel = $($(permsBox.find('label'))[0]);
+            var permsInput = $($(permsBox.find('input'))[0]);
+            var iconBox = $('#iconBox');
+            var urlBox = $('#urlBox');
+            var urlLabel = $($(urlBox.find('label'))[0]);
+            var urlInput = $($(urlBox.find('input'))[0]);
+            permsBox.attr('hidden', true);
+            iconBox.attr('hidden', true);
+            urlBox.attr('hidden', true);
+            permsLabel.removeClass('layui-form-required');
+            urlLabel.removeClass('layui-form-required');
+            permsInput.removeAttr('lay-verType lay-verify required');
+            urlInput.removeAttr('lay-verType lay-verify required');
+            if(type === 'M') {
+                iconBox.removeAttr('hidden');
+            }
+            if(type === 'C') {
+                urlBox.removeAttr('hidden');
+                urlLabel.addClass('layui-form-required');
+                urlInput.attr({'lay-verType': 'tips', 'lay-verify': 'required' , 'required':'true'});
+            }
+            if(type === 'F') {
+                permsBox.removeAttr('hidden');
+                permsLabel.addClass('layui-form-required');
+                permsInput.attr({'lay-verType': 'tips', 'lay-verify': 'required' , 'required':'true'});
+            }
+            iconPicker.checkIcon('iconPicker', 'layui-icon-app');
+        }
+
+        // 表单提交事件
+        form.on('submit(formSubmitBtn)', function (data) {
+            layer.load(2);
+            //var url = editData ? getProjectUrl() + 'sysMenu/edit' : getProjectUrl() + 'sysMenu/add';
+            var method = editData ? 'PUT' : 'POST';
+            var url = '/dev-api/system/menu';
+            admin.req(url, JSON.stringify(data.field), function(res){
+                if(res.code == 200 || res.code == 0 ){
+                    layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                        admin.putLayerData('formOk', true, '#addOrUpdateForm');
+                        admin.closeDialog('#addOrUpdateForm');
+                    });
+                }else{
+                    layer.msg(res.msg, {icon: 2, time: 1000}, function () {  });
+                }
+            }, method);
+            return false;
+        });
+
+    });
+</script>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('用户修改')" />
+    <style>
+        .deptName{
+            max-height: 200px;
+            width: 92%;
+            display: none;
+            position: absolute;
+            top:100%;
+            z-index: 100;
+            border-top: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <form class="layui-form mt20" id="form-user-edit" th:object="${user}" lay-filter="form-user">
+        <input id="userId" name="userId"  type="hidden"  th:value="*{userId}">
+        <input name="deptId"  type="hidden"  th:field="*{deptId}"/>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span class="required-msg ">*</span>登录账号：</label>
+            <div class="layui-input-block">
+                <input class="layui-input min-input" type="text" name="loginName" th:value="*{loginName}" readonly>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span class="required-msg ">*</span>用户名称：</label>
+            <div class="layui-input-block">
+                <input class="layui-input min-input" type="text" name="userName" id="userName" lay-verify="required" lay-verType="tips" placeholder="请输入用户名称" th:value="*{userName}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span class="required-msg ">*</span>归属部门：</label>
+            <div class="layui-input-block">
+                <input class="layui-input min-input readonly" type="text" name="deptName" lay-verify="required" lay-verType="tips" readonly autocomplete="off"  placeholder="请选择归属部门" th:value="*{dept.deptName}">
+                <div class="eleTree deptName" lay-filter="deptNameTree"></div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span class="required-msg ">*</span>手机号码：</label>
+            <div class="layui-input-block">
+                <input class="layui-input min-input" type="text" name="phonenumber" id="phonenumber" lay-verify="required|phone" lay-verType="tips" placeholder="请输入手机号码" th:value="*{phonenumber}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span class="required-msg ">*</span>邮箱：</label>
+            <div class="layui-input-block">
+                <input class="layui-input min-input" type="text" name="email" id="email" lay-verify="required|email" lay-verType="tips" placeholder="请输入邮箱" th:value="*{email}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">性别：</label>
+            <div class="layui-input-block min-select">
+                <select class="min-input" name="sex" id="sex" th:with="type=${@dict.getType('sys_user_sex')}" th:value="*{sex}">
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{sex}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户状态：</label>
+            <div class="layui-input-block">
+                <div class="onoffswitch">
+                    <input type="checkbox" th:checked="${user.status == '0' ? false : true}" id="status" name="status" lay-skin="switch">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">岗位：</label>
+            <div class="layui-input-block">
+                <th:block th:each="post,inte:${posts}" class="check-box">
+                    <input th:name="'post['+${inte.index}+']'" type="checkbox" lay-skin="primary"  th:value="${post.postId}" th:title="${post.postName}" th:checked="${post.flag}" th:disabled="${post.status == '1'}">
+                </th:block>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">角色：</label>
+            <div class="layui-input-block">
+                <th:block th:each="role,inte:${roles}" class="check-box">
+                    <input th:name="'role['+${inte.index}+']'" type="checkbox" lay-skin="primary"  th:value="${role.roleId}" th:title="${role.roleName}" th:checked="${role.flag}" th:disabled="${role.status == '1'}">
+                </th:block>
+            </div>
+        </div>
+        <div class="layui-form-item layui-hide">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="btn-edit" id="btn-edit">保存</button>
+            </div>
+        </div>
+    </form>
+</div>
+<th:block th:include="include :: footer" />
+<script th:src="@{/js/system/user_form.js}"></script>
+</body>
+</html>

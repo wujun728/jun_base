@@ -1,0 +1,33 @@
+{
+    "code": 0,
+    "msg": "请求成功",
+    "page": 1,
+    "limit": 10,
+    "count": 2,
+    "data": [
+        {
+            "createTime": "2020-07-30 16:56:20",
+            "createUser": "1265476890672672808",
+            "updateTime": "2020-07-30 16:58:52",
+            "updateUser": "1265476890672672808",
+            "id": "1288760324837851137",
+            "timerName": "定时同步缓存常量",
+            "actionClass": "io.github.wujun728.sys.modular.timer.tasks.RefreshConstantsTaskRunner",
+            "cron": "0 0/1 * * * ?",
+            "jobStatus": 1,
+            "remark": "定时同步sys_config表的数据到缓存常量中"
+        },
+        {
+            "createTime": "2020-09-13 10:34:37",
+            "createUser": "1265476890672672808",
+            "updateTime": "2020-09-23 20:37:48",
+            "updateUser": "1265476890672672808",
+            "id": "1304971718170832898",
+            "timerName": "定时打印一句话",
+            "actionClass": "io.github.wujun728.sys.modular.timer.tasks.SystemOutTaskRunner",
+            "cron": "0 0 * * * ? *",
+            "jobStatus": 2,
+            "remark": "定时打印一句话"
+        }
+    ]
+}

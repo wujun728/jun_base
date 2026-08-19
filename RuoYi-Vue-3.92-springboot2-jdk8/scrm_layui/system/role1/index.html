@@ -1,0 +1,299 @@
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <title text="角色管理"></title>
+    <link rel="shortcut icon" th:href="/favicon.ico">
+    <link rel="stylesheet" href="/assets/libs/layui/css/layui.css" />
+    <link rel="stylesheet" href="/assets/module/admin.css">
+    <link rel="stylesheet" href="/assets/css/common.css">
+    <link rel="stylesheet" href="/assets/gougu/css/gougu.css">
+    <style>
+        .layui-table-cell .layui-form-checkbox[lay-skin=primary] {
+            top: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="layui-layout layui-layout-iframe">
+        <div class="layui-fluid">
+            <div class="layui-card">
+                <!--search form-->
+                <form class="layui-form toolbar" id="searchForm">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">角色名称</label>
+                            <div class="layui-input-inline">
+                                <input class="layui-input" type="text" name="roleName" placeholder=""
+                                    autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">权限字符</label>
+                            <div class="layui-input-inline">
+                                <input class="layui-input" type="text" name="roleKey" placeholder="" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">角色状态</label>
+                            <div class="layui-input-inline input-sm">
+                                <select name="status" th:with="type=${@dict.getType('sys_normal_disable')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+                                        th:value="${dict.dictValue}"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline mt5">
+                            <label class="layui-form-label">创建时间</label>
+                            <div class="layui-input-inline input-sm">
+                                <input class="layui-input" type="text" name="params[beginTime]" id="startTime"
+                                    placeholder="开始时间" />
+                            </div>
+                            <span class="layui-form-mid">-</span>
+                            <div class="layui-input-inline input-sm">
+                                <input class="layui-input" type="text" name="params[endTime]" id="endTime"
+                                    placeholder="结束时间" />
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="button" class="layui-btn layuiadmin-btn-list" data-type="reload" lay-submit
+                                lay-filter="form-search" id="form-search"><i class="layui-icon">&#xe615;</i>搜索</button>
+                        </div>
+                    </div>
+                </form>
+                <!--table actcion-->
+                <div class="layui-card-body">
+                    <script type="text/html" id="table_role_toolbar">
+                    <div class="layui-table-tool-temp" perm-show="system:user:add">
+                        <button class="layui-btn layui-btn-sm" lay-event="toolbar-role-add" perm-show="system:role:add"><i class="layui-icon">&#xe654;</i>新增</button>
+                        <button class="layui-btn layui-btn-sm" lay-event="toolbar-role-remove" perm-show="system:role:add"><i class="layui-icon">&#xe640;</i>删除</button>
+                    </div>
+                </script>
+                    <table id="table_role" lay-filter="table_role"></table>
+                    <script type="text/html" id="col_operation">
+                    <a perm-show="system:role:edit" href="javascript:;" lay-event="edit">编辑</a><span class="splitor">|</span>
+                    <a perm-show="system:role:remove" href="javascript:;" lay-event="del">删除</a><span class="splitor">|</span>
+                    <a perm-show="system:role:edit" href="javascript:;" lay-event="data">数据权限</a>
+                </script>
+                    <script type="text/html" id="tmplRoleStatus">
+                    {{#  if(d.status == 1){ }}
+                    <input type="checkbox" lay-filter="filter-switchRoleStatus" value="{{d.roleId}}" name="switchRoleStatus" lay-skin="switch" checked>
+                    {{#  } else { }}
+                    <input type="checkbox" lay-filter="filter-switchRoleStatus" value="{{d.roleId}}" name="switchRoleStatus" lay-skin="switch">
+                    {{#  } }}
+                </script>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- js部分 -->
+    <script src="/assets/libs/layui/layui.js"></script>
+    <script src="/assets/js/common.js"></script>
+
+    <script src="/assets/js/core.util.js"></script>
+    <script lang="javascript"> var ctx = "/dev-api/"; </script>
+    <script lang="javascript">
+        var editFlag = true;//[[${@permission.hasPermi('system:user:edit')}]];
+        var removeFlag = true;// [[${@permission.hasPermi('system:user:remove')}]];
+        var prefix = ctx + "system/role";
+    </script>
+    <script>
+        layui.use(['common'], function () {
+            var $ = layui.jquery,
+                layer = layui.layer,
+                form = layui.form,
+                common = layui.common,
+                laydate = layui.laydate,
+                table = layui.table;
+            //页面事件列表
+            var active = {
+                reload: function () {
+                    search(false);
+                },
+                remove: function (ids) {
+                    common.ajaxRemove(prefix + "/remove", ids, function (res) {
+                        active['reload'].call(this);
+                    });
+                }
+            };
+            //开始日期
+            var insStart = laydate.render({
+                elem: '#startTime'
+                , min: 0
+                , done: function (value, date) {
+                    //更新结束日期的最小日期
+                    insEnd.config.min = lay.extend({}, date, {
+                        month: date.month - 1
+                    });
+                    //自动弹出结束日期的选择器
+                    insEnd.config.elem[0].focus();
+                }
+            });
+            //结束日期
+            var insEnd = laydate.render({
+                elem: '#endTime'
+                , min: 0
+                , done: function (value, date) {
+                    //更新开始日期的最大日期
+                    insStart.config.max = lay.extend({}, date, {
+                        month: date.month - 1
+                    });
+                }
+            });
+
+            //查询表单
+            form.on('submit(form-search)', function (data) {
+                search(true);
+            });
+            form.on('switch(filter-switchRoleStatus)', function (obj) {
+                common.ajax.post(prefix + '/changeStatus', {
+                    roleId: this.value,
+                    status: obj.elem.checked ? 1 : 0
+                }, function (res) {
+                    console.log(res);
+                });
+            });
+            //表格初始化
+            table.render({
+                method: 'get'
+                , elem: '#table_role'
+                , url: prefix + "/list"   //数据接口
+                ,headers: {"Authorization": localStorage.getItem("Authorization")}
+                , toolbar: '#table_role_toolbar'
+                , defaultToolbar: ['filter', 'exports']
+                , autoSort: false 	//关闭前端排序 使用后端排序
+                , limit: getPageSize()
+                , limits: getPageList()
+                , text: getLoadErrorMsg()
+                , page: true
+                , parseData: function (res) {
+                    return {
+                        "code": res.code == 200 ? 0 : res.code, //解析接口状态
+                        "msg": res.msg, //解析提示文本
+                        "count": res.total, //解析数据长度
+                        "data": res.rows //解析数据列表
+                    };
+                }
+                , cols: new Array([
+                    { type: 'checkbox', width: 30 }
+                    , { field: 'roleName', title: '角色名称' }
+                    , { field: 'roleKey', title: '权限字符' }
+                    , { field: 'roleSort', title: '显示顺序', sort: true, width: 100 }
+                    , { visible: editFlag == 'hidden' ? false : true, title: '角色状态', width: 100, align: 'center', templet: '#tmplRoleStatus' }
+                    , { field: 'createTime', title: '创建时间', width: 160, sort: true }
+                    , { title: '操作', align: 'center', width: 180, toolbar: '#col_operation' }
+                ])
+            });
+            //表格工具栏按钮事件
+            table.on('toolbar(table_role)', function (obj) {
+                switch (obj.event) {
+                    case 'toolbar-role-remove':
+                        var checks = table.checkStatus('table_role');
+                        var ids = common.joinArray(checks.data, "roleId");
+                        active['remove'].call(this, ids);
+                        break;
+                    case 'toolbar-role-add':
+                        showSaveDialog('新增角色', prefix + '/add', 'btn-add');
+                        break;
+                }
+            });
+            //表格事件
+            table.on('tool(table_role)', function (obj) {
+                switch (obj.event) {
+                    case 'del':
+                        active['remove'].call(this, obj.data.roleId);
+                        break;
+                    case 'data': //数据授权
+                        layer.open({
+                            type: 2,
+                            title: '数据授权',
+                            shade: false,
+                            fixed: false,
+                            area: ['800px', '600px'],
+                            content: prefix + '/rule/' + obj.data.roleId,
+                            btn: ["确定", "取消"],
+                            yes: function (index, layero) {
+                                var submitID = 'btn-role-data';//表单提交按钮id
+                                var submit = layero.find('iframe').contents().find('#' + submitID);//button obj
+                                layero.find('iframe')[0].contentWindow.successCallback = function () {
+                                    parent.layer.closeAll();
+                                    parent.search(); //刷新表格数据
+                                    parent.layer.alert('保存成功');
+                                };
+                                submit.trigger('click');
+                            }
+                            , cancel: function (index, layero) {
+                                layui.layer.close(index);
+                                return false;
+                            }
+                        });
+                        break;
+                    case 'edit':
+         //CoreUtil.setData("biz_rowdata",data);
+         //tool.side("/qixing_oa/pjcontract/edit.html?types="+obj.id);
+                        showSaveDialog('修改角色', prefix + '/edit/' + obj.data.roleId, 'btn-edit');
+                        break;
+                }
+            });
+
+            //监听排序事件
+            table.on('sort(table_role)', function (obj) {
+                var field = serializeJson($('#searchForm'));
+                field.orderByColumn = obj.field;
+                field.isAsc = obj.type;
+                table.reload('table_role', { where: field, page: { curr: 1 } });//执行重载
+            });
+        });
+
+        //展示保存表单弹出层
+        function showSaveDialog(title, url, formSubmitBtnId) {
+            layer.open({
+                type: 2,
+                title: title,
+                shade: false,
+                fixed: false,
+                area: ['800px', '500px'],
+                content: url,
+                btn: ["保存", "取消"],
+                yes: function (index, layero) {
+                    var submitID = formSubmitBtnId;//表单提交按钮id
+                    var submit = layero.find('iframe').contents().find('#' + submitID);//button obj
+                    layero.find('iframe')[0].contentWindow.successCallback = function () {
+                        parent.layer.closeAll();
+                        parent.layer.alert('保存成功');
+                        parent.search(); //刷新表格数据
+                    };
+                    submit.trigger('click');
+                }
+                , cancel: function (index, layero) {
+                    layui.layer.close(index);
+                    return false;
+                }
+            });
+        }
+
+        //表格查询
+        function search(isResetCurr) {
+            var field = serializeJson($('#searchForm'));
+            var sortParam = getSort('table_role');
+            if (sortParam) {
+                field.orderByColumn = sortParam.sortField;
+                field.isAsc = sortParam.sortMethod;
+            }
+            //执行重载
+            var options = { where: field };
+            if (isResetCurr == true) {
+                options.page = { curr: 1 };
+            }
+            layui.table.reload('table_role', options);
+        }
+    </script>
+</body>
+
+</html>

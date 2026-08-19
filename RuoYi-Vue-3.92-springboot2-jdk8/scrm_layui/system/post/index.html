@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>职位管理</title>
+    <link rel="stylesheet" href="/assets/libs/layui/css/layui.css"/>
+    <link rel="stylesheet" href="/assets/module/admin.css">
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<!-- 正文开始 -->
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <!-- 表格工具栏 -->
+            <form class="layui-form toolbar">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">职位名称:</label>
+                        <div class="layui-input-inline">
+                            <input name="name" class="layui-input" placeholder="请输入职位名称"/>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">职位编码:</label>
+                        <div class="layui-input-inline">
+                            <input name="code" class="layui-input" placeholder="请输入职位编码"/>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">岗位状态</label>
+                        <div class="layui-input-inline input-sm">
+                            <select name="status" th:with="type=${@dict.getType('sys_normal_disable')}">
+                                <option value="">所有</option>
+                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">&emsp;
+                        <button class="layui-btn icon-btn" lay-filter="tableSearch" lay-submit>
+                            <i class="layui-icon">&#xe615;</i>搜索
+                        </button>
+                    </div>
+                    <div class="layui-inline">&emsp;
+                        <button type="reset" class="layui-btn layui-btn-primary icon-btn">
+                            <i class="layui-icon">&#xe669;</i>重置
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <!-- 数据表格 -->
+            <table id="dataTable" lay-filter="dataTable"></table>
+        </div>
+    </div>
+</div>
+
+<!-- 表格操作列 -->
+<script type="text/html" id="tableBar">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" perm-show="post:edit" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" perm-show="post:delete" lay-event="delete">删除</a>
+</script>
+
+<!-- js部分 -->
+<script src="/assets/libs/layui/layui.js"></script>
+<script src="/assets/js/jquery.js"></script>
+<script src="/assets/js/common.js"></script>
+
+<script src="/assets/js/core.util.js"></script>
+<script>
+    layui.use(['layer', 'table', 'tableX', 'notice', 'xnUtil'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var table = layui.table;
+        var tableX = layui.tableX;
+        var admin = layui.admin;
+        var form = layui.form;
+        var notice = layui.notice;
+        var xnUtil = layui.xnUtil;
+
+        // 渲染字典下拉
+        xnUtil.rendDictDropDown(null, 'status', 'sys_normal_disable', '请选择', null);
+
+        /* 渲染表格 */
+        var insTb = tableX.render({
+            elem: '#dataTable',
+            headers: {"Authorization": localStorage.getItem("Authorization")},
+            parseData: function(res){
+                return {
+                    "code": res.code==200?0:res.code, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.total, //解析数据长度
+                    "data": res.rows //解析数据列表
+                };
+            },
+            request: {
+                pageName: 'pageNum', // 页码的参数名称，默认：page
+                limitName: 'pageSize' // 每页数据条数的参数名，默认：limit
+            },
+            url: /* getProjectUrl() + */ '/dev-api/system/post/list',
+            page: true,
+            toolbar: ['<p>',
+                '<button lay-event="add" perm-show="post:add" class="layui-btn layui-btn-sm icon-btn"><i class="layui-icon">&#xe654;</i>添加</button>&nbsp;',
+                '<button lay-event="delete" perm-show="post:delete" class="layui-btn layui-btn-sm layui-btn-danger icon-btn"><i class="layui-icon">&#xe640;</i>删除</button>',
+                '</p>'].join(''),
+            cellMinWidth: 100,
+            cols: [
+                [
+                    {type: 'checkbox'},
+                    {field: 'id', title: 'id', hide:true, sort: true},
+                    {field: 'postId', title: '职位编号', sort: true,isEdit:false},
+                    {field: 'postCode', title: '职位编码', sort: true},
+                    {field: 'postName', title: '职位名称', sort: true,search:true},
+                    {field: 'postSort', title: '岗位排序', sort: true},
+                    {field: 'status', title: '状态', sort: true, templet: function (d) {  return xnUtil.rendDataTableDict(d.status, 'sys_normal_disable'); } },
+                    {field: 'createTime', title: '创建时间', sort: true},
+                    // {field: 'remark', title: '备注', sort: true},
+                    {title: '操作', toolbar: '#tableBar', align: 'center', width: 200, minWidth: 200}
+                ]
+            ],
+            done: function(res, curr, count) {
+                xnUtil.tableDone(insTb, res, curr, count);
+            }
+        });
+
+        /* 表格搜索 */
+        form.on('submit(tableSearch)', function (data) {
+            insTb.reload({where: data.field, page: {curr: 1}});
+            return false;
+        });
+
+        /* 表格工具条点击事件 */
+        table.on('tool(dataTable)', function (obj) {
+            /* 删除 */
+            if (obj.event === 'delete') {
+                layer.confirm('确定要操作该数据吗？', {
+                    skin: 'layui-layer-admin',
+                    shade: .1
+                }, function () {
+                    admin.req(getProjectUrl() + '/dev-api/system/post'+"/"+obj.data.postId, JSON.stringify([{'postId': obj.data.postId}]), function(res){
+                        layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                            insTb.reload();
+                        });
+                    }, 'delete');
+                });
+            }
+            /* 编辑 */
+            if (obj.event === 'edit') {
+                showAddOrUpdateModel(obj.data);
+            }
+        });
+
+        /* 表格头工具栏点击事件 */
+        table.on('toolbar(dataTable)', function (obj) {
+            if (obj.event === 'add') { // 添加
+                showAddOrUpdateModel();
+            }
+            if (obj.event === 'delete') { // 删除
+                var checkRows = table.checkStatus('dataTable');
+                if (checkRows.data.length === 0) {
+                    notice.msg('请选择要操作的数据', {icon: 2});
+                    return;
+                }
+                layer.confirm('确定要操作该数据吗？', {
+                    skin: 'layui-layer-admin',
+                    shade: .1
+                }, function () {
+                    var ids = checkRows.data.map(function (d) {
+                        return /*{ "postId":  */d.postId/* } */;
+                    });
+                    admin.req(getProjectUrl() + '/dev-api/system/post/'+ids, JSON.stringify(ids), function(res){
+                        layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                            insTb.reload();
+                        });
+                    }, 'DELETE');
+                });
+            }
+        });
+
+        // 显示表单弹窗
+        function showAddOrUpdateModel(data) {
+            var layIndex = admin.open({
+                title: (data ? '修改' : '添加') + '职位',
+                url: getProjectUrl() + '/system/post/form.html',
+                data: { data: data },     // 传递数据到表单页面
+                end: function () {
+                    var layerData = admin.getLayerData(layIndex, 'formOk');
+                    if (layerData) {  // 判断表单操作成功标识
+                        insTb.reload();  // 成功刷新表格
+                    }
+                },
+                success: function (layero, dIndex) {
+                    // 弹窗超出范围不出现滚动条
+                    //$(layero).children('.layui-layer-content').css('overflow', 'visible');
+                    $(layero).find('[lay-submit]').focus();
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>

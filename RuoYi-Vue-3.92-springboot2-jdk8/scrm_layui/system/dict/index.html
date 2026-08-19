@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>字典类型管理</title>
+    <link rel="stylesheet" href="/assets/libs/layui/css/layui.css"/>
+    <link rel="stylesheet" href="/assets/module/admin.css">
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<!-- 正文开始 -->
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <!-- 表格工具栏 -->
+            <form class="layui-form toolbar">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">字典名称:</label>
+                        <div class="layui-input-inline">
+                            <input name="dictName" class="layui-input" placeholder="请输入类型名称"/>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">字典类型:</label>
+                        <div class="layui-input-inline">
+                            <input name="dictType" class="layui-input" placeholder="请输入类型编码"/>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline input-sm">
+                            <select name="status" th:with="type=${@dict.getType('sys_yes_no')}">
+                                <option value="">所有</option>
+                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">&emsp;
+                        <button class="layui-btn icon-btn" lay-filter="tableSearch" lay-submit>
+                            <i class="layui-icon">&#xe615;</i>搜索
+                        </button>
+                    </div>
+                    <div class="layui-inline">&emsp;
+                        <button type="reset" class="layui-btn layui-btn-primary icon-btn">
+                            <i class="layui-icon">&#xe669;</i>重置
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <!-- 数据表格 -->
+            <table id="dataTable" lay-filter="dataTable"></table>
+        </div>
+    </div>
+</div>
+
+<!-- 表格操作列 -->
+<script type="text/html" id="tableBar">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" perm-show="sysDictType:edit" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" perm-show="sysDictType:delete" lay-event="delete">删除</a>
+    <a class="layui-btn layui-btn-xs" perm-show="sysDictData:page" lay-event="page">字典</a>
+</script>
+
+<!-- js部分 -->
+<script src="/assets/libs/layui/layui.js"></script>
+<script src="/assets/js/jquery.js"></script>
+<script src="/assets/js/common.js"></script>
+
+<script src="/assets/js/core.util.js"></script>
+<script>
+    layui.use(['layer', 'table', 'tableX', 'notice', 'xnUtil'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var table = layui.table;
+        var tableX = layui.tableX;
+        var admin = layui.admin;
+        var form = layui.form;
+        var notice = layui.notice;
+        var xnUtil = layui.xnUtil;
+
+        // 渲染字典下拉
+        xnUtil.rendDictDropDown(null, 'status', 'sys_normal_disable', '请选择', null);
+
+        /* 渲染表格 */
+        var insTb = tableX.render({
+            elem: '#dataTable',
+            headers: {"Authorization": localStorage.getItem("Authorization")},
+            parseData: function(res){
+                return {
+                    "code": res.code==200?0:res.code, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.total, //解析数据长度
+                    "data": res.rows //解析数据列表
+                };
+            },
+            request: {
+                pageName: 'pageNum', // 页码的参数名称，默认：page
+                limitName: 'pageSize' // 每页数据条数的参数名，默认：limit
+            },
+            url: getProjectUrl() + '/dev-api/system/dict/type/list',
+            page: true,
+            toolbar: ['<p>',
+                '<button lay-event="add" perm-show="sysDictType:add" class="layui-btn layui-btn-sm icon-btn"><i class="layui-icon">&#xe654;</i>添加</button>&nbsp;',
+                '<button lay-event="delete" perm-show="sysDictType:delete" class="layui-btn layui-btn-sm layui-btn-danger icon-btn"><i class="layui-icon">&#xe640;</i>删除</button>',
+                '<button lay-event="export" perm-show="sysDictType:export" class="layui-btn layui-btn-sm icon-btn"><i class="layui-icon">&#xe654;</i>导出</button>&nbsp;',
+                '<button lay-event="refreshCache" perm-show="sysDictType:refreshCache" class="layui-btn layui-btn-sm icon-btn"><i class="layui-icon">&#xe654;</i>刷新缓存</button>&nbsp;',
+                '</p>'].join(''),
+            cellMinWidth: 100,
+            cols: [
+                [
+                    {type: 'checkbox'},
+                    {field: 'id', title: 'id', hide:true, sort: true},
+                    {field: 'dictId', title: '字典编号', sort: true},
+                    {field: 'dictName', title: '字典名称', sort: true},
+                    {field: 'dictType', title: '字典类型', sort: true},
+                    {field: 'status', title: '状态', sort: true, templet: function (d) {  return xnUtil.rendDataTableDict(d.status, 'sys_normal_disable'); } },
+                    {field: 'remark', title: '备注', sort: true},
+                    {field: 'createTime', title: '创建时间', sort: true},
+                    {title: '操作', toolbar: '#tableBar', align: 'center', width: 200, minWidth: 200}
+                ]
+            ],
+            done: function(res, curr, count) {
+                xnUtil.tableDone(insTb, res, curr, count);
+            }
+        });
+
+        /* 表格搜索 */
+        form.on('submit(tableSearch)', function (data) {
+            insTb.reload({where: data.field, page: {curr: 1}});
+            return false;
+        });
+
+        /* 表格工具条点击事件 */
+        table.on('tool(dataTable)', function (obj) {
+            /* 删除 */
+            if (obj.event === 'delete') {
+                layer.confirm('确定要操作该数据吗？', {
+                    skin: 'layui-layer-admin',
+                    shade: .1
+                }, function () {
+                    admin.req(getProjectUrl() + '/dev-api/system/dict/type/'+obj.data.dictId, JSON.stringify([{'id': obj.data.dictId}]), function(res){
+                        layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                            insTb.reload();
+                        });
+                    }, 'delete');
+                });
+            }
+            /* 编辑 */
+            if (obj.event === 'edit') {
+                showAddOrUpdateModel(obj.data);
+            }
+            /* 获取字典 */
+            if (obj.event === 'page') {
+                admin.putTempData('queryDictdictType', obj.data.dictType);
+                window.location.href = getProjectUrl() + '/system/dict/data/index.html';
+            }
+        });
+
+        /* 表格头工具栏点击事件 */
+        table.on('toolbar(dataTable)', function (obj) {
+            if (obj.event === 'add') { // 添加
+                showAddOrUpdateModel();
+            }
+            if (obj.event === 'export') { // 导出
+                downLoadFileBlob(getProjectUrl() + "/dev-api/system/dict/type/export",'导出文件dict.xlsx',)
+            }else
+            if (obj.event === 'refreshCache') { // 刷新缓存
+                CoreUtil.sendDelete("/dev-api/system/dict/type/refreshCache",{},function(res){
+                    layer.msg(res.msg);
+                });
+            }else
+            if (obj.event === 'delete') { // 删除
+                var checkRows = table.checkStatus('dataTable');
+                if (checkRows.data.length === 0) {
+                    notice.msg('请选择要操作的数据', {icon: 2});
+                    return;
+                }
+                layer.confirm('确定要操作该数据吗？', {
+                    skin: 'layui-layer-admin',
+                    shade: .1
+                }, function () {
+                    var ids = checkRows.data.map(function (d) {
+                        return /* {"id": */ d.dictId/* } */;
+                    });
+                    admin.req(getProjectUrl() + '/dev-api/system/dict/type/'+ids, JSON.stringify(ids), function(res){
+                        layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                            insTb.reload();
+                        });
+                    }, 'delete');
+                });
+            }
+        });
+
+        // 显示表单弹窗
+        function showAddOrUpdateModel(data) {
+            var layIndex = admin.open({
+                title: (data ? '修改' : '添加') + '字典类型',
+                url: getProjectUrl() + '/system/dict/form.html',
+                data: { data: data },     // 传递数据到表单页面
+                end: function () {
+                    var layerData = admin.getLayerData(layIndex, 'formOk');
+                    if (layerData) {  // 判断表单操作成功标识
+                        insTb.reload();  // 成功刷新表格
+                    }
+                },
+                success: function (layero, dIndex) {
+                    // 弹窗超出范围不出现滚动条
+                    $(layero).children('.layui-layer-content').css('overflow', 'visible');
+                    $(layero).find('[lay-submit]').focus();
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>

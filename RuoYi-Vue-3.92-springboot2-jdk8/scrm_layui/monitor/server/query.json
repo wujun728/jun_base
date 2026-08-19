@@ -1,0 +1,29 @@
+{
+    "success": true,
+    "code": 200,
+    "message": "请求成功",
+    "data": {
+        "sysOsInfo": {
+            "osName": "Linux",
+            "osArch": "amd64",
+            "osVersion": "3.10.0-1160.31.1.el7.x86_64",
+            "osHostName": "VM-24-16-centos",
+            "osHostAddress": "127.0.0.1"
+        },
+        "sysJavaInfo": {
+            "jvmName": "Java HotSpot(TM) 64-Bit Server VM",
+            "jvmVersion": "25.121-b13",
+            "jvmVendor": "Oracle Corporation",
+            "javaName": "Java(TM) SE Runtime Environment",
+            "javaVersion": "1.8.0_121-b13"
+        },
+        "sysJvmMemInfo": {
+            "jvmMaxMemory": "843 MB",
+            "jvmUsableMemory": "515.88 MB",
+            "jvmTotalMemory": "530.5 MB",
+            "jvmUsedMemory": "327.12 MB",
+            "jvmFreeMemory": "203.38 MB",
+            "jvmMemoryUsedRate": "61.66%"
+        }
+    }
+}

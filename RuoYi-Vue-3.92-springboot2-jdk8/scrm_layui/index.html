@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href="/assets/images/favicon.ico" rel="icon">
+    <title>齐兴会计师事务所信息系统- 首页</title>
+<!--     <link rel="stylesheet" href="/assets/libs/layui/css/layui.css"/>
+    <link rel="stylesheet" href="/assets/module/admin.css"/> -->
+    <link rel="stylesheet" href="/assets/libs/layui/css/layui.css"/>
+    <link rel="stylesheet" href="/assets/module/admin.css">
+ 
+    <!-- <link rel="stylesheet" href="/assets/gougu/css/gougu.css?v=1.0.24" media="all">
+  <link rel="stylesheet" href="/assets/css/custom.form.css" media="all"> -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+		/* .layui-layer-tab .layui-layer-title span.layui-this { height: 51px; border-left-color: #eee; border-right-color: #eee; 
+			background-color: #607D8B; z-index: 10; } */
+
+		.layui-layer-tab .layui-layer-title span.layui-this {
+			height: 51px;
+			border-left-color: #eee;
+			border-right-color: #eee;
+			background-color: #8c8c8c;
+			z-index: 10;
+		}
+	</style>
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <!-- 头部 -->
+    <div class="layui-header">
+        <div class="layui-logo">
+            <img src="/assets/images/logo.png"/>
+            <cite>&nbsp;齐兴会计师事务所</cite>
+        </div>
+        <ul class="layui-nav layui-layout-left"  id="snowy-nav-top-box">
+            <li class="layui-nav-item" lay-unselect>
+                <a ew-event="flexible" title="侧边伸缩"><i class="layui-icon layui-icon-shrink-right"></i></a>
+            </li>
+            <li class="layui-nav-item" lay-unselect>
+                <a ew-event="refresh" title="刷新"><i class="layui-icon layui-icon-refresh-3"></i></a>
+            </li>
+			
+			<!--<li class="layui-nav-item layui-hide-xs" lay-unselect=""><a nav-bind="system">系统应用</a></li>
+			<li class="layui-nav-item layui-hide-xs layui-this" lay-unselect=""><a nav-bind="systool"> 系统工具 </a></li>-->
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item" lay-unselect>
+                <a ew-event="message" title="消息">
+                    <i class="layui-icon layui-icon-notice"></i>
+                    <span class="layui-badge-dot"></span>
+                </a>
+            </li>
+            <li class="layui-nav-item" lay-unselect>
+                <a ew-event="note" title="便签"><i class="layui-icon layui-icon-note"></i></a>
+            </li>
+            <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                <a ew-event="fullScreen" title="全屏"><i class="layui-icon layui-icon-screen-full"></i></a>
+            </li>
+            <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                <a ew-event="lockScreen" title="锁屏"><i class="layui-icon layui-icon-password"></i></a>
+            </li>
+            <li class="layui-nav-item" lay-unselect>
+                <a>
+                    <img src="/assets/images/head.jpg" class="layui-nav-img">
+                    <cite>管理员</cite>
+                </a>
+                <dl class="layui-nav-child">
+                    <dd lay-unselect><a ew-href="page/template/user-info.html">个人中心</a></dd>
+                    <dd lay-unselect><a ew-event="psw"  data-url="page/tpl/tpl-password.html">修改密码</a></dd>
+                    <dd lay-unselect><a ew-href="/helper/helper.html">操作指南<span class="layui-badge-dot"></span></a></dd>
+
+                    <hr>
+                    <dd lay-unselect><a ew-event="logout" data-url="login.html">退出</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item" lay-unselect>
+                <a ew-event="theme" title="主题"><i class="layui-icon layui-icon-more-vertical"></i></a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 侧边栏 -->
+    <div class="layui-side">
+        <div class="layui-side-scroll">
+
+        </div>
+    </div>
+
+    <!-- 主体部分 -->
+    <div class="layui-body"></div>
+    <!-- 底部 -->
+    <!-- <div class="layui-footer layui-text">
+        copyright © 2021 <a href="http:// qixing.hbqxcpa.cn" target="_blank"> qixing.hbqxcpa.cn</a> all rights reserved.
+        <span class="pull-right">Version 1.0.0</span>
+    </div> -->
+</div>
+
+<!-- 加载动画 -->
+<div class="page-loading">
+    <div class="ball-loader">
+        <span></span><span></span><span></span><span></span>
+    </div>
+</div>
+
+<!-- 侧边栏渲染模板 -->
+<script id="sideNav" type="text/html">
+    {{#  layui.each(d, function(index, item){ }}
+    {{# if(index === 0){ }}
+    <ul class="layui-nav layui-nav-tree" lay-shrink="_all" lay-filter="admin-side-nav" nav-id="{{item.icon}}" style="margin: 15px 0;">
+        {{#  layui.each(item.children, function(index, menuItem){  console.log("111"+menuItem);  }}
+        <li class="layui-nav-item">
+            <a lay-href="{{menuItem.component}}"><i class="layui-icon {{menuItem.icon}}"></i>&emsp;<cite>{{ menuItem.menu_name }}</cite></a>
+            {{# if(menuItem.children&&menuItem.children.length>0){ getSubMenus(menuItem.children); } }}
+        </li>
+        {{#  }); }}
+    </ul>
+    {{# } else { }}
+    <ul class="layui-nav layui-nav-tree layui-hide" lay-shrink="_all" lay-filter="admin-side-nav" nav-id="{{item.icon}}" style="margin: 15px 0;">
+        {{#  layui.each(item.children, function(index, menuItem){ }}
+        <li class="layui-nav-item">
+            <a lay-href="{{menuItem.component}}"><i class="layui-icon {{menuItem.icon}}"></i>&emsp;<cite>{{ menuItem.menu_name }}</cite></a>
+            {{# if(menuItem.children&&menuItem.children.length>0){ getSubMenus(menuItem.children); } }}
+        </li>
+        {{#  }); }}
+    </ul>
+    {{# } }}
+    {{#  }); }}
+
+    {{# function getSubMenus(children){ }}
+    <dl class="layui-nav-child">
+        {{# layui.each(children, function(index, subItem){ }}
+        <dd>
+            <a lay-href="{{ subItem.component  }}">{{ subItem.menu_name }}</a>
+            {{# if(subItem.children&&subItem.children.length>0){ getSubMenus(subItem.children); } }}
+        </dd>
+        {{# }); }}
+    </dl>
+    {{# } }}
+</script>
+
+<!-- 顶部系统栏渲染模板 -->
+<script id="topNav" type="text/html">
+    {{#  layui.each(d, function(index, item){ }}
+    {{# if(item.active){ }}
+    <li class="layui-nav-item layui-hide-xs layui-this" lay-unselect><a nav-bind="{{item.icon}}">{{ item.menu_name }}</a></li>
+    {{# } else { }}
+    <li class="layui-nav-item layui-hide-xs" lay-unselect><a nav-bind="{{item.icon}}"> {{item.menu_name}} </a></li>
+    {{# } }}
+    {{#  }); }}
+    <!-- 小屏幕下变为下拉形式 -->
+    <li class="layui-nav-item layui-hide-sm layui-show-xs-inline-block" lay-unselect>
+        <a>更多</a>
+        <dl class="layui-nav-child" id="nav-sm">
+            {{#  layui.each(d, function(index, item){ }}
+            <dd lay-unselect><a nav-bind="{{item.icon}}"> {{item.menu_name}} </a></dd>
+            {{#  }); }}
+        </dl>
+    </li>
+</script>
+ 
+<!-- js部分 -->
+<script src="/assets/libs/layui/layui.js"></script>
+<script src="/assets/js/jquery.js"></script>
+<script src="/assets/js/common.js"></script>
+<script src="/assets/js/core.util.js"></script>
+  
+<!-- <script src="http://qixing.hbqxcpa.cn/js/base64.js"></script>-->
+<script>
+	//var token = CoreUtil.getData("access_token");
+	var token = localStorage.getItem('Authorization');
+    console.log(token);
+	
+    var param = {}
+    //CoreUtil.sendGet("/dev-api/getInfo", param, function (res) { 
+    //     console.log(res); 
+    //}); 
+    //'admin',
+    layui.use(['layer', 'element',  'admin','index', 'laytpl', 'element', 'notice','xnUtil' ], function () {
+        var $ = layui.jquery;
+        var admin = layui.admin;
+        var index = layui.index;
+        var laytpl = layui.laytpl;
+        var element = layui.element;
+        var xnUtil = layui.xnUtil;
+
+        //缓存字典
+        xnUtil.cacheDictData();
+        //getSelectDict("sys_oper_type");
+        //debugger;
+        //getSelectDict("sys_common_status");
+
+        // ajax渲染侧边栏
+        // admin.req(getProjectUrl() + 'getLoginUser', function(res){
+        /**getProjectUrl() +**/ 
+        CoreUtil.sendGet("/dev-api/qixing/getRouters", param, function (res) { 
+            //将用户信息缓存到本地
+            layui.data(admin.setter.tableName, {key: 'loginUser', value: res.data});
+            
+            var curtheme = layui.data(admin.setter.tableName)['defaultTheme'];
+            if(curtheme){
+                admin.changeTheme(curtheme);
+            }else{
+                admin.changeTheme('theme-snowy');
+            }
+
+            //渲染顶部系统栏
+            laytpl(topNav.innerHTML).render(res.data.apps, function (html1) {
+                $('#snowy-nav-top-box').append(html1);
+            });
+
+            //渲染左侧菜单
+            laytpl(sideNav.innerHTML).render(res.data.menus, function (html2) {
+                //console.log("1111-"+html2); 
+                $('.layui-side-scroll').html(html2);
+                element.render('nav');
+                // 加载页面
+                // 默认加载主页
+                index.loadHome({
+                    menuPath: getProjectUrl() + '/home/index/main.html',
+                    menuName: '<i class="layui-icon layui-icon-home"></i>',
+                    // 刷新后默认打开上次的页签
+                    loadSetting: true,
+                    // 并且只打开最后一个页签
+                    onlyLast: true
+
+                    //menuPath: 'page/console/workplace.html',
+                    //menuName: '<i class="layui-icon layui-icon-home"></i>'
+                });
+            });
+        });
+        CoreUtil.sendGet("/dev-api/getInfo", param, function (res) { 
+            //将用户信息缓存到本地
+            layui.data(admin.setter.tableName, {key: 'loginUser', value: res});
+            CoreUtil.setData("userProfile",res.user);
+            var userProfile = CoreUtil.getData("userProfile");
+            console.log("nickName:"+userProfile.nickName);
+            console.log("userName:"+userProfile.userName);
+            console.log("userId:"+userProfile.userId);
+        });
+    });
+</script>
+</body>
+</html>

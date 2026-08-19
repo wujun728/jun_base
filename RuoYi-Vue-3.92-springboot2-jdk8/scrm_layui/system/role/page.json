@@ -1,0 +1,48 @@
+{
+    "code": 0,
+    "msg": "请求成功",
+    "page": 1,
+    "limit": 10,
+    "count": 3,
+    "data": [
+        {
+            "createTime": "2020-04-02 19:27:26",
+            "createUser": "1265476890672672808",
+            "updateTime": "2020-09-12 15:54:07",
+            "updateUser": "1265476890672672808",
+            "id": "1265476890672672817",
+            "name": "组织架构管理员",
+            "code": "ent_manager_role",
+            "sort": 100,
+            "dataScopeType": 1,
+            "remark": "组织架构管理员",
+            "status": 0
+        },
+        {
+            "createTime": "2020-04-02 19:28:40",
+            "createUser": "1265476890672672808",
+            "updateTime": "2020-07-16 10:52:21",
+            "updateUser": "1265476890672672808",
+            "id": "1265476890672672818",
+            "name": "权限管理员",
+            "code": "auth_role",
+            "sort": 101,
+            "dataScopeType": 5,
+            "remark": "权限管理员",
+            "status": 0
+        },
+        {
+            "createTime": "2020-05-29 15:48:11",
+            "createUser": "1265476890672672808",
+            "updateTime": "2020-08-08 19:28:34",
+            "updateUser": "1265476890672672808",
+            "id": "1265476890672672819",
+            "name": "公告发布员",
+            "code": "notice_produce_role",
+            "sort": 102,
+            "dataScopeType": 5,
+            "remark": "公告发布员",
+            "status": 0
+        }
+    ]
+}

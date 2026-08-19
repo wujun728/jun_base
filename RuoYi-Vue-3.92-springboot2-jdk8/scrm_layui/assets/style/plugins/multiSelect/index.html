@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>下拉框多选</title>
+	<link rel="stylesheet" type="text/css" href="css/multiSelect.css">
+	<style type="text/css">
+		*{
+			margin:0 auto;
+			padding:0px;
+		}
+		body{
+			margin:0 auto;
+		}
+		.content{
+			width:60%;
+			margin-top: 200px;
+			border:1px solid #DDD;
+			padding:40px;
+		}
+
+	</style>
+
+</head>
+<body>
+	<div class="content">
+		<label>角色：</label>
+		<select id="roleid" class="multi_select">
+			<option value="1">管理员</option>
+			<option value="2">操作员</option>
+			<option value="3">业务员</option>
+		</select>
+		<br><br>
+		<br><br>
+		<label>用户：</label>
+		<select id="roleid2" class="multi_select">
+			<option value="张三">张三</option>
+			<option value="李思">李思</option>
+		</select>
+		
+		<br><br>
+		<br><br>
+		<label>用户：</label>
+		<select id="roleid3" class="multi_select">
+			<option value="张三1">张三</option>
+			<option value="李思2">李思</option>
+			<option value="王五3">王五</option>
+			<option value="赵六4">赵六</option>
+			<option value="钱七5">钱七</option>
+		</select>
+		<br></br>
+		<button type="button" style="padding:5px 10px;margin-left: 55px;" onclick="getVal()">确定</button>
+	</div>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="multiSelect.js"></script>
+	<script type="text/javascript">
+		$("#roleid").multiSelect({
+			placeholder:'请选择角色', // 可省略
+			style:{  // 可省略
+				width:'40%',
+				height:'28px',
+				border: '1px solid red'
+			},
+			onload:function(data){
+				console.log(data);
+			},
+		});
+		$("#roleid2").multiSelect({
+			label: '选择用户',  // 可省略
+			placeholder:'请选择...', // 可省略
+			style:{  // 可省略
+				width:'50%',
+				height:'28px',
+				border: '1px solid #1fb5ac'
+			},
+			onload:function(data){
+				console.log(data);
+			},
+		});
+		
+		var data = [
+			{
+				name:'张三',
+				value:'3'
+			},
+			{
+				name:'李四',
+				value:'4'
+			}
+		];
+		var selected = [
+			{
+				name:'张三1',
+				value:'张三1'
+			},
+		];
+		
+		$("#roleid3").multiSelect({
+			label: '选择用户',  // 可省略
+			placeholder:'请选择...', // 可省略
+			style:{  // 可省略
+				width:'50%',
+				height:'40px',
+				lineHeight:'40px',
+				border: '1px solid #1fb5ac'
+			},
+			selected:selected,
+			// data:data,
+			onload:function(data){
+				console.log(data);
+			},
+			onchange:function(data){
+				console.log(data);
+			},
+			onclick:function(data){
+				console.log(data);
+			}
+		});
+		function getVal(){
+			var val=$("#roleid3").multiVal();
+			var text=$("#roleid3").multiText();
+			
+			alert(val+","+text);
+		}
+		
+	</script>
+</body>
+</html>

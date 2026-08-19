@@ -1,0 +1,134 @@
+*{
+	margin:0 auto;
+	padding:0px;
+}
+.multi_select{
+	display: none;
+}
+.mt_select_container{
+	border:1px solid #e6e6e6;
+	font-size: 14px;
+	display: inline-block;
+	padding-left: 4px;
+	padding-right: 4px;
+	width: 99%;
+	background:#FFF;
+	position: relative;
+	vertical-align:middle;
+	border-radius:2px; 
+}
+.mt_select_ful{
+	width: 100%;
+	height: 100%;
+	cursor: text;
+	display: inline-block;
+}
+.mt_select_ul{
+	list-style-type: none;
+	height: 100%;
+	display: inline-block;
+}
+.mt_select_ul li{
+	float:left;
+	height: 26px;
+	line-height: 26px;
+	margin-right: 4px;
+	background: #EFEFEF;
+	padding-left:5px;
+	padding-right: 5px;
+	margin-top: 4px;
+}
+.mt_select_active .mt_select_input{
+	border:none !important;
+	height: 100%;
+	outline: none;
+	font-size: 15px;
+	font-family: sans-serif;
+	padding-left:0px;
+	width:100%;
+	margin-top: -4px !important;
+}
+.mt_select_ul li a{
+	display: block;
+    width: 12px;
+    height: 13px;
+    position: absolute;
+    margin-top:6px;
+    outline: none;
+	background:url("../images/select.png") right top no-repeat;
+}
+.mt_select_ul li label{
+	margin-left:13px !important;
+	display: inline;
+    width: auto;
+    text-align: left;
+    color: #333;
+    padding-left:1px;
+    padding-right:2px;
+    font-weight: normal;
+}
+.mt_option_ul li label{
+	display: inline;
+    width: auto;
+    text-align: left;
+    color: #333;
+    padding:0px;
+}
+.mt_select_ul .mt_select_active{
+	background: none !important;
+}
+
+.mt_option_container{
+	width:100%;
+	display: none;
+	position: absolute;
+	background:#FFF;
+	border: 1px solid #e6e6e6;
+	border-top:none;
+	margin-left: -5px;
+	margin-top:-1px;
+	z-index: 9999;
+	padding-bottom: 4px;
+}
+.mt_option_container .mt_option_ul{
+	list-style-type: none;
+	width:100%;
+}
+.mt_option_container .mt_option_ul li{
+	height: 28px;
+	line-height: 28px;
+	width:100%;
+}
+.mt_option_container .mt_option_ul li label{
+	padding-left:10px;
+	font-weight: normal;
+}
+.mt_option_container .mt_option_ul .mt_option_li_label{
+	padding-left:4px;
+	font-weight: normal;
+}
+.mt_option_container .mt_option_ul li:hover{
+	background:#00aef3;
+	color:#FFF;
+	cursor: pointer;
+	font-weight: normal;
+}
+.mt_option_container .mt_option_ul li:hover>label{
+	color:#FFF;
+	font-weight: normal;
+}
+.mt_option_container .mt_option_ul .mt_option_li_label:hover{
+	background:none;
+	color:#333;
+	cursor:auto;
+	font-weight: normal;
+}
+.no_match_label{
+	margin-left: 5px !important;
+	width: 100%;
+	display: inline-block;
+}
+.mt_option_val,.mt_option_li_label{
+	width: 100% !important;
+	float: none !important;
+}

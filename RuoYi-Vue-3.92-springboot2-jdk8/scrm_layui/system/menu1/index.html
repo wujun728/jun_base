@@ -1,0 +1,247 @@
+<html lang="zh" >
+<head>
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="keywords" content="">
+	<meta name="description" content="">
+	<title text="菜单管理"></title>
+	<link rel="shortcut icon" th:href="/favicon.ico">
+    <link rel="stylesheet" href="/assets/libs/layui/css/layui.css"/>
+    <link rel="stylesheet" href="/assets/module/admin.css">
+    <link rel="stylesheet" href="/assets/css/common.css">
+    <link rel="stylesheet" href="/assets/gougu/css/gougu.css">
+</head>
+<body>
+<div class="layui-layout layui-layout-iframe">
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <!--search form-->
+            <form class="layui-form toolbar" id="searchForm">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">菜单名称</label>
+                        <div class="layui-input-inline">
+                            <input class="layui-input" type="text" name="menuName" placeholder="" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">菜单状态</label>
+                        <div class="layui-input-inline input-sm">
+                            <select name="visible" th:with="type=${@dict.getType('sys_show_hide')}">
+                                <option value="">所有</option>
+                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button  type="button" class="layui-btn layuiadmin-btn-list" data-type="reload" lay-submit lay-filter="form-search" id="form-search"><i class="layui-icon">&#xe615;</i>搜索</button>
+                    </div>
+                </div>
+            </form>
+            <!--table actcion-->
+            <div class="layui-card-body">
+                <script type="text/html" id="table_menu_toolbar">
+                    <div class="layui-table-tool-temp">
+                        <button class="layui-btn layui-btn-sm" lay-event="toolbar-menu-add" perm-show="system:dept:add"><i class="layui-icon">&#xe654;</i>新增</button>
+                        <button class="layui-btn layui-btn-sm" lay-event="toolbar-menu-expand" data-value="expand">折叠/展开</button>
+                    </div>
+                </script>
+                <table id="table_menu" lay-filter="table_menu"></table>
+                <script type="text/html" id="col_operation">
+                    <a perm-show="system:dept:add"  href="javascript:;" lay-event="addChild">新增</a><span class="splitor">|</span>
+                    <a perm-show="system:dept:edit"  href="javascript:;" lay-event="edit">编辑</a><span class="splitor">|</span>
+                    <a perm-show="system:dept:remove" href="javascript:;" lay-event="del">删除</a>
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- js部分 -->
+<script src="/assets/libs/layui/layui.js"></script>
+<script src="/assets/js/common.js"></script>
+
+<script src="/assets/js/core.util.js"></script>
+<script lang="javascript"> var ctx = "/dev-api/"; </script>
+<script lang="javascript">
+    var editFlag = true;//[[${@permission.hasPermi('system:user:edit')}]];
+    var removeFlag = true;// [[${@permission.hasPermi('system:user:remove')}]];
+    var prefix = ctx + "system/menu";
+</script>
+<!-- <th:block th:include="include :: footer"/>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('system:menu:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('system:menu:remove')}]];
+    var prefix = ctx + "system/menu";
+</script> -->
+<script>
+    layui.use(['common', 'treeTable'], function () {
+        var $ = layui.jquery,
+            layer = layui.layer,
+            form = layui.form,
+            common = layui.common,
+            table = layui.treeTable;
+        //页面事件列表
+        var active = {
+            reload: function () {
+                search();
+            },
+            remove: function (ids) {
+                common.ajaxRemove(prefix + "/remove/" + ids, "", function (res) {
+                    if(res.code==0){
+                        active['reload'].call(this);
+                    }else{
+                        layer.alert(res.msg);
+                    }
+                });
+            }
+        };
+        //查询表单
+        form.on('submit(form-search)', function (data) {
+            search();
+        });
+        //表格初始化
+        $('.layui-fluid').css('height',$('body').height()+'px');
+        $('.layui-card').css('height','inherit');
+        table.render({
+            id: 'table_menu'
+            , elem: '#table_menu'
+            , height: $('.layui-card').height()-$('.search-form').outerHeight()
+            , url: prefix + "/listTreeGridData" //数据接口
+            , toolbar: '#table_menu_toolbar'
+            , icon_key: 'menuName'// 必须
+            , top_value: 0
+            , idField: 'menuId'
+            , treeId: 'menuId'
+            , treeUpId: 'parentId'
+            , treeShowName: 'menuName'//以树形式显示的字段
+            , heightRemove: [".dHead", 10]//不计算的高度,表格设定的是固定高度，此项不生效
+            , isFilter: false
+            , iconOpen: false
+            , isOpenDefault: true
+            , loading: true
+            , method: 'get'
+            , isPage: false
+            ,parseData: function(res){
+                return {
+                    "code": res.code==200?0:res.code, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.total, //解析数据长度
+                    "data": res.rows //解析数据列表
+                };
+            }
+            ,done: function () {
+                //treetable 头部工具栏
+                bindTableToolbar();
+            }
+            , cols: new Array([
+                {
+                    field: 'menuName', title: '名称', width: 300, templet: function (item) {
+                        if (item.icon) {
+                            return '<i class="' + item.icon + '"></i><span>' + item.menuName + '</span>';
+                        } else {
+                            return item.menuName;
+                        }
+                    }
+                }
+                , {field: 'orderNum', title: '排序', width: 80}
+                , {field: 'url', title: '请求地址'}
+                , {
+                    field: 'menuType', title: '类型', align: 'center', width: 80,
+                    templet: function (item) {
+                        if (item.menuType === "M") {
+                            return "<span class=\"layui-btn layui-btn-xs layui-btn-radius\">目录</span>";
+                        } else if (item.menuType === "C") {
+                            return "<span class=\"layui-btn layui-btn-xs layui-btn-normal layui-btn-radius\">菜单</span>";
+                        } else if (item.menuType === "F") {
+                            return "<span class=\"layui-btn layui-btn-xs layui-btn-warm layui-btn-radius\">按钮</span>";
+                        } else {
+                            return "<span class=\"layui-btn layui-btn-xs layui-btn-danger layui-btn-radius\">未知</span>";
+                        }
+                    }
+                }
+                , {
+                    field: 'visible', title: '可见', align: 'center', width: 80,
+                    templet: function (item) {
+                        if (item.visible === "0") {
+                            return "<span class=\"layui-btn layui-btn-xs layui-btn-radius\">显示</span>";
+                        } else {
+                            return "<span class=\"layui-btn layui-btn-xs layui-btn-danger layui-btn-radius\">隐藏</span>";
+                        }
+                    }
+                }
+                , {field: 'perms', title: '权限标识', width: 200}
+                , {title: '操作', align: 'center', width: 150, toolbar: '#col_operation'}
+            ])
+        });
+        //表格事件
+        table.on('tool(table_menu)', function (obj) {
+            switch (obj.event) {
+                case 'addChild':
+                    showSaveDialog('新增菜单', prefix + '/add/' + obj.data.menuId, 'btn-add');
+                    break;
+                case 'edit':
+         //CoreUtil.setData("biz_rowdata",data);
+         //tool.side("/qixing_oa/pjcontract/edit.html?types="+obj.id);
+                    showSaveDialog('修改菜单', prefix + '/edit/' + obj.data.menuId, 'btn-edit');
+                    break;
+                case 'del':
+                    active['remove'].call(this, obj.data.menuId);
+                    break;
+            }
+        });
+    });
+    //表格头部工具栏
+    function bindTableToolbar() {
+        $("[lay-event=toolbar-menu-add]").unbind('click').bind('click', function () {
+            showSaveDialog('新增菜单', prefix + '/add/0', 'btn-add');
+        });
+        $("[lay-event=toolbar-menu-expand]").unbind('click').bind('click', function () {
+            var dataValue = $.trim($(this).attr('data-value'));
+            if (dataValue == 'expand') {
+                layui.treeTable.treeOpenAll('table_menu', false);
+                $(this).attr('data-value', 'eclipse');
+            } else {
+                layui.treeTable.treeOpenAll('table_menu', true);
+                $(this).attr('data-value', 'expand');
+            }
+        });
+    }
+    //展示保存表单弹出层
+    function showSaveDialog(title, url, formSubmitBtnId) {
+        layer.open({
+            type: 2,
+            title: title,
+            shade: false,
+            fixed: false,
+            area: ['800px', '600px'],
+            content: url,
+            btn: ["保存", "取消"],
+            yes: function (index, layero) {
+                var submitID = formSubmitBtnId;//表单提交按钮id
+                var submit = layero.find('iframe').contents().find('#' + submitID);//button obj
+                layero.find('iframe')[0].contentWindow.successCallback = function () {
+                    parent.layer.closeAll();
+                    parent.layer.alert('保存成功',function(){
+                        parent.search(); //刷新表格数据
+                    });
+
+                };
+                submit.trigger('click');
+            }
+            , cancel: function (index, layero) {
+                layui.layer.close(index);
+                return false;
+            }
+        });
+    }
+
+    //表格查询
+    function search() {
+        var field = serializeJson($('#searchForm'));
+        var options = {where: field};
+        layui.treeTable.reload('table_menu', options);
+    }
+</script>
+</body>
+</html>

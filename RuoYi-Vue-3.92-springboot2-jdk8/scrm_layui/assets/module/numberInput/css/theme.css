@@ -1,0 +1,66 @@
+.number-input-container {
+  overflow: hidden;
+  display: inline-block;
+}
+.number-input-container .number-input-subtract,
+.number-input-container .number-input-add,
+.number-input-container .layui-input {
+  position: relative;
+  z-index: 0;
+  float: left;
+  user-select: none;
+  -ms-user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  background-color: #ffffff;
+}
+.number-input-container .number-input-subtract,
+.number-input-container .number-input-add {
+  cursor: pointer;
+  height: 36px;
+  line-height: 38px;
+  width: 38px;
+  border-radius: 2px;
+  text-align: center;
+  border: 1px solid #f6f6f6;
+  transition: 0.2s;
+  background-color: rgb(255 255 255 / 0%);
+}
+.number-input-container .number-input-subtract:hover,
+.number-input-container .number-input-add:hover {
+  background-color: #f2f2f2;
+}
+.number-input-container .number-input-subtract {
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+.number-input-container .number-input-add {
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  margin-left: -1px;
+}
+.number-input-container .layui-input {
+  z-index: 1;
+  float: left;
+  border-radius: 0px;
+  padding-left: 0;
+  text-align: center;
+  margin-left: -1px;
+}
+.number-input-container .layui-input::-webkit-inner-spin-button,
+.number-input-container .layui-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+@media screen and (max-width: 678px) {
+  .media-screen-container .media-screen-subtract,
+  .media-screen-container .media-screen-add {
+    height: 30px;
+    line-height: 30px;
+  }
+  .media-screen-container .media-screen-input {
+    height: 32px;
+    line-height: 32px;
+    width: 60px !important;
+  }
+}
+/*# sourceMappingURL=theme.css.map */

@@ -1,0 +1,69 @@
+{
+    "code": 0,
+    "msg": "请求成功",
+    "page": 1,
+    "limit": 10,
+    "count": 3,
+    "data": [
+        {
+            "id": "1275735541155614721",
+            "account": "yubaoshan",
+            "nickName": "Await",
+            "name": "俞宝山",
+            "avatar": null,
+            "birthday": "1992-10-03",
+            "sex": 1,
+            "email": "await183@qq.com",
+            "phone": "18200001102",
+            "tel": "1234567891",
+            "sysEmpInfo": {
+                "jobNum": "",
+                "orgId": "1265476890672672769",
+                "orgName": "华夏集团北京分公司",
+                "extOrgPos": null,
+                "positions": null
+            },
+            "status": 0
+        },
+        {
+            "id": "1280700700074041345",
+            "account": "dongxiayu",
+            "nickName": "阿董",
+            "name": "董夏雨",
+            "avatar": null,
+            "birthday": "2020-07-01",
+            "sex": 1,
+            "email": "369428339@qq.com",
+            "phone": "18200001103",
+            "tel": "1234567892",
+            "sysEmpInfo": {
+                "jobNum": "",
+                "orgId": "1265476890672672771",
+                "orgName": "研发部",
+                "extOrgPos": null,
+                "positions": null
+            },
+            "status": 0
+        },
+        {
+            "id": "1280709549107552257",
+            "account": "xuyuxiang",
+            "nickName": "就是那个锅",
+            "name": "徐玉祥",
+            "avatar": null,
+            "birthday": "2020-07-01",
+            "sex": 1,
+            "email": "xuyuxiang29@foxmail.com",
+            "phone": "18200001100",
+            "tel": "1234567893",
+            "sysEmpInfo": {
+                "jobNum": "100",
+                "orgId": "1265476890672672770",
+                "orgName": "华夏集团成都分公司",
+                "extOrgPos": null,
+                "positions": null
+            },
+            "status": 0
+        }
+    ]
+}

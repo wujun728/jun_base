@@ -1,0 +1,22 @@
+{
+    "success": true,
+    "code": 200,
+    "message": "请求成功",
+    "data": [
+        {
+            "id": "1265476890672672817",
+            "code": "ent_manager_role",
+            "name": "组织架构管理员"
+        },
+        {
+            "id": "1265476890672672818",
+            "code": "auth_role",
+            "name": "权限管理员"
+        },
+        {
+            "id": "1265476890672672819",
+            "code": "notice_produce_role",
+            "name": "公告发布员"
+        }
+    ]
+}

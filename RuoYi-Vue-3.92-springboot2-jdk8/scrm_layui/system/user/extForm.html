@@ -1,0 +1,106 @@
+<!-- 注意这里不需要写`<html><body>`这些东西，它是一个html片段，不是完整的html页面 -->
+<form id="extForm" lay-filter="extForm" class="layui-form model-form">
+    <div class="layui-form-item">
+        <label class="layui-form-label layui-form-required">附属机构</label>
+        <div class="layui-input-block">
+            <div id="extOrgSelectBox" class="ew-xmselect-tree"></div>
+        </div>
+    </div>
+    <div class="layui-col-md12">
+        <div class="layui-form-item">
+            <label class="layui-form-label layui-form-required">附属职位</label>
+            <div class="layui-input-block">
+                <div id="extPosSelectBox"></div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item text-right">
+        <button class="layui-btn layui-btn-primary" type="button" ew-event="closeDialog">取消</button>
+        <button class="layui-btn" lay-filter="extFormSubmitBtn" lay-submit>保存</button>
+    </div>
+</form>
+
+<script>
+    layui.use(['layer', 'form', 'admin', 'xnUtil', 'xmSelect'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var admin = layui.admin;
+        var xnUtil = layui.xnUtil;
+        var xmSelect = layui.xmSelect;
+
+        var editData = admin.getLayerData('#extForm').data;
+
+        var extOrgTreeRenderIns = {};
+        // admin.req(getProjectUrl() + 'sysOrg/tree', function(res){
+        admin.req( 'tree.json', function(res){
+            // 渲染下拉树
+            extOrgTreeRenderIns = xmSelect.render({
+                el: '#extOrgSelectBox',
+                name: 'orgId',
+                height: '250px',
+                layVerify: 'required',
+                layVerType: 'tips',
+                data: res.data,
+                initValue: editData ? [editData.orgId] : [],
+                model: {label: {type: 'text'}},
+                prop: {
+                    name: 'title',
+                    value: 'id'
+                },
+                radio: true,
+                clickClose: true,
+                tree: {
+                    show: true,
+                    indent: 15,
+                    strict: false,
+                    expandedKeys: true
+                },
+                tips: '请选择附属机构'
+            });
+        }, {async: false});
+
+        // 渲染远程数据下拉
+        var extPosDataRenderIns = {};
+        // admin.req(getProjectUrl() + 'sysPos/list', function(res){
+        admin.req(  'sysPosList.json', function(res){
+            extPosDataRenderIns = xmSelect.render({
+                el: '#extPosSelectBox',
+                name: 'posId',
+                data: res.data,
+                layVerify: 'required',
+                layVerType: 'tips',
+                radio: true,
+                clickClose: true,
+                model: { icon:'hidden', label: { type: 'text' }},
+                prop: {
+                    name: 'name',
+                    value: 'id'
+                },
+                tips: '请选择附属职位'
+            });
+        }, {async: false});
+
+        if(editData !== null && editData !== undefined) {
+            form.val('extForm', editData);
+            extPosDataRenderIns.setValue([editData.posId]);
+        }
+
+        // 表单提交事件
+        form.on('submit(extFormSubmitBtn)', function () {
+            var resultData = {};
+            var selectExtOrgData = extOrgTreeRenderIns.getValue();
+            var selectExtPosData = extPosDataRenderIns.getValue();
+            resultData.posId = selectExtPosData[0].id;
+            resultData.posCode = selectExtPosData[0].code;
+            resultData.posName = selectExtPosData[0].name;
+            resultData.orgId = selectExtOrgData[0].id;
+            resultData.orgName = selectExtOrgData[0].title;
+            admin.putLayerData('formOk', true, '#extForm');
+            admin.putLayerData('resultData', resultData, '#extForm');
+            admin.closeDialog('#extForm');
+            return false;
+        });
+
+    });
+</script>

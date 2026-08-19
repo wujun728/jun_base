@@ -1,0 +1,67 @@
+<!-- 注意这里不需要写`<html><body>`这些东西，它是一个html片段，不是完整的html页面 -->
+<!--此页面为授权菜单树样式的页面，如果喜欢此方式授权菜单，可将原grantMenu.html重命名为grantMenu_bak.html,
+将此文件重命名为grantMenu.html，maven clean并重启项目-->
+<form id="grantMenuForm" lay-filter="grantMenuForm" class="layui-form model-form">
+    <input name="id" type="hidden"/>
+    <div class="layui-form-item">
+        <label class="layui-form-label">菜单选择</label>
+        <div class="layui-input-block">
+            <ul id="menuTree" class="ztree"></ul>
+        </div>
+    </div>
+    <div class="layui-form-item text-right">
+        <button class="layui-btn layui-btn-primary" type="button" ew-event="closeDialog">取消</button>
+        <button class="layui-btn" lay-filter="formSubmitBtn" lay-submit>保存</button>
+    </div>
+</form>
+
+<script>
+    layui.use(['layer', 'form', 'admin', 'xnUtil', 'zTree', 'xnUtil'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var admin = layui.admin;
+        var xnUtil = layui.xnUtil;
+
+        var grantData = admin.getLayerData('#grantMenuForm').data;
+        form.val('grantMenuForm', grantData);
+
+        // 获取菜单树
+        admin.req(getProjectUrl() + 'sysMenu/treeForGrant', function(res){
+            // 渲染树
+            var zTree = $.fn.zTree.init($('#menuTree'), {
+                check: {enable: true, chkboxType: {"Y": "s", "N": "s" }},
+                data: {
+                    key: {name: 'title'},
+                    simpleData: {enable: true, rootPId: 0}
+                }
+            }, xnUtil.handleNoChildrenZtreeData(res.data));
+
+            // 获取已授权的菜单id集合
+            admin.req(getProjectUrl() + 'sysRole/ownMenu?id=' + grantData.id, function(res){
+                // 设置默认选择
+                res.data.forEach(function (value) {
+                    zTree.checkNode(zTree.getNodeByParam( "id", value), true);
+                })
+            });
+        });
+
+        // 表单提交事件
+        form.on('submit(formSubmitBtn)', function (data) {
+            layer.load(2);
+            var grantMenuIdList = [];
+            var url = getProjectUrl() + 'sysRole/grantMenu';
+            $.fn.zTree.getZTreeObj("menuTree").getCheckedNodes(true).forEach(function (value) {
+               grantMenuIdList.push(value.id);
+            });
+            data.field.grantMenuIdList = grantMenuIdList;
+            admin.req(url, JSON.stringify(data.field), function(res){
+                layer.msg(res.message, {icon: 1, time: 1000}, function () {
+                    admin.putLayerData('formOk', true, '#grantMenuForm');
+                    admin.closeDialog('#grantMenuForm');
+                });
+            }, 'post');
+            return false;
+        });
+    });
+</script>

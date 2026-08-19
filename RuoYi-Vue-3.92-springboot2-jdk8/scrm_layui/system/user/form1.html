@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<!-- <html lang="zh" xmlns:th="http://www.thymeleaf.org" > -->
+<head>
+    <head>
+        <!-- <th:block th:include="include :: header('用户新增')" /> -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="keywords" content="">
+        <meta name="description" content="">
+        <title text="用户管理-新增"></title>
+        <link rel="shortcut icon" th:href="/favicon.ico">
+        <link rel="stylesheet" href="/assets/libs/layui/css/layui.css"/>
+        <link rel="stylesheet" href="/assets/module/admin.css">
+        <link rel="stylesheet" href="/assets/css/common.css">
+        <!-- <th:block th:include="include :: header('用户新增')" /> -->
+        <style>
+            .deptName{
+                max-height: 200px;
+                width: 92%;
+                display: none;
+                position: absolute;
+                top:100%;
+                z-index: 100;
+                border-top: none;
+            }
+        </style>
+    </head>
+</head>
+<body>
+<div class="container">
+    <form class="layui-form mt20" id="form-user-add" lay-filter="form-user">
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span class="required-msg ">*</span>登录账号：</label>
+            <div class="layui-input-block">
+                <input class="layui-input min-input" type="text" name="loginName" lay-verify="required|username" lay-verType="tips" placeholder="请输入登录账号">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span class="required-msg ">*</span>登录密码：</label>
+            <div class="layui-input-block">
+                <input class="layui-input min-input" type="password" name="password" id="password" lay-verify="required|pass" lay-verType="tips" placeholder="请输入登录密码">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span class="required-msg ">*</span>用户名称：</label>
+            <div class="layui-input-block">
+                <input class="layui-input min-input" type="text" name="userName" id="userName" lay-verify="required" lay-verType="tips" placeholder="请输入用户名称">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span class="required-msg ">*</span>归属部门：</label>
+            <div class="layui-input-block">
+                <!-- <input name="deptId" type="hidden">
+                <input class="layui-input min-input readonly" type="text" name="deptName" lay-verify="required" lay-verType="tips" readonly autocomplete="off"  placeholder="请选择归属部门">
+                <div class="eleTree deptName" lay-filter="deptNameTree"></div> -->
+                <div id="orgSelectBox" class="ew-xmselect-tree"></div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span class="required-msg ">*</span>手机号码：</label>
+            <div class="layui-input-block">
+                <input class="layui-input min-input" type="text" name="phonenumber" id="phonenumber" lay-verify="required|phone" lay-verType="tips" placeholder="请输入手机号码">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span class="required-msg ">*</span>邮箱：</label>
+            <div class="layui-input-block">
+                <input class="layui-input min-input" type="text" name="email" id="email" lay-verify="required|email" lay-verType="tips" placeholder="请输入邮箱">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">性别：</label>
+            <div class="layui-input-block min-select">
+                <!-- <select class="min-input" name="sex" lay-verify="required" th:with="type=${@dict.getType('sys_user_sex')}">
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                </select> -->
+                <div id="sexBox"></div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户状态：</label>
+            <div class="layui-input-block">
+                <div class="onoffswitch">
+                    <!-- <input type="checkbox" th:checked="true" id="status" name="status" lay-skin="switch"> -->
+                    <input type="radio"  name="status" value="0" title="正常" checked="true" />
+                    <input type="radio"  name="status" value="1" title="停用"  />
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">岗位：</label>
+            <div class="layui-input-block">
+                <!-- <th:block th:each="post,inte:${posts}" class="check-box">
+                    <input th:name="'post['+${inte.index}+']'" type="checkbox" lay-skin="primary"  th:value="${post.postId}" th:title="${post.postName}">
+                </th:block> -->
+                <div id="posIdListBox"></div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">角色：</label>
+            <div class="layui-input-block">
+                <!-- <th:block th:each="role,inte:${roles}" class="check-box">
+                    <input th:name="'role['+${inte.index}+']'" type="checkbox" lay-skin="primary"  th:value="${role.roleId}" th:title="${role.roleName}" />
+                </th:block> -->
+                <div id="roleListBox"></div>
+            </div>
+        </div>
+        <div class="layui-col-md12" style="margin-bottom: 20px;">
+            <div class="layui-form-item text-right">
+                <button class="layui-btn layui-btn-primary" type="button" ew-event="closeDialog">取消</button>
+                <button class="layui-btn" lay-filter="formSubmitBtn" lay-submit>保存</button>
+            </div>
+        </div>
+
+    </form>
+</div>
+<!-- <th:block th:include="include :: footer" /> -->
+  <!-- js部分 -->
+<!-- <script src="/assets/libs/layui/layui.js"></script>
+<script src="/assets/js/common.js"></script>
+ -->
+<script src="/assets/js/jquery.js"></script>
+<script src="/assets/js/core.util.js"></script>
+<script lang="javascript"> 
+    var ctx = "/dev-api/"; 
+    var successCallback = function () {};
+var el5;
+var Authorization = localStorage.getItem("Authorization");
+console.log(Authorization);
+layui.use(['eleTree', 'common' , 'xnUtil', 'xmSelect', 'laydate','admin'], function () {
+    var $ = layui.$
+        , form = layui.form
+        , eleTree = layui.eleTree
+        , common = layui.common;
+        var xnUtil = layui.xnUtil;
+        var xmSelect = layui.xmSelect;
+        var laydate = layui.laydate;
+        var editData = admin.getLayerData('#addOrUpdateForm').data;
+        
+    //部门树
+    $("[name='deptName']").on("click", function (e) {
+        e.stopPropagation();
+        if (!el5) {
+            el5 = eleTree.render({
+                elem: '.deptName',
+                url: ctx + "system/dept/treeData2",
+                request: {
+                    name: "name",
+                    key: "id",
+                    children: "children",
+                    checked: "checked",
+                    disabled: "disabled",
+                    isLeaf: "isLeaf"
+                },
+                response: {
+                    statusName: "code",
+                    statusCode: 0,
+                    dataName: "data"
+                },
+                defaultExpandAll: true,
+                expandOnClickNode: false,
+                highlightCurrent: true
+            });
+            $(".eleTree").css("position", "absolute");
+        }
+        $(".deptName").toggle();
+    });
+    eleTree.on("nodeClick(deptNameTree)", function (d) {
+        $("[name='deptName']").val(d.data.currentData.name);
+        $("[name='deptId']").val(d.data.currentData.id);
+        $(".deptName").hide();
+    });
+
+    // 渲染字典下拉
+    CoreUtil.sendGet('/dev-api/system/dict/data/type/'+"sys_user_sex", {}, function (res) { 
+        console.log(res); 
+        var sexDataRenderIns = xmSelect.render({
+            el: '#sexBox',
+            name: 'sex',
+            data: res.data,
+            layVerify: 'required',
+            layVerType: 'tips',
+            radio: true,
+            clickClose: true,
+            model: { icon:'hidden', label: { type: 'text' }},
+            prop: {
+                name: 'dictLabel',
+                value: 'dictCode'
+            },
+            tips: '请选择性别'
+        });
+   });
+   CoreUtil.sendGet('/dev-api/system/user/'+"", {}, function (res) { 
+        console.log(res); 
+        remoteDataRenderIns = xmSelect.render({
+            el: '#posIdListBox',
+            name: 'post',
+            data: res.posts,
+            layVerify: 'required',
+            layVerType: 'tips',
+            radio: false,
+            prop: {
+                name: 'postName',
+                value: 'postId'
+            },
+            tips: '请选择职位'
+        });
+    });
+   CoreUtil.sendGet('/dev-api/system/user/'+"", {}, function (res) { 
+        console.log(res); 
+        remoteDataRenderIns = xmSelect.render({
+            el: '#roleListBox',
+            name: 'post',
+            data: res.roles,
+            layVerify: 'required',
+            layVerType: 'tips',
+            radio: false,
+            prop: {
+                name: 'roleName',
+                value: 'roleId'
+            },
+            tips: '请选择角色'
+        });
+    });
+
+
+    // admin.req(getProjectUrl() + 'sysOrg/tree', function(res){
+        CoreUtil.sendGet('/dev-api/system/user/deptTree/'+"", {}, function (res) { 
+        //admin.req( 'tree.json', function(res){
+            // 渲染下拉树
+            orgTreeRenderIns = xmSelect.render({
+                el: '#orgSelectBox',
+                name: 'sysEmpParam.orgId',
+                height: '250px',
+                layVerify: 'required',
+                layVerType: 'tips',
+                data: res.data,
+                // initValue: 1/* editData ? (editData.sysEmpInfo?(editData.sysEmpInfo.orgId?[editData.sysEmpInfo.orgId]:[]):[]):[] */,
+                model: {label: {type: 'text'}},
+                prop: {
+                    name: 'label',
+                    value: 'id'
+                },
+                radio: true,
+                clickClose: true,
+                tree: {
+                    show: true,
+                    indent: 15,
+                    strict: false,
+                    expandedKeys: true
+                },
+                tips: '请选择机构'
+            });
+        });
+
+    
+
+
+    //表单校验
+    form.verify({
+        pass: [
+            /^[\S]{2,25}$/
+            , '密码必须2到25位，且不能出现空格'
+        ],
+        username: function (value, item) {
+            var msg;
+            if (!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)) {
+                msg = '用户名不能有特殊字符';
+            }
+            if (/(^\_)|(\__)|(\_+$)/.test(value)) {
+                msg = '用户名首尾不能出现下划线\'_\'';
+            }
+            if (/^\d+\d+\d$/.test(value)) {
+                msg = '用户名不能全为数字';
+            }
+            /* $.ajax({
+                type: "GET",
+                url: ctx + "system/user/checkLoginNameUnique",
+                headers: {'Accept': 'application/json', 'Authorization': localStorage.getItem("Authorization")},
+                async: false,
+                dataType: "json",
+                data: {
+                    loginName: $("[name='loginName']").val(),
+                    userId: $.trim($("[name='userId']").val())
+                },
+                success: function (res) {
+                    if (res != "0") {
+                        msg = "登录用户名已存在，请修改！";
+                    }
+                },
+                error: function () {
+                    msg = "验证登录名出错！";
+                }
+            }); */
+            return msg;
+        }
+    });
+    //表单提交
+    var userId = $.trim($('#userId').val());
+    var submitBtnId = userId ? 'btn-edit' : 'btn-add';
+    form.render(null, 'form-user');
+    form.on('submit(' + submitBtnId + ')', function (data) {
+        var roleIds = common.getCheckValues("role");
+        var postIds = common.getCheckValues("post");
+        data.field.roleIds = roleIds;
+        data.field.postIds = postIds;
+        data.field.status = data.field.status === "on" ? "1" : "0";
+        var url = userId ? (ctx + '/system/user/edit') : (ctx + '/system/user/add');
+        $.ajax({
+            type: "post",
+            url: url,
+            data: data.field,
+            async: false,
+            error: function (re) {
+                layui.layer.msg("系统错误");
+            },
+            success: function (data) {
+                console.log("success:", data);
+                if (data.code > 0) {
+                    layui.layer.msg(data.msg);
+                } else {
+                    successCallback();
+                }
+            }
+        });
+        return false;
+    });
+});
+</script>
+<!-- <script src="/js/system/user_form.js"></script> -->
+</body>
+</html>

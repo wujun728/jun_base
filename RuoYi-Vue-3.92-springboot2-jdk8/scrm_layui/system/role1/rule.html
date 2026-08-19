@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('角色数据权限')" />
+    <style>
+        .menuTree{
+            max-height: 300px;
+            width: 92%;
+            display: inline-block;
+            position: absolute;
+            top:100%;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <form class="layui-form mt20" lay-filter="form-role-data" th:object="${role}">
+        <input id="roleId" name="roleId" type="hidden" th:value="*{roleId}"/>
+        <div class="layui-form-item">
+            <label class="layui-form-label">角色名称：</label>
+            <div class="layui-input-block">
+                <input class="layui-input min-input readonly" type="text" name="roleName" readonly autocomplete="off" th:value="*{roleName}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">权限字符：</label>
+            <div class="layui-input-block">
+                <input class="layui-input min-input readonly" type="text" name="roleKey" readonly  autocomplete="off" th:value="*{roleKey}"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">数据范围：</label>
+            <div class="layui-input-block min-select">
+                <select id="dataScope" name="dataScope" lay-filter="dataScope">
+                    <option value="1" th:field="*{dataScope}">全部数据权限</option>
+                    <option value="2" th:field="*{dataScope}">自定数据权限</option>
+                    <option value="3" th:field="*{dataScope}">本部门数据权限</option>
+                    <option value="4" th:field="*{dataScope}">本部门及以下数据权限</option>
+                    <option value="5" th:field="*{dataScope}">仅本人数据权限</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item" id="dataScopeDiv" th:style="'display:' + @{(*{dataScope=='2'} ? 'block' : 'none')} + ''">
+            <label class="layui-form-label">数据权限：</label>
+            <div class="layui-input-block">
+                <div id="deptTrees" class="eleTree menuTree" lay-filter="deptTrees"></div>
+            </div>
+        </div>
+        <div class="layui-form-item layui-hide">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="btn-role-data" id="btn-role-data">保存</button>
+            </div>
+        </div>
+    </form>
+</div>
+<th:block th:include="include :: footer" />
+<script th:inline="javascript">
+    var dataScopeFlag = [[${role.dataScope}]];
+</script>
+<script>
+    var successCallback = function () {};
+    layui.use(['eleTree', 'common'], function () {
+        var $ = layui.jquery
+            ,form=layui.form
+            ,eleTree=layui.eleTree
+            ,common=layui.common;
+        if("2" === dataScopeFlag){
+            $("#dataScopeDiv").show();
+        }else{
+            $("#dataScopeDiv").hide();
+        }
+        //初始化数据授权Tree
+        var menuTree=eleTree.render({
+            elem: '#deptTrees',
+            showCheckbox: true,
+            url: ctx + "system/dept/roleDeptTreeData2?roleId=" + $("#roleId").val(),
+            request: {
+                name: "name",
+                key: "id",
+                children: "children",
+                checked: "checked",
+                disabled: "disabled",
+                isLeaf: "isLeaf"
+            },
+            response: {
+                statusName: "code",
+                statusCode: 0,
+                dataName: "data"
+            },
+            done: function(res){
+                var ss = common.getJsonArrayValue(res.data,"children","checked","id");
+                menuTree.setChecked(ss,false);
+            },
+            defaultExpandAll: true,
+            expandOnClickNode: false,
+            highlightCurrent: true
+        });
+        //表单提交事件
+        form.render(null, 'form-role-data');
+        form.on("submit(btn-role-data)",function(data){
+            var deptIds = menuTree.getChecked(false,false);
+            $.ajax({
+                type : "post",
+                url :  ctx + "system/role/rule",
+                data : {
+                    "roleId": $("[name=roleId]").val(),
+                    "roleName": $("[name=roleName]").val(),
+                    "roleKey": $("[name=roleKey]").val(),
+                    "dataScope": $("[name=dataScope]").val(),
+                    "deptIds": common.joinArray(deptIds,"id")
+                },
+                async : false,
+                error : function(re) {
+                    layer.msg("系统错误");
+                },
+                success : function(data) {
+                    if (data.code > 0) {
+                        layui.layer.msg(data.msg);
+                    } else {
+                        successCallback();
+                    }
+                }
+            });
+            return false;
+        });
+        //下拉框事件
+        form.on("select(dataScope)",function(v){
+            if("2" === v.value){
+                $("#dataScopeDiv").show();
+            }else{
+                $("#dataScopeDiv").hide();
+            }
+        });
+    });
+</script>
+</body>
+</html>

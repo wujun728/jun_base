@@ -1,0 +1,103 @@
+<!-- 注意这里不需要写`<html><body>`这些东西，它是一个html片段，不是完整的html页面 -->
+<form id="grantDataForm" lay-filter="grantDataForm" class="layui-form model-form">
+    <input name="id" type="hidden"/>
+    <input name="roleId" type="hidden"/>
+    <div class="layui-form-item">
+        <label class="layui-form-label layui-form-required">授权范围</label>
+        <div class="layui-input-block">
+            <select name="dataScope" lay-filter="dataScopeSelectFilter"	lay-verType="tips" lay-verify="required" required></select>
+        </div>
+    </div>
+    <div class="layui-form-item" id="defineDataTreeBox" hidden>
+        <label class="layui-form-label">选择机构</label>
+        <div class="layui-input-block">
+            <ul id="orgTree" class="ztree"></ul>
+        </div>
+    </div>
+    <div class="layui-form-item text-right">
+        <button class="layui-btn layui-btn-primary" type="button" ew-event="closeDialog">取消</button>
+        <button class="layui-btn" lay-filter="formSubmitBtn" lay-submit>保存</button>
+    </div>
+</form>
+
+<script>
+    layui.use(['layer', 'form', 'admin', 'xnUtil', 'zTree'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var admin = layui.admin;
+        var xnUtil = layui.xnUtil;
+
+        // 渲染字典下拉
+        xnUtil.rendDictDropDown('grantDataForm', 'dataScope', 'data_scope_type', '请选择授权范围', null);
+
+        var grantData = admin.getLayerData('#grantDataForm').data;
+
+        // 获取机构树
+        admin.req(getProjectUrl() + '/dev-api/system/role/deptTree/'+grantData.roleId, function(res){
+            // 渲染树
+            var zTree = $.fn.zTree.init($('#orgTree'), {
+                check: {enable: true, chkboxType: {"Y": "s", "N": "s" }},
+                data: {
+                    key: {name: 'label'},
+                    simpleData: {enable: true, rootPId: 0}
+                }
+            }, xnUtil.handleNoChildrenZtreeData(xnUtil.handleZtreeDataOpen(res.depts)));
+
+            // 获取已授权的机构id集合
+            admin.req(getProjectUrl() +'/dev-api/system/role/deptTree/'+grantData.roleId, function(res){
+                // 设置默认选择
+                res.checkedKeys.forEach(function (value) {
+                    zTree.checkNode(zTree.getNodeByParam( "id", value), true);
+                })
+            });
+        });
+
+        if(grantData !== null && grantData !== undefined) {
+            //debugger
+            if(grantData.dataScope === "5") {
+                $("#defineDataTreeBox").removeAttr("hidden");
+            }else{
+                $("#defineDataTreeBox").attr("hidden", true);
+            }
+        }
+
+        form.val('grantDataForm', grantData);
+
+        form.on('select(dataScopeSelectFilter)', function(data){
+            //切换则清空选中
+            $.fn.zTree.getZTreeObj("orgTree").checkAllNodes(false);
+            if(data.value === '5') {
+                $("#defineDataTreeBox").removeAttr("hidden");
+            } else {
+                $("#defineDataTreeBox").attr("hidden", true);
+            }
+        });
+
+        // 表单提交事件
+        form.on('submit(formSubmitBtn)', function (data) {
+            layer.load(2);
+            //var url = getProjectUrl() + 'sysRole/grantData';
+            //var method = editData ? 'PUT' : 'POST';
+            var url = '/dev-api/system/role/dataScope';
+
+            var grantOrgIdList = [];
+            $.fn.zTree.getZTreeObj("orgTree").getCheckedNodes(true).forEach(function (value) {
+                grantOrgIdList.push(value.id);
+            });
+            data.field.deptIds = grantOrgIdList;
+            admin.req(url, JSON.stringify(data.field), function(res){
+                if(res.code == 200 || res.code == 0 ){
+                    layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                        admin.putLayerData('formOk', true, '#grantDataForm');
+                        admin.closeDialog('#grantDataForm');
+                    });
+                }else{
+                    layer.msg(res.msg, {icon: 2, time: 1000}, function () {  });
+                }
+            }, 'PUT');
+            return false;
+        });
+
+    });
+</script>

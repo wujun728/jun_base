@@ -1,0 +1,121 @@
+<!-- 注意这里不需要写`<html><body>`这些东西，它是一个html片段，不是完整的html页面 -->
+<form id="detailForm" lay-filter="detailForm" class="layui-form model-form">
+    <div class="layui-col-md6">
+        <input name="id" type="hidden"/>
+        <div class="layui-form-item">
+            <label class="layui-form-label">日志名称</label>
+            <div class="layui-input-block">
+                <input name="title" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">操作类型</label>
+            <div class="layui-input-block">
+                <input name="businessType" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">类名称</label>
+            <div class="layui-input-block">
+                <input name="method" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">方法名称</label>
+            <div class="layui-input-block">
+                <input name="method" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">请求方式</label>
+            <div class="layui-input-block">
+                <input name="requestMethod" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">请求地址</label>
+            <div class="layui-input-block">
+                <input name="operUrl" class="layui-input"/>
+            </div>
+        </div>
+    </div>
+    <div class="layui-col-md6">
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否成功</label>
+            <div class="layui-input-block">
+                <input name="status" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">ip地址</label>
+            <div class="layui-input-block">
+                <input name="operIp" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">定位</label>
+            <div class="layui-input-block">
+                <input name="operLocation" class="layui-input"/>
+            </div>
+        </div>
+        <!-- <div class="layui-form-item">
+            <label class="layui-form-label">浏览器</label>
+            <div class="layui-input-block">
+                <input name="browser" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">操作系统</label>
+            <div class="layui-input-block">
+                <input name="os" class="layui-input"/>
+            </div>
+        </div> -->
+        <div class="layui-form-item">
+            <label class="layui-form-label">操作时间</label>
+            <div class="layui-input-block">
+                <input name="operTime" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">操作人</label>
+            <div class="layui-input-block">
+                <input name="operName" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">请求参数</label>
+            <div class="layui-input-block">
+                <input name="params" class="layui-input"/>
+            </div>
+        </div>
+    </div>
+    <div class="layui-col-md12">
+        <div class="layui-form-item">
+            <label class="layui-form-label">具体消息</label>
+            <div class="layui-input-block">
+                <textarea name="operParam" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">返回结果</label>
+            <div class="layui-input-block">
+                <textarea name="jsonResult" class="layui-textarea"></textarea>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    layui.use(['layer', 'form', 'admin', 'xnUtil'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var admin = layui.admin;
+        var xnUtil = layui.xnUtil;
+
+        var detailData = admin.getLayerData('#detailForm').data;
+        detailData.status = xnUtil.rendDataTableDict(detailData.status, 'sys_common_status');
+        detailData.businessType = xnUtil.rendDataTableDict(detailData.businessType, 'sys_oper_type');
+        form.val('detailForm', detailData);
+    });
+</script>

@@ -1,0 +1,131 @@
+<!-- 注意这里不需要写`<html><body>`这些东西，它是一个html片段，不是完整的html页面 -->
+<form id="addOrUpdateForm" lay-filter="addOrUpdateForm" class="layui-form model-form">
+    <input name="id" type="hidden"/>
+    <input name="dictCode" type="hidden"/>
+    <!-- <input name="typeId" type="hidden"/> -->
+    <div class="layui-form-item">
+        <label class="layui-form-label  ">字典类型</label>
+        <div class="layui-input-block">
+            <input name="dictType" class="layui-input" placeholder="请输入字典值" readonly="readonly" lay-verType="tips" lay-verify="required" required/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label layui-form-required">字典标签</label>
+        <div class="layui-input-block">
+            <input name="dictLabel" class="layui-input" placeholder="请输入字典值" lay-verType="tips" lay-verify="required" required/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label layui-form-required">字典键值</label>
+        <div class="layui-input-block">
+            <input name="dictValue" class="layui-input" placeholder="请输入字典值" lay-verType="tips" lay-verify="required" required/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label ">样式属性</label>
+        <div class="layui-input-block">
+            <input name="cssClass" class="layui-input" placeholder="请输入字典值" lay-verType="tips" lay-verify="required" required/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label layui-form-required">排序</label>
+        <div class="layui-input-block">
+            <input name="dictSort" class="layui-input" type="number" placeholder="请输入排序" lay-verType="tips" lay-verify="required" required/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label  ">回显样式</label>
+        <div class="layui-input-block">
+            <!-- <input name="listClass" class="layui-input" type="number" placeholder="请输入排序" lay-verType="tips" lay-verify="required" required/> -->
+            <div id="listClassBox"></div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label  ">状态</label>
+        <div class="layui-input-block">
+                <input type="radio"  name="status" value="0" title="正常" checked="true" />
+                <input type="radio"  name="status" value="1" title="停用"  />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">备注</label>
+        <div class="layui-input-block">
+            <textarea name="remark" placeholder="请输入备注" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item text-right">
+        <button class="layui-btn layui-btn-primary" type="button" ew-event="closeDialog">取消</button>
+        <button class="layui-btn" lay-filter="formSubmitBtn" lay-submit>保存</button>
+    </div>
+</form>
+
+<script>
+    layui.use(['layer', 'form', 'admin', 'xnUtil'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var admin = layui.admin;
+
+      // 数据标签回显样式
+      var listClassOptions = [
+        { value: "default",  label: "默认" },
+        { value: "primary",  label: "主要" },
+        { value: "success", label: "成功" },
+        { value: "info", label: "信息" },
+        { value: "warning", label: "警告" },
+        { value: "danger",  label: "危险" }
+      ];
+      // 渲染字典下拉
+      var listClassRenderIns = xmSelect.render({
+            el: '#listClassBox',
+            name: 'listClass',
+            data: listClassOptions,//xnUtil.getDictDataByDictTypeCode('sys_yes_no', null),
+            layVerify: 'required',
+            layVerType: 'tips',
+            radio: true,
+            clickClose: true,
+            model: { icon:'hidden', label: { type: 'text' }},
+            initValue: ["default"] ,// 设置默认值 
+            /* data: [
+                {name: '门诊', value: "mz"},
+                {name: '住院', value: "zy"}
+            ], */
+            prop: {
+                name: 'label',
+                value: 'value'
+            },
+            tips: '请选择'
+        }, {async: false});
+
+        var editData = admin.getLayerData('#addOrUpdateForm').data;
+        form.val('addOrUpdateForm', editData);
+        var isEdit = admin.getLayerData('#addOrUpdateForm').idEdit;
+
+        if(isEdit && editData !== null && editData !== undefined) {
+            listClassRenderIns.setValue([editData.listClass]);
+            if(editData.configType === 'Y') {
+                listClassRenderIns.update({ disabled: true });
+            }
+        }
+
+        // 表单提交事件
+        form.on('submit(formSubmitBtn)', function (data) {
+            layer.load(2);
+            //var url = isEdit ? getProjectUrl() + 'sysDictData/edit' : getProjectUrl() + 'sysDictData/add';
+            var method = isEdit ? 'PUT' : 'POST';
+            var url = '/dev-api/system/dict/data';
+            admin.req(url, JSON.stringify(data.field), function(res){
+                if(res.code == 200 || res.code == 0 ){
+                    layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                        admin.putLayerData('formOk', true, '#addOrUpdateForm');
+                        admin.closeDialog('#addOrUpdateForm');
+                    });
+                }else{
+                    layer.msg(res.msg, {icon: 2, time: 1000}, function () {  });
+                }
+            }, method);
+            return false;
+        });
+
+    });
+</script>
