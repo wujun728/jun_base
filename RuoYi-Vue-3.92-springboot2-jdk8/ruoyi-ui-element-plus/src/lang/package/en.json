@@ -1,0 +1,130 @@
+{
+  "route": {
+    "dashboard": "Dashboard",
+    "document": "Document"
+  },
+  "login": {
+    "themeToggle": "Theme Switch",
+    "languageToggle": "Language Switch",
+    "dark": "Dark",
+    "light": "Light",
+    "auto": "Follow System",
+    "username": "Username",
+    "password": "Password",
+    "login": "Login",
+    "captchaCode": "Verify Code",
+    "capsLock": "Caps Lock is On",
+    "rememberMe": "Remember Me",
+    "forgetPassword": "Forget Password?",
+    "message": {
+      "username": {
+        "required": "Please enter Username"
+      },
+      "password": {
+        "required": "Please enter Password",
+        "min": "The password can not be less than 6 digits",
+        "confirm": "Please confirm the password again",
+        "inconformity": "The two password entries are inconsistent"
+      },
+      "captchaCode": {
+        "required": "Please enter Verify Code"
+      }
+    },
+    "otherLoginMethods": "Other",
+    "resetPassword": "Reset password",
+    "thinkOfPasswd": "Remember your password?",
+    "register": "Register account",
+    "agree": "I have read and agree to the",
+    "userAgreement": "User Agreement",
+    "haveAccount": "Already have an account?",
+    "noAccount": "Don't have an account?",
+    "quickFill": "Quick fill",
+    "reg": "Register"
+  },
+  "navbar": {
+    "dashboard": "Dashboard",
+    "logout": "Logout",
+    "document": "Document",
+    "gitee": "Gitee",
+    "profile": "User Profile"
+  },
+  "sizeSelect": {
+    "tooltip": "Layout Size",
+    "default": "Default",
+    "large": "Large",
+    "small": "Small",
+    "message": {
+      "success": "Switch Layout Size Successful!"
+    }
+  },
+  "langSelect": {
+    "message": {
+      "success": "Switch Language Successful!"
+    }
+  },
+  "settings": {
+    "project": "Project Settings",
+    "theme": "Theme",
+    "interface": "Interface",
+    "navigation": "Navigation",
+    "assist": "Assist",
+    "themePalette": "Color System",
+    "customColors": "Custom Colors",
+    "customPalette": "Custom",
+    "customPaletteTip": "Custom colors applied",
+    "themeColorNames": {
+      "primary": "Primary",
+      "success": "Success",
+      "warning": "Warning",
+      "danger": "Danger",
+      "info": "Info"
+    },
+    "themePalettes": {
+      "arco": {
+        "name": "ArcoD",
+        "description": "Clear blue-orange balance"
+      },
+      "antDesign": {
+        "name": "AntD",
+        "description": "Stable and structured"
+      },
+      "elementPlus": {
+        "name": "ElementD",
+        "description": "Close to component defaults"
+      }
+    },
+    "showTagsView": "Show Tags View",
+    "tagsViewStyle": "Tags View Style",
+    "tagsViewStyles": {
+      "line": "Line",
+      "card": "Card"
+    },
+    "showAppLogo": "Show App Logo",
+    "sidebarColorScheme": "Sidebar Color Scheme",
+    "showWatermark": "Show Watermark",
+    "pageSwitchingAnimation": "Page Switching Animation",
+    "grayMode": "Gray Mode",
+    "colorWeak": "Color Weak",
+    "none": "None",
+    "fade": "Fade",
+    "fade-slide": "Fade Slide",
+    "fade-scale": "Fade Scale",
+    "classicBlue": "Classic Blue",
+    "minimalWhite": "Minimal White",
+    "copyConfig": "Copy Config",
+    "resetConfig": "Reset Default",
+    "copySuccess": "Configuration copied to clipboard",
+    "resetSuccess": "Reset to default configuration",
+    "copyDescription": "Copy config generates the current defaults fragment; reset restores defaults",
+    "confirmReset": "Are you sure to reset all settings to default? This operation cannot be undone.",
+    "applyToFile": "Apply to File",
+    "onlyCopy": "Only Copy",
+    "leftLayout": "Left Mode",
+    "topLayout": "Top Mode",
+    "mixLayout": "Mix Mode",
+    "doubleLayout": "Double Mode",
+    "configManagement": "Config Management",
+    "copyConfigDescription": "Generate the current defaults fragment and copy it to clipboard",
+    "resetConfigDescription": "Restore all settings to system default values"
+  }
+}

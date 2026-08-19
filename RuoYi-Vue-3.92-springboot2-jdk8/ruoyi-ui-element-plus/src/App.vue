@@ -1,0 +1,34 @@
+<template>
+  <el-config-provider :locale="locale" :size="size">
+    <!-- 开启水印-->
+    <el-watermark
+      :font="{ color: fontColor }"
+      :content="showWatermark ? watermarkContent : ''"
+      :z-index="9999"
+      class="wh-full"
+    >
+      <router-view />
+    </el-watermark>
+  </el-config-provider>
+</template>
+
+<script setup>
+import { useAppStore, useSettingsStore } from "@/stores";
+import { appConfig } from "@/settings";
+import { ThemeMode, ComponentSize } from "@/enums";
+
+const appStore = useAppStore();
+const settingsStore = useSettingsStore();
+
+const locale = computed(() => appStore.locale);
+const size = computed(() => appStore.size);
+const showWatermark = computed(() => settingsStore.showWatermark);
+const watermarkContent = appConfig.name;
+
+// 明亮/暗黑主题水印字体颜色适配
+const fontColor = computed(() => {
+  return settingsStore.resolvedTheme === ThemeMode.DARK
+    ? "rgba(255, 255, 255, .15)"
+    : "rgba(0, 0, 0, .15)";
+});
+</script>

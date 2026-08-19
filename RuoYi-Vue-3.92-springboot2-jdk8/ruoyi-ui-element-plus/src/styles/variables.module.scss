@@ -1,0 +1,14 @@
+/* stylelint-disable property-no-unknown */
+// SCSS 变量导出给 JS/TS
+
+@use "./variables" as *;
+
+:export {
+  navbar-height: $navbar-height;
+  tags-view-height: $tags-view-height;
+  menu-background: $menu-background;
+  menu-text: $menu-text;
+  menu-active-text: $menu-active-text;
+}
+
+/* stylelint-enable property-no-unknown */
