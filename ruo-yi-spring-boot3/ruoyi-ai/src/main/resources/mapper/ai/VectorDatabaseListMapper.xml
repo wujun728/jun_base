@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ai.mapper.VectorDatabaseListMapper">
+    
+    <resultMap type="VectorDatabaseList" id="VectorDatabaseListResult">
+        <result property="id"    column="id"    />
+        <result property="aliasName"    column="alias_name"    />
+        <result property="host"    column="host"    />
+        <result property="port"    column="port"    />
+        <result property="database"    column="database"    />
+        <result property="table"    column="table"    />
+        <result property="user"    column="user"    />
+        <result property="password"    column="password"    />
+        <result property="dimension"    column="dimension"    />
+        <result property="isChose"    column="is_chose"    />
+    </resultMap>
+
+    <sql id="selectVectorDatabaseListVo">
+        select `id`, `alias_name`, `host`, `port`, `database`, `table`, `user`, `password`, `dimension`, `is_chose` from vector_database_list
+    </sql>
+
+    <select id="selectVectorDatabaseListList" parameterType="VectorDatabaseList" resultMap="VectorDatabaseListResult">
+        <include refid="selectVectorDatabaseListVo"/>
+        <where>  
+            <if test="aliasName != null  and aliasName != ''"> and `alias_name` like concat('%', #{aliasName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectVectorDatabaseListById" parameterType="Long" resultMap="VectorDatabaseListResult">
+        <include refid="selectVectorDatabaseListVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectEnableVectorDatabase" resultMap="VectorDatabaseListResult">
+        <include refid="selectVectorDatabaseListVo"/>
+        where is_chose = '1'
+    </select>
+
+    <insert id="insertVectorDatabaseList" parameterType="VectorDatabaseList" useGeneratedKeys="true" keyProperty="id">
+        insert into vector_database_list
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="aliasName != null">`alias_name`,</if>
+            <if test="host != null">`host`,</if>
+            <if test="port != null">`port`,</if>
+            <if test="database != null">`database`,</if>
+            <if test="table != null">`table`,</if>
+            <if test="user != null">`user`,</if>
+            <if test="password != null">`password`,</if>
+            <if test="dimension != null">`dimension`,</if>
+            <if test="isChose != null">is_chose,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="aliasName != null">#{aliasName},</if>
+            <if test="host != null">#{host},</if>
+            <if test="port != null">#{port},</if>
+            <if test="database != null">#{database},</if>
+            <if test="table != null">#{table},</if>
+            <if test="user != null">#{user},</if>
+            <if test="password != null">#{password},</if>
+            <if test="dimension != null">#{dimension},</if>
+            <if test="isChose != null">#{isChose},</if>
+         </trim>
+    </insert>
+
+    <update id="updateVectorDatabaseList" parameterType="VectorDatabaseList">
+        update vector_database_list
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="aliasName != null">`alias_name` = #{aliasName},</if>
+            <if test="host != null">`host` = #{host},</if>
+            <if test="port != null">`port` = #{port},</if>
+            <if test="database != null">`database` = #{database},</if>
+            <if test="table != null">`table` = #{table},</if>
+            <if test="user != null">`user` = #{user},</if>
+            <if test="password != null">`password` = #{password},</if>
+            <if test="dimension != null">`dimension` = #{dimension},</if>
+            <if test="isChose != null">`is_chose` = #{isChose},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteVectorDatabaseListById" parameterType="Long">
+        delete from vector_database_list where id = #{id}
+    </delete>
+
+    <delete id="deleteVectorDatabaseListByIds" parameterType="String">
+        delete from vector_database_list where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

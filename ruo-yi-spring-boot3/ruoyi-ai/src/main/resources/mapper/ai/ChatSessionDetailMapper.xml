@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ai.mapper.ChatSessionDetailMapper">
+
+    <resultMap type="ChatSessionDetail" id="ChatSessionDetailResult">
+        <result property="id"    column="id"    />
+        <result property="sessionId"    column="session_id"    />
+        <result property="role"    column="role"    />
+        <result property="content"    column="content"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectChatSessionDetailVo">
+        select id, session_id, role, content, create_time from chat_session_detail
+    </sql>
+
+    <select id="selectChatSessionDetailList" parameterType="ChatSessionDetail" resultMap="ChatSessionDetailResult">
+        <include refid="selectChatSessionDetailVo"/>
+        <where>
+            <if test="sessionId != null"> and session_id = #{sessionId}</if>
+            <if test="role != null  and role != ''"> and role = #{role}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+        </where>
+    </select>
+
+    <select id="selectChatSessionDetailById" parameterType="Long" resultMap="ChatSessionDetailResult">
+        <include refid="selectChatSessionDetailVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertChatSessionDetail" parameterType="ChatSessionDetail" useGeneratedKeys="true" keyProperty="id">
+        insert into chat_session_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sessionId != null">session_id,</if>
+            <if test="role != null">role,</if>
+            <if test="content != null">content,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sessionId != null">#{sessionId},</if>
+            <if test="role != null">#{role},</if>
+            <if test="content != null">#{content},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateChatSessionDetail" parameterType="ChatSessionDetail">
+        update chat_session_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sessionId != null">session_id = #{sessionId},</if>
+            <if test="role != null">role = #{role},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteChatSessionDetailById" parameterType="Long">
+        delete from chat_session_detail where id = #{id}
+    </delete>
+
+    <delete id="deleteChatSessionDetailByIds" parameterType="String">
+        delete from chat_session_detail where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ai.mapper.KnowledgeBaseListMapper">
+    
+    <resultMap type="KnowledgeBaseList" id="KnowledgeBaseListResult">
+        <result property="id"    column="id"    />
+        <result property="knowledgeBaseName"    column="knowledge_base_name"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectKnowledgeBaseListVo">
+        select id, knowledge_base_name, remark, create_by, create_time, update_by, update_time from knowledge_base_list
+    </sql>
+
+    <select id="selectKnowledgeBaseListList" parameterType="KnowledgeBaseList" resultMap="KnowledgeBaseListResult">
+        <include refid="selectKnowledgeBaseListVo"/>
+        <where>  
+            <if test="knowledgeBaseName != null  and knowledgeBaseName != ''"> and knowledge_base_name like concat('%', #{knowledgeBaseName}, '%')</if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''"> and create_time between #{params.beginCreateTime} and #{params.endCreateTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectKnowledgeBaseListById" parameterType="Long" resultMap="KnowledgeBaseListResult">
+        <include refid="selectKnowledgeBaseListVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertKnowledgeBaseList" parameterType="KnowledgeBaseList">
+        insert into knowledge_base_list
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="knowledgeBaseName != null">knowledge_base_name,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="knowledgeBaseName != null">#{knowledgeBaseName},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateKnowledgeBaseList" parameterType="KnowledgeBaseList">
+        update knowledge_base_list
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="knowledgeBaseName != null">knowledge_base_name = #{knowledgeBaseName},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteKnowledgeBaseListById" parameterType="Long">
+        delete from knowledge_base_list where id = #{id}
+    </delete>
+
+    <delete id="deleteKnowledgeBaseListByIds" parameterType="String">
+        delete from knowledge_base_list where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

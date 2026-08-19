@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ai.mapper.KnowledgeBaseLineMapper">
+
+    <resultMap type="KnowledgeBaseLine" id="KnowledgeBaseLineResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="knowledgeBaseId"    column="knowledge_base_id"    />
+        <result property="context"    column="context"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectKnowledgeBaseLineVo">
+        select id, name, knowledge_base_id, context, create_by, create_time, update_by, update_time, status from knowledge_base_line
+    </sql>
+
+    <select id="selectKnowledgeBaseLineList" parameterType="KnowledgeBaseLine" resultMap="KnowledgeBaseLineResult">
+        <include refid="selectKnowledgeBaseLineVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="createBy != null  and createBy != ''"> and create_by like concat('%', #{createBy}, '%')</if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''"> and create_time between #{params.beginCreateTime} and #{params.endCreateTime}</if>
+            <if test="updateBy != null  and updateBy != ''"> and update_by like concat('%', #{updateBy}, '%')</if>
+            <if test="params.beginUpdateTime != null and params.beginUpdateTime != '' and params.endUpdateTime != null and params.endUpdateTime != ''"> and update_time between #{params.beginUpdateTime} and #{params.endUpdateTime}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectKnowledgeBaseLineById" parameterType="Long" resultMap="KnowledgeBaseLineResult">
+        <include refid="selectKnowledgeBaseLineVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertKnowledgeBaseLine" parameterType="KnowledgeBaseLine" useGeneratedKeys="true" keyProperty="id">
+        insert into knowledge_base_line
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="knowledgeBaseId != null">knowledge_base_id,</if>
+            <if test="context != null">context,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="status != null">status,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="knowledgeBaseId != null">#{knowledgeBaseId},</if>
+            <if test="context != null">#{context},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="status != null">#{status},</if>
+        </trim>
+    </insert>
+
+    <update id="updateKnowledgeBaseLine" parameterType="KnowledgeBaseLine">
+        update knowledge_base_line
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="knowledgeBaseId != null">knowledge_base_id = #{knowledgeBaseId},</if>
+            <if test="context != null">context = #{context},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteKnowledgeBaseLineById" parameterType="Long">
+        delete from knowledge_base_line where id = #{id}
+    </delete>
+
+    <delete id="deleteKnowledgeBaseLineByIds" parameterType="String">
+        delete from knowledge_base_line where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="getLineInfo" resultMap="KnowledgeBaseLineResult">
+        select * from knowledge_base_line  where knowledge_base_id = #{id}
+    </select>
+</mapper>

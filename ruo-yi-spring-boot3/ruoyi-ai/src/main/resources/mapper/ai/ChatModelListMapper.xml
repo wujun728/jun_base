@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ai.mapper.ChatModelListMapper">
+
+    <resultMap type="ChatModelList" id="ChatModelListResult">
+        <result property="id"    column="id"    />
+        <result property="baseUrl"    column="base_url"    />
+        <result property="apiKey"    column="api_key"    />
+        <result property="modelVersion"    column="model_version"    />
+        <result property="modelName"    column="model_name"    />
+        <result property="numGpu"    column="num_gpu"    />
+        <result property="temperature"    column="temperature"    />
+        <result property="topK"    column="top_k"    />
+        <result property="topP"    column="top_p"    />
+        <result property="repeatPenalty"    column="repeat_penalty"    />
+        <result property="presencePenalty"    column="presence_penalty"    />
+        <result property="frequencyPenalty"    column="frequency_penalty"    />
+        <result property="numPredict"    column="num_predict"    />
+        <result property="numThread"    column="num_thread"    />
+        <result property="lowVram"    column="low_vram"    />
+        <result property="isChose"    column="is_chose"    />
+    </resultMap>
+
+    <sql id="selectChatModelListVo">
+        select id, base_url, api_key, model_version, model_name, num_gpu, temperature, top_k, top_p, repeat_penalty, presence_penalty, frequency_penalty, num_predict, num_thread, low_vram, is_chose from chat_model_list
+    </sql>
+
+    <select id="selectChatModelListList" parameterType="ChatModelList" resultMap="ChatModelListResult">
+        <include refid="selectChatModelListVo"/>
+        <where>
+            <if test="baseUrl != null  and baseUrl != ''"> and base_url = #{baseUrl}</if>
+            <if test="apiKey != null  and apiKey != ''"> and api_key = #{apiKey}</if>
+            <if test="modelVersion != null  and modelVersion != ''"> and model_version = #{modelVersion}</if>
+            <if test="modelName != null  and modelName != ''"> and model_name like concat('%', #{modelName}, '%')</if>
+            <if test="numGpu != null "> and num_gpu = #{numGpu}</if>
+            <if test="temperature != null "> and temperature = #{temperature}</if>
+            <if test="topK != null "> and top_k = #{topK}</if>
+            <if test="topP != null "> and top_p = #{topP}</if>
+            <if test="repeatPenalty != null "> and repeat_penalty = #{repeatPenalty}</if>
+            <if test="presencePenalty != null "> and presence_penalty = #{presencePenalty}</if>
+            <if test="frequencyPenalty != null "> and frequency_penalty = #{frequencyPenalty}</if>
+            <if test="numPredict != null "> and num_predict = #{numPredict}</if>
+            <if test="numThread != null "> and num_thread = #{numThread}</if>
+            <if test="lowVram != null "> and low_vram = #{lowVram}</if>
+            <if test="isChose != null "> and is_chose = #{isChose}</if>
+        </where>
+    </select>
+
+    <select id="selectChatModelListById" parameterType="Long" resultMap="ChatModelListResult">
+        <include refid="selectChatModelListVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectEnableChatModel" resultMap="ChatModelListResult">
+        <include refid="selectChatModelListVo"/>
+        where is_chose = '1'
+    </select>
+
+    <insert id="insertChatModelList" parameterType="ChatModelList" useGeneratedKeys="true" keyProperty="id">
+        insert into chat_model_list
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="baseUrl != null">base_url,</if>
+            <if test="apiKey != null">api_key,</if>
+            <if test="modelVersion != null">model_version,</if>
+            <if test="modelName != null">model_name,</if>
+            <if test="numGpu != null">num_gpu,</if>
+            <if test="temperature != null">temperature,</if>
+            <if test="topK != null">top_k,</if>
+            <if test="topP != null">top_p,</if>
+            <if test="repeatPenalty != null">repeat_penalty,</if>
+            <if test="presencePenalty != null">presence_penalty,</if>
+            <if test="frequencyPenalty != null">frequency_penalty,</if>
+            <if test="numPredict != null">num_predict,</if>
+            <if test="numThread != null">num_thread,</if>
+            <if test="lowVram != null">low_vram,</if>
+            <if test="isChose != null">is_chose,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="baseUrl != null">#{baseUrl},</if>
+            <if test="apiKey != null">#{apiKey},</if>
+            <if test="modelVersion != null">#{modelVersion},</if>
+            <if test="modelName != null">#{modelName},</if>
+            <if test="numGpu != null">#{numGpu},</if>
+            <if test="temperature != null">#{temperature},</if>
+            <if test="topK != null">#{topK},</if>
+            <if test="topP != null">#{topP},</if>
+            <if test="repeatPenalty != null">#{repeatPenalty},</if>
+            <if test="presencePenalty != null">#{presencePenalty},</if>
+            <if test="frequencyPenalty != null">#{frequencyPenalty},</if>
+            <if test="numPredict != null">#{numPredict},</if>
+            <if test="numThread != null">#{numThread},</if>
+            <if test="lowVram != null">#{lowVram},</if>
+            <if test="isChose != null">#{isChose},</if>
+        </trim>
+    </insert>
+
+    <update id="updateChatModelList" parameterType="ChatModelList">
+        update chat_model_list
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="baseUrl != null">base_url = #{baseUrl},</if>
+            <if test="apiKey != null">api_key = #{apiKey},</if>
+            <if test="modelVersion != null">model_version = #{modelVersion},</if>
+            <if test="modelName != null">model_name = #{modelName},</if>
+            <if test="numGpu != null">num_gpu = #{numGpu},</if>
+            <if test="temperature != null">temperature = #{temperature},</if>
+            <if test="topK != null">top_k = #{topK},</if>
+            <if test="topP != null">top_p = #{topP},</if>
+            <if test="repeatPenalty != null">repeat_penalty = #{repeatPenalty},</if>
+            <if test="presencePenalty != null">presence_penalty = #{presencePenalty},</if>
+            <if test="frequencyPenalty != null">frequency_penalty = #{frequencyPenalty},</if>
+            <if test="numPredict != null">num_predict = #{numPredict},</if>
+            <if test="numThread != null">num_thread = #{numThread},</if>
+            <if test="lowVram != null">low_vram = #{lowVram},</if>
+            <if test="isChose != null">is_chose = #{isChose},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteChatModelListById" parameterType="Long">
+        delete from chat_model_list where id = #{id}
+    </delete>
+
+    <delete id="deleteChatModelListByIds" parameterType="String">
+        delete from chat_model_list where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,11 @@
+{
+  "main": "./main.js",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development electron ./",
+    "prod": "electron ./"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "electron": "^27.1.0"
+  }
+}
