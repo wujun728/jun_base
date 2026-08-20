@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>缓存列表</title>
+    <link rel="stylesheet" href="/assets/libs/layui/css/layui.css"/>
+    <link rel="stylesheet" href="/assets/module/admin.css">
+</head>
+<body>
+<!-- 正文开始 -->
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-sm4 layui-col-md3">
+            <div class="layui-card">
+                <div class="layui-card-header" style="font-weight: bolder">缓存名称</div>
+                <div class="layui-card-body">
+                    <div id="cacheNameList" style="max-height: 520px; overflow: auto;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-sm8 layui-col-md9">
+            <div class="layui-card">
+                <div class="layui-card-header" style="font-weight: bolder">缓存键名列表</div>
+                <div class="layui-card-body">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th>缓存键名</th>
+                            <th style="width: 160px;">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="keyBody">
+                        <tr><td colspan="2" style="text-align:center;color:#999;">请选择左侧缓存名称查看</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- js部分 -->
+<script src="/assets/libs/layui/layui.js"></script>
+<script src="/assets/js/jquery.js"></script>
+<script src="/assets/js/common.js"></script>
+<script src="/assets/js/core.util.js"></script>
+
+<script>
+    // 解析 URL 参数
+    function getUrlParam(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        var context = "";
+        if (r != null) context = decodeURI(r[2]);
+        return (context == null || context == "" || context == "undefined") ? "" : context;
+    }
+
+    layui.use(['layer'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+
+        var currentName = getUrlParam('name') || '';
+
+        // 加载缓存名称列表
+        CoreUtil.sendGet("/dev-api/monitor/cache/getNames", {}, function (res) {
+            if (res.code != 0 && res.code != 200) return;
+            var html = '';
+            $.each(res.data || [], function (i, c) {
+                var active = (c.cacheName === currentName) ? ' layui-bg-blue' : '';
+                html += '<div class="cache-name-item' + active + '" data-name="' + c.cacheName + '" title="' + c.remark + '" style="cursor:pointer;padding:8px 12px;border-bottom:1px solid #f0f0f0;">' +
+                    c.cacheName + '<span style="color:#999;margin-left:6px;">' + c.remark + '</span></div>';
+            });
+            $('#cacheNameList').html(html);
+            if (currentName) {
+                loadKeys(currentName);
+            }
+        });
+
+        // 点击缓存名称
+        $(document).on('click', '.cache-name-item', function () {
+            var name = $(this).attr('data-name');
+            $('.cache-name-item').removeClass('layui-bg-blue');
+            $(this).addClass('layui-bg-blue');
+            currentName = name;
+            loadKeys(name);
+        });
+
+        // 加载缓存键列表
+        function loadKeys(name) {
+            CoreUtil.sendGet("/dev-api/monitor/cache/getKeys/" + name, {}, function (res) {
+                if (res.code != 0 && res.code != 200) {
+                    layer.msg(res.msg || '加载失败');
+                    return;
+                }
+                var html = '';
+                var list = res.data || [];
+                if (list.length === 0) {
+                    html = '<tr><td colspan="2" style="text-align:center;color:#999;">暂无缓存键</td></tr>';
+                } else {
+                    $.each(list, function (i, k) {
+                        html += '<tr>' +
+                            '<td style="word-break:break-all;">' + k + '</td>' +
+                            '<td>' +
+                            '<a class="layui-btn layui-btn-primary layui-btn-xs key-view" data-key="' + $('<div/>').text(k).html() + '">查看</a> ' +
+                            '<a class="layui-btn layui-btn-danger layui-btn-xs key-del" data-key="' + $('<div/>').text(k).html() + '">删除</a>' +
+                            '</td></tr>';
+                    });
+                }
+                $('#keyBody').html(html);
+            });
+        }
+
+        // 查看缓存值
+        $(document).on('click', '.key-view', function () {
+            var key = $(this).attr('data-key');
+            var encodeKey = encodeURIComponent(key);
+            CoreUtil.sendGet("/dev-api/monitor/cache/getValue/" + currentName + "/" + encodeKey, {}, function (res) {
+                var v = (res.data && res.data.cacheValue !== undefined && res.data.cacheValue !== null) ? res.data.cacheValue : '（空）';
+                var safeV = $('<div/>').text(v).html();
+                layer.open({
+                    type: 1,
+                    title: '缓存值 - ' + key,
+                    area: ['650px', '420px'],
+                    content: '<pre style="padding:15px;overflow:auto;max-height:360px;word-break:break-all;white-space:pre-wrap;">' + safeV + '</pre>'
+                });
+            });
+        });
+
+        // 删除缓存键
+        $(document).on('click', '.key-del', function () {
+            var key = $(this).attr('data-key');
+            layer.confirm('确定删除该缓存键吗？', {
+                skin: 'layui-layer-admin',
+                shade: .1
+            }, function () {
+                var encodeKey = encodeURIComponent(key);
+                CoreUtil.sendDelete("/dev-api/monitor/cache/clearCacheKey/" + encodeKey, {}, function (res) {
+                    layer.msg(res.msg || '操作成功', {icon: 1});
+                    loadKeys(currentName);
+                });
+            });
+        });
+    });
+</script>
+</body>
+</html>

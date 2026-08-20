@@ -20,6 +20,9 @@ layui.define(['jquery', 'admin', 'formX', 'xmSelect', 'notice'], function (expor
 
     var xnUtil = {
 
+        // 若依字典数据缓存：dictTypeCode -> [{code, name}]
+        __dictCache: {},
+
         /**
          * 判断是否有权限
          */
@@ -49,11 +52,14 @@ layui.define(['jquery', 'admin', 'formX', 'xmSelect', 'notice'], function (expor
          * 缓存字典信息
          */
         cacheDictData: function () {
-            // 获取字典数据
-            // admin.req(getProjectUrl() + 'sysDictType/tree', function(res){
-            admin.req(getProjectUrl() + '/dev-api/qixing/dictTree', function(res){
-                // 并存储
-                layui.data(admin.setter.tableName, {key: 'dictData', value: res.data});
+            // 预热所有字典类型，逐类型通过若依接口缓存数据
+            admin.req(getProjectUrl() + '/dev-api/system/dict/type/list', {pageNum: 1, pageSize: 200}, function(res){
+                var rows = (res && res.rows) ? res.rows : [];
+                layui.each(rows, function(i, t) {
+                    if (t.dictType) {
+                        xnUtil.getDictDataByDictTypeCode(t.dictType, null);
+                    }
+                });
             });
         },
 
@@ -64,17 +70,10 @@ layui.define(['jquery', 'admin', 'formX', 'xmSelect', 'notice'], function (expor
          */
         rendDataTableDict: function (dictCode, dictTypeCode) {
             var result = '未知';
-            var dictData = layui.data(admin.setter.tableName).dictData;
-            if(dictData === null || dictData === undefined) {
-                return result;
-            }
-            dictData.forEach(function (item) {
-                if(dictTypeCode.toString() === item.code) {
-                    item.children.forEach(function (childrenItem) {
-                        if(dictCode.toString() === childrenItem.code) {
-                            result = childrenItem.name;
-                        }
-                    });
+            var list = xnUtil.getDictDataByDictTypeCode(dictTypeCode, null);
+            layui.each(list || [], function(i, item) {
+                if (dictCode.toString() === item.code) {
+                    result = item.name;
                 }
             });
             return result;
@@ -83,53 +82,26 @@ layui.define(['jquery', 'admin', 'formX', 'xmSelect', 'notice'], function (expor
         /**
          * 根据字典类型编码获取子项
          */
-        getDictDataByDictTypeCode: function (dictTypeCode, exclude) {
-            var result = [];
-            var dictData = layui.data(admin.setter.tableName).dictData;
-            if(dictData === null || dictData === undefined) {
+getDictDataByDictTypeCode: function (dictTypeCode, exclude) {
+            var result = xnUtil.__dictCache[dictTypeCode];
+            if (result === undefined) {
+                var dataList = [];
+                admin.req(getProjectUrl() + '/dev-api/system/dict/data/type/' + dictTypeCode, function(res){
+                    var list = (res && res.data) ? res.data : [];
+                    layui.each(list, function(i, item) {
+                        dataList.push({ code: item.dictValue, name: item.dictLabel });
+                    });
+                }, 'GET', {async: false});
+                result = dataList;
+                xnUtil.__dictCache[dictTypeCode] = result;
+            }
+            if (!exclude || exclude.length === 0) {
                 return result;
             }
-            dictData.forEach(function (item) {
-                if(dictTypeCode.toString() === item.code) {
-                    if(exclude !== null && exclude !== undefined && exclude.length !== 0) {
-                        for(var i=0; i<item.children.length; i++) {
-                            var indexOf = exclude.indexOf(item.children[i].name);
-                            if(indexOf !== -1) {
-                                item.children.splice(i, 1);
-                            }
-                        }
-                    }
-                    result = item.children;
-                }
+            return result.filter(function(item) {
+                return exclude.indexOf(item.name) === -1;
             });
-            return result;
         },
-        getDictDataByDictTypeCodeV2: function (dictTypeCode, exclude) {
-            var result = [];
-            admin.req(getProjectUrl() + '/dev-api/system/dict/data/type/'+dictTypeCode, function(res){
-                // 并存储
-                layui.data(admin.setter.tableName, {key: 'dictData', value: res.data});
-            });
-            // var dictData = layui.data(admin.setter.tableName).dictData;
-            // if(dictData === null || dictData === undefined) {
-            //     return result;
-            // }
-            // dictData.forEach(function (item) {
-            //     if(dictTypeCode.toString() === item.code) {
-            //         if(exclude !== null && exclude !== undefined && exclude.length !== 0) {
-            //             for(var i=0; i<item.children.length; i++) {
-            //                 var indexOf = exclude.indexOf(item.children[i].name);
-            //                 if(indexOf !== -1) {
-            //                     item.children.splice(i, 1);
-            //                 }
-            //             }
-            //         }
-            //         result = item.children;
-            //     }
-            // });
-            return result;
-        },
-
         /**
          * 渲染字典下拉
          *

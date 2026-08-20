@@ -228,8 +228,7 @@
         </div>
         <div class="layui-form-item layui-input-icon-group login-captcha-group">
             <i class="layui-icon layui-icon-auz"></i>
-            <input class="layui-input" name="code"  id="code"  placeholder="请输入验证码1" autocomplete="off"
-                   lay-verType="tips" lay-verify="required" required/>
+            <input class="layui-input" name="code"  id="code"  placeholder="请输入验证码" autocomplete="off"/>
             <input type="hidden" id="verCode" name="verCode" />
             <input type="hidden" id="uuid" name="uuid" />
             <!--<img class="login-captcha"  width="90" height="40" alt=""/>-->
@@ -261,20 +260,25 @@
 <script src="/assets/js/core.util.js"></script>
  
 <script>
-     $.get('/dev-api/captchaImage', function(res) {
-            if(res.code == 0 || res.code == 200){
-                $('#verImg').attr('src', "data:image/gif;base64," + res.img); 
-                $('#uuid').val(res.uuid); 
-                // $('#verImg').attr('src', "data:image/gif;base64," + res.img); 
-                // $('#uuid').val(res.uuid); 
-                $('#verCode').val(""); 
-            }else{
-                if (res['code'] === 500){
-                    layer.msg("网络连接失败，连接服务器失败！");
-                }
-                layer.msg(res.msg);
+     var captchaEnabled = true;
+    $.get('/dev-api/captchaImage', function(res) {
+        if (res.code == 0 || res.code == 200) {
+            captchaEnabled = !(res.captchaEnabled === false);
+            if (!captchaEnabled) {
+                // 后端验证码开关关闭时，隐藏验证码输入组
+                $('.login-captcha-group').hide();
+            } else {
+                $('#verImg').attr('src', "data:image/gif;base64," + res.img);
+                $('#uuid').val(res.uuid);
+                $('#verCode').val("");
             }
-        },'json');
+        } else {
+            if (res['code'] === 500) {
+                layer.msg("网络连接失败，连接服务器失败！");
+            }
+            if (res.msg) { layer.msg(res.msg); }
+        }
+    }, 'json');
         
     layui.use(['layer', 'form'], function () {
         var $ = layui.jquery;
@@ -304,10 +308,6 @@
          // 进行登录操作
         form.on('submit(loginSubmit)', function (data) {
             data = data.field;
-            if (data.captcha == '') {
-                layer.msg('请输入验证码');
-                return false;
-            }
             if (data.username == '') {
                 layer.msg('用户名不能为空');
                 return false;
@@ -315,6 +315,15 @@
             if (data.password == '') {
                 layer.msg('密码不能为空');
                 return false;
+            }
+            if (captchaEnabled && data.code == '') {
+                layer.msg('请输入验证码');
+                return false;
+            }
+            if (!captchaEnabled) {
+                delete data.code;
+                delete data.uuid;
+                delete data.verCode;
             }
 
             // 三种方式会导致这种现象： 
