@@ -2,8 +2,7 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/RuoYi-Vue-3.92-springboot2-jdk8/sa-vue-admin" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/jun_base_vue_mybatisplus" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/jun_base_vue_mybatisplus/sa-vue-admin" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/RuoYi-Vue-3.92-springboot2-jdk8/scrm_mobile" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/RuoYi-Vue3" vcs="Git" />
   </component>
 </project>
