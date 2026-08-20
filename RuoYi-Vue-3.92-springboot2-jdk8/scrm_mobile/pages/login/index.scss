@@ -5,7 +5,7 @@
 	color: #000;
 }
 
-/deep/ .login-form-item .u-input {
+::v-deep .login-form-item .u-input {
   padding: 0 10px 0 62px;
 	height: 32px;
 	line-height: 32px;

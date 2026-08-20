@@ -32,7 +32,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-/deep/.u-cell__body {
+::v-deep .u-cell__body {
   padding: 8px 0 !important;
 }
 .notice-record {
