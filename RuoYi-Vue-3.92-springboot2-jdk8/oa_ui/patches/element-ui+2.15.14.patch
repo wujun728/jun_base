@@ -1,0 +1,13 @@
+diff --git a/node_modules/element-ui/lib/table.js b/node_modules/element-ui/lib/table.js
+index 9c241b3..a9ac3c5 100644
+--- a/node_modules/element-ui/lib/table.js
++++ b/node_modules/element-ui/lib/table.js
+@@ -4008,7 +4008,7 @@ var convertToRows = function convertToRows(originColumns) {
+         var rect = target.getBoundingClientRect();
+ 
+         var bodyStyle = document.body.style;
+-        if (rect.width > 12 && rect.right - event.pageX < 8) {
++        if (rect.width > 12 && rect.right - event.pageX < 11) {
+           bodyStyle.cursor = 'col-resize';
+           if (Object(dom_["hasClass"])(target, 'is-sortable')) {
+             target.style.cursor = 'col-resize';

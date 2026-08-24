@@ -1,0 +1,12 @@
+{
+    "name": "陀螺匠",
+    "short_name": "陀螺匠",
+    "start_url": ".",
+    "id": "index.html",
+    "background_color": "#999",
+    "theme_color": "#292d3e",
+    "display": "standalone",
+    "icons": [
+        { "src": "./image/logo.png", "sizes": "144x144", "type": "image/png" }
+      ]
+}

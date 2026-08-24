@@ -1,0 +1,73 @@
+/* theme color */
+$--color-primary: #1890FF;
+$--color-success: #19BE6B;
+$--color-warning: #ff9900;
+$--color-info: #1E1E1E;
+$--color-danger: #ED4014;
+$--color-file: #ffca28;
+
+$--color-1: #A277FF;
+$--color-2: #FB7A4D;
+$--color-3: #00BFFF;
+$--color-4: #7382BC;
+$--color-5: #F95C96;
+$--color-6: #2DA1DC;
+$--color-7: #3E6FC0;
+$--color-8: #765bc9;
+
+/* Background Color */
+$--color-bg1: #FFFFFF;
+$--color-bg2: #F0F2F5;
+$--color-bg3: #F1F9FF;
+
+/* Text Color */
+$--color-text01: #303133;
+$--color-text02: #606266;
+$--color-text03: #909399;
+$--color-text04: #C0C4CC;
+
+/* Line Color */
+$--color-line01: #DCDFE6;
+$--color-line02: #E4E7ED;
+$--color-line03: #EBEEF5;
+$--color-line04: #F0F2F5;
+$--color-line05: #F2F6FC;
+
+/* btn color */
+$blue: #324157;
+$light-blue: #3A71A8;
+$red: #C03639;
+$pink: #E65D6E;
+$green: #30B08F;
+$tiffany: #4AB7BD;
+$yellow: #FEC171;
+
+// 主菜单文本颜色
+$menuText: #BFCBD9;
+// 主菜单激活态文本颜色
+$menuActiveText: #409EFF;
+// 子菜单激活态文本颜色
+$subMenuActiveText: #F4F4F5;
+// 菜单背景色
+$menuBg: #FFF;
+// 主菜单悬停态背景色
+$menuHover: #263445;
+// 子菜单背景色
+$subMenuBg: #1F2D3D;
+// 子菜单悬停态背景色
+$subMenuHover: #001528;
+// 侧边栏宽度
+$sideBarWidth: 200px;
+
+
+// the :export directive is the magic sauce for webpack
+:export {
+  menuText: $menuText;
+  menuActiveText: $menuActiveText;
+  subMenuActiveText: $subMenuActiveText;
+  menuBg: $menuBg;
+  menuHover: $menuHover;
+  subMenuBg: $subMenuBg;
+  subMenuHover: $subMenuHover;
+  sideBarWidth: $sideBarWidth;
+}
