@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.nocode.mapper.MyWorkflowFormdataMapper">
+
+    <resultMap type="MyWorkflowFormdata" id="MyWorkflowFormdataResult">
+        <result property="id"    column="id"    />
+        <result property="businessKey"    column="business_key"    />
+        <result property="taskNodeName"    column="task_node_name"    />
+        <result property="pass"    column="pass"    />
+        <result property="comment"    column="comment"    />
+        <result property="createName"    column="create_name"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectMyWorkflowFormdataVo">
+        select id, business_key, task_node_name, pass, comment, create_name, create_by, create_time, update_time from my_workflow_formdata
+    </sql>
+
+    <select id="selectMyWorkflowFormdataList" parameterType="MyWorkflowFormdata" resultMap="MyWorkflowFormdataResult">
+        <include refid="selectMyWorkflowFormdataVo"/>
+        <where>
+            <if test="businessKey != null  and businessKey != ''"> and business_key = #{businessKey}</if>
+            <if test="taskNodeName != null  and taskNodeName != ''"> and task_node_name like concat('%', #{taskNodeName}, '%')</if>
+            <if test="pass != null  and pass != ''"> and pass = #{pass}</if>
+            <if test="comment != null  and comment != ''"> and comment = #{comment}</if>
+            <if test="createName != null  and createName != ''"> and create_name like concat('%', #{createName}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectMyWorkflowFormdataById" parameterType="String" resultMap="MyWorkflowFormdataResult">
+        <include refid="selectMyWorkflowFormdataVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertMyWorkflowFormdata" parameterType="MyWorkflowFormdata">
+        insert into my_workflow_formdata
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="businessKey != null">business_key,</if>
+            <if test="taskNodeName != null">task_node_name,</if>
+            <if test="pass != null">pass,</if>
+            <if test="comment != null">comment,</if>
+            <if test="createName != null">create_name,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="businessKey != null">#{businessKey},</if>
+            <if test="taskNodeName != null">#{taskNodeName},</if>
+            <if test="pass != null">#{pass},</if>
+            <if test="comment != null">#{comment},</if>
+            <if test="createName != null">#{createName},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMyWorkflowFormdata" parameterType="MyWorkflowFormdata">
+        update my_workflow_formdata
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="businessKey != null">business_key = #{businessKey},</if>
+            <if test="taskNodeName != null">task_node_name = #{taskNodeName},</if>
+            <if test="pass != null">pass = #{pass},</if>
+            <if test="comment != null">comment = #{comment},</if>
+            <if test="createName != null">create_name = #{createName},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMyWorkflowFormdataById" parameterType="String">
+        delete from my_workflow_formdata where id = #{id}
+    </delete>
+
+    <delete id="deleteMyWorkflowFormdataByIds" parameterType="String">
+        delete from my_workflow_formdata where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

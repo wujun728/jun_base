@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysRoleDeptMapper">
+
+	<resultMap type="SysRoleDept" id="SysRoleDeptResult">
+		<result property="roleId"     column="role_id"      />
+		<result property="deptId"     column="dept_id"      />
+	</resultMap>
+
+	<insert id="batchRoleDept">
+		insert into sys_role_dept(role_id, dept_id) values
+		<foreach item="item" index="index" collection="list" separator=",">
+			(#{item.roleId},#{item.deptId})
+		</foreach>
+	</insert>
+	
+</mapper> 

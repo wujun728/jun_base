@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.nocode.mapper.ActReDeploymentMapper">
+
+	<resultMap type="ActReDeploymentVO" id="ActReDeploymentResult">
+		<id     property="id"       column="id"      />
+		<result property="deployTime"       column="deploy_time"      />
+	</resultMap>
+
+
+	<sql id="selectDeploymentVo">
+       select ID_ id,DEPLOY_TIME_ deploy_time from `act_re_deployment`
+    </sql>
+
+
+	<select id="selectActReDeploymentByIds"  parameterType="String" resultMap="ActReDeploymentResult">
+	    <include refid="selectDeploymentVo"/>
+		where ID_  in
+		<foreach collection="ids" item="id" index="index" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</select>
+
+
+</mapper>

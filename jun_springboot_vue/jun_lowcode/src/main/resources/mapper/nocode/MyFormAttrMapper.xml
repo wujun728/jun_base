@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.nocode.mapper.MyFormAttrMapper">
+
+    <resultMap type="MyFormAttr" id="MyFormAttrResult">
+        <result property="id" column="id"/>
+        <result property="formId" column="form_id"/>
+        <result property="attrName" column="attr_name"/>
+        <result property="attrCode" column="attr_code"/>
+        <result property="isShow" column="is_show"/>
+        <result property="showOrder" column="show_order"/>
+        <result property="createName" column="create_name"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectMyFormAttrVo">
+        select id,
+               form_id,
+               attr_name,
+               attr_code,
+               is_show,
+               show_order,
+               create_name,
+               create_by,
+               create_time,
+               update_time
+        from my_form_attr
+    </sql>
+
+    <select id="selectMyFormAttrList" parameterType="MyFormAttr" resultMap="MyFormAttrResult">
+        <include refid="selectMyFormAttrVo"/>
+        <where>
+            <if test="formId != null  and formId != ''">and form_id = #{formId}</if>
+            <if test="attrName != null  and attrName != ''">and attr_name like concat('%', #{attrName}, '%')</if>
+            <if test="attrCode != null  and attrCode != ''">and attr_code = #{attrCode}</if>
+            <if test="isShow != null ">and is_show = #{isShow}</if>
+            <if test="showOrder != null ">and show_order = #{showOrder}</if>
+            <if test="createName != null  and createName != ''">and create_name like concat('%', #{createName}, '%')
+            </if>
+        </where>
+        order by is_show desc, show_order asc
+    </select>
+
+    <select id="selectShowAttrListByFormId" parameterType="String" resultMap="MyFormAttrResult">
+        <include refid="selectMyFormAttrVo"/>
+        where form_id=#{formId}
+        and is_show=1
+        order by show_order asc
+    </select>
+
+    <select id="selectMyFormAttrById" parameterType="String" resultMap="MyFormAttrResult">
+        <include refid="selectMyFormAttrVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertMyFormAttr" parameterType="MyFormAttr">
+        insert into my_form_attr
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="formId != null">form_id,</if>
+            <if test="attrName != null">attr_name,</if>
+            <if test="attrCode != null">attr_code,</if>
+            <if test="isShow != null">is_show,</if>
+            <if test="showOrder != null">show_order,</if>
+            <if test="createName != null">create_name,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="formId != null">#{formId},</if>
+            <if test="attrName != null">#{attrName},</if>
+            <if test="attrCode != null">#{attrCode},</if>
+            <if test="isShow != null">#{isShow},</if>
+            <if test="showOrder != null">#{showOrder},</if>
+            <if test="createName != null">#{createName},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMyFormAttr" parameterType="MyFormAttr">
+        update my_form_attr
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="formId != null">form_id = #{formId},</if>
+            <if test="attrName != null">attr_name = #{attrName},</if>
+            <if test="attrCode != null">attr_code = #{attrCode},</if>
+            <if test="isShow != null">is_show = #{isShow},</if>
+            <if test="showOrder != null">show_order = #{showOrder},</if>
+            <if test="createName != null">create_name = #{createName},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMyFormAttrById" parameterType="String">
+        delete
+        from my_form_attr
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteMyFormAttrByFormId" parameterType="String">
+        delete
+        from my_form_attr
+        where form_id = #{formId}
+    </delete>
+
+    <delete id="deleteMyFormAttrByIds" parameterType="String">
+        delete from my_form_attr where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteMyFormAttrByFormIds" parameterType="String">
+        delete from my_form_attr where form_id in
+        <foreach item="formId" collection="array" open="(" separator="," close=")">
+            #{formId}
+        </foreach>
+    </delete>
+</mapper>

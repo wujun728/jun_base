@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.nocode.mapper.MyFormDefMapper">
+
+    <resultMap type="MyFormDef" id="MyFormDefResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="defination"    column="defination"    />
+        <result property="refProcKey"    column="ref_proc_key"    />
+        <result property="createName"    column="create_name"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectMyFormDefVo">
+        select id, name, defination, ref_proc_key, create_name, create_by, create_time, update_time from my_form_def
+    </sql>
+
+    <select id="selectMyFormDefList" parameterType="MyFormDef" resultMap="MyFormDefResult">
+        <include refid="selectMyFormDefVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="defination != null  and defination != ''"> and defination = #{defination}</if>
+            <if test="refProcKey != null  and refProcKey != ''"> and ref_proc_key = #{refProcKey}</if>
+            <if test="createName != null  and createName != ''"> and create_name like concat('%', #{createName}, '%')</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectMyFormDefById" parameterType="String" resultMap="MyFormDefResult">
+        <include refid="selectMyFormDefVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectMyFormDefByProcKey" parameterType="String" resultMap="MyFormDefResult">
+        <include refid="selectMyFormDefVo"/>
+        where ref_proc_key = #{refProcKey}
+    </select>
+
+    <insert id="insertMyFormDef" parameterType="MyFormDef">
+        insert into my_form_def
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="name != null">name,</if>
+            <if test="defination != null">defination,</if>
+            <if test="refProcKey != null">ref_proc_key,</if>
+            <if test="createName != null">create_name,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="name != null">#{name},</if>
+            <if test="defination != null">#{defination},</if>
+            <if test="refProcKey != null">#{refProcKey},</if>
+            <if test="createName != null">#{createName},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMyFormDef" parameterType="MyFormDef">
+        update my_form_def
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="defination != null">defination = #{defination},</if>
+            <if test="refProcKey != null">ref_proc_key = #{refProcKey},</if>
+            <if test="createName != null">create_name = #{createName},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMyFormDefById" parameterType="String">
+        delete from my_form_def where id = #{id}
+    </delete>
+
+    <delete id="deleteMyFormDefByIds" parameterType="String">
+        delete from my_form_def where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

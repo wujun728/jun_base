@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>jun_springboot_vue</artifactId>
+        <groupId>io.github.wujun728</groupId>
+        <version>1.0.22</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>jun_common</artifactId>
+    <packaging>pom</packaging>
+
+    <description>
+        jun_common通用模块（聚合）
+    </description>
+
+    <modules>
+        <module>jun_common_core</module>
+        <module>jun_common_redis</module>
+        <module>jun_common_security</module>
+        <module>jun_common_log</module>
+        <module>jun_common_datascope</module>
+        <module>jun_common_datasource</module>
+        <module>jun_common_sensitive</module>
+        <module>jun_common_swagger</module>
+        <module>jun_common_seata</module>
+    </modules>
+
+</project>
