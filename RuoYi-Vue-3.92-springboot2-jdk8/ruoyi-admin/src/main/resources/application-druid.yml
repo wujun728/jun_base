@@ -1,4 +1,4 @@
-# 数据源配置
+﻿# 数据源配置
 spring:
     datasource:
         type: com.alibaba.druid.pool.DruidDataSource
@@ -6,7 +6,7 @@ spring:
         druid:
             # 主库数据源
             master:
-                url: jdbc:mysql://localhost:3307/ry-vue?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+                url: jdbc:mysql://127.0.0.1:3307/db1_ry_vue?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2B8
                 username: root
                 password: mysqladmin
             # 从库数据源
@@ -59,3 +59,4 @@ spring:
                 wall:
                     config:
                         multi-statement-allow: true
+

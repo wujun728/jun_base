@@ -131,7 +131,7 @@
           <el-input v-model="form.category" placeholder="请输入商品分类" />
         </el-form-item>
         <el-form-item label="店铺地址" prop="address">
-          <baidu-map-point v-model="form.address" :show-text="false"/>
+          <el-input v-model="form.address" placeholder="请输入店铺地址" />
         </el-form-item>
         <el-form-item label="商品描述" prop="description">
           <el-input v-model="form.description" type="textarea" placeholder="请输入内容" />
@@ -140,7 +140,7 @@
           <el-input v-model="form.tag" placeholder="请输入标签" />
         </el-form-item>
         <el-form-item label="图片">
-          <upload-image v-model="form.image"/>
+          <el-input v-model="form.image" placeholder="图片地址" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -153,12 +153,9 @@
 
 <script>
 import { listExpandTable, getExpandTable, delExpandTable, addExpandTable, updateExpandTable, exportExpandTable } from "@/api/demo/expandTable/expandTable";
-import BaiduMapPoint from '../../../components/BaiduMap/baiduMapPoint'
-import UploadImage from '../../../components/Upload/uploadImage'
 
 export default {
   name: "ExpandTable",
-  components: {UploadImage, BaiduMapPoint },
   data() {
     return {
       // 遮罩层

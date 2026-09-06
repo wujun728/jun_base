@@ -35,11 +35,10 @@ public class CommonUtil {
    }
 
    public static Map<String, String> parseQueryParameters(String query) {
-      if (query == null || query.isEmpty()) {
-         return Map.of();
-      }
-
       Map<String, String> params = new HashMap<>();
+      if (query == null || query.isEmpty()) {
+         return params;
+      }
       String[] pairs = query.split("&");
       for (String pair : pairs) {
          String[] keyValue = pair.split("=");
