@@ -1,0 +1,396 @@
+// cover some element-ui styles
+
+.el-breadcrumb__inner,
+.el-breadcrumb__inner a {
+  font-weight: 400 !important;
+  color: var(--screen-text-regular) !important;
+}
+
+.el-upload {
+  input[type="file"] {
+    display: none !important;
+  }
+}
+
+.el-upload__input {
+  display: none;
+}
+
+.cell {
+  .el-tag {
+    margin-right: 0px;
+  }
+}
+
+.small-padding {
+  .cell {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+}
+
+.fixed-width {
+  .el-button--mini {
+    padding: 7px 10px;
+    width: 60px;
+  }
+}
+
+.status-col {
+  .cell {
+    padding: 0 10px;
+    text-align: center;
+
+    .el-tag {
+      margin-right: 0px;
+    }
+  }
+}
+
+// to fixed https://github.com/ElemeFE/element/issues/2461
+.el-dialog {
+  transform: none;
+  left: 0;
+  position: relative;
+  margin: 0 auto;
+  background: var(--screen-panel-strong);
+  border: 1px solid var(--screen-border);
+  box-shadow: var(--screen-shadow);
+}
+
+// refine element ui upload
+.upload-container {
+  .el-upload {
+    width: 100%;
+
+    .el-upload-dragger {
+      width: 100%;
+      height: 200px;
+    }
+  }
+}
+
+// dropdown
+.el-dropdown-menu {
+  background: var(--screen-panel-strong);
+  border: 1px solid var(--screen-border);
+  box-shadow: var(--screen-shadow);
+
+  a {
+    display: block
+  }
+}
+
+// fix date-picker ui bug in filter-item
+.el-range-editor.el-input__inner {
+  display: inline-flex !important;
+}
+
+// to fix el-date-picker css style
+.el-range-separator {
+  box-sizing: content-box;
+}
+
+.el-menu--collapse
+> div
+> .el-submenu
+> .el-submenu__title
+.el-submenu__icon-arrow {
+  display: none;
+}
+
+.el-dropdown .el-dropdown-link{
+  color: var(--el-color-primary) !important;
+}
+
+.el-overlay {
+  background-color: rgba(1, 9, 22, 0.72) !important;
+}
+
+.el-drawer {
+  background: linear-gradient(180deg, rgba(7, 20, 43, 0.98) 0%, rgba(4, 13, 30, 0.98) 100%) !important;
+  color: var(--screen-text-primary);
+  border-left: 1px solid var(--screen-border);
+  box-shadow: -12px 0 30px rgba(0, 0, 0, 0.32);
+}
+
+.el-message-box {
+  background: var(--screen-panel-strong) !important;
+  border: 1px solid var(--screen-border) !important;
+  box-shadow: var(--screen-shadow) !important;
+}
+
+.el-message-box__title,
+.el-message-box__message,
+.el-dialog__title,
+.el-drawer__header {
+  color: var(--screen-text-primary) !important;
+}
+
+.el-input__wrapper,
+.el-textarea__inner,
+.el-select__wrapper,
+.el-input-number,
+.el-date-editor.el-input__wrapper,
+.el-date-editor .el-input__wrapper {
+  background: rgba(10, 28, 60, 0.88) !important;
+  box-shadow: inset 0 0 0 1px rgba(72, 145, 255, 0.16) !important;
+  color: var(--screen-text-primary) !important;
+}
+
+.el-input__wrapper.is-focus,
+.el-select__wrapper.is-focused,
+.el-textarea__inner:focus {
+  box-shadow: inset 0 0 0 1px var(--screen-primary), 0 0 0 3px rgba(47, 123, 255, 0.14) !important;
+}
+
+.el-input__inner,
+.el-textarea__inner,
+.el-select__placeholder,
+.el-range-input,
+.el-input-number__decrease,
+.el-input-number__increase {
+  color: var(--screen-text-primary) !important;
+}
+
+.el-input__inner::placeholder,
+.el-textarea__inner::placeholder,
+.el-range-input::placeholder {
+  color: var(--screen-text-placeholder) !important;
+}
+
+.el-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  padding: 0 10px;
+  line-height: 1;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 999px;
+  border: 1px solid rgba(72, 145, 255, 0.22) !important;
+  background: rgba(10, 28, 60, 0.72) !important;
+  color: var(--screen-text-regular) !important;
+  box-shadow: inset 0 0 0 1px rgba(52, 208, 255, 0.04);
+}
+
+.el-tag.el-tag--primary,
+.el-tag:not(.el-tag--success):not(.el-tag--warning):not(.el-tag--danger):not(.el-tag--info) {
+  border-color: rgba(52, 208, 255, 0.26) !important;
+  background: rgba(47, 123, 255, 0.14) !important;
+  color: #8fdfff !important;
+}
+
+.el-tag.el-tag--success {
+  border-color: rgba(36, 214, 154, 0.3) !important;
+  background: rgba(36, 214, 154, 0.14) !important;
+  color: #7ef0c4 !important;
+}
+
+.el-tag.el-tag--warning {
+  border-color: rgba(255, 179, 71, 0.3) !important;
+  background: rgba(255, 179, 71, 0.14) !important;
+  color: #ffd08a !important;
+}
+
+.el-tag.el-tag--danger {
+  border-color: rgba(255, 107, 139, 0.3) !important;
+  background: rgba(255, 107, 139, 0.14) !important;
+  color: #ffb1c4 !important;
+}
+
+.el-tag.el-tag--info {
+  border-color: rgba(127, 147, 184, 0.28) !important;
+  background: rgba(127, 147, 184, 0.12) !important;
+  color: #c6d5ec !important;
+}
+
+.el-tag .el-tag__close {
+  color: currentColor !important;
+}
+
+.el-select-dropdown,
+.el-picker-panel,
+.el-popover.el-popper,
+.el-popper.is-light,
+.el-autocomplete-suggestion,
+.el-cascader__dropdown {
+  background: var(--screen-panel-strong) !important;
+  border: 1px solid var(--screen-border) !important;
+  box-shadow: var(--screen-shadow) !important;
+  color: var(--screen-text-regular) !important;
+}
+
+.el-select-dropdown__item,
+.el-picker-panel__shortcut,
+.el-date-table td .el-date-table-cell__text,
+.el-time-panel__content {
+  color: var(--screen-text-regular) !important;
+}
+
+.el-select-dropdown__item.hover,
+.el-select-dropdown__item:hover,
+.el-select-dropdown__item.selected,
+.el-picker-panel__shortcut:hover {
+  background: rgba(47, 123, 255, 0.14) !important;
+  color: var(--screen-text-primary) !important;
+}
+
+// 统一表格基础背景，行容器保留透明，由单元格和变量统一接管真实底色。
+.el-table,
+.el-table tr {
+  background: transparent !important;
+  color: var(--screen-text-regular) !important;
+  border-bottom-color: rgba(72, 145, 255, 0.14) !important;
+}
+
+// 表头单元格使用更深的面板色，保持固定表头和普通表头一致。
+.el-table th.el-table__cell,
+.el-table__fixed-header-wrapper th.el-table__cell {
+  background: rgba(10, 28, 60, 0.98) !important;
+  color: var(--screen-text-regular) !important;
+  border-bottom-color: rgba(72, 145, 255, 0.14) !important;
+}
+
+// 表体单元格补上实体背景，防止固定操作列透出后方文本。
+.el-table td.el-table__cell,
+.el-table__fixed td.el-table__cell,
+.el-table__fixed-right td.el-table__cell {
+  background: rgba(6, 20, 43, 0.96) !important;
+  color: var(--screen-text-regular) !important;
+  border-bottom-color: rgba(72, 145, 255, 0.14) !important;
+}
+
+// Element Plus 新版固定列使用 sticky 单元格类名，需要单独覆盖背景。
+.el-table .el-table__cell.el-table-fixed-column--left,
+.el-table .el-table__cell.el-table-fixed-column--right,
+.el-table .el-table__cell.el-table__fixed-right-patch {
+  background: rgba(6, 20, 43, 0.96) !important;
+}
+
+// 固定列容器本身也需要背景，避免容器缝隙区域出现透明穿透。
+.el-table__body-wrapper,
+.el-table__header-wrapper,
+.el-table__empty-block,
+.el-table__empty-text,
+.el-table__fixed,
+.el-table__fixed-right,
+.el-table__fixed-body-wrapper,
+.el-table__fixed-header-wrapper,
+.el-table__fixed-right-patch {
+  background: rgba(6, 20, 43, 0.96) !important;
+  color: var(--screen-text-regular) !important;
+}
+
+// hover 时同步固定列和主表行的背景，避免操作列像单独浮在上面。
+.el-table__body tr:hover > td,
+.el-table__fixed-body-wrapper tr:hover > td,
+.el-table__fixed-right .el-table__fixed-body-wrapper tr:hover > td,
+.el-table .el-table__body tr:hover > td.el-table-fixed-column--left,
+.el-table .el-table__body tr:hover > td.el-table-fixed-column--right,
+.el-table .el-table__body tr:hover > td.el-table__fixed-right-patch {
+  background: rgba(15, 38, 78, 0.98) !important;
+}
+
+.el-table::before,
+.el-table__inner-wrapper::before {
+  background-color: rgba(72, 145, 255, 0.14) !important;
+}
+
+.el-tree,
+.el-tree-node__content,
+.el-tree-node:focus > .el-tree-node__content {
+  background: transparent !important;
+  color: var(--screen-text-regular) !important;
+}
+
+.el-tree-node__content:hover,
+.el-tree-node.is-current > .el-tree-node__content {
+  background: rgba(47, 123, 255, 0.12) !important;
+  color: var(--screen-text-primary) !important;
+}
+
+.el-switch {
+  --el-switch-off-color: rgba(10, 28, 60, 0.9);
+  --el-switch-on-color: transparent;
+}
+
+.el-switch .el-switch__core {
+  border: 1px solid rgba(72, 145, 255, 0.24) !important;
+  background: rgba(10, 28, 60, 0.88) !important;
+  box-shadow: inset 0 0 0 1px rgba(52, 208, 255, 0.04);
+}
+
+.el-switch .el-switch__action {
+  background: linear-gradient(135deg, #d7e7ff 0%, #ffffff 100%) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+.el-switch.is-checked .el-switch__core {
+  background: linear-gradient(90deg, rgba(47, 123, 255, 0.95) 0%, rgba(52, 208, 255, 0.95) 100%) !important;
+  border-color: rgba(52, 208, 255, 0.42) !important;
+  box-shadow: 0 0 14px rgba(52, 208, 255, 0.16) !important;
+}
+
+.el-switch.is-disabled {
+  opacity: 0.58;
+}
+
+.el-pagination,
+.el-pagination button,
+.el-pagination span:not([class*=suffix]),
+.el-pagination .el-pager li {
+  color: var(--screen-text-regular) !important;
+}
+
+.el-pagination .btn-prev,
+.el-pagination .btn-next,
+.el-pagination .el-pager li {
+  background: rgba(10, 28, 60, 0.88) !important;
+  border: 1px solid rgba(72, 145, 255, 0.14);
+  border-radius: 8px;
+  transition: all 0.25s ease;
+}
+
+.el-pagination .el-pager li.is-active {
+  color: #fff !important;
+  background: linear-gradient(135deg, #2f7bff 0%, #34d0ff 100%) !important;
+  border-color: transparent !important;
+  box-shadow: 0 6px 16px rgba(47, 123, 255, 0.22);
+}
+
+.el-pagination .btn-prev:hover,
+.el-pagination .btn-next:hover,
+.el-pagination .el-pager li:hover {
+  color: var(--screen-text-primary) !important;
+  border-color: rgba(72, 145, 255, 0.3) !important;
+  background: rgba(15, 38, 78, 0.96) !important;
+}
+
+.el-pagination .btn-prev:disabled,
+.el-pagination .btn-next:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.el-pagination .el-pagination__jump,
+.el-pagination .el-pagination__total {
+  color: var(--screen-text-secondary) !important;
+}
+
+.el-tabs__item,
+.el-radio__label,
+.el-checkbox__label,
+.el-form-item__label,
+.el-descriptions__label,
+.el-descriptions__content {
+  color: var(--screen-text-regular) !important;
+}
+
+.el-card,
+.el-collapse-item__wrap,
+.el-descriptions,
+.el-tabs__nav-wrap::after {
+  background: transparent;
+}

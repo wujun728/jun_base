@@ -1,0 +1,259 @@
+@use './mixin.scss';
+@use './transition.scss';
+@use './element-ui.scss';
+@use './sidebar.scss';
+@use './btn.scss';
+@use './ruoyi.scss';
+
+body {
+  height: 100%;
+  margin: 0;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(47, 123, 255, 0.18), transparent 28%),
+    radial-gradient(circle at top right, rgba(52, 208, 255, 0.14), transparent 24%),
+    linear-gradient(180deg, var(--screen-bg) 0%, #030d1f 100%);
+  color: var(--screen-text-regular);
+  line-height: 1.6;
+}
+
+label {
+  font-weight: 700;
+}
+
+html {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+#app {
+  height: 100%;
+}
+
+html,
+body,
+#app {
+  background-color: var(--screen-bg);
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+.no-padding {
+  padding: 0px !important;
+}
+
+.padding-content {
+  padding: 4px 0;
+}
+
+a:focus,
+a:active {
+  outline: none;
+}
+
+a,
+a:focus,
+a:hover {
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: rgba(47, 123, 255, 0.35);
+  color: #fff;
+}
+
+div:focus {
+  outline: none;
+}
+
+.fr {
+  float: right;
+}
+
+.fl {
+  float: left;
+}
+
+.pr-5 {
+  padding-right: 5px;
+}
+
+.pl-5 {
+  padding-left: 5px;
+}
+
+.block {
+  display: block;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.inlineBlock {
+  display: block;
+}
+
+.clearfix {
+  &:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+}
+
+aside {
+  background: var(--screen-panel);
+  padding: 8px 24px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  display: block;
+  line-height: 32px;
+  font-size: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  color: var(--screen-text-regular);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  border: 1px solid var(--screen-border);
+  box-shadow: var(--screen-shadow);
+
+  a {
+    color: var(--screen-primary-light);
+    cursor: pointer;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+}
+
+//现代化主容器样式
+.app-container {
+  padding: 24px;
+  background: transparent;
+  min-height: calc(100vh - 120px);
+  color: var(--screen-text-regular);
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.components-container {
+  margin: 32px 48px;
+  position: relative;
+  background: var(--screen-panel);
+  border-radius: 20px;
+  padding: 32px;
+  backdrop-filter: blur(14px);
+  box-shadow: var(--screen-shadow);
+  border: 1px solid var(--screen-border);
+}
+
+// 添加淡入动画
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.text-center {
+  text-align: center
+}
+
+.sub-navbar {
+  height: 50px;
+  line-height: 50px;
+  position: relative;
+  width: 100%;
+  text-align: right;
+  padding-right: 20px;
+  transition: 600ms ease position;
+  background: linear-gradient(90deg, rgba(16, 44, 90, 0.98) 0%, rgba(11, 32, 70, 0.98) 100%);
+  border: 1px solid var(--screen-border);
+  border-radius: 12px;
+  box-shadow: var(--screen-shadow);
+
+  .subtitle {
+    font-size: 20px;
+    color: var(--screen-text-primary);
+  }
+
+  &.draft {
+    background: #d0d0d0;
+  }
+
+  &.deleted {
+    background: #d0d0d0;
+  }
+}
+
+.link-type,
+.link-type:focus {
+  color: var(--screen-primary-light);
+  cursor: pointer;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+.filter-container {
+  padding-bottom: 10px;
+
+  .filter-item {
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 10px;
+  }
+}
+
+/*设置弹出框上进上出*/
+@keyframes dialog-fade-in {
+  0% {
+    transform: translate3d(0, -100%, 0);
+    opacity: 0;
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+@keyframes dialog-fade-out {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, -100%, 0);
+    opacity: 0;
+  }
+}
+
+.page-background-grid::before,
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--screen-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--screen-grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.45;
+  z-index: 0;
+}
