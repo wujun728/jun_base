@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>ruoyi</artifactId>
+        <groupId>com.ruoyi.geekxd</groupId>
+        <version>3.9.0-G</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>ruoyi-geek-scenes</artifactId>
+
+    <properties></properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- 第三方登录启动器 -->
+            <dependency>
+                <groupId>com.ruoyi.geekxd</groupId>
+                <artifactId>ruoyi-auth-starter</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+            <!-- 支付管理启动器 -->
+            <dependency>
+                <groupId>com.ruoyi.geekxd</groupId>
+                <artifactId>ruoyi-pay-starter</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+            <!-- 文件管理启动器 -->
+            <dependency>
+                <groupId>com.ruoyi.geekxd</groupId>
+                <artifactId>ruoyi-file-starter</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+            <!-- 场景启动器 -->
+            <dependency>
+                <groupId>com.ruoyi.geekxd</groupId>
+                <artifactId>ruoyi-scene-starter</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+    <modules>
+        <!-- <module>ruoyi-scene-auth</module> -->
+        <!-- <module>ruoyi-scene-pay</module> -->
+        <module>ruoyi-scene-file</module>
+        <module>ruoyi-scene-starter</module>
+    </modules>
+    <packaging>pom</packaging>
+</project>

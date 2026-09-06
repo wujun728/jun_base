@@ -1,0 +1,53 @@
+# local配置
+local:
+  enable: true
+  primary: MASTER
+  buckets:
+    MASTER:
+      permission: public 
+      path: /data/files/master
+      # 建议public权限的api以 /profile开头就不需要再从SecurityConfig配置权限了
+      api: /profile/files/master
+    # SLAVE:
+    #   permission: private
+    #   path: /data/files/slave
+      # private需要自己编写一个api例如FileController中的/file/resource
+    #   api: /file/resource
+
+# Minio配置
+minio:
+  enable: false
+  primary: MASTER
+  buckets:
+    MASTER:
+      permission: public
+      url: http://localhost:9000
+      accessKey: 
+      secretKey: 
+      bucketName: ruoyi
+    # SLAVE:
+    #   permission: private
+    #   url: http://localhost:9000
+    #   accessKey: minioadmin
+    #   secretKey: minioadmin
+    #   bucketName: ry
+
+# oss配置
+oss:
+  enable: false
+  primary: MASTER
+  buckets:
+    MASTER:
+      permission: public
+      accessKeyId: accessKeyId
+      accessKeySecret: accessKeySecret
+      bucketName: ruoyi
+      endpoint: oss-cn-beijing.aliyuncs.com
+    # SLAVE:
+    #   permission: private
+    #   accessKeyId: 
+    #   accessKeySecret: 
+    #   bucketName: 
+    #   endpoint:
+
+

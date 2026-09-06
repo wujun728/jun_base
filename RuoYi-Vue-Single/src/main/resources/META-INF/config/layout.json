@@ -1,0 +1,32 @@
+[
+  {
+    "components": [
+      "header",
+      "sidebar",
+      "content"
+    ],
+    "description": "Primary application layout",
+    "id": "layout1",
+    "name": "Main Layout"
+  },
+  {
+    "components": [
+      "header",
+      "sidebar",
+      "content"
+    ],
+    "description": "Primary application layout",
+    "id": "layout2",
+    "name": "Main Layout"
+  },
+  {
+    "components": [
+      "header",
+      "sidebar",
+      "content"
+    ],
+    "description": "Primary application layout",
+    "id": "layout2",
+    "name": "Main Lay232323out"
+  }
+]

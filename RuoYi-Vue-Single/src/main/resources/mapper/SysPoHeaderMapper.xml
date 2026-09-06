@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.template.system.mapper.SysPoHeaderMapper">
+    
+    <resultMap type="SysPoHeader" id="SysPoHeaderResult">
+        <result property="id"    column="id"    />
+        <result property="code"    column="code"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="orderDate"    column="order_date"    />
+        <result property="deliveryDate"    column="delivery_date"    />
+        <result property="salesman"    column="salesman"    />
+        <result property="operator"    column="operator"    />
+        <result property="approver"    column="approver"    />
+        <result property="voidBy"    column="void_by"    />
+        <result property="isVoid"    column="is_void"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSysPoHeaderVo">
+        select id, code, supplier_id, order_date, delivery_date, salesman, operator, approver, void_by, is_void, create_by, create_time, update_by, update_time, remark from sys_po_header
+    </sql>
+
+    <select id="selectSysPoHeaderList" parameterType="SysPoHeader" resultMap="SysPoHeaderResult">
+        <include refid="selectSysPoHeaderVo"/>
+        <where>  
+            <if test="code != null  and code != ''"> and code = #{code}</if>
+            <if test="supplierId != null "> and supplier_id = #{supplierId}</if>
+            <if test="orderDate != null "> and order_date = #{orderDate}</if>
+            <if test="deliveryDate != null "> and delivery_date = #{deliveryDate}</if>
+            <if test="salesman != null  and salesman != ''"> and salesman = #{salesman}</if>
+            <if test="operator != null  and operator != ''"> and operator = #{operator}</if>
+            <if test="approver != null  and approver != ''"> and approver = #{approver}</if>
+            <if test="voidBy != null  and voidBy != ''"> and void_by = #{voidBy}</if>
+            <if test="isVoid != null "> and is_void = #{isVoid}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysPoHeaderById" parameterType="Long" resultMap="SysPoHeaderResult">
+        <include refid="selectSysPoHeaderVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysPoHeader" parameterType="SysPoHeader" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_po_header
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="code != null and code != ''">code,</if>
+            <if test="supplierId != null">supplier_id,</if>
+            <if test="orderDate != null">order_date,</if>
+            <if test="deliveryDate != null">delivery_date,</if>
+            <if test="salesman != null">salesman,</if>
+            <if test="operator != null">operator,</if>
+            <if test="approver != null">approver,</if>
+            <if test="voidBy != null">void_by,</if>
+            <if test="isVoid != null">is_void,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="code != null and code != ''">#{code},</if>
+            <if test="supplierId != null">#{supplierId},</if>
+            <if test="orderDate != null">#{orderDate},</if>
+            <if test="deliveryDate != null">#{deliveryDate},</if>
+            <if test="salesman != null">#{salesman},</if>
+            <if test="operator != null">#{operator},</if>
+            <if test="approver != null">#{approver},</if>
+            <if test="voidBy != null">#{voidBy},</if>
+            <if test="isVoid != null">#{isVoid},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysPoHeader" parameterType="SysPoHeader">
+        update sys_po_header
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="code != null and code != ''">code = #{code},</if>
+            <if test="supplierId != null">supplier_id = #{supplierId},</if>
+            <if test="orderDate != null">order_date = #{orderDate},</if>
+            <if test="deliveryDate != null">delivery_date = #{deliveryDate},</if>
+            <if test="salesman != null">salesman = #{salesman},</if>
+            <if test="operator != null">operator = #{operator},</if>
+            <if test="approver != null">approver = #{approver},</if>
+            <if test="voidBy != null">void_by = #{voidBy},</if>
+            <if test="isVoid != null">is_void = #{isVoid},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysPoHeaderById" parameterType="Long">
+        delete from sys_po_header where id = #{id}
+    </delete>
+
+    <delete id="deleteSysPoHeaderByIds" parameterType="String">
+        delete from sys_po_header where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

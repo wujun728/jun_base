@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.template.system.mapper.SysReturnHeaderMapper">
+    
+    <resultMap type="SysReturnHeader" id="SysReturnHeaderResult">
+        <result property="id"    column="id"    />
+        <result property="code"    column="code"    />
+        <result property="returnDate"    column="return_date"    />
+        <result property="salesman"    column="salesman"    />
+        <result property="operator"    column="operator"    />
+        <result property="approver"    column="approver"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSysReturnHeaderVo">
+        select id, code, return_date, salesman, operator, approver, create_by, create_time, update_by, update_time, remark from sys_return_header
+    </sql>
+
+    <select id="selectSysReturnHeaderList" parameterType="SysReturnHeader" resultMap="SysReturnHeaderResult">
+        <include refid="selectSysReturnHeaderVo"/>
+        <where>  
+            <if test="code != null  and code != ''"> and code = #{code}</if>
+            <if test="returnDate != null "> and return_date = #{returnDate}</if>
+            <if test="salesman != null  and salesman != ''"> and salesman = #{salesman}</if>
+            <if test="operator != null  and operator != ''"> and operator = #{operator}</if>
+            <if test="approver != null  and approver != ''"> and approver = #{approver}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysReturnHeaderById" parameterType="Long" resultMap="SysReturnHeaderResult">
+        <include refid="selectSysReturnHeaderVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysReturnHeader" parameterType="SysReturnHeader" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_return_header
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="code != null and code != ''">code,</if>
+            <if test="returnDate != null">return_date,</if>
+            <if test="salesman != null">salesman,</if>
+            <if test="operator != null">operator,</if>
+            <if test="approver != null">approver,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="code != null and code != ''">#{code},</if>
+            <if test="returnDate != null">#{returnDate},</if>
+            <if test="salesman != null">#{salesman},</if>
+            <if test="operator != null">#{operator},</if>
+            <if test="approver != null">#{approver},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysReturnHeader" parameterType="SysReturnHeader">
+        update sys_return_header
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="code != null and code != ''">code = #{code},</if>
+            <if test="returnDate != null">return_date = #{returnDate},</if>
+            <if test="salesman != null">salesman = #{salesman},</if>
+            <if test="operator != null">operator = #{operator},</if>
+            <if test="approver != null">approver = #{approver},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysReturnHeaderById" parameterType="Long">
+        delete from sys_return_header where id = #{id}
+    </delete>
+
+    <delete id="deleteSysReturnHeaderByIds" parameterType="String">
+        delete from sys_return_header where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

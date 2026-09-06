@@ -1,0 +1,16 @@
+######################################################################
+# Build Tools
+
+/unpackage/*
+/node_modules/*
+
+######################################################################
+# Development Tools
+
+/.idea/*
+/.vscode/*
+/.hbuilderx/*
+/target/*
+package-lock.json
+yarn.lock
+

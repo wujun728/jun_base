@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.template.system.mapper.SysLoanLineMapper">
+    
+    <resultMap type="SysLoanLine" id="SysLoanLineResult">
+        <result property="id"    column="id"    />
+        <result property="loanId"    column="loan_id"    />
+        <result property="lineNo"    column="line_no"    />
+        <result property="productId"    column="product_id"    />
+        <result property="productCode"    column="product_code"    />
+        <result property="productName"    column="product_name"    />
+        <result property="spec"    column="spec"    />
+        <result property="unit"    column="unit"    />
+        <result property="qty"    column="qty"    />
+        <result property="qtyReturned"    column="qty_returned"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSysLoanLineVo">
+        select id, loan_id, line_no, product_id, product_code, product_name, spec, unit, qty, qty_returned, create_by, create_time, update_by, update_time, remark from sys_loan_line
+    </sql>
+
+    <select id="selectSysLoanLineList" parameterType="SysLoanLine" resultMap="SysLoanLineResult">
+        <include refid="selectSysLoanLineVo"/>
+        <where>  
+            <if test="loanId != null "> and loan_id = #{loanId}</if>
+            <if test="lineNo != null "> and line_no = #{lineNo}</if>
+            <if test="productId != null "> and product_id = #{productId}</if>
+            <if test="productCode != null  and productCode != ''"> and product_code = #{productCode}</if>
+            <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
+            <if test="spec != null  and spec != ''"> and spec = #{spec}</if>
+            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+            <if test="qty != null "> and qty = #{qty}</if>
+            <if test="qtyReturned != null "> and qty_returned = #{qtyReturned}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysLoanLineById" parameterType="Long" resultMap="SysLoanLineResult">
+        <include refid="selectSysLoanLineVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysLoanLine" parameterType="SysLoanLine" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_loan_line
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="loanId != null">loan_id,</if>
+            <if test="lineNo != null">line_no,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="productCode != null">product_code,</if>
+            <if test="productName != null">product_name,</if>
+            <if test="spec != null">spec,</if>
+            <if test="unit != null">unit,</if>
+            <if test="qty != null">qty,</if>
+            <if test="qtyReturned != null">qty_returned,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="loanId != null">#{loanId},</if>
+            <if test="lineNo != null">#{lineNo},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="productCode != null">#{productCode},</if>
+            <if test="productName != null">#{productName},</if>
+            <if test="spec != null">#{spec},</if>
+            <if test="unit != null">#{unit},</if>
+            <if test="qty != null">#{qty},</if>
+            <if test="qtyReturned != null">#{qtyReturned},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysLoanLine" parameterType="SysLoanLine">
+        update sys_loan_line
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="loanId != null">loan_id = #{loanId},</if>
+            <if test="lineNo != null">line_no = #{lineNo},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="productCode != null">product_code = #{productCode},</if>
+            <if test="productName != null">product_name = #{productName},</if>
+            <if test="spec != null">spec = #{spec},</if>
+            <if test="unit != null">unit = #{unit},</if>
+            <if test="qty != null">qty = #{qty},</if>
+            <if test="qtyReturned != null">qty_returned = #{qtyReturned},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysLoanLineById" parameterType="Long">
+        delete from sys_loan_line where id = #{id}
+    </delete>
+
+    <delete id="deleteSysLoanLineByIds" parameterType="String">
+        delete from sys_loan_line where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

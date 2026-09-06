@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>ruoyi-geek-plugins</artifactId>
+        <groupId>com.ruoyi.geekxd</groupId>
+        <version>3.9.0-G</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>ruoyi-plugins-starter</artifactId>
+
+    <description>
+        中间件
+    </description>
+
+    <dependencies>
+        <!-- ehcache-->
+        <dependency>
+            <groupId>com.ruoyi.geekxd</groupId>
+            <artifactId>ruoyi-cache-ehcache</artifactId>
+        </dependency>
+
+        <!-- redis-->
+        <!-- <dependency>
+            <groupId>com.ruoyi.geekxd</groupId>
+            <artifactId>ruoyi-cache-redis</artifactId>
+        </dependency> -->
+
+        <!-- websocket -->
+        <!-- <dependency>
+            <groupId>com.ruoyi.geekxd</groupId>
+            <artifactId>ruoyi-websocket</artifactId>
+        </dependency> -->
+
+        <!-- mybatis-jpa -->
+        <!-- <dependency>
+            <groupId>com.ruoyi.geekxd</groupId>
+            <artifactId>ruoyi-mybatis-jpa</artifactId>
+        </dependency> -->
+
+        <!-- mybatis-plus -->
+        <!-- <dependency>
+            <groupId>com.ruoyi.geekxd</groupId>
+            <artifactId>ruoyi-mybatis-plus</artifactId>
+        </dependency> -->
+
+        <!-- <dependency>
+            <groupId>com.ruoyi.geekxd</groupId>
+            <artifactId>ruoyi-mybatis-interceptor</artifactId>
+        </dependency> -->
+
+        <!-- <dependency>
+            <groupId>com.ruoyi.geekxd</groupId>
+            <artifactId>ruoyi-netty</artifactId>
+        </dependency> -->
+
+        <!-- <dependency>
+            <groupId>com.ruoyi.geekxd</groupId>
+            <artifactId>ruoyi-rabbitmq</artifactId>
+        </dependency> -->
+
+        <!-- atomikos-->
+        <!-- <dependency>
+            <groupId>com.ruoyi.geekxd</groupId>
+            <artifactId>ruoyi-atomikos</artifactId>
+        </dependency> -->
+    </dependencies>
+
+</project>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.template.system.mapper.SysWarehouseMapper">
+    
+    <resultMap type="SysWarehouse" id="SysWarehouseResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="description"    column="description"    />
+        <result property="capacityQty"    column="capacity_qty"    />
+        <result property="address"    column="address"    />
+        <result property="managerName"    column="manager_name"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSysWarehouseVo">
+        select id, name, description, capacity_qty, address, manager_name, create_by, create_time, update_by, update_time, remark from sys_warehouse
+    </sql>
+
+    <select id="selectSysWarehouseList" parameterType="SysWarehouse" resultMap="SysWarehouseResult">
+        <include refid="selectSysWarehouseVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
+            <if test="capacityQty != null "> and capacity_qty = #{capacityQty}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="managerName != null  and managerName != ''"> and manager_name like concat('%', #{managerName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectSysWarehouseById" parameterType="Long" resultMap="SysWarehouseResult">
+        <include refid="selectSysWarehouseVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysWarehouse" parameterType="SysWarehouse" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_warehouse
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="description != null">description,</if>
+            <if test="capacityQty != null">capacity_qty,</if>
+            <if test="address != null">address,</if>
+            <if test="managerName != null">manager_name,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="description != null">#{description},</if>
+            <if test="capacityQty != null">#{capacityQty},</if>
+            <if test="address != null">#{address},</if>
+            <if test="managerName != null">#{managerName},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysWarehouse" parameterType="SysWarehouse">
+        update sys_warehouse
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="capacityQty != null">capacity_qty = #{capacityQty},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="managerName != null">manager_name = #{managerName},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysWarehouseById" parameterType="Long">
+        delete from sys_warehouse where id = #{id}
+    </delete>
+
+    <delete id="deleteSysWarehouseByIds" parameterType="String">
+        delete from sys_warehouse where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

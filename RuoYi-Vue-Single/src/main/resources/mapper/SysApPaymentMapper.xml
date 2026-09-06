@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.template.system.mapper.SysApPaymentMapper">
+    
+    <resultMap type="SysApPayment" id="SysApPaymentResult">
+        <result property="id"    column="id"    />
+        <result property="code"    column="code"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="salesman"    column="salesman"    />
+        <result property="payDate"    column="pay_date"    />
+        <result property="approver"    column="approver"    />
+        <result property="receiver"    column="receiver"    />
+        <result property="billNo"    column="bill_no"    />
+        <result property="billAmount"    column="bill_amount"    />
+        <result property="invoiceNo"    column="invoice_no"    />
+        <result property="invoiceAmount"    column="invoice_amount"    />
+        <result property="operator"    column="operator"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSysApPaymentVo">
+        select id, code, supplier_id, salesman, pay_date, approver, receiver, bill_no, bill_amount, invoice_no, invoice_amount, operator, create_by, create_time, update_by, update_time, remark from sys_ap_payment
+    </sql>
+
+    <select id="selectSysApPaymentList" parameterType="SysApPayment" resultMap="SysApPaymentResult">
+        <include refid="selectSysApPaymentVo"/>
+        <where>  
+            <if test="code != null  and code != ''"> and code like concat('%', #{code}, '%')</if>
+            <if test="salesman != null  and salesman != ''"> and salesman = #{salesman}</if>
+            <if test="payDate != null "> and pay_date = #{payDate}</if>
+            <if test="approver != null  and approver != ''"> and approver = #{approver}</if>
+            <if test="receiver != null  and receiver != ''"> and receiver = #{receiver}</if>
+            <if test="billNo != null  and billNo != ''"> and bill_no = #{billNo}</if>
+            <if test="billAmount != null "> and bill_amount = #{billAmount}</if>
+            <if test="invoiceNo != null  and invoiceNo != ''"> and invoice_no = #{invoiceNo}</if>
+            <if test="invoiceAmount != null "> and invoice_amount = #{invoiceAmount}</if>
+            <if test="operator != null  and operator != ''"> and operator = #{operator}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysApPaymentById" parameterType="Long" resultMap="SysApPaymentResult">
+        <include refid="selectSysApPaymentVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysApPayment" parameterType="SysApPayment" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_ap_payment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="code != null and code != ''">code,</if>
+            <if test="supplierId != null">supplier_id,</if>
+            <if test="salesman != null">salesman,</if>
+            <if test="payDate != null">pay_date,</if>
+            <if test="approver != null">approver,</if>
+            <if test="receiver != null">receiver,</if>
+            <if test="billNo != null">bill_no,</if>
+            <if test="billAmount != null">bill_amount,</if>
+            <if test="invoiceNo != null">invoice_no,</if>
+            <if test="invoiceAmount != null">invoice_amount,</if>
+            <if test="operator != null">operator,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="code != null and code != ''">#{code},</if>
+            <if test="supplierId != null">#{supplierId},</if>
+            <if test="salesman != null">#{salesman},</if>
+            <if test="payDate != null">#{payDate},</if>
+            <if test="approver != null">#{approver},</if>
+            <if test="receiver != null">#{receiver},</if>
+            <if test="billNo != null">#{billNo},</if>
+            <if test="billAmount != null">#{billAmount},</if>
+            <if test="invoiceNo != null">#{invoiceNo},</if>
+            <if test="invoiceAmount != null">#{invoiceAmount},</if>
+            <if test="operator != null">#{operator},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysApPayment" parameterType="SysApPayment">
+        update sys_ap_payment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="code != null and code != ''">code = #{code},</if>
+            <if test="supplierId != null">supplier_id = #{supplierId},</if>
+            <if test="salesman != null">salesman = #{salesman},</if>
+            <if test="payDate != null">pay_date = #{payDate},</if>
+            <if test="approver != null">approver = #{approver},</if>
+            <if test="receiver != null">receiver = #{receiver},</if>
+            <if test="billNo != null">bill_no = #{billNo},</if>
+            <if test="billAmount != null">bill_amount = #{billAmount},</if>
+            <if test="invoiceNo != null">invoice_no = #{invoiceNo},</if>
+            <if test="invoiceAmount != null">invoice_amount = #{invoiceAmount},</if>
+            <if test="operator != null">operator = #{operator},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysApPaymentById" parameterType="Long">
+        delete from sys_ap_payment where id = #{id}
+    </delete>
+
+    <delete id="deleteSysApPaymentByIds" parameterType="String">
+        delete from sys_ap_payment where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

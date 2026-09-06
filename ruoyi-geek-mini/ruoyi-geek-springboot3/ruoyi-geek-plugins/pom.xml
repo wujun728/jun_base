@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>ruoyi</artifactId>
+        <groupId>com.ruoyi.geekxd</groupId>
+        <version>3.9.0-G</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>ruoyi-geek-plugins</artifactId>
+
+    <properties>
+        <ehcache.version>3.10.8</ehcache.version>
+        <mybatis-plus.version>3.5.8</mybatis-plus.version>
+        <netty.version>4.1.112.Final</netty.version>
+        <transactions.version>6.0.0</transactions.version>
+    </properties>
+
+    <description>
+
+    </description>
+    <dependencyManagement>
+        <dependencies>
+            <!-- Ehcache缓存管理器 -->
+            <dependency>
+                <groupId>org.ehcache</groupId>
+                <artifactId>ehcache</artifactId>
+                <version>${ehcache.version}</version>
+            </dependency>
+
+            <!-- mybatis-plus -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <!-- netty -->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+
+            <!-- atomikos分布式事务 -->
+            <dependency>
+                <groupId>com.atomikos</groupId>
+                <artifactId>transactions-spring-boot3-starter</artifactId>
+                <version>${transactions.version}</version>
+            </dependency>
+
+            <!-- ruoyi-ehcache-->
+            <dependency>
+                <groupId>com.ruoyi.geekxd</groupId>
+                <artifactId>ruoyi-cache-ehcache</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+            <!-- ruoyi-redis-->
+            <dependency>
+                <groupId>com.ruoyi.geekxd</groupId>
+                <artifactId>ruoyi-cache-redis</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+            <!-- mybatis-jpa-->
+            <dependency>
+                <groupId>com.ruoyi.geekxd</groupId>
+                <artifactId>ruoyi-mybatis-jpa</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+            <!-- mybatis-plus-->
+            <dependency>
+                <groupId>com.ruoyi.geekxd</groupId>
+                <artifactId>ruoyi-mybatis-plus</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+            <!-- websocket -->
+            <dependency>
+                <groupId>com.ruoyi.geekxd</groupId>
+                <artifactId>ruoyi-websocket</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.ruoyi.geekxd</groupId>
+                <artifactId>ruoyi-mybatis-interceptor</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.ruoyi.geekxd</groupId>
+                <artifactId>ruoyi-netty</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.ruoyi.geekxd</groupId>
+                <artifactId>ruoyi-atomikos</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.ruoyi.geekxd</groupId>
+                <artifactId>ruoyi-rabbitmq</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.ruoyi.geekxd</groupId>
+                <artifactId>ruoyi-geek-plugins-starter</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+    <modules>
+        <!-- <module>ruoyi-cache-ehcache</module> -->
+        <!-- <module>ruoyi-mybatis-jpa</module> -->
+        <!-- <module>ruoyi-mybatis-plus</module> -->
+        <!-- <module>ruoyi-websocket</module> -->
+        <module>ruoyi-plugins-starter</module>
+        <!-- <module>ruoyi-mybatis-interceptor</module> -->
+        <!-- <module>ruoyi-netty</module> -->
+        <!-- <module>ruoyi-atomikos</module> -->
+        <!-- <module>ruoyi-rabbitmq</module> -->
+        <!-- <module>ruoyi-cache-redis</module> -->
+    </modules>
+    <packaging>pom</packaging>
+</project>

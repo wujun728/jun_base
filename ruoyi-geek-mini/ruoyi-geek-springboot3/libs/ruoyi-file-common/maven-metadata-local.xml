@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.ruoyi.geekxd</groupId>
+  <artifactId>ruoyi-file-common</artifactId>
+  <versioning>
+    <release>3.9.0-G</release>
+    <versions>
+      <version>3.9.0-G</version>
+    </versions>
+    <lastUpdated>20251031080547</lastUpdated>
+  </versioning>
+</metadata>

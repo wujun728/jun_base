@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.template.system.mapper.SysProductMapper">
+    
+    <resultMap type="SysProduct" id="SysProductResult">
+        <result property="id"    column="id"    />
+        <result property="code"    column="code"    />
+        <result property="name"    column="name"    />
+        <result property="shortName"    column="short_name"    />
+        <result property="unit"    column="unit"    />
+        <result property="specModel"    column="spec_model"    />
+        <result property="manufacturer"    column="manufacturer"    />
+        <result property="pricePublic"    column="price_public"    />
+        <result property="priceCost"    column="price_cost"    />
+        <result property="updateDate"    column="update_date"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSysProductVo">
+        select id, code, name, short_name, unit, spec_model, manufacturer, price_public, price_cost, update_date, create_by, create_time, update_by, update_time, remark from sys_product
+    </sql>
+
+    <select id="selectSysProductList" parameterType="SysProduct" resultMap="SysProductResult">
+        <include refid="selectSysProductVo"/>
+        <where>  
+            <if test="code != null  and code != ''"> and code = #{code}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="shortName != null  and shortName != ''"> and short_name like concat('%', #{shortName}, '%')</if>
+            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+            <if test="specModel != null  and specModel != ''"> and spec_model = #{specModel}</if>
+            <if test="manufacturer != null  and manufacturer != ''"> and manufacturer = #{manufacturer}</if>
+            <if test="pricePublic != null "> and price_public = #{pricePublic}</if>
+            <if test="priceCost != null "> and price_cost = #{priceCost}</if>
+            <if test="updateDate != null "> and update_date = #{updateDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysProductById" parameterType="Long" resultMap="SysProductResult">
+        <include refid="selectSysProductVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysProduct" parameterType="SysProduct" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="code != null and code != ''">code,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="shortName != null">short_name,</if>
+            <if test="unit != null">unit,</if>
+            <if test="specModel != null">spec_model,</if>
+            <if test="manufacturer != null">manufacturer,</if>
+            <if test="pricePublic != null">price_public,</if>
+            <if test="priceCost != null">price_cost,</if>
+            <if test="updateDate != null">update_date,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="code != null and code != ''">#{code},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="shortName != null">#{shortName},</if>
+            <if test="unit != null">#{unit},</if>
+            <if test="specModel != null">#{specModel},</if>
+            <if test="manufacturer != null">#{manufacturer},</if>
+            <if test="pricePublic != null">#{pricePublic},</if>
+            <if test="priceCost != null">#{priceCost},</if>
+            <if test="updateDate != null">#{updateDate},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysProduct" parameterType="SysProduct">
+        update sys_product
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="code != null and code != ''">code = #{code},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="shortName != null">short_name = #{shortName},</if>
+            <if test="unit != null">unit = #{unit},</if>
+            <if test="specModel != null">spec_model = #{specModel},</if>
+            <if test="manufacturer != null">manufacturer = #{manufacturer},</if>
+            <if test="pricePublic != null">price_public = #{pricePublic},</if>
+            <if test="priceCost != null">price_cost = #{priceCost},</if>
+            <if test="updateDate != null">update_date = #{updateDate},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysProductById" parameterType="Long">
+        delete from sys_product where id = #{id}
+    </delete>
+
+    <delete id="deleteSysProductByIds" parameterType="String">
+        delete from sys_product where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

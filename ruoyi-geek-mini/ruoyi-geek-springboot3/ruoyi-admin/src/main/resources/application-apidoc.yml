@@ -1,0 +1,24 @@
+# Swagger配置
+swagger:
+  # 是否开启swagger
+  enabled: true
+  # 请求前缀
+  pathMapping: /dev-api
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+  # 通过配置定义分组，替代代码中的硬编码分组
+  group-configs:
+    - group: sys系统模块
+      packages-to-scan: com.ruoyi.web.controller.system
+    - group: 基础模块
+      packages-to-scan: com.ruoyi.web.controller.common
+    - group: 支付模块
+      paths-to-match: /pay/**
+    - group: 文件模块
+      packages-to-scan: com.ruoyi.file.controller
+    - group: 认证模块
+      packages-to-scan: com.ruoyi.auth.controller

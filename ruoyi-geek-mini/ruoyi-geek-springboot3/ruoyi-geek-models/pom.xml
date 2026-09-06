@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>ruoyi</artifactId>
+        <groupId>com.ruoyi.geekxd</groupId>
+        <version>3.9.0-G</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>ruoyi-geek-models</artifactId>
+
+    <description>
+        中间件
+    </description>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- 定时任务模块 -->
+            <dependency>
+                <groupId>com.ruoyi.geekxd</groupId>
+                <artifactId>ruoyi-quartz</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+            <!-- 代码生成模块 -->
+            <dependency>
+                <groupId>com.ruoyi.geekxd</groupId>
+                <artifactId>ruoyi-generator</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+            <!-- 在线开发模块 -->
+            <dependency>
+                <groupId>com.ruoyi.geekxd</groupId>
+                <artifactId>ruoyi-online</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+            <!-- 消息模块-->
+            <dependency>
+                <groupId>com.ruoyi.geekxd</groupId>
+                <artifactId>ruoyi-message</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+            <!-- 表单模块-->
+            <dependency>
+                <groupId>com.ruoyi.geekxd</groupId>
+                <artifactId>ruoyi-form</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+            <!-- flowable模块-->
+            <dependency>
+                <groupId>com.ruoyi.geekxd</groupId>
+                <artifactId>ruoyi-flowable</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+            <!-- 手机号认证-->
+            <dependency>
+                <groupId>com.ruoyi.geekxd</groupId>
+                <artifactId>ruoyi-tfa-phone</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+            <!-- 邮箱认证 -->
+            <dependency>
+                <groupId>com.ruoyi.geekxd</groupId>
+                <artifactId>ruoyi-tfa-email</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+
+    <modules>
+        <module>ruoyi-models-starter</module>
+        <!-- <module>ruoyi-generator</module> -->
+        <!-- <module>ruoyi-quartz</module> -->
+        <!-- <module>ruoyi-online</module> -->
+        <!-- <module>ruoyi-message</module> -->
+        <!-- <module>ruoyi-form</module> -->
+        <!-- <module>ruoyi-flowable</module> -->
+    </modules>
+    <packaging>pom</packaging>
+</project>

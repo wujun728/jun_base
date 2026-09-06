@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.template.system.mapper.SysInventoryBalanceMapper">
+    
+    <resultMap type="SysInventoryBalance" id="SysInventoryBalanceResult">
+        <result property="id"    column="id"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="qtyOnHand"    column="qty_on_hand"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSysInventoryBalanceVo">
+        select id, warehouse_id, product_id, qty_on_hand, create_by, create_time, update_by, update_time, remark from sys_inventory_balance
+    </sql>
+
+    <select id="selectSysInventoryBalanceList" parameterType="SysInventoryBalance" resultMap="SysInventoryBalanceResult">
+        <include refid="selectSysInventoryBalanceVo"/>
+        <where>  
+            <if test="warehouseId != null "> and warehouse_id = #{warehouseId}</if>
+            <if test="productId != null "> and product_id = #{productId}</if>
+            <if test="qtyOnHand != null "> and qty_on_hand = #{qtyOnHand}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysInventoryBalanceById" parameterType="Long" resultMap="SysInventoryBalanceResult">
+        <include refid="selectSysInventoryBalanceVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysInventoryBalance" parameterType="SysInventoryBalance" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_inventory_balance
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="warehouseId != null">warehouse_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="qtyOnHand != null">qty_on_hand,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="warehouseId != null">#{warehouseId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="qtyOnHand != null">#{qtyOnHand},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysInventoryBalance" parameterType="SysInventoryBalance">
+        update sys_inventory_balance
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="warehouseId != null">warehouse_id = #{warehouseId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="qtyOnHand != null">qty_on_hand = #{qtyOnHand},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysInventoryBalanceById" parameterType="Long">
+        delete from sys_inventory_balance where id = #{id}
+    </delete>
+
+    <delete id="deleteSysInventoryBalanceByIds" parameterType="String">
+        delete from sys_inventory_balance where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

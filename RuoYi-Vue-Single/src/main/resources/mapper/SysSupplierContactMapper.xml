@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.template.system.mapper.SysSupplierContactMapper">
+    
+    <resultMap type="SysSupplierContact" id="SysSupplierContactResult">
+        <result property="id"    column="id"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="name"    column="name"    />
+        <result property="title"    column="title"    />
+        <result property="gender"    column="gender"    />
+        <result property="startCoopDate"    column="start_coop_date"    />
+        <result property="phone1"    column="phone1"    />
+        <result property="phone2"    column="phone2"    />
+        <result property="mobile"    column="mobile"    />
+        <result property="email"    column="email"    />
+        <result property="fax"    column="fax"    />
+        <result property="birthday"    column="birthday"    />
+        <result property="hobby"    column="hobby"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSysSupplierContactVo">
+        select id, supplier_id, name, title, gender, start_coop_date, phone1, phone2, mobile, email, fax, birthday, hobby, create_by, create_time, update_by, update_time, remark from sys_supplier_contact
+    </sql>
+
+    <select id="selectSysSupplierContactList" parameterType="SysSupplierContact" resultMap="SysSupplierContactResult">
+        <include refid="selectSysSupplierContactVo"/>
+        <where>  
+            <if test="supplierId != null "> and supplier_id = #{supplierId}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="gender != null  and gender != ''"> and gender = #{gender}</if>
+            <if test="startCoopDate != null "> and start_coop_date = #{startCoopDate}</if>
+            <if test="phone1 != null  and phone1 != ''"> and phone1 = #{phone1}</if>
+            <if test="phone2 != null  and phone2 != ''"> and phone2 = #{phone2}</if>
+            <if test="mobile != null  and mobile != ''"> and mobile = #{mobile}</if>
+            <if test="email != null  and email != ''"> and email = #{email}</if>
+            <if test="fax != null  and fax != ''"> and fax = #{fax}</if>
+            <if test="birthday != null "> and birthday = #{birthday}</if>
+            <if test="hobby != null  and hobby != ''"> and hobby = #{hobby}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysSupplierContactById" parameterType="Long" resultMap="SysSupplierContactResult">
+        <include refid="selectSysSupplierContactVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysSupplierContact" parameterType="SysSupplierContact" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_supplier_contact
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="supplierId != null">supplier_id,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="title != null">title,</if>
+            <if test="gender != null">gender,</if>
+            <if test="startCoopDate != null">start_coop_date,</if>
+            <if test="phone1 != null">phone1,</if>
+            <if test="phone2 != null">phone2,</if>
+            <if test="mobile != null">mobile,</if>
+            <if test="email != null">email,</if>
+            <if test="fax != null">fax,</if>
+            <if test="birthday != null">birthday,</if>
+            <if test="hobby != null">hobby,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="supplierId != null">#{supplierId},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="title != null">#{title},</if>
+            <if test="gender != null">#{gender},</if>
+            <if test="startCoopDate != null">#{startCoopDate},</if>
+            <if test="phone1 != null">#{phone1},</if>
+            <if test="phone2 != null">#{phone2},</if>
+            <if test="mobile != null">#{mobile},</if>
+            <if test="email != null">#{email},</if>
+            <if test="fax != null">#{fax},</if>
+            <if test="birthday != null">#{birthday},</if>
+            <if test="hobby != null">#{hobby},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysSupplierContact" parameterType="SysSupplierContact">
+        update sys_supplier_contact
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="supplierId != null">supplier_id = #{supplierId},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="startCoopDate != null">start_coop_date = #{startCoopDate},</if>
+            <if test="phone1 != null">phone1 = #{phone1},</if>
+            <if test="phone2 != null">phone2 = #{phone2},</if>
+            <if test="mobile != null">mobile = #{mobile},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="fax != null">fax = #{fax},</if>
+            <if test="birthday != null">birthday = #{birthday},</if>
+            <if test="hobby != null">hobby = #{hobby},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysSupplierContactById" parameterType="Long">
+        delete from sys_supplier_contact where id = #{id}
+    </delete>
+
+    <delete id="deleteSysSupplierContactByIds" parameterType="String">
+        delete from sys_supplier_contact where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

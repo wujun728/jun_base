@@ -1,0 +1,49 @@
+# 请输入自己的appid和appsecret
+oauth:
+  wx:
+    miniapp:
+      appId: appId
+      appSecret: appSecret
+      url: https://api.weixin.qq.com/sns/jscode2session
+    pub:
+      appId: appId
+      appSecret: appSecret
+      url: https://api.weixin.qq.com/sns/oauth2/access_token
+
+tfa:
+  phone:
+    dysms:
+      # 阿里云 AccessKey ID
+      accessKeyId: appId
+      # 阿里云 AccessKey Secret
+      accessKeySecret: appSecret
+      # 短信模板
+      template:
+          VerificationCode:
+            # 短信模板编码
+            templateCode: SMS_123456789
+            # 短信签名
+            signName: 阿里云短信测试
+            # 短信模板必需的数据名称，多个key以逗号分隔，此处配置作为校验
+            keys: code
+
+justauth:
+  sources:
+    gitee:
+      clientId: 00636b75552921c3ab87161f146d41a678f1d50f3dc29ca1f0902e0c1507d755
+      clientSecret: 4cd38fe8b5e79c39a90548934f294f850763f1123bf86c08448e8d4c46cbeddf
+      redirectUri: http://127.0.0.1:8080/system/auth/social-login/gitee
+    github:
+      clientId: Iv1.1be0cdcd71aca63b
+      clientSecret: 0d59d28b43152bc8906011624db37b0fed88d154
+      redirectUri: http://127.0.0.1:8080/system/auth/social-login/github
+
+
+spring:
+  mail:
+    # 邮箱配置  smtp.qq.com   smtp.163.com
+    host: smtp.163.com
+    # 邮箱地址
+    username: email
+    # 授权码
+    password: password

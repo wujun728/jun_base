@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.template.system.mapper.SysStockCountLineMapper">
+    
+    <resultMap type="SysStockCountLine" id="SysStockCountLineResult">
+        <result property="id"    column="id"    />
+        <result property="countId"    column="count_id"    />
+        <result property="lineNo"    column="line_no"    />
+        <result property="productId"    column="product_id"    />
+        <result property="productCode"    column="product_code"    />
+        <result property="productName"    column="product_name"    />
+        <result property="shortName"    column="short_name"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="qtyOnHand"    column="qty_on_hand"    />
+        <result property="qtyActual"    column="qty_actual"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSysStockCountLineVo">
+        select id, count_id, line_no, product_id, product_code, product_name, short_name, warehouse_id, qty_on_hand, qty_actual, create_by, create_time, update_by, update_time, remark from sys_stock_count_line
+    </sql>
+
+    <select id="selectSysStockCountLineList" parameterType="SysStockCountLine" resultMap="SysStockCountLineResult">
+        <include refid="selectSysStockCountLineVo"/>
+        <where>  
+            <if test="countId != null "> and count_id = #{countId}</if>
+            <if test="lineNo != null "> and line_no = #{lineNo}</if>
+            <if test="productId != null "> and product_id = #{productId}</if>
+            <if test="productCode != null  and productCode != ''"> and product_code = #{productCode}</if>
+            <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
+            <if test="shortName != null  and shortName != ''"> and short_name like concat('%', #{shortName}, '%')</if>
+            <if test="warehouseId != null "> and warehouse_id = #{warehouseId}</if>
+            <if test="qtyOnHand != null "> and qty_on_hand = #{qtyOnHand}</if>
+            <if test="qtyActual != null "> and qty_actual = #{qtyActual}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysStockCountLineById" parameterType="Long" resultMap="SysStockCountLineResult">
+        <include refid="selectSysStockCountLineVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysStockCountLine" parameterType="SysStockCountLine" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_stock_count_line
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="countId != null">count_id,</if>
+            <if test="lineNo != null">line_no,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="productCode != null">product_code,</if>
+            <if test="productName != null">product_name,</if>
+            <if test="shortName != null">short_name,</if>
+            <if test="warehouseId != null">warehouse_id,</if>
+            <if test="qtyOnHand != null">qty_on_hand,</if>
+            <if test="qtyActual != null">qty_actual,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="countId != null">#{countId},</if>
+            <if test="lineNo != null">#{lineNo},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="productCode != null">#{productCode},</if>
+            <if test="productName != null">#{productName},</if>
+            <if test="shortName != null">#{shortName},</if>
+            <if test="warehouseId != null">#{warehouseId},</if>
+            <if test="qtyOnHand != null">#{qtyOnHand},</if>
+            <if test="qtyActual != null">#{qtyActual},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysStockCountLine" parameterType="SysStockCountLine">
+        update sys_stock_count_line
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="countId != null">count_id = #{countId},</if>
+            <if test="lineNo != null">line_no = #{lineNo},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="productCode != null">product_code = #{productCode},</if>
+            <if test="productName != null">product_name = #{productName},</if>
+            <if test="shortName != null">short_name = #{shortName},</if>
+            <if test="warehouseId != null">warehouse_id = #{warehouseId},</if>
+            <if test="qtyOnHand != null">qty_on_hand = #{qtyOnHand},</if>
+            <if test="qtyActual != null">qty_actual = #{qtyActual},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysStockCountLineById" parameterType="Long">
+        delete from sys_stock_count_line where id = #{id}
+    </delete>
+
+    <delete id="deleteSysStockCountLineByIds" parameterType="String">
+        delete from sys_stock_count_line where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

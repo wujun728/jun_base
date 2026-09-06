@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.template.system.mapper.SysSupplierMapper">
+    
+    <resultMap type="SysSupplier" id="SysSupplierResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="shortName"    column="short_name"    />
+        <result property="address"    column="address"    />
+        <result property="postalCode"    column="postal_code"    />
+        <result property="phone"    column="phone"    />
+        <result property="fax"    column="fax"    />
+        <result property="website"    column="website"    />
+        <result property="email"    column="email"    />
+        <result property="region"    column="region"    />
+        <result property="registeredCapital"    column="registered_capital"    />
+        <result property="legalPerson"    column="legal_person"    />
+        <result property="bankName"    column="bank_name"    />
+        <result property="bankAccount"    column="bank_account"    />
+        <result property="bankAddress"    column="bank_address"    />
+        <result property="taxNo"    column="tax_no"    />
+        <result property="firstCoopDate"    column="first_coop_date"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSysSupplierVo">
+        select id, name, short_name, address, postal_code, phone, fax, website, email, region, registered_capital, legal_person, bank_name, bank_account, bank_address, tax_no, first_coop_date, create_by, create_time, update_by, update_time, remark from sys_supplier
+    </sql>
+
+    <select id="selectSysSupplierList" parameterType="SysSupplier" resultMap="SysSupplierResult">
+        <include refid="selectSysSupplierVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="shortName != null  and shortName != ''"> and short_name like concat('%', #{shortName}, '%')</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="postalCode != null  and postalCode != ''"> and postal_code = #{postalCode}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="fax != null  and fax != ''"> and fax = #{fax}</if>
+            <if test="website != null  and website != ''"> and website = #{website}</if>
+            <if test="email != null  and email != ''"> and email = #{email}</if>
+            <if test="region != null  and region != ''"> and region = #{region}</if>
+            <if test="registeredCapital != null "> and registered_capital = #{registeredCapital}</if>
+            <if test="legalPerson != null  and legalPerson != ''"> and legal_person = #{legalPerson}</if>
+            <if test="bankName != null  and bankName != ''"> and bank_name like concat('%', #{bankName}, '%')</if>
+            <if test="bankAccount != null  and bankAccount != ''"> and bank_account = #{bankAccount}</if>
+            <if test="bankAddress != null  and bankAddress != ''"> and bank_address = #{bankAddress}</if>
+            <if test="taxNo != null  and taxNo != ''"> and tax_no = #{taxNo}</if>
+            <if test="firstCoopDate != null "> and first_coop_date = #{firstCoopDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysSupplierById" parameterType="Long" resultMap="SysSupplierResult">
+        <include refid="selectSysSupplierVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysSupplier" parameterType="SysSupplier" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_supplier
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="shortName != null">short_name,</if>
+            <if test="address != null">address,</if>
+            <if test="postalCode != null">postal_code,</if>
+            <if test="phone != null">phone,</if>
+            <if test="fax != null">fax,</if>
+            <if test="website != null">website,</if>
+            <if test="email != null">email,</if>
+            <if test="region != null">region,</if>
+            <if test="registeredCapital != null">registered_capital,</if>
+            <if test="legalPerson != null">legal_person,</if>
+            <if test="bankName != null">bank_name,</if>
+            <if test="bankAccount != null">bank_account,</if>
+            <if test="bankAddress != null">bank_address,</if>
+            <if test="taxNo != null">tax_no,</if>
+            <if test="firstCoopDate != null">first_coop_date,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="shortName != null">#{shortName},</if>
+            <if test="address != null">#{address},</if>
+            <if test="postalCode != null">#{postalCode},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="fax != null">#{fax},</if>
+            <if test="website != null">#{website},</if>
+            <if test="email != null">#{email},</if>
+            <if test="region != null">#{region},</if>
+            <if test="registeredCapital != null">#{registeredCapital},</if>
+            <if test="legalPerson != null">#{legalPerson},</if>
+            <if test="bankName != null">#{bankName},</if>
+            <if test="bankAccount != null">#{bankAccount},</if>
+            <if test="bankAddress != null">#{bankAddress},</if>
+            <if test="taxNo != null">#{taxNo},</if>
+            <if test="firstCoopDate != null">#{firstCoopDate},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysSupplier" parameterType="SysSupplier">
+        update sys_supplier
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="shortName != null">short_name = #{shortName},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="postalCode != null">postal_code = #{postalCode},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="fax != null">fax = #{fax},</if>
+            <if test="website != null">website = #{website},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="region != null">region = #{region},</if>
+            <if test="registeredCapital != null">registered_capital = #{registeredCapital},</if>
+            <if test="legalPerson != null">legal_person = #{legalPerson},</if>
+            <if test="bankName != null">bank_name = #{bankName},</if>
+            <if test="bankAccount != null">bank_account = #{bankAccount},</if>
+            <if test="bankAddress != null">bank_address = #{bankAddress},</if>
+            <if test="taxNo != null">tax_no = #{taxNo},</if>
+            <if test="firstCoopDate != null">first_coop_date = #{firstCoopDate},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysSupplierById" parameterType="Long">
+        delete from sys_supplier where id = #{id}
+    </delete>
+
+    <delete id="deleteSysSupplierByIds" parameterType="String">
+        delete from sys_supplier where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
