@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysServerMapper">
+
+    <resultMap type="SysServer" id="SysServerResult">
+        <result property="id" column="id"/>
+        <result property="serverName" column="server_name"/>
+        <result property="domainPath" column="domain_path"/>
+        <result property="status" column="status"/>
+        <result property="acceptToken" column="accept_token"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectSysServerVo">
+        select id, server_name, domain_path, status, accept_token, create_by, create_time, update_by, update_time from sys_server
+    </sql>
+
+    <select id="selectSysServerList" parameterType="SysServer" resultMap="SysServerResult">
+        <include refid="selectSysServerVo"/>
+        <where>
+            <if test="serverName != null  and serverName != ''">and server_name like concat('%', #{serverName}, '%')
+            </if>
+            <if test="domainPath != null  and domainPath != ''">and domain_path = #{domainPath}</if>
+            <if test="status != null  and status != ''">and status = #{status}</if>
+            <if test="acceptToken != null  and acceptToken != ''">and accept_token = #{acceptToken}</if>
+        </where>
+    </select>
+
+    <select id="selectSysServerById" parameterType="Long" resultMap="SysServerResult">
+        <include refid="selectSysServerVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSysServer" parameterType="SysServer" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_server
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="serverName != null">server_name,</if>
+            <if test="domainPath != null">domain_path,</if>
+            <if test="status != null">status,</if>
+            <if test="acceptToken != null">accept_token,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="serverName != null">#{serverName},</if>
+            <if test="domainPath != null">#{domainPath},</if>
+            <if test="status != null">#{status},</if>
+            <if test="acceptToken != null">#{acceptToken},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSysServer" parameterType="SysServer">
+        update sys_server
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="serverName != null">server_name = #{serverName},</if>
+            <if test="domainPath != null">domain_path = #{domainPath},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="acceptToken != null">accept_token = #{acceptToken},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysServerById" parameterType="Long">
+        delete from sys_server where id = #{id}
+    </delete>
+
+    <delete id="deleteSysServerByIds" parameterType="String">
+        delete from sys_server where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
