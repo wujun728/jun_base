@@ -1,0 +1,25 @@
+{
+    "$schema": "https://json.schemastore.org/web-types",
+    "framework": "vue",
+    "name": "",
+    "version": "",
+    "contributions": {
+        "html": {
+            "js-types-syntax": "typescript",
+            "attributes": [
+                {
+                    "name": "v-focus",
+                    "description": "自动获取输入框焦点\n1：naive-ui：v-focus \n2：原生控件：v-focus.native"
+                },
+                {
+                    "name": "v-loading",
+                    "description": "加载中\ntrue开启\nfalse关闭"
+                },
+                {
+                     "name": "v-drag",
+                     "description": "使元素可被拖拽"
+                }
+            ]
+        }
+    }
+}

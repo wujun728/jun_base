@@ -1,0 +1,45 @@
+/* 全局样式 */
+.n-card.n-card--bordered {
+    border-radius: 10px;
+}
+
+/* 滚动条的宽度 */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+/* 滚动条里面小方块 */
+::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    background: rgba(153, 153, 153, 0.3);
+}
+
+/* 滚动条里面轨道 */
+::-webkit-scrollbar-track {
+    border-radius: 0;
+}
+
+/* 内容主体区过渡动画 */
+.fade-main-move,
+.fade-main-enter-active,
+.fade-main-leave-active {
+    transition: all 0.3s ease;
+}
+
+.fade-main-enter-from,
+.fade-main-leave-to {
+    opacity: 0;
+    transform: translateX(30px);
+}
+
+.fade-main-leave-active {
+    position: absolute;
+}
+
+/* 抽屉面板内容区 */
+.n-drawer .n-drawer-content .n-drawer-body-content-wrapper {
+    box-sizing: border-box;
+    padding: 0;
+}
+

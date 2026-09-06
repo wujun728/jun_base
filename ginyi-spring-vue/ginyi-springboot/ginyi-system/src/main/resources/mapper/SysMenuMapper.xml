@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ginyi.system.mapper.SysMenuMapper">
+
+    <resultMap id="sysMenuResult" type="sysMenu">
+        <id property="menuId" column="menu_id"/>
+        <result property="menuName" column="menu_name"/>
+        <result property="parentName" column="parent_name"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="sort" column="sort"/>
+        <result property="path" column="path"/>
+        <result property="component" column="component"/>
+        <result property="query" column="query"/>
+        <result property="isFrame" column="is_frame"/>
+        <result property="isCache" column="is_cache"/>
+        <result property="menuType" column="menu_type"/>
+        <result property="visible" column="visible"/>
+        <result property="status" column="status"/>
+        <result property="perms" column="perms"/>
+        <result property="icon" column="icon"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <!-- 公用sql片段 -->
+    <sql id="selectMenuRef">
+        select sm.menu_id,
+               sm.menu_name,
+               sm.parent_id,
+               sm.sort,
+               sm.name,
+               sm.path,
+               sm.component,
+               sm.query,
+               sm.is_frame,
+               sm.is_cache,
+               sm.menu_type,
+               sm.visible,
+               sm.status,
+               sm.perms,
+               sm.icon,
+               sm.create_by,
+               sm.create_time,
+               sm.update_by,
+               sm.update_time,
+               sm.remark
+        from sys_menu as sm
+    </sql>
+
+    <!-- 根据userId查询用户菜单权限 -->
+    <select id="selectMenuPermsByUserId" parameterType="Long" resultType="String">
+        select distinct sm.perms
+        from sys_menu as sm
+                 left join sys_role_menu as srm on json_contains(srm.menu_id, json_array(sm.menu_id))
+                 left join sys_user_role as sur on json_contains(sur.role_id, json_array(srm.role_id))
+                 left join sys_role as sr on json_contains(sur.role_id, json_array(sr.role_id))
+        where sm.status = '0'
+          and sr.status = '0'
+          and sur.user_id = #{userId}
+    </select>
+
+    <!-- 根据roleId查询菜单 -->
+    <select id="selectMenuPermsByRoleId" parameterType="Long" resultType="String">
+        select distinct sm.perms
+        from sys_menu as sm
+                 left join sys_role_menu as srm on json_contains(srm.menu_id, json_array(sm.menu_id))
+                 left join sys_role as sr on json_contains(srm.role_id, json_array(sr.role_id))
+        where sm.status = '0'
+          and sr.status = '0'
+          and srm.role_id = #{roleId}
+    </select>
+
+    <!-- 根据userId查询菜单 -->
+    <select id="selectMenuListByUserId" resultMap="sysMenuResult">
+        <include refid="selectMenuRef"/>
+        left join sys_role_menu as srm on json_contains(srm.menu_id, json_array(sm.menu_id))
+        left join sys_user_role as sur on json_contains(sur.role_id, json_array(srm.role_id))
+        where sur.user_id = #{userId} and sm.menu_type != 'F' and sm.visible != 1
+    </select>
+
+    <!-- 查询菜单 - admin -->
+    <select id="selectMenuListByAdmin" resultMap="sysMenuResult">
+        <include refid="selectMenuRef"/>
+        <if test="menuDto.filterButton != null and menuDto.filterButton != '' and menuDto.filterButton == 0">
+            where sm.menu_type != 'F'
+        </if>
+    </select>
+
+    <!-- 新增菜单 -->
+    <insert id="insertMenu">
+        insert into sys_menu (
+        menu_name,
+        sort,
+        menu_type,
+        visible,
+        status,
+        <if test="menuDto.component != null and menuDto.component != ''">component,</if>
+        <if test="menuDto.path != null and menuDto.path != ''">path,</if>
+        <if test="menuDto.query != null and menuDto.query != ''">query,</if>
+        <if test="menuDto.isFrame != null and menuDto.isFrame != ''">is_frame,</if>
+        <if test="menuDto.isCache != null and menuDto.isCache != ''">is_cache,</if>
+        <if test="menuDto.perms != null and menuDto.perms != ''">perms,</if>
+        <if test="menuDto.icon != null and menuDto.icon != ''">icon,</if>
+        <if test="menuDto.createBy != null and menuDto.createBy != ''">create_by,</if>
+        <if test="menuDto.createTime != null">create_time,</if>
+        <if test="menuDto.updateBy != null and menuDto.updateBy != ''">update_by,</if>
+        <if test="menuDto.updateTime != null">update_time,</if>
+        parent_id
+        ) value (
+        #{menuDto.menuName},
+        #{menuDto.sort},
+        #{menuDto.menuType},
+        #{menuDto.visible},
+        #{menuDto.status},
+        <if test="menuDto.component != null and menuDto.component != ''">#{menuDto.component},</if>
+        <if test="menuDto.path != null and menuDto.path != ''">#{menuDto.path},</if>
+        <if test="menuDto.query != null and menuDto.query != ''">#{menuDto.query},</if>
+        <if test="menuDto.isFrame != null and menuDto.isFrame != ''">#{menuDto.isFrame},</if>
+        <if test="menuDto.isCache != null and menuDto.isCache != ''">#{menuDto.isCache},</if>
+        <if test="menuDto.perms != null and menuDto.perms != ''">#{menuDto.perms},</if>
+        <if test="menuDto.icon != null and menuDto.icon != ''">#{menuDto.icon},</if>
+        <if test="menuDto.createBy != null and menuDto.createBy != ''">#{menuDto.createBy},</if>
+        <if test="menuDto.createTime != null">#{menuDto.createTime},</if>
+        <if test="menuDto.updateBy != null and menuDto.updateBy != ''">#{menuDto.updateBy},</if>
+        <if test="menuDto.updateTime != null">#{menuDto.updateTime},</if>
+        <choose>
+            <when test="menuDto.parentId == null or menuDto.parentId == ''">0</when>
+            <otherwise>#{menuDto.parentId}</otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!-- 更新菜单 -->
+    <update id="updateMenu">
+        update sys_menu
+        <set>
+            <if test="menuDto.menuName != null and menuDto.menuName != ''">menu_name = #{menuDto.menuName},</if>
+            <if test="menuDto.name != null and menuDto.name != ''">`name` = #{menuDto.name},</if>
+            <if test="menuDto.parentId != null">parent_id = #{menuDto.parentId},</if>
+            <if test="menuDto.sort != null and menuDto.sort != ''">sort = #{menuDto.sort},</if>
+            <if test="menuDto.path != null and menuDto.path != ''">`path` = #{menuDto.path},</if>
+            <if test="menuDto.component != null and menuDto.component != ''">component = #{menuDto.component},</if>
+            <if test="menuDto.query != null and menuDto.query != ''">`query` = #{menuDto.query},</if>
+            <if test="menuDto.isFrame != null and menuDto.isFrame != ''">is_frame = #{menuDto.isFrame},</if>
+            <if test="menuDto.isCache != null and menuDto.isCache != ''">is_cache = #{menuDto.isCache},</if>
+            <if test="menuDto.menuType != null and menuDto.menuType != ''">menu_type = #{menuDto.menuType},</if>
+            <if test="menuDto.visible != null and menuDto.visible != ''">`visible` = #{menuDto.visible},</if>
+            <if test="menuDto.status != null and menuDto.status != ''">`status` = #{menuDto.status},</if>
+            <if test="menuDto.perms != null and menuDto.perms != ''">perms = #{menuDto.perms},</if>
+            <if test="menuDto.icon != null and menuDto.icon != ''">icon = #{menuDto.icon},</if>
+            <if test="menuDto.createBy != null and menuDto.createBy != ''">create_by = #{menuDto.createBy},</if>
+            <if test="menuDto.createTime != null">create_time = #{menuDto.createTime},</if>
+            <if test="menuDto.updateBy != null and menuDto.updateBy != ''">update_by = #{menuDto.updateBy},</if>
+            <if test="menuDto.updateTime != null">update_time = #{menuDto.updateTime},</if>
+            <if test="menuDto.remark != null and menuDto.remark != ''">remark = #{menuDto.remark},</if>
+        </set>
+        where menu_id = #{menuDto.menuId}
+    </update>
+
+    <!-- 更新状态 -->
+    <update id="updateMenuStatus">
+        update sys_menu
+        <set>
+            `status` = #{menuDto.status},
+            <if test="menuDto.updateBy != null and menuDto.updateBy != ''">update_by = #{menuDto.updateBy},</if>
+            <if test="menuDto.updateTime != null">update_time = #{menuDto.updateTime},</if>
+        </set>
+        where menu_id = #{menuDto.menuId} and deleted = '0'
+    </update>
+
+
+</mapper>

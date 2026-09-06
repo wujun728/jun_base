@@ -1,0 +1,23 @@
+# 说明：
+#     1、这是 ginyi-server-admin 模块下特有的配置项
+#     2、更多全局通用的配置项在 ginyi-system 系统应用服务下
+#     3、如果需要对重写全局的配置项的话，可以将其对应的属性配置拷贝至本配置中，会自动覆盖！
+
+
+# 应用服务
+server:
+  # 服务端口
+  port: 8066
+
+
+# 接口文档的配置
+swagger:
+  group-name: admin
+  # 接口文档url
+  swagger-url: 写点什么呢~~~
+  # 接口文档标题
+  swagger-title: Ginyi-admin api doc
+  # 接口文档版本号
+  swaggerversion: 1.0
+  # 接口文档描述
+  swagger-description: 这是swagger接口文档~

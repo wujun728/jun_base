@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ginyi.system.mapper.SysRoleMapper">
+
+    <resultMap type="SysRole" id="SysRoleResult">
+        <id property="roleId" column="role_id"/>
+        <result property="roleName" column="role_name"/>
+        <result property="roleKey" column="role_key"/>
+        <result property="sort" column="sort"/>
+        <result property="dataScope" column="data_scope"/>
+        <result property="menuCheckStrictly" column="menu_check_strictly"/>
+        <result property="deptCheckStrictly" column="dept_check_strictly"/>
+        <result property="status" column="status"/>
+        <result property="deleted" column="deleted"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <resultMap id="SysRoleListResult" type="ginyi.system.domain.model.vo.RoleVo">
+        <id property="roleId" column="role_id"/>
+        <result property="roleName" column="role_name"/>
+        <result property="roleKey" column="role_key"/>
+        <result property="sort" column="sort"/>
+        <result property="status" column="status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <result property="permissions" column="menu_id" javaType="Long"
+                typeHandler="ginyi.common.mysql.handler.JacksonArrayTypeHandler"/>
+    </resultMap>
+
+    <sql id="selectRoleVo">
+        select distinct r.role_id,
+                        r.role_name,
+                        r.role_key,
+                        r.sort,
+                        r.data_scope,
+                        r.menu_check_strictly,
+                        r.dept_check_strictly,
+                        r.status,
+                        r.deleted,
+                        r.create_time,
+                        r.remark
+        from sys_role r
+                 left join sys_user_role ur on ur.role_id = r.role_id
+                 left join sys_user u on u.user_id = ur.user_id
+                 left join sys_dept d on u.dept_id = d.dept_id
+    </sql>
+    <!-- 新增角色 -->
+    <insert id="insertRole" useGeneratedKeys="true" keyProperty="roleId">
+        insert into sys_role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            role_name,
+            role_key,
+            sort,
+            `status`,
+            <if test="roleDto.createBy != null and roleDto.createBy != ''">create_by,</if>
+            <if test="roleDto.createTime != null">create_time,</if>
+            <if test="roleDto.remark != null and roleDto.remark != ''">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{roleDto.roleName},
+            #{roleDto.roleKey},
+            #{roleDto.sort},
+            #{roleDto.status},
+            <if test="roleDto.createBy != null and roleDto.createBy != ''">#{roleDto.createBy},</if>
+            <if test="roleDto.createTime != null">#{roleDto.createTime},</if>
+            <if test="roleDto.remark != null and roleDto.remark != ''">#{roleDto.remark},</if>
+        </trim>
+    </insert>
+
+    <!-- 新增角色权限 -->
+    <insert id="insertRoleMenu">
+        insert into sys_role_menu
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            role_id,
+            <if test="roleDto.permissions != null and roleDto.permissions.size() > 0">
+                menu_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{roleDto.roleId},
+            <choose>
+                <when test="roleDto.permissions != null and roleDto.permissions.size() > 0">
+                    json_array
+                    <foreach collection="roleDto.permissions" item="menuId" open="(" close=")" separator=",">
+                        #{menuId}
+                    </foreach>
+                </when>
+            </choose>
+        </trim>
+    </insert>
+
+    <!-- 更新角色 -->
+    <update id="updateRole">
+        update sys_role
+        <set>
+            role_name = #{roleDto.roleName},
+            role_key = #{roleDto.roleKey},
+            sort = #{roleDto.sort},
+            `status` = #{roleDto.status},
+            <if test="roleDto.updateBy != null and roleDto.updateBy != ''">update_by = #{roleDto.updateBy},</if>
+            <if test="roleDto.updateTime != null">update_time = #{roleDto.updateTime},</if>
+            <if test="roleDto.remark != null and roleDto.remark != ''">remark = #{roleDto.remark},</if>
+        </set>
+        where role_id = #{roleDto.roleId}
+    </update>
+
+    <!-- 更新角色对应的菜单权限 -->
+    <update id="updateRoleMenu">
+        update sys_role_menu
+        <set>
+            <if test="roleDto.permissions != null and roleDto.permissions.size() > 0">menu_id = json_array
+                <foreach collection="roleDto.permissions" item="menuId" open="(" close=")" separator=",">
+                    #{menuId}
+                </foreach>
+            </if>
+        </set>
+        where role_id = #{roleDto.roleId}
+    </update>
+
+    <!-- 更新状态 -->
+    <update id="updateRoleStatus">
+        update sys_role
+        <set>
+            `status` = #{roleDto.status},
+            <if test="roleDto.updateBy != null and roleDto.updateBy != ''">update_by = #{roleDto.updateBy},</if>
+            <if test="roleDto.updateTime != null">update_time = #{roleDto.updateTime},</if>
+        </set>
+        where role_id = #{roleDto.roleId} and deleted = '0'
+    </update>
+
+    <select id="selectRolePermissionByUserId" parameterType="Long" resultMap="SysRoleResult">
+        <include refid="selectRoleVo"/>
+        WHERE r.deleted = '0' and ur.user_id = #{userId}
+    </select>
+
+    <!-- 查询角色列表 -->
+    <select id="list" resultType="ginyi.system.domain.model.vo.RoleVo">
+        select role_id,
+        role_name,
+        role_key,
+        sort,
+        status,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        remark
+        from sys_role
+        <where>
+            deleted = '0' and role_id != 1
+            <if test="roleDto.roleName != null and roleDto.roleName != ''">
+                and role_name like concat('%', #{roleDto.roleName},'%')
+            </if>
+            <if test="roleDto.roleKey != null and roleDto.roleKey != ''">
+                and role_key like concat('%',#{roleDto.roleKey},'%')
+            </if>
+            <if test="roleDto.status != null and roleDto.status != ''">
+                and `status` = #{roleDto.status}
+            </if>
+            <if test="roleDto.createBy != null and roleDto.createBy != ''">
+                and create_by like concat('%',#{roleDto.createBy}, '%')
+            </if>
+            <if test="roleDto.updateBy != null and roleDto.updateBy != ''">
+                and update_by like concat('%',#{roleDto.updateBy}, '%')
+            </if>
+            <if test="roleDto.remark != null and roleDto.remark != ''">
+                and remark like concat('%',#{roleDto.remark}, '%')
+            </if>
+            <choose>
+                <when test="roleDto.beginTime != null and roleDto.endTime == null">
+                    and create_time > #{roleDto.beginTime}
+                </when>
+                <when test="roleDto.beginTime != null and roleDto.endTime != null">
+                    and create_time between #{roleDto.beginTime} and #{roleDto.endTime}
+                </when>
+            </choose>
+        </where>
+    </select>
+
+    <!-- 根据角色id查询角详情 -->
+    <select id="selectRoleByRoleId" resultMap="SysRoleListResult">
+        select sr.role_id,
+               sr.role_name,
+               sr.role_key,
+               sr.sort,
+               sr.status,
+               sr.create_by,
+               sr.create_time,
+               sr.update_by,
+               sr.update_time,
+               sr.remark,
+               srm.menu_id
+        from sys_role as sr
+                 left join sys_role_menu as srm on sr.role_id = srm.role_id
+        where sr.role_id = ${roleId}
+    </select>
+
+
+</mapper>

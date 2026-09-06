@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>ginyi-springboot</artifactId>
+        <groupId>com.ginyi</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>ginyi-system</artifactId>
+
+    <dependencies>
+
+        <!-- SpringBoot Web容器 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!--测试依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- 公用redis -->
+        <dependency>
+            <groupId>com.ginyi</groupId>
+            <artifactId>ginyi-common-redis</artifactId>
+            <version>${ginyi.version}</version>
+        </dependency>
+
+        <!-- 公用mysql -->
+        <dependency>
+            <groupId>com.ginyi</groupId>
+            <artifactId>ginyi-common-mysql</artifactId>
+            <version>${ginyi.version}</version>
+        </dependency>
+
+        <!-- 公用swagger -->
+        <dependency>
+            <groupId>com.ginyi</groupId>
+            <artifactId>ginyi-common-swagger</artifactId>
+            <version>${ginyi.version}</version>
+        </dependency>
+
+        <!-- 公用异常处理 -->
+        <dependency>
+            <groupId>com.ginyi</groupId>
+            <artifactId>ginyi-common-exception</artifactId>
+            <version>${ginyi.version}</version>
+        </dependency>
+
+        <!-- 公用结果集 -->
+        <dependency>
+            <groupId>com.ginyi</groupId>
+            <artifactId>ginyi-common-result</artifactId>
+            <version>${ginyi.version}</version>
+        </dependency>
+
+        <!-- 公用工具类 -->
+        <dependency>
+            <groupId>com.ginyi</groupId>
+            <artifactId>ginyi-common-utils</artifactId>
+            <version>${ginyi.version}</version>
+        </dependency>
+
+        <!-- 通用静态常量 -->
+        <dependency>
+            <groupId>com.ginyi</groupId>
+            <artifactId>ginyi-common-constants</artifactId>
+            <version>${ginyi.version}</version>
+        </dependency>
+
+        <!-- 参数校验工具 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- MongoDB -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 接口类全限定名 -->
+<mapper namespace="ginyi.system.mapper.SysUserMapper">
+
+    <resultMap type="SysUser" id="SysUserResult">
+        <id property="userId" column="user_id"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="email" column="email"/>
+        <result property="phoneNumber" column="phone_number"/>
+        <result property="sex" column="sex"/>
+        <result property="avatar" column="avatar"/>
+        <result property="password" column="password"/>
+        <result property="status" column="status"/>
+        <result property="deleted" column="deleted"/>
+        <result property="loginIp" column="login_ip"/>
+        <result property="loginDate" column="login_date"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <association property="dept" column="dept_id" javaType="SysDept" resultMap="deptResult"/>
+        <collection property="roles" javaType="java.util.List" resultMap="RoleResult"/>
+        <collection property="posts" javaType="java.util.List" resultMap="PostResultRef"/>
+    </resultMap>
+
+    <resultMap id="deptResult" type="SysDept">
+        <id property="deptId" column="dept_id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="deptName" column="dept_name"/>
+        <result property="ancestors" column="ancestors"/>
+        <result property="sort" column="sort"/>
+        <result property="leader" column="leader"/>
+        <result property="status" column="dept_status"/>
+    </resultMap>
+
+    <resultMap id="RoleResult" type="SysRole">
+        <id property="roleId" column="role_id"/>
+        <result property="roleName" column="role_name"/>
+        <result property="roleKey" column="role_key"/>
+        <result property="sort" column="sort"/>
+        <result property="dataScope" column="data_scope"/>
+        <result property="status" column="role_status"/>
+    </resultMap>
+
+    <resultMap id="PostResultRef" type="sysPost">
+        <id property="postId" column="post_id"/>
+        <result property="postCode" column="post_code"/>
+        <result property="postName" column="post_name"/>
+        <result property="sort" column="sort"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <resultMap id="UserVoResultRef" type="ginyi.system.domain.model.vo.UserVo">
+        <id property="userId" column="user_id"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="email" column="email"/>
+        <result property="phoneNumber" column="phone_number"/>
+        <result property="sex" column="sex"/>
+        <result property="avatar" column="avatar"/>
+        <result property="status" column="status"/>
+        <result property="remark" column="remark"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="postIds" column="post_id" javaType="Long"
+                typeHandler="ginyi.common.mysql.handler.JacksonArrayTypeHandler"/>
+        <result property="roleIds" column="role_id" javaType="Long"
+                typeHandler="ginyi.common.mysql.handler.JacksonArrayTypeHandler"/>
+    </resultMap>
+
+    <!-- 更新用户 -->
+    <update id="updateUser">
+        update sys_user
+        <set>
+            <if test="userDto.deptId != null and userDto.deptId != 0">dept_id = #{userDto.deptId},</if>
+            <if test="userDto.userName != null and userDto.userName != ''">user_name = #{userDto.userName},</if>
+            <if test="userDto.nickName != null and userDto.nickName != ''">nick_name = #{userDto.nickName},</if>
+            <if test="userDto.email != null ">email = #{userDto.email},</if>
+            <if test="userDto.phoneNumber != null ">phone_number = #{userDto.phoneNumber},</if>
+            <if test="userDto.sex != null and userDto.sex != ''">sex = #{userDto.sex},</if>
+            <if test="userDto.avatar != null and userDto.avatar != ''">avatar = #{userDto.avatar},</if>
+            <if test="userDto.password != null and userDto.password != ''">`password` = #{userDto.password},</if>
+            <if test="userDto.status != null and userDto.status != ''">`status` = #{userDto.status},</if>
+            <if test="userDto.loginIp != null and userDto.loginIp != ''">login_ip = #{userDto.loginIp},</if>
+            <if test="userDto.loginDate != null">login_date = #{userDto.loginDate},</if>
+            <if test="userDto.createBy != null and userDto.createBy != ''">create_by = #{userDto.createBy},</if>
+            <if test="userDto.createTime != null">create_time = #{userDto.createTime},</if>
+            <if test="userDto.updateBy != null and userDto.updateBy != ''">update_by = #{userDto.updateBy},</if>
+            <if test="userDto.updateTime != null">update_time = #{userDto.updateTime},</if>
+            <if test="userDto.remark != null">remark = #{userDto.remark},</if>
+        </set>
+        where user_id = #{userDto.userId}
+    </update>
+
+    <select id="selectUserByUserName" parameterType="String" resultMap="SysUserResult">
+        select su.user_id,
+               su.dept_id,
+               su.user_name,
+               su.nick_name,
+               su.email,
+               su.avatar,
+               su.phone_number,
+               su.password,
+               su.sex,
+               su.status,
+               su.deleted,
+               su.login_ip,
+               su.login_date,
+               su.create_by,
+               su.create_time,
+               su.remark,
+               sd.dept_id,
+               sd.parent_id,
+               sd.ancestors,
+               sd.dept_name,
+               sd.sort,
+               sd.leader,
+               sd.status as dept_status,
+               sr.role_id,
+               sr.role_name,
+               sr.role_key,
+               sr.sort,
+               sr.data_scope,
+               sr.status as role_status,
+               sp.post_id,
+               sp.post_code,
+               sp.post_name,
+               sp.sort,
+               sp.status as post_status
+        from sys_user as su
+                 left join sys_dept as sd on su.dept_id = sd.dept_id
+                 left join sys_user_role as sur on su.user_id = sur.user_id
+                 left join sys_role as sr on json_contains(sur.role_id, json_array(sr.role_id))
+                 left join sys_user_post as sup on sup.user_id = su.user_id
+                 left join sys_post as sp on json_contains(sup.post_id, json_array(sp.post_id))
+        where su.user_name = #{userName}
+          and su.deleted = '0'
+    </select>
+
+    <select id="checkUserNameUnique" parameterType="String" resultMap="SysUserResult">
+        select user_id, user_name
+        from sys_user
+        where user_name = #{userName}
+          and deleted = '0'
+        limit 1
+    </select>
+
+    <!-- 根据用户id查询用户 -->
+    <select id="selectUserByUserId" resultMap="UserVoResultRef">
+        select su.user_id,
+               su.dept_id,
+               su.user_name,
+               su.nick_name,
+               su.email,
+               su.phone_number,
+               su.sex,
+               su.avatar,
+               su.status,
+               su.remark,
+               su.create_time,
+               su.create_by,
+               sup.post_id,
+               sur.role_id
+        from sys_user as su
+                 left join sys_user_post as sup on su.user_id = sup.user_id
+                 left join sys_user_role sur on su.user_id = sur.user_id
+        where su.user_id = #{userId}
+          and su.deleted = '0'
+    </select>
+
+    <!-- 查询用户列表(不包含admin) -->
+    <select id="list" resultMap="UserVoResultRef">
+        select
+        su.user_id,
+        su.dept_id,
+        su.user_name,
+        su.nick_name,
+        su.email,
+        su.phone_number,
+        su.sex,
+        su.avatar,
+        su.status,
+        su.remark,
+        su.create_time,
+        su.create_by,
+        sup.post_id,
+        sur.role_id
+        from sys_user as su
+        left join sys_user_post as sup on su.user_id = sup.user_id
+        left join sys_user_role sur on su.user_id = sur.user_id
+        <where>
+            su.deleted = '0' and su.user_id != 1
+            <if test="userDto.userName != null and userDto.userName != ''">
+                and su.user_name like concat('%', #{userDto.userName}, '%')
+            </if>
+            <if test="userDto.nickName != null and userDto.nickName != ''">
+                and su.nick_name like concat('%',#{userDto.nickName}, '%')
+            </if>
+            <if test="userDto.phoneNumber != null and userDto.phoneNumber != ''">
+                and su.phone_number like concat('%',#{userDto.phoneNumber}, '%')
+            </if>
+            <if test="userDto.email != null and userDto.email != ''">
+                and su.email like concat('%', #{userDto.email}, '%')
+            </if>
+            <if test="userDto.remark != null and userDto.remark != ''">
+                and su.remark like concat('%', #{userDto.remark}, '%')
+            </if>
+            <if test="userDto.sex != null and userDto.sex != ''">
+                and su.sex = #{userDto.sex}
+            </if>
+            <if test="userDto.status != null and userDto.status != ''">
+                and su.status = #{userDto.status}
+            </if>
+            <if test="userDto.createBy != null and userDto.createBy != ''">
+                and su.createBy like concat('%', #{userDto.createBy}, '%')
+            </if>
+            <choose>
+                <when test="userDto.beginTime != null and userDto.endTime == null">
+                    and su.create_time > #{userDto.beginTime}
+                </when>
+                <when test="userDto.beginTime != null and userDto.endTime != null">
+                    and su.create_time between #{userDto.beginTime} and #{userDto.endTime}
+                </when>
+            </choose>
+        </where>
+    </select>
+
+    <!-- 根据部门ids获取用户列表 -->
+    <select id="selectUserByDeptIds" resultType="ginyi.system.domain.SysUser">
+        select user_id, nick_name
+        from sys_user
+        where dept_id in
+        <foreach collection="deptIds" item="deptId" open="(" close=")" separator=",">
+            #{deptId}
+        </foreach>
+    </select>
+
+
+    <!-- 插入新用户 -->
+    <insert id="insertUser" useGeneratedKeys="true" keyProperty="userId">
+        insert into sys_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userDto.userId != null and userDto.userId != 0">user_id,</if>
+            <if test="userDto.deptId != null and userDto.deptId != 0">dept_id,</if>
+            <if test="userDto.userName != null and userDto.userName != ''">user_name,</if>
+            <if test="userDto.nickName != null and userDto.nickName != ''">nick_name,</if>
+            <if test="userDto.email != null and userDto.email != ''">email,</if>
+            <if test="userDto.avatar != null and userDto.avatar != ''">avatar,</if>
+            <if test="userDto.phoneNumber != null and userDto.phoneNumber != ''">phone_number,</if>
+            <if test="userDto.sex != null and userDto.sex != ''">sex,</if>
+            <if test="userDto.password != null and userDto.password != ''">password,</if>
+            <if test="userDto.status != null and userDto.status != ''">status,</if>
+            <if test="userDto.createBy != null and userDto.createBy != ''">create_by,</if>
+            <if test="userDto.createTime != null">create_time,</if>
+            <if test="userDto.updateBy != null and userDto.updateBy != ''">update_by,</if>
+            <if test="userDto.updateTime != null">update_time,</if>
+            <if test="userDto.remark != null and userDto.remark != ''">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userDto.userId != null and userDto.userId != ''">#{userDto.userId},</if>
+            <if test="userDto.deptId != null and userDto.deptId != ''">#{userDto.deptId},</if>
+            <if test="userDto.userName != null and userDto.userName != ''">#{userDto.userName},</if>
+            <if test="userDto.nickName != null and userDto.nickName != ''">#{userDto.nickName},</if>
+            <if test="userDto.email != null and userDto.email != ''">#{userDto.email},</if>
+            <if test="userDto.avatar != null and userDto.avatar != ''">#{userDto.avatar},</if>
+            <if test="userDto.phoneNumber != null and userDto.phoneNumber != ''">#{userDto.phoneNumber},</if>
+            <if test="userDto.sex != null and userDto.sex != ''">#{userDto.sex},</if>
+            <if test="userDto.password != null and userDto.password != ''">#{userDto.password},</if>
+            <if test="userDto.status != null and userDto.status != ''">#{userDto.status},</if>
+            <if test="userDto.createBy != null and userDto.createBy != ''">#{userDto.createBy},</if>
+            <if test="userDto.createTime != null">#{userDto.createTime},</if>
+            <if test="userDto.updateBy != null and userDto.updateBy != ''">#{userDto.updateBy},</if>
+            <if test="userDto.updateTime != null">#{userDto.updateTime},</if>
+            <if test="userDto.remark != null and userDto.remark != ''">#{userDto.remark},</if>
+        </trim>
+    </insert>
+
+    <!-- 用户岗位中间表，插入用户对应的岗位信息 -->
+    <insert id="insertUserPostIds">
+        insert into sys_user_post
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userDto.userId != null and userDto.userId != ''">user_id,</if>
+            <if test="userDto.postIds != null">post_id</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userDto.userId != null and userDto.userId != ''">#{userDto.userId},</if>
+            <if test="userDto.postIds != null and userDto.postIds.size() > 0">
+                json_array
+                <foreach collection="userDto.postIds" item="postId" open="(" close=")" separator=",">
+                    #{postId}
+                </foreach>
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 用户角色中间表，插入用户对应的岗位信息 -->
+    <insert id="insertUserRoleIds">
+        insert into sys_user_role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userDto.userId != null and userDto.userId != ''">user_id,</if>
+            <if test="userDto.roleIds != null">role_id</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userDto.userId != null and userDto.userId != ''">#{userDto.userId},</if>
+            <if test="userDto.roleIds != null and userDto.roleIds.size() > 0">
+                json_array
+                <foreach collection="userDto.roleIds" item="roleId" open="(" close=")" separator=",">
+                    #{roleId}
+                </foreach>
+            </if>
+        </trim>
+    </insert>
+
+
+    <!-- 更新用户岗位中间表, 更新用户对应的岗位信息 -->
+    <update id="updateUserPostIds">
+        update sys_user_post
+        <set>
+            <if test="userDto.postIds != null and userDto.postIds.size() > 0">post_id = json_array
+                <foreach collection="userDto.postIds" item="postId" open="(" close=")" separator=",">
+                    #{postId}
+                </foreach>
+            </if>
+        </set>
+        where user_id = #{userDto.userId}
+    </update>
+
+    <!-- 更新用户角色中间表, 更新用户对应的角色信息 -->
+    <update id="updateUserRoleIds">
+        update sys_user_role
+        <set>
+            <if test="userDto.roleIds != null and userDto.roleIds.size() > 0">role_id = json_array
+                <foreach collection="userDto.roleIds" item="roleId" open="(" close=")" separator=",">
+                    #{roleId}
+                </foreach>
+            </if>
+        </set>
+        where user_id = #{userDto.userId}
+    </update>
+
+    <!-- 更新用户状态 -->
+    <update id="updateUserStatus">
+        update sys_user
+        <set>
+            `status` = #{userDto.status},
+            <if test="userDto.updateBy != null and userDto.updateBy != ''">update_by = #{userDto.updateBy},</if>
+            <if test="userDto.updateTime != null">update_time = #{userDto.updateTime},</if>
+        </set>
+        where user_id = #{userDto.userId} and deleted = '0'
+    </update>
+
+
+</mapper>

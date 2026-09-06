@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ginyi.system.mapper.SysNoticeMapper">
+
+    <resultMap id="SysNoticeResult" type="sysNotice">
+        <id property="noticeId" column="notice_id"/>
+        <result property="title" column="title"/>
+        <result property="type" column="type"/>
+        <result property="content" column="content"/>
+        <result property="userIds" column="user_ids" javaType="Long"
+                typeHandler="ginyi.common.mysql.handler.JacksonArrayTypeHandler"/>
+        <result property="userReadIds" column="user_read_ids" javaType="Long"
+                typeHandler="ginyi.common.mysql.handler.JacksonArrayTypeHandler"/>
+        <result property="status" column="status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <!-- 发布通知公告 -->
+    <insert id="addNotice">
+        insert into sys_notice
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            title,
+            type,
+            content,
+            `status`,
+            user_ids,
+            <if test="noticeDto.createBy != null and noticeDto.createBy != ''">create_by,</if>
+            <if test="noticeDto.createTime != null">create_time,</if>
+            <if test="noticeDto.updateBy != null and noticeDto.updateBy != ''">update_by,</if>
+            <if test="noticeDto.updateTime != null">update_time,</if>
+            <if test="noticeDto.remark != null and noticeDto.remark != ''">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{noticeDto.title},
+            #{noticeDto.type},
+            #{noticeDto.content},
+            #{noticeDto.status},
+            json_array
+            <foreach collection="noticeDto.userIds" item="userId" open="(" close=")" separator=",">
+                #{userId}
+            </foreach>,
+            <if test="noticeDto.createBy != null and noticeDto.createBy != ''">#{noticeDto.createBy},</if>
+            <if test="noticeDto.createTime != null">#{noticeDto.createTime},</if>
+            <if test="noticeDto.updateBy != null and noticeDto.updateBy != ''">#{noticeDto.updateBy},</if>
+            <if test="noticeDto.updateTime != null">#{noticeDto.updateTime},</if>
+            <if test="noticeDto.remark != null and noticeDto.remark != ''">#{noticeDto.remark},</if>
+        </trim>
+    </insert>
+
+    <!-- 确认收到通知公告 -->
+    <update id="haveRead">
+        update sys_notice
+        <set>
+            user_read_ids = json_array
+            <foreach collection="notice.userReadIds" item="userId" open="(" close=")" separator=",">
+                #{userId}
+            </foreach>
+        </set>
+        where notice_id = #{notice.noticeId}
+    </update>
+
+    <!-- 更新通知公告 -->
+    <update id="updateNotice">
+        update sys_notice
+        <set>
+            <if test="noticeDto.title != null and noticeDto.title != ''">title = #{noticeDto.title},</if>
+            <if test="noticeDto.type != null and noticeDto.type != ''">type = #{noticeDto.type},</if>
+            <if test="noticeDto.content != null and noticeDto.content != ''">content = #{noticeDto.content},</if>
+            <if test="noticeDto.status != null and noticeDto.status != ''">`status` = #{noticeDto.status},</if>
+            <if test="noticeDto.userIds != null and noticeDto.userIds.size() > 0">user_ids =
+                json_array
+                <foreach collection="noticeDto.userIds" item="userId" open="(" close=")" separator=",">
+                    #{userId}
+                </foreach>,
+            </if>
+            <if test="noticeDto.updateBy != null and noticeDto.updateBy != ''">update_by = #{noticeDto.updateBy},</if>
+            <if test="noticeDto.updateTime != null">update_time = #{noticeDto.updateTime},</if>
+            <if test="noticeDto.remark != null and noticeDto != ''">remark = #{noticeDto.remark},</if>
+        </set>
+        where notice_id = #{noticeDto.noticeId}
+    </update>
+
+    <!-- 查询通知公告列表 -->
+    <select id="list" resultMap="SysNoticeResult">
+        select notice_id,
+               title,
+               type,
+               content,
+               user_ids,
+               user_read_ids,
+               status,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
+        from sys_notice
+    </select>
+
+    <!-- 获取用户通知公告列表 -->
+    <select id="getUserNoticeList" resultMap="SysNoticeResult">
+        select notice_id,
+               title,
+               type,
+               content,
+               user_ids,
+               user_read_ids,
+               status,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
+        from sys_notice
+        where status = '0' and json_contains(sys_notice.user_ids, json_array(#{userId}))
+    </select>
+
+    <!-- 根据 noticeId 查询通知公告 -->
+    <select id="selectOne" resultMap="SysNoticeResult">
+        select notice_id,
+               title,
+               type,
+               content,
+               user_ids,
+               user_read_ids,
+               status,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
+        from sys_notice
+        where status = '0' and notice_id = #{noticeId}
+    </select>
+</mapper>

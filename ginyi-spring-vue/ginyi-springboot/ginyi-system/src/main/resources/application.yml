@@ -1,0 +1,150 @@
+﻿# 项目应用配置
+ginyi:
+  # 项目应用作者
+  project-author: ginyi@aliyun.com
+  # 项目应用名称
+  project-name: ginyi-springboot-demo
+  # 项目应用版本
+  project-version: 1.0.0
+  # 项目应用描述
+  project-description: 重构ruoyi，学习优质项目，加油~
+  # 文件路径 示例（ Windows配置D:/ginyi/uploadPath，Linux配置 /home/ginyi/uploadPath）
+  profile: D:/ginyi/uploadPath
+
+
+
+# 应用服务
+server:
+  servlet:
+    # 应用访问的路径
+    context-path: /
+  tomcat:
+    # tomcat的URI编码
+    uri-encoding: UTF-8
+    # 连接数满后的排队数，默认为100
+    accept-count: 1000
+    threads:
+      # tomcat最大线程数，默认为200
+      max: 800
+      # Tomcat启动初始化的线程数，默认值10
+      min-spare: 100
+
+
+spring:
+  # 文件上传
+  servlet:
+    multipart:
+      # 单个文件大小
+      max-file-size: 10MB
+      # 设置总上传的文件大小
+      max-request-size: 20MB
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  # 数据源
+  datasource:
+    type: com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceWrapper
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://127.0.0.1:3307/db1_ginyi_spring_vue?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+      username: root
+      password: mysqladmin
+      # 初始连接数
+      initialSize: 5
+      # 最小连接池数量
+      minIdle: 10
+      # 最大连接池数量
+      maxActive: 20
+      testWhileIdle: true
+  # redis 配置
+  redis:
+    # 地址
+    host: 127.0.0.1
+    # 端口，默认为 6379
+    port: 6379
+    # 数据库索引
+    database: 0
+    # 密码
+    password:
+    # 连接超时时间
+    timeout: 10s
+    lettuce:
+      pool:
+        # 连接池中的最小空闲连接
+        min-idle: 0
+        # 连接池中的最大空闲连接
+        max-idle: 8
+        # 连接池的最大数据库连接数
+        max-active: 8
+        # #连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: -1ms
+  data:
+    mongodb:
+      uri: mongodb://127.0.0.1:27017/ginyi-spring-vue
+  # 资源信息
+  messages:
+    # 国际化资源文件路径
+    basename: static/i18n/messages
+  profiles:
+    active: druid
+  # 全局配置 @JsonFormat 时间格式化
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+
+# MyBatis-plus配置
+mybatis-plus:
+  # mapper.xml文件的位置
+  mapper-locations: classpath*:mapper/**/*Mapper.xml
+  # 类型别名的位置
+  type-aliases-package: ginyi.**.domain
+  configuration:
+    # 开启下划线转驼峰
+    map-underscore-to-camel-case: true
+    # 控制台输出sql语句
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      # 更改默认的 id 生成策略
+      id-type: assign_id
+      # 逻辑删除
+      logic-delete-field: deleted
+      logic-not-delete-value: 0  # 未删除
+      logic-delete-value: 1      # 已删除
+
+
+# token配置
+token:
+  # 令牌自定义标识
+  header: Authorization
+  # 令牌前缀
+  prefix: Bearer
+  # 令牌密钥
+  secret: da5519948e0ac1db0ac8da59bb0770a1
+  # 令牌有效期（默认30分钟）
+  expireTime: 30
+
+
+# 用户配置
+user:
+  password:
+    # 密码最大错误次数
+    maxRetryCount: 5
+    # 密码锁定时间（默认10分钟）
+    lockTime: 10
+
+
+# 接口文档的配置
+swagger:
+  # 联系方式
+  swagger-contact:
+    name: Author Email is Ginyi@aliyun.com
+    email: Ginyi@aliyun.com
+
+
+# 日志配置文件
+logging:
+  config: classpath:logging-config.xml
+
+

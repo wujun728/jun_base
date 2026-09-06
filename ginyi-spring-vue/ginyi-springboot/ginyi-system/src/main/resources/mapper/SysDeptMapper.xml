@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ginyi.system.mapper.SysDeptMapper">
+
+    <resultMap id="SysDeptResult" type="sysDept">
+        <id property="deptId" column="dept_id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="deptName" column="dept_name"/>
+        <result property="sort" column="sort"/>
+        <result property="leader" column="leader"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="status" column="status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <!-- 新增部门 -->
+    <insert id="insertDept">
+        insert into sys_dept
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            parent_id,
+            <if test="deptDto.deptName != null and deptDto.deptName != ''">dept_name,</if>
+            <if test="deptDto.sort != null and deptDto.sort != ''">sort,</if>
+            <if test="deptDto.leader != null and deptDto.leader != ''">leader,</if>
+            <if test="deptDto.phone != null and deptDto.phone != ''">phone,</if>
+            <if test="deptDto.email != null and deptDto.email != ''">email,</if>
+            <if test="deptDto.status != null and deptDto.status != ''">`status`,</if>
+            <if test="deptDto.createBy != null and deptDto.createBy != ''">create_by,</if>
+            <if test="deptDto.createTime != null">create_time,</if>
+            <if test="deptDto.updateBy != null and deptDto.updateBy">update_by,</if>
+            <if test="deptDto.updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <choose>
+                <when test="deptDto.parentId == null or deptDto.parentId == ''">0,</when>
+                <otherwise>#{deptDto.parentId}</otherwise>
+            </choose>
+            <if test="deptDto.deptName != null and deptDto.deptName != ''">#{deptDto.deptName},</if>
+            <if test="deptDto.sort != null and deptDto.sort != ''">#{deptDto.sort},</if>
+            <if test="deptDto.leader != null and deptDto.leader != ''">#{deptDto.leader},</if>
+            <if test="deptDto.phone != null and deptDto.phone != ''">#{deptDto.phone},</if>
+            <if test="deptDto.email != null and deptDto.email != ''">#{deptDto.email},</if>
+            <if test="deptDto.status != null and deptDto.status != ''">#{deptDto.status},</if>
+            <if test="deptDto.createBy != null and deptDto.createBy != ''">#{deptDto.createBy},</if>
+            <if test="deptDto.createTime != null">#{deptDto.createTime},</if>
+            <if test="deptDto.updateBy != null and deptDto.updateBy">#{deptDto.updateBy},</if>
+            <if test="deptDto.updateTime != null">#{deptDto.updateTime},</if>
+        </trim>
+    </insert>
+
+    <!-- 更新部门 -->
+    <update id="updateDept">
+        update sys_dept
+        <set>
+            <if test="deptDto.parentId != null">parent_id = #{deptDto.parentId},</if>
+            <if test="deptDto.deptName != null and deptDto.deptName != ''">dept_name = #{deptDto.deptName},</if>
+            <if test="deptDto.sort != null and deptDto.sort != ''">sort = #{deptDto.sort},</if>
+            <if test="deptDto.leader != null and deptDto.leader != ''">leader = #{deptDto.leader},</if>
+            <if test="deptDto.phone != null and deptDto.phone != ''">phone = #{deptDto.phone},</if>
+            <if test="deptDto.email != null and deptDto.email != ''">email = #{deptDto.email},</if>
+            <if test="deptDto.status != null and deptDto.status != ''">`status` = #{deptDto.status},</if>
+            <if test="deptDto.createBy != null and deptDto.createBy != ''">create_by = #{deptDto.createBy},</if>
+            <if test="deptDto.createTime != null">create_time = #{deptDto.createTime},</if>
+            <if test="deptDto.updateBy != null and deptDto.updateBy != ''">update_by = #{deptDto.updateBy},</if>
+            <if test="deptDto.updateTime != null">update_time = #{deptDto.updateTime},</if>
+            <if test="deptDto.remark != null and deptDto.remark != ''">remark = #{deptDto.remark},</if>
+        </set>
+        where dept_id = #{deptDto.deptId}
+    </update>
+
+    <!-- 更新状态 -->
+    <update id="updateDeptStatus">
+        update sys_dept
+        <set>
+            `status` = #{deptDto.status},
+            <if test="deptDto.updateBy != null and deptDto.updateBy != ''">update_by = #{deptDto.updateBy},</if>
+            <if test="deptDto.updateTime != null">update_time = #{deptDto.updateTime},</if>
+        </set>
+        where dept_id = #{deptDto.deptId} and deleted = '0'
+    </update>
+
+    <!-- 查询部门列表 -->
+    <select id="list" resultMap="SysDeptResult">
+        select dept_id,
+        parent_id,
+        dept_name,
+        sort,
+        leader,
+        phone,
+        email,
+        status,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        remark
+        from sys_dept
+        <where>
+            deleted = '0'
+            <if test="deptDto.deptName != null and deptDto.deptName != ''">
+                and dept_name like concat('%',#{deptDto.deptName} , '%')
+            </if>
+            <if test="deptDto.leader != null and deptDto.leader != ''">
+                and leader like concat('%',#{deptDto.leader} , '%')
+            </if>
+            <if test="deptDto.phone != null and deptDto.phone != ''">
+                and phone like concat('%',#{deptDto.phone} , '%')
+            </if>
+            <if test="deptDto.email != null and deptDto.email != ''">
+                and email like concat('%',#{deptDto.email} , '%')
+            </if>
+            <if test="deptDto.remark != null and deptDto.remark != ''">
+                and remark like concat('%',#{deptDto.remark} , '%')
+            </if>
+            <if test="deptDto.status != null and deptDto.status != ''">
+                and `status` = #{deptDto.status}
+            </if>
+            <choose>
+                <when test="deptDto.beginTime != null and deptDto.endTime == null">
+                    and create_time > #{deptDto.beginTime}
+                </when>
+                <when test="deptDto.beginTime != null and deptDto.endTime != null">
+                    and create_time between #{deptDto.beginTime} and #{deptDto.endTime}
+                </when>
+            </choose>
+        </where>
+    </select>
+</mapper>
