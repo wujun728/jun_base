@@ -1,0 +1,349 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet author="Administrator (generated)" id="1764223194862-24">
+        <createTable remarks="参数配置表" tableName="sys_config">
+            <column autoIncrement="true" name="config_id" remarks="参数主键" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="config_name" remarks="参数名称" type="VARCHAR(100)"/>
+            <column defaultValue="" name="config_key" remarks="参数键名" type="VARCHAR(100)"/>
+            <column defaultValue="" name="config_value" remarks="参数键值" type="VARCHAR(500)"/>
+            <column defaultValue="N" name="config_type" remarks="系统内置（Y是 N否）" type="CHAR(1)"/>
+            <column defaultValue="" name="create_by" remarks="创建者" type="VARCHAR(64)"/>
+            <column name="create_time" remarks="创建时间" type="datetime(0)"/>
+            <column defaultValue="" name="update_by" remarks="更新者" type="VARCHAR(64)"/>
+            <column name="update_time" remarks="更新时间" type="datetime(0)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(500)"/>
+        </createTable>
+
+        <loadData tableName="sys_config" file="../../db/data/sys_config.csv" separator="," encoding="UTF-8" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-26">
+        <createTable remarks="部门表" tableName="sys_dept">
+            <column autoIncrement="true" name="dept_id" remarks="部门id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValueNumeric="0" name="parent_id" remarks="父部门id" type="BIGINT"/>
+            <column defaultValue="" name="ancestors" remarks="祖级列表" type="VARCHAR(50)"/>
+            <column defaultValue="" name="dept_name" remarks="部门名称" type="VARCHAR(30)"/>
+            <column defaultValueNumeric="0" name="order_num" remarks="显示顺序" type="INT"/>
+            <column name="leader" remarks="负责人" type="VARCHAR(20)"/>
+            <column name="phone" remarks="联系电话" type="VARCHAR(11)"/>
+            <column name="email" remarks="邮箱" type="VARCHAR(50)"/>
+            <column defaultValue="0" name="status" remarks="部门状态（0正常 1停用）" type="CHAR(1)"/>
+            <column defaultValue="0" name="del_flag" remarks="删除标志（0代表存在 1代表删除）" type="SMALLINT"/>
+            <column defaultValue="" name="create_by" remarks="创建者" type="VARCHAR(64)"/>
+            <column name="create_time" remarks="创建时间" type="datetime(0)"/>
+            <column defaultValue="" name="update_by" remarks="更新者" type="VARCHAR(64)"/>
+            <column name="update_time" remarks="更新时间" type="datetime(0)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(500)"/>
+        </createTable>
+
+        <loadData tableName="sys_dept" file="../../db/data/sys_dept.csv" separator="," encoding="UTF-8" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-27">
+        <createTable remarks="字典数据表" tableName="sys_dict_data">
+            <column autoIncrement="true" name="dict_code" remarks="字典编码" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValueNumeric="0" name="dict_sort" remarks="字典排序" type="INT"/>
+            <column defaultValue="" name="dict_label" remarks="字典标签" type="VARCHAR(100)"/>
+            <column defaultValue="" name="dict_value" remarks="字典键值" type="VARCHAR(100)"/>
+            <column defaultValue="" name="dict_type" remarks="字典类型" type="VARCHAR(100)"/>
+            <column name="css_class" remarks="样式属性（其他样式扩展）" type="VARCHAR(100)"/>
+            <column name="list_class" remarks="表格回显样式" type="VARCHAR(100)"/>
+            <column defaultValue="N" name="is_default" remarks="是否默认（Y是 N否）" type="CHAR(1)"/>
+            <column defaultValue="0" name="status" remarks="状态（0正常 1停用）" type="CHAR(1)"/>
+            <column defaultValue="" name="create_by" remarks="创建者" type="VARCHAR(64)"/>
+            <column name="create_time" remarks="创建时间" type="datetime(0)"/>
+            <column defaultValue="" name="update_by" remarks="更新者" type="VARCHAR(64)"/>
+            <column name="update_time" remarks="更新时间" type="datetime(0)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(500)"/>
+        </createTable>
+
+        <loadData tableName="sys_dict_data" file="../../db/data/sys_dict_data.csv" separator="," encoding="UTF-8" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-28">
+        <createTable remarks="字典类型表" tableName="sys_dict_type">
+            <column autoIncrement="true" name="dict_id" remarks="字典主键" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="dict_name" remarks="字典名称" type="VARCHAR(100)"/>
+            <column defaultValue="" name="dict_type" remarks="字典类型" type="VARCHAR(100)">
+                <constraints unique="true"/>
+            </column>
+            <column defaultValue="0" name="status" remarks="状态（0正常 1停用）" type="CHAR(1)"/>
+            <column defaultValue="" name="create_by" remarks="创建者" type="VARCHAR(64)"/>
+            <column name="create_time" remarks="创建时间" type="datetime(0)"/>
+            <column defaultValue="" name="update_by" remarks="更新者" type="VARCHAR(64)"/>
+            <column name="update_time" remarks="更新时间" type="datetime(0)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(500)"/>
+        </createTable>
+
+        <loadData tableName="sys_dict_type" file="../../db/data/sys_dict_type.csv" separator="," encoding="UTF-8" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-30">
+        <createTable remarks="文件信息表" tableName="sys_file_info">
+            <column autoIncrement="true" name="file_id" remarks="文件主键" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="file_name" remarks="原始文件名" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_path" remarks="统一逻辑路径（/开头）" type="VARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="storage_type" remarks="存储类型（local/minio/oss）" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_type" remarks="文件类型/后缀" type="VARCHAR(50)"/>
+            <column name="file_size" remarks="文件大小（字节）" type="BIGINT"/>
+            <column name="md5" remarks="文件MD5" type="VARCHAR(64)"/>
+            <column defaultValue="" name="create_by" remarks="创建者" type="VARCHAR(64)"/>
+            <column name="create_time" remarks="创建时间" type="datetime(0)"/>
+            <column defaultValue="" name="update_by" remarks="更新者" type="VARCHAR(64)"/>
+            <column name="update_time" remarks="更新时间" type="datetime(0)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(255)"/>
+            <column defaultValue="0" name="del_flag" remarks="删除标志（0代表存在 1代表删除）" type="SMALLINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-34">
+        <createTable remarks="系统访问记录" tableName="sys_logininfor">
+            <column autoIncrement="true" name="info_id" remarks="访问ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="user_name" remarks="用户账号" type="VARCHAR(50)"/>
+            <column defaultValue="" name="ipaddr" remarks="登录IP地址" type="VARCHAR(128)"/>
+            <column defaultValue="" name="login_location" remarks="登录地点" type="VARCHAR(255)"/>
+            <column defaultValue="" name="browser" remarks="浏览器类型" type="VARCHAR(50)"/>
+            <column defaultValue="" name="os" remarks="操作系统" type="VARCHAR(50)"/>
+            <column defaultValue="0" name="status" remarks="登录状态（0成功 1失败）" type="CHAR(1)"/>
+            <column defaultValue="" name="msg" remarks="提示消息" type="VARCHAR(255)"/>
+            <column name="login_time" remarks="访问时间" type="datetime(0)"/>
+        </createTable>
+        <createIndex associatedWith="" indexName="idx_sys_logininfor_lt" tableName="sys_logininfor">
+            <column name="login_time"/>
+        </createIndex>
+        <createIndex associatedWith="" indexName="idx_sys_logininfor_s" tableName="sys_logininfor">
+            <column name="status"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-35">
+        <createTable remarks="菜单权限表" tableName="sys_menu">
+            <column autoIncrement="true" name="menu_id" remarks="菜单ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="menu_name" remarks="菜单名称" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="parent_id" remarks="父菜单ID" type="BIGINT"/>
+            <column defaultValueNumeric="0" name="order_num" remarks="显示顺序" type="INT"/>
+            <column defaultValue="" name="path" remarks="路由地址" type="VARCHAR(200)"/>
+            <column name="component" remarks="组件路径" type="VARCHAR(255)"/>
+            <column name="query" remarks="路由参数" type="VARCHAR(255)"/>
+            <column defaultValue="" name="route_name" remarks="路由名称" type="VARCHAR(50)"/>
+            <column defaultValueNumeric="1" name="is_frame" remarks="是否为外链（0是 1否）" type="INT"/>
+            <column defaultValueNumeric="0" name="is_cache" remarks="是否缓存（0缓存 1不缓存）" type="INT"/>
+            <column defaultValue="" name="menu_type" remarks="菜单类型（M目录 C菜单 F按钮）" type="CHAR(1)"/>
+            <column defaultValue="0" name="visible" remarks="菜单状态（0显示 1隐藏）" type="CHAR(1)"/>
+            <column defaultValue="0" name="status" remarks="菜单状态（0正常 1停用）" type="CHAR(1)"/>
+            <column name="perms" remarks="权限标识" type="VARCHAR(100)"/>
+            <column defaultValue="#" name="icon" remarks="菜单图标" type="VARCHAR(100)"/>
+            <column defaultValue="" name="create_by" remarks="创建者" type="VARCHAR(64)"/>
+            <column name="create_time" remarks="创建时间" type="datetime(0)"/>
+            <column defaultValue="" name="update_by" remarks="更新者" type="VARCHAR(64)"/>
+            <column name="update_time" remarks="更新时间" type="datetime(0)"/>
+            <column defaultValue="" name="remark" remarks="备注" type="VARCHAR(500)"/>
+        </createTable>
+        <loadData tableName="sys_menu" file="../../db/data/sys_menu.csv" separator="," encoding="UTF-8" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-36">
+        <createTable remarks="通知公告表" tableName="sys_notice">
+            <column autoIncrement="true" name="notice_id" remarks="公告ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="notice_title" remarks="公告标题" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="notice_type" remarks="公告类型（1通知 2公告）" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="notice_content" remarks="公告内容" type="TEXT"/>
+            <column defaultValue="0" name="status" remarks="公告状态（0正常 1关闭）" type="CHAR(1)"/>
+            <column defaultValue="" name="create_by" remarks="创建者" type="VARCHAR(64)"/>
+            <column name="create_time" remarks="创建时间" type="datetime(0)"/>
+            <column defaultValue="" name="update_by" remarks="更新者" type="VARCHAR(64)"/>
+            <column name="update_time" remarks="更新时间" type="datetime(0)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(255)"/>
+        </createTable>
+        <loadData tableName="sys_notice" file="../../db/data/sys_notice.csv" separator="," encoding="UTF-8" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-37">
+        <createTable remarks="操作日志记录" tableName="sys_oper_log">
+            <column autoIncrement="true" name="oper_id" remarks="日志主键" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="title" remarks="模块标题" type="VARCHAR(50)"/>
+            <column defaultValueNumeric="0" name="business_type" remarks="业务类型（0其它 1新增 2修改 3删除）" type="INT"/>
+            <column defaultValue="" name="method" remarks="方法名称" type="VARCHAR(100)"/>
+            <column defaultValue="" name="request_method" remarks="请求方式" type="VARCHAR(10)"/>
+            <column defaultValueNumeric="0" name="operator_type" remarks="操作类别（0其它 1后台用户 2手机端用户）" type="INT"/>
+            <column defaultValue="" name="oper_name" remarks="操作人员" type="VARCHAR(50)"/>
+            <column defaultValue="" name="dept_name" remarks="部门名称" type="VARCHAR(50)"/>
+            <column defaultValue="" name="oper_url" remarks="请求URL" type="VARCHAR(255)"/>
+            <column defaultValue="" name="oper_ip" remarks="主机地址" type="VARCHAR(128)"/>
+            <column defaultValue="" name="oper_location" remarks="操作地点" type="VARCHAR(255)"/>
+            <column defaultValue="" name="oper_param" remarks="请求参数" type="VARCHAR(2000)"/>
+            <column defaultValue="" name="json_result" remarks="返回参数" type="VARCHAR(2000)"/>
+            <column defaultValueNumeric="0" name="status" remarks="操作状态（0正常 1异常）" type="INT"/>
+            <column defaultValue="" name="error_msg" remarks="错误消息" type="VARCHAR(2000)"/>
+            <column name="oper_time" remarks="操作时间" type="datetime(0)"/>
+            <column defaultValueNumeric="0" name="cost_time" remarks="消耗时间" type="BIGINT"/>
+        </createTable>
+        <createIndex associatedWith="" indexName="idx_sys_oper_log_bt" tableName="sys_oper_log">
+            <column defaultValueNumeric="0" name="business_type"/>
+        </createIndex>
+        <createIndex associatedWith="" indexName="idx_sys_oper_log_ot" tableName="sys_oper_log">
+            <column name="oper_time"/>
+        </createIndex>
+        <createIndex associatedWith="" indexName="idx_sys_oper_log_s" tableName="sys_oper_log">
+            <column defaultValueNumeric="0" name="status"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-38">
+        <createTable remarks="岗位信息表" tableName="sys_post">
+            <column autoIncrement="true" name="post_id" remarks="岗位ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="post_code" remarks="岗位编码" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="post_name" remarks="岗位名称" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="post_sort" remarks="显示顺序" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" remarks="状态（0正常 1停用）" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="create_by" remarks="创建者" type="VARCHAR(64)"/>
+            <column name="create_time" remarks="创建时间" type="datetime(0)"/>
+            <column defaultValue="" name="update_by" remarks="更新者" type="VARCHAR(64)"/>
+            <column name="update_time" remarks="更新时间" type="datetime(0)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(500)"/>
+        </createTable>
+        <loadData tableName="sys_post" file="../../db/data/sys_post.csv" separator="," encoding="UTF-8" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-39">
+        <createTable remarks="角色信息表" tableName="sys_role">
+            <column autoIncrement="true" name="role_id" remarks="角色ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="role_name" remarks="角色名称" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_key" remarks="角色权限字符串" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_sort" remarks="显示顺序" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="1" name="data_scope" remarks="数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）" type="CHAR(1)"/>
+            <column defaultValueNumeric="1" name="menu_check_strictly" remarks="菜单树选择项是否关联显示" type="BOOLEAN"/>
+            <column defaultValueNumeric="1" name="dept_check_strictly" remarks="部门树选择项是否关联显示" type="BOOLEAN"/>
+            <column name="status" remarks="角色状态（0正常 1停用）" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="0" name="del_flag" remarks="删除标志（0代表存在 1代表删除）" type="SMALLINT"/>
+            <column defaultValue="" name="create_by" remarks="创建者" type="VARCHAR(64)"/>
+            <column name="create_time" remarks="创建时间" type="datetime(0)"/>
+            <column defaultValue="" name="update_by" remarks="更新者" type="VARCHAR(64)"/>
+            <column name="update_time" remarks="更新时间" type="datetime(0)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(500)"/>
+        </createTable>
+        <loadData tableName="sys_role" file="../../db/data/sys_role.csv" separator="," encoding="UTF-8" relativeToChangelogFile="true"/>
+
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-40">
+        <createTable remarks="角色和部门关联表" tableName="sys_role_dept">
+            <column name="role_id" remarks="角色ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="dept_id" remarks="部门ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+        <loadData tableName="sys_role_dept" file="../../db/data/sys_role_dept.csv" separator="," encoding="UTF-8" relativeToChangelogFile="true"/>
+
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-41">
+        <createTable remarks="角色和菜单关联表" tableName="sys_role_menu">
+            <column name="role_id" remarks="角色ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="menu_id" remarks="菜单ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+        <loadData tableName="sys_role_menu" file="../../db/data/sys_role_menu.csv" separator="," encoding="UTF-8" relativeToChangelogFile="true"/>
+
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-42">
+        <createTable remarks="用户信息表" tableName="sys_user">
+            <column autoIncrement="true" name="user_id" remarks="用户ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="dept_id" remarks="部门ID" type="BIGINT"/>
+            <column name="user_name" remarks="用户账号" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nick_name" remarks="用户昵称" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="00" name="user_type" remarks="用户类型（00系统用户）" type="VARCHAR(2)"/>
+            <column defaultValue="" name="email" remarks="用户邮箱" type="VARCHAR(50)"/>
+            <column defaultValue="" name="phonenumber" remarks="手机号码" type="VARCHAR(11)"/>
+            <column defaultValue="0" name="sex" remarks="用户性别（0男 1女 2未知）" type="CHAR(1)"/>
+            <column defaultValue="" name="avatar" remarks="头像地址" type="VARCHAR(100)"/>
+            <column defaultValue="" name="password" remarks="密码" type="VARCHAR(100)"/>
+            <column defaultValue="0" name="status" remarks="账号状态（0正常 1停用）" type="CHAR(1)"/>
+            <column defaultValue="0" name="del_flag" remarks="删除标志（0代表存在 1代表删除）" type="SMALLINT"/>
+            <column defaultValue="" name="login_ip" remarks="最后登录IP" type="VARCHAR(128)"/>
+            <column name="login_date" remarks="最后登录时间" type="datetime(0)"/>
+            <column name="pwd_update_date" remarks="密码最后更新时间" type="datetime(0)"/>
+            <column defaultValue="" name="create_by" remarks="创建者" type="VARCHAR(64)"/>
+            <column name="create_time" remarks="创建时间" type="datetime(0)"/>
+            <column defaultValue="" name="update_by" remarks="更新者" type="VARCHAR(64)"/>
+            <column name="update_time" remarks="更新时间" type="datetime(0)"/>
+            <column name="remark" remarks="备注" type="VARCHAR(500)"/>
+        </createTable>
+        <loadData tableName="sys_user" file="../../db/data/sys_user.csv" separator="," encoding="UTF-8" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-43">
+        <createTable remarks="用户与岗位关联表" tableName="sys_user_post">
+            <column name="user_id" remarks="用户ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="post_id" remarks="岗位ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+        <loadData tableName="sys_user_post" file="../../db/data/sys_user_post.csv" separator="," encoding="UTF-8" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet author="Administrator (generated)" id="1764223194862-44">
+        <createTable remarks="用户和角色关联表" tableName="sys_user_role">
+            <column name="user_id" remarks="用户ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="role_id" remarks="角色ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+        <loadData tableName="sys_user_role" file="../../db/data/sys_user_role.csv" separator="," encoding="UTF-8" relativeToChangelogFile="true"/>
+
+    </changeSet>
+</databaseChangeLog>

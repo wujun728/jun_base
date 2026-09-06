@@ -1,0 +1,12 @@
+{
+  "files.encoding": "utf8",
+  "search.exclude": {
+    "node_modules": true,
+    "lib": true,
+    "dist": true,
+    "public/draco": true
+  },
+  "files.autoGuessEncoding": false,
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true
+}

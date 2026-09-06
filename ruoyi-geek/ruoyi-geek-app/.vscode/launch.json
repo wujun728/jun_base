@@ -1,0 +1,288 @@
+{
+  // 使用 IntelliSense 了解相关属性。
+  // 悬停以查看现有属性的描述。
+  // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+
+    {
+      "name": "Debug Edge",
+      "request": "launch",
+      "type": "msedge",
+      "url": "http://localhost:80",
+      "webRoot": "${workspaceFolder}",
+    },
+    {
+      "name": "dev:h5",
+      "request": "launch",
+      "runtimeArgs": ["run", "dev:h5"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "dev:app",
+      "request": "launch",
+      "runtimeArgs": ["run", "dev:app"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "dev:app-android",
+      "request": "launch",
+      "runtimeArgs": ["run", "dev:app-android"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "dev:app-ios",
+      "request": "launch",
+      "runtimeArgs": ["run", "dev:app-ios"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "dev:custom",
+      "request": "launch",
+      "runtimeArgs": ["run", "dev:custom"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "dev:h5:ssr",
+      "request": "launch",
+      "runtimeArgs": ["run", "dev:h5:ssr"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "dev:mp-alipay",
+      "request": "launch",
+      "runtimeArgs": ["run", "dev:mp-alipay"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "dev:mp-baidu",
+      "request": "launch",
+      "runtimeArgs": ["run", "dev:mp-baidu"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "dev:mp-jd",
+      "request": "launch",
+      "runtimeArgs": ["run", "dev:mp-jd"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "dev:mp-kuaishou",
+      "request": "launch",
+      "runtimeArgs": ["run", "dev:mp-kuaishou"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "dev:mp-lark",
+      "request": "launch",
+      "runtimeArgs": ["run", "dev:mp-lark"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "dev:mp-qq",
+      "request": "launch",
+      "runtimeArgs": ["run", "dev:mp-qq"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "dev:mp-toutiao",
+      "request": "launch",
+      "runtimeArgs": ["run", "dev:mp-toutiao"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "dev:mp-weixin",
+      "request": "launch",
+      "runtimeArgs": ["run", "dev:mp-weixin"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "dev:quickapp-webview",
+      "request": "launch",
+      "runtimeArgs": ["run", "dev:quickapp-webview"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "dev:quickapp-webview-huawei",
+      "request": "launch",
+      "runtimeArgs": ["run", "dev:quickapp-webview-huawei"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "dev:quickapp-webview-union",
+      "request": "launch",
+      "runtimeArgs": ["run", "dev:quickapp-webview-union"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "build:app",
+      "request": "launch",
+      "runtimeArgs": ["run", "build:app"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "build:app-android",
+      "request": "launch",
+      "runtimeArgs": ["run", "build:app-android"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "build:app-ios",
+      "request": "launch",
+      "runtimeArgs": ["run", "build:app-ios"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "build:custom",
+      "request": "launch",
+      "runtimeArgs": ["run", "build:custom"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "build:h5",
+      "request": "launch",
+      "runtimeArgs": ["run", "build:h5"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "build:h5:ssr",
+      "request": "launch",
+      "runtimeArgs": ["run", "build:h5:ssr"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "build:mp-alipay",
+      "request": "launch",
+      "runtimeArgs": ["run", "build:mp-alipay"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "build:mp-baidu",
+      "request": "launch",
+      "runtimeArgs": ["run", "build:mp-baidu"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "build:mp-jd",
+      "request": "launch",
+      "runtimeArgs": ["run", "build:mp-jd"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "build:mp-kuaishou",
+      "request": "launch",
+      "runtimeArgs": ["run", "build:mp-kuaishou"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "build:mp-lark",
+      "request": "launch",
+      "runtimeArgs": ["run", "build:mp-lark"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "build:mp-qq",
+      "request": "launch",
+      "runtimeArgs": ["run", "build:mp-qq"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "build:mp-toutiao",
+      "request": "launch",
+      "runtimeArgs": ["run", "build:mp-toutiao"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "build:mp-weixin",
+      "request": "launch",
+      "runtimeArgs": ["run", "build:mp-weixin"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "build:quickapp-webview",
+      "request": "launch",
+      "runtimeArgs": ["run", "build:quickapp-webview"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "build:quickapp-webview-huawei",
+      "request": "launch",
+      "runtimeArgs": ["run", "build:quickapp-webview-huawei"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "build:quickapp-webview-union",
+      "request": "launch",
+      "runtimeArgs": ["run", "build:quickapp-webview-union"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    }
+  ]
+}

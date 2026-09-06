@@ -1,0 +1,5 @@
+com.anji.captcha.service.impl.BlockPuzzleCaptchaServiceImpl
+com.anji.captcha.service.impl.ClickWordCaptchaServiceImpl
+com.anji.captcha.service.impl.DefaultCaptchaServiceImpl
+com.geek.framework.captcha.service.impl.MathCaptchaServiceImpl
+com.geek.framework.captcha.service.impl.CharCaptchaServiceImpl

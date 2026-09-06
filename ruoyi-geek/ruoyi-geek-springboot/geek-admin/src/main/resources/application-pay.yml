@@ -1,0 +1,34 @@
+# 回调地址使用的内网穿透https://natapp.cn/
+# 回调地址根据退款还是支付的回调会自动在后面拼接 {订单ID}/{pay|refund}, 部分支付方式可能不支持退款回调
+# 证书文件必须为UTF-8编码,不然会导致报错。
+pay:
+  # https://doc.shouqianba.com/zh-cn/
+  sqb:
+    enabled: false
+    appId: "appId"
+    apiDomain: "apiDomain"
+    terminalSn: "terminalSn"
+    terminalKey: "terminalKey"
+    vendorSn: "vendorSn"
+    vendorKey: "vendorKey"
+    publicKey: classpath:pay/sqb/sqb_public_key.pem
+    notifyUrl: http://e2vca6.natappfree.cc/pay/sqb/notify
+  # https://opendocs.alipay.com/open/02np95
+  alipay:
+    enabled: false
+    appId: appid
+    # 文件内容没有换行符也没有PEM起始标记和结束标记
+    appPrivateKey: classpath:pay/alipay/alipay_private_key.pem
+    # 文件内容没有换行符也没有PEM起始标记和结束标记
+    alipayPublicKey: classpath:pay/alipay/alipay_public_key.pem
+    notifyUrl: http://e2vca6.natappfree.cc/alipay/notify
+  # https://github.com/wechatpay-apiv3/wechatpay-java
+  wechat:
+    enabled: false
+    appId: appid
+    apiV3Key: apiV3Key
+    # 文件内容应该有PEM起始标记和结束标记
+    privateKeyPath: classpath:pay/wx/apiclient_key.pem
+    merchantId: merchantId
+    merchantSerialNumber: merchantSerialNumber
+    notifyUrl: http://e2vca6.natappfree.cc/pay/wechat/notify

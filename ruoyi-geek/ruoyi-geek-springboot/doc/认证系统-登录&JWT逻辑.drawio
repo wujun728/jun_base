@@ -1,0 +1,131 @@
+<mxfile host="65bd71144e">
+    <diagram id="IyeDk-cAWrKOq7F3gyWb" name="第 1 页">
+        <mxGraphModel dx="1246" dy="779" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#FFFFFF" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="7" value="" style="edgeStyle=none;html=1;" parent="1" source="5" target="6" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="访问/login" style="html=1;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="30" width="110" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="" style="edgeStyle=none;html=1;" parent="1" source="6" target="20" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="359.0000000000001" y="200" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="6" value="被SysLoginController.login()捕获" style="html=1;" parent="1" vertex="1">
+                    <mxGeometry x="261.5" y="100" width="187" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="20" value="&lt;span style=&quot;font-weight: 400;&quot;&gt;调用方法SysLoginService.login()执行登录逻辑&lt;/span&gt;" style="swimlane;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="110" y="155" width="490" height="935" as="geometry">
+                        <mxRectangle x="109" y="195" width="290" height="30" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="22" value="" style="edgeStyle=none;html=1;" parent="20" source="10" target="21" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="&lt;div style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;调用方法SysLoginService.validateCaptcha()&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;1. &lt;/span&gt;&lt;font style=&quot;background-color: transparent; color: rgb(0, 0, 204);&quot;&gt;从redis里拿到验证码对应的验证信息&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;2. &lt;/span&gt;&lt;font style=&quot;background-color: transparent; color: rgb(0, 0, 204);&quot;&gt;删除redis中验证码对应的验证信息&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;3. 如果验证信息为空，&lt;/span&gt;&lt;font style=&quot;background-color: transparent;&quot;&gt;抛出验证码过期的异常&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;4. 如果code与验证信息的值不同，&lt;/span&gt;&lt;font style=&quot;background-color: transparent;&quot;&gt;抛出验证码错误的异常&lt;/font&gt;&lt;/div&gt;" style="html=1;align=left;" parent="20" vertex="1">
+                    <mxGeometry x="87.42999999999999" y="35" width="315.15" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="24" value="" style="edgeStyle=none;html=1;" parent="20" source="21" target="23" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="21" value="调用方法SysLoginService.loginPreCheck()&lt;br&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;1. &lt;/span&gt;&lt;font style=&quot;background-color: transparent;&quot;&gt;用户名或密码为空 -&amp;gt; 错误 &lt;font style=&quot;color: rgb(255, 0, 0);&quot;&gt;抛出异常&lt;/font&gt;&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;2. &lt;/span&gt;&lt;font style=&quot;background-color: transparent;&quot;&gt;密码不在指定范围内 -&amp;gt; 错误 &lt;font style=&quot;color: rgb(255, 0, 0);&quot;&gt;抛出异常&lt;/font&gt;&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;3. &lt;/span&gt;&lt;font style=&quot;background-color: transparent;&quot;&gt;用户名不在指定范围内 -&amp;gt; 错误 &lt;font style=&quot;color: rgb(255, 0, 0);&quot;&gt;抛出异常&lt;/font&gt;&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;4. &lt;/span&gt;&lt;font style=&quot;background-color: transparent;&quot;&gt;IP黑名单校验 -&amp;gt; 错误 &lt;font style=&quot;color: rgb(255, 0, 0);&quot;&gt;抛出异常&lt;/font&gt;&lt;/font&gt;&lt;/div&gt;" style="html=1;" parent="20" vertex="1">
+                    <mxGeometry x="112.91" y="170" width="267.1" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="26" style="edgeStyle=none;html=1;" parent="20" source="23" target="25" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="23" value="&lt;font style=&quot;color: rgb(0, 204, 0);&quot;&gt;通过new UsernamePasswordAuthenticationToken生成一个认证信息&lt;br&gt;通过AuthenticationContextHolder.setContext将认证信息设置到上下文&lt;/font&gt;&lt;br&gt;通过AuthenticationManager.authenticate()对认证信息进行认证，这个方法&lt;br&gt;会去调用UserDetailsServiceImpl.loadUserByUsername()方法进行认证" style="html=1;" parent="20" vertex="1">
+                    <mxGeometry x="43.39" y="295" width="406.13" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="68" style="edgeStyle=none;html=1;" parent="20" source="25" target="40" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="25" value="&lt;span style=&quot;font-weight: 400;&quot;&gt;loadUserByUsername&lt;/span&gt;" style="swimlane;whiteSpace=wrap;html=1;" parent="20" vertex="1">
+                    <mxGeometry x="27.43" y="385" width="438.06" height="355" as="geometry">
+                        <mxRectangle x="25.97999999999999" y="380" width="160" height="30" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="29" value="" style="edgeStyle=none;html=1;" parent="25" source="27" target="28" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="27" value="调用ISysUserService.selectUserByUserName()获取用户信息&lt;br&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;校验是否为空 -&amp;gt; &lt;/span&gt;&lt;font style=&quot;background-color: transparent; color: rgb(255, 0, 0);&quot;&gt;抛出用户不存在的异常&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;校验是否已被删除 -&amp;gt; &lt;/span&gt;&lt;font style=&quot;background-color: transparent; color: rgb(255, 0, 0);&quot;&gt;抛出用户已被删除的异常&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;校验是否已被停用 -&amp;gt; &lt;/span&gt;&lt;font style=&quot;background-color: transparent; color: rgb(255, 0, 0);&quot;&gt;抛出用户已被停用的异常&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;" parent="25" vertex="1">
+                    <mxGeometry x="48.55" y="40" width="340.95" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="28" value="调用SysPasswordService.validate()进行认证&lt;br&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;1. 获取上下文的认证信息，并获取认证信息中携带的用户名和密码&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;2. &lt;/span&gt;&lt;font style=&quot;background-color: transparent; color: rgb(0, 0, 255);&quot;&gt;从redis中获取该用户名密码错误次数&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;3. 校验该用户名密码错误次数是否过多&lt;/span&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;若次数过多，则&lt;/span&gt;&lt;font style=&quot;background-color: transparent; color: rgb(255, 0, 0);&quot;&gt;抛出密码错误次数过多的异常&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;4. 调用SecurityUtils.matchesPassword方法校验用户名密码是否匹配&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;5. 若不匹配，&lt;font style=&quot;color: rgb(0, 0, 255);&quot;&gt;则密码错误次数加一&lt;/font&gt;，且&lt;/span&gt;&lt;font style=&quot;background-color: transparent;&quot;&gt;抛&lt;font style=&quot;color: rgb(255, 0, 0);&quot;&gt;出密码错误的异常&lt;/font&gt;&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;6. 若匹配，&lt;font style=&quot;color: rgb(0, 0, 255);&quot;&gt;则清除密码错误次数&lt;/font&gt;，校验结束即校验通过&lt;/span&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;" parent="25" vertex="1">
+                    <mxGeometry x="33.56" y="135" width="370.95" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="36" value="调用createLoginUser方法new&amp;nbsp;LoginUser()创建一个UserDetails凭证&lt;br&gt;调用SysPermissionService.getMenuPermission()方法获取用户角色权限" style="html=1;" parent="25" vertex="1">
+                    <mxGeometry x="27.98" y="290" width="382.09" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="37" style="edgeStyle=none;html=1;" parent="25" source="28" target="36" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="324.02" y="280" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="44" value="" style="edgeStyle=none;html=1;" parent="20" source="40" target="43" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="40" value="1. &lt;font color=&quot;#ff0000&quot;&gt;若上述环节抛出异常则处理异常并抛出对应的新的异常&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;2. 若上述环节正常运行，则校验环节结束&lt;/font&gt;&lt;br&gt;3. 无论校验结果如何，清除上下文&lt;/div&gt;" style="html=1;align=left;" parent="20" vertex="1">
+                    <mxGeometry x="90.98" y="765" width="308.06" height="55" as="geometry"/>
+                </mxCell>
+                <mxCell id="43" value="1. 调用createToken()记录并更新用户信息&lt;br&gt;2. 调用TokenService.createToken()生成token，&lt;br&gt;3. 设置用户代理信息LoginUser，将&lt;font style=&quot;color: rgb(0, 0, 255);&quot;&gt;LoginUser存入redis&lt;/font&gt;" style="html=1;align=left;" parent="20" vertex="1">
+                    <mxGeometry x="92.42999999999999" y="845" width="308.06" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="47" style="edgeStyle=none;html=1;" parent="1" source="43" target="48" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="333.06500000000005" y="1290.0000000000002" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="65" value="" style="edgeStyle=none;html=1;fontColor=#00FFFF;" parent="1" source="48" target="64" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="48" value="认证成功，将Token返回给前端" style="html=1;" parent="1" vertex="1">
+                    <mxGeometry x="254.73000000000002" y="1110" width="203.46" height="31" as="geometry"/>
+                </mxCell>
+                <mxCell id="51" value="" style="edgeStyle=none;html=1;" parent="1" source="49" target="50" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="49" value="Token认证" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="765" y="1010" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="53" value="" style="edgeStyle=none;html=1;" parent="1" source="50" target="52" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="50" value="触发JwtAuthenticationTokenFilter拦截器&lt;br&gt;调用doFilterInternal方法进行处理" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="690" y="920" width="270" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="55" value="" style="edgeStyle=none;html=1;" parent="1" source="52" target="54" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="52" value="调用TokenService.getLoginUser()方法&lt;br&gt;1. 调用方法getToken从request的请求头中获取token&lt;br&gt;&lt;font style=&quot;color: rgb(0, 0, 204);&quot;&gt;2. 通过token在redis中获取用户代理信息LoginUser&lt;/font&gt;" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="675" y="830" width="300" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="57" value="" style="edgeStyle=none;html=1;" parent="1" source="54" target="56" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="54" value="判断用户凭证是非空并且判断上下文认证信息为空&lt;br&gt;调用TokenService.verifyToken()校验token并判断最小时间刷新token" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="630" y="750" width="390" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="59" value="" style="edgeStyle=none;html=1;" parent="1" source="56" target="58" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="56" value="&lt;font style=&quot;color: rgb(0, 153, 0);&quot;&gt;1. 通过UsernamePasswordAuthenticationToken创建一个认证信息&lt;br&gt;2. 通过WebAuthenticationDetailsSource构建一个用户凭证并通过UsernamePasswordAuthenticationToken.setDetails设置到认证信息里&lt;br&gt;3. 将认证信息通过SecurityContextHolder.getContext().setAuthentication拿到上下文并设置到上下文&lt;/font&gt;" style="whiteSpace=wrap;html=1;strokeColor=#00CC00;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="632.75" y="640" width="384.51" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="58" value="继续过滤&lt;br&gt;在鉴权系统中会用到上述设置的上下文" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="755" y="555" width="140" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="66" style="edgeStyle=none;html=1;fontColor=#00FFFF;" parent="1" source="64" target="49" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="64" value="前端拿到token后存到浏览器中&lt;br&gt;后续发送请求在浏览器中拿到token&lt;br&gt;并将token设置到请求头里" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="705.49" y="1090" width="239.02" height="70" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

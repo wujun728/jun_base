@@ -1,0 +1,28 @@
+{
+	"series": [
+		{
+			"data": [
+				{
+					"name": "本科",
+					"value": 168,
+					"color": "#FFBF31"
+				},
+				{
+					"name": "大专",
+					"value": 144,
+					"color": "#3CEFC4"
+				},
+				{
+					"name": "博士",
+					"value": 123,
+					"color": "#FFA9B3"
+				},
+				{
+					"name": "硕士",
+					"value": 96,
+					"color": "#3CBBFF"
+				}
+			]
+		}
+	]
+}

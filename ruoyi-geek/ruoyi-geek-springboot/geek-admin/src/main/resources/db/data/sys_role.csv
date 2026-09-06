@@ -1,0 +1,3 @@
+"role_id","role_name","role_key","role_sort","data_scope","menu_check_strictly","dept_check_strictly","status","del_flag","create_by","create_time","update_by","update_time","remark"
+"1","超级管理员","admin","1","1","1","1","0","0","admin","2025-11-27 14:34:19","",,"超级管理员"
+"2","普通角色","common","2","2","1","1","0","0","admin","2025-11-27 14:34:19","",,"普通角色"

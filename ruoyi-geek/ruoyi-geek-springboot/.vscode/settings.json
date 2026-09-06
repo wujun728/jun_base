@@ -1,0 +1,65 @@
+{
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.compile.nullAnalysis.mode": "disabled",
+    "maven.executable.options": "-T 4",
+    "maven.pomfile.autoUpdateEffectivePOM": true,
+    "java.debug.settings.hotCodeReplace": "auto",
+    "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=9 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx4G -Xms4G -Xlog:disable",
+    "maven.excludedFolders": [
+        "**/.vscode",
+        "**/.idea",
+        "**/target",
+        "**/.*",
+        "**/node_modules",
+        "**/target",
+        "**/bin",
+        "**/archetype-resources"
+    ],
+    "boot-java.rewrite.refactorings.on": true,
+    "maven.executable.preferMavenWrapper": true,
+    "java.import.maven.enabled": true,
+    "dbcode.connections": [
+        {
+            "connectionId": "btr-_nFe7R0oOvCj0mMun",
+            "name": "ry-mysql",
+            "driver": "mysql",
+            "connectionType": "host",
+            "host": "127.0.0.1",
+            "port": 3306,
+            "ssl": false,
+            "username": "root",
+            "password": "123456",
+            "savePassword": "secretStorage",
+            "database": "ry",
+            "connectionTimeout": 30,
+            "driverOptions": {
+                "retrievePublickey": true
+            }
+        },
+        {
+            "connectionId": "7NX2UhXl__9t3Ca6TzEsB",
+            "name": "ry-postgres",
+            "driver": "postgres",
+            "connectionType": "host",
+            "host": "127.0.0.1",
+            "port": 5432,
+            "ssl": false,
+            "username": "postgres",
+            "password": "123456",
+            "savePassword": "secretStorage",
+            "connectionTimeout": 30
+        },
+        {
+            "connectionId": "fNsY4HlOb21w_5TnIGy_d",
+            "name": "localhost",
+            "driver": "redis",
+            "connectionType": "host",
+            "host": "127.0.0.1",
+            "port": 6379,
+            "ssl": false,
+            "savePassword": "na",
+            "readOnly": false,
+            "connectionTimeout": 30
+        }
+    ],
+}

@@ -1,0 +1,61 @@
+{
+	"categories": [
+		"1周",
+		"2周",
+		"3周",
+		"4周",
+		"5周"
+	],
+	"series": [{
+			"name": "同比增长率",
+			"data": [{
+					"value": 5,
+					"color": "#24ABFD"
+				},
+				{
+					"value": -3,
+					"color": "#24ABFD"
+				},
+				{
+					"value": 3.5,
+					"color": "#24ABFD"
+				},
+				{
+					"value": 10,
+					"color": "#24ABFD"
+				},
+				{
+					"value": 2.8,
+					"color": "#24ABFD"
+				}
+			],
+			"type": "column",
+			"color": "#24ABFD",
+			"index": 1,
+			"unit": "%"
+		},
+		{
+			"name": "消费金额",
+			"data": [
+				1850,
+				1660,
+				1760,
+				2360,
+				1970
+			],
+			"type": "line",
+			"addPoint": true,
+			"color": "#DF297D",
+			"unit": ""
+		}
+	],
+	"target": 1800,
+	"yAxis": [{
+		"max": 3000,
+		"min": 0
+	}, {
+		"max": 20,
+		"min": 0
+	}],
+	"targetAdd": "9%"
+}

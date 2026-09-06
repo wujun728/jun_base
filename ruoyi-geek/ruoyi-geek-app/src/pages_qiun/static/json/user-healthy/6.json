@@ -1,0 +1,12 @@
+[
+	{
+		"kind":3,
+		"background":["#B678FD","#4A64F9"],
+		"content":[
+			{"text":"","value":"38%","colortext":"","colorvalue":"#fff","size":"44rpx"},
+			{"text":"小程序购买活跃会员占比","value":"","colortext":"#fff","colorvalue":"","size":"24rpx"},
+			{"text":"同比","value":"2.5%","colortext":"#fff","colorvalue":"#fff","size":"20rpx"},
+			{"text":"环比","value":"3.2%","colortext":"#fff","colorvalue":"#fff","size":"20rpx"}
+		]
+	}
+]

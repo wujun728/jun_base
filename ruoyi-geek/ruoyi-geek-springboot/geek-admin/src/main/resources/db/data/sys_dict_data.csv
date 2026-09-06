@@ -1,0 +1,61 @@
+"dict_code","dict_sort","dict_label","dict_value","dict_type","css_class","list_class","is_default","status","create_by","create_time","update_by","update_time","remark"
+"1","1","男","0","sys_user_sex","","","Y","0","admin","2025-11-27 14:34:19","",,"性别男"
+"2","2","女","1","sys_user_sex","","","N","0","admin","2025-11-27 14:34:19","",,"性别女"
+"3","3","未知","2","sys_user_sex","","","N","0","admin","2025-11-27 14:34:19","",,"性别未知"
+"4","1","显示","0","sys_show_hide","","primary","Y","0","admin","2025-11-27 14:34:19","",,"显示菜单"
+"5","2","隐藏","1","sys_show_hide","","danger","N","0","admin","2025-11-27 14:34:19","",,"隐藏菜单"
+"6","1","正常","0","sys_normal_disable","","primary","Y","0","admin","2025-11-27 14:34:19","",,"正常状态"
+"7","2","停用","1","sys_normal_disable","","danger","N","0","admin","2025-11-27 14:34:19","",,"停用状态"
+"8","1","正常","0","sys_job_status","","primary","Y","0","admin","2025-11-27 14:34:19","",,"正常状态"
+"9","2","暂停","1","sys_job_status","","danger","N","0","admin","2025-11-27 14:34:19","",,"停用状态"
+"10","1","默认","DEFAULT","sys_job_group","","","Y","0","admin","2025-11-27 14:34:19","",,"默认分组"
+"11","2","系统","SYSTEM","sys_job_group","","","N","0","admin","2025-11-27 14:34:19","",,"系统分组"
+"12","1","是","Y","sys_yes_no","","primary","Y","0","admin","2025-11-27 14:34:19","",,"系统默认是"
+"13","2","否","N","sys_yes_no","","danger","N","0","admin","2025-11-27 14:34:19","",,"系统默认否"
+"14","1","通知","1","sys_notice_type","","warning","Y","0","admin","2025-11-27 14:34:19","",,"通知"
+"15","2","公告","2","sys_notice_type","","success","N","0","admin","2025-11-27 14:34:19","",,"公告"
+"16","1","正常","0","sys_notice_status","","primary","Y","0","admin","2025-11-27 14:34:19","",,"正常状态"
+"17","2","关闭","1","sys_notice_status","","danger","N","0","admin","2025-11-27 14:34:19","",,"关闭状态"
+"18","99","其他","0","sys_oper_type","","info","N","0","admin","2025-11-27 14:34:19","",,"其他操作"
+"19","1","新增","1","sys_oper_type","","info","N","0","admin","2025-11-27 14:34:19","",,"新增操作"
+"20","2","修改","2","sys_oper_type","","info","N","0","admin","2025-11-27 14:34:19","",,"修改操作"
+"21","3","删除","3","sys_oper_type","","danger","N","0","admin","2025-11-27 14:34:19","",,"删除操作"
+"22","4","授权","4","sys_oper_type","","primary","N","0","admin","2025-11-27 14:34:19","",,"授权操作"
+"23","5","导出","5","sys_oper_type","","warning","N","0","admin","2025-11-27 14:34:19","",,"导出操作"
+"24","6","导入","6","sys_oper_type","","warning","N","0","admin","2025-11-27 14:34:19","",,"导入操作"
+"25","7","强退","7","sys_oper_type","","danger","N","0","admin","2025-11-27 14:34:19","",,"强退操作"
+"26","8","生成代码","8","sys_oper_type","","warning","N","0","admin","2025-11-27 14:34:19","",,"生成操作"
+"27","9","清空数据","9","sys_oper_type","","danger","N","0","admin","2025-11-27 14:34:19","",,"清空操作"
+"28","1","成功","0","sys_common_status","","primary","N","0","admin","2025-11-27 14:34:19","",,"正常状态"
+"29","2","失败","1","sys_common_status","","danger","N","0","admin","2025-11-27 14:34:19","",,"停用状态"
+"100","0","POST","POST","online_api_method",,"default","N","0","admin","2024-02-21 18:23:23","",,
+"101","0","GET","GET","online_api_method",,"default","N","0","admin","2024-02-21 18:23:30","",,
+"102","0","PUT","PUT","online_api_method",,"default","N","0","admin","2024-02-21 18:23:37","",,
+"103","0","DELETE","DELETE","online_api_method",,"default","N","0","admin","2024-02-21 18:23:49","",,
+"104","0","select","select","online_api_tag",,"default","N","0","admin","2024-02-21 18:24:06","",,
+"105","0","update","update","online_api_tag",,"default","N","0","admin","2024-02-21 18:24:12","",,
+"106","0","insert","insert","online_api_tag",,"default","N","0","admin","2024-02-21 18:24:18","",,
+"107","0","delete","delete","online_api_tag",,"default","N","0","admin","2024-02-21 18:24:26","",,
+"108","0","selectList","selectList","online_api_actuator",,"default","N","0","admin","2024-02-21 18:25:00","",,
+"109","0","insert","insert","online_api_actuator",,"default","N","0","admin","2024-02-21 18:25:05","",,
+"110","0","selectOne","selectOne","online_api_actuator",,"default","N","0","admin","2024-02-21 18:25:11","",,
+"111","0","update","update","online_api_actuator",,"default","N","0","admin","2024-02-21 18:25:16","",,
+"112","0","delete","delete","online_api_actuator",,"default","N","0","admin","2024-02-21 18:25:21","",,
+"142","0","未读","0","message_status",,"primary","N","0","xl","2024-12-21 15:13:02","",,
+"143","1","已读","1","message_status",,"success","N","0","xl","2024-12-21 15:13:15","xl","2024-12-21 15:13:22",
+"144","0","平台","0","send_mode",,"primary","N","0","xl","2024-12-25 09:40:01","",,
+"145","1","短信","1","send_mode",,"success","N","0","xl","2024-12-25 09:40:16","xl","2025-01-01 10:12:07",
+"146","2","邮件","2","send_mode",,"warning","N","0","xl","2024-12-25 09:40:28","xl","2025-01-01 10:12:14",
+"147","0","验证码","0","template_type",,"primary","N","0","xl","2025-01-03 09:22:52","",,
+"148","0","通知","0","message_type",,"primary","N","0","xl","2025-01-03 15:12:29","",,
+"149","0","提示","1","message_type",,"success","N","0","xl","2025-01-03 15:12:41","xl","2025-01-03 15:12:45",
+"150","1","推广","1","template_type",,"success","N","0","xl","2025-01-03 15:13:15","",,
+"151","0","系统指定","fixed","exp_data_type",,"default","N","0","admin","2024-03-12 09:04:46","",,
+"152","0","动态选择","dynamic","exp_data_type",,"default","N","0","admin","2024-03-12 09:05:02","",,
+"153","0","任务监听","1","sys_listener_type",,"default","N","0","admin","2022-12-25 11:47:26","",,
+"154","2","执行监听","2","sys_listener_type",,"default","N","0","admin","2022-12-25 11:47:37","",,
+"155","0","JAVA类","classListener","sys_listener_value_type",,"default","N","0","admin","2022-12-25 11:48:55","admin","2024-09-05 21:38:02",
+"156","0","表达式","expressionListener","sys_listener_value_type",,"default","N","0","admin","2022-12-25 11:49:05","admin","2024-09-05 21:38:10",
+"157","0","代理表达式","delegateExpressionListener","sys_listener_value_type",,"default","N","0","admin","2022-12-25 11:49:16","admin","2024-09-05 21:38:16",
+"158","0","请假","leave","sys_process_category",,"default","N","0","admin","2024-03-12 09:08:42","",,
+"159","0","报销","expense","sys_process_category",,"default","N","0","admin","2024-03-12 09:09:02","",,

@@ -1,0 +1,14 @@
+{
+    "properties": [
+        {
+            "name": "swagger.enabled",
+            "type": "boolean",
+            "description": "是否开启swagger"
+        },
+        {
+            "name": "swagger.pathMapping",
+            "type": "string",
+            "description": "swagger请求前缀"
+        }
+    ]
+}

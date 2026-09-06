@@ -1,0 +1,63 @@
+# GeekXD plugins config
+# 简单 YAML 结构：modules 列表，每个包含 name / url / path
+
+modules:
+  - name: Geek-Plugin-RabbitMQ
+    url: https://gitee.com/geek-xd/geek-plugin-rabbitmq.git
+    path: geek-plugins/Geek-Plugin-RabbitMQ
+
+  - name: Geek-Plugin-Netty
+    url: https://gitee.com/geek-xd/geek-plugin-netty.git
+    path: geek-plugins/Geek-Plugin-Netty
+
+  - name: Geek-Plugin-Aliyun-OSS
+    url: https://gitee.com/geek-xd/geek-plugin-aliyun-oss.git
+    path: geek-plugins/Geek-Plugin-Aliyun-OSS
+
+  - name: Geek-Plugin-Redis
+    url: https://gitee.com/geek-xd/geek-plugin-redis.git
+    path: geek-plugins/Geek-Plugin-Redis
+
+  - name: Geek-Plugin-Ehcache
+    url: https://gitee.com/geek-xd/geek-plugin-ehcache.git
+    path: geek-plugins/Geek-Plugin-Ehcache
+
+  - name: Geek-Plugin-Minio
+    url: https://gitee.com/geek-xd/geek-plugin-minio.git
+    path: geek-plugins/Geek-Plugin-Minio
+
+  - name: Geek-Plugin-Websocket
+    url: https://gitee.com/geek-xd/geek-plugin-websocket.git
+    path: geek-plugins/Geek-Plugin-Websocket
+
+  - name: Geek-Module-Quartz
+    url: https://gitee.com/geek-xd/geek-module-quartz.git
+    path: geek-modules/Geek-Module-Quartz
+
+  - name: Geek-Module-Online
+    url: https://gitee.com/geek-xd/geek-module-online.git
+    path: geek-modules/Geek-Module-Online
+
+  - name: Geek-Module-Message
+    url: https://gitee.com/geek-xd/geek-module-message.git
+    path: geek-modules/Geek-Module-Message
+
+  - name: Geek-Module-Generator
+    url: https://gitee.com/geek-xd/geek-module-generator.git
+    path: geek-modules/Geek-Module-Generator
+
+  - name: Geek-Module-Form
+    url: https://gitee.com/geek-xd/geek-module-form.git
+    path: geek-modules/Geek-Module-Form
+
+  - name: Geek-Module-Flowable
+    url: https://gitee.com/geek-xd/geek-module-flowable.git
+    path: geek-modules/Geek-Module-Flowable
+
+  - name: Geek-Scene-Pay
+    url: https://gitee.com/geek-xd/geek-scene-pay.git
+    path: geek-scenes/Geek-Scene-Pay
+
+  - name: Geek-Scene-Auth
+    url: https://gitee.com/geek-xd/geek-scene-auth.git
+    path: geek-scenes/Geek-Scene-Auth

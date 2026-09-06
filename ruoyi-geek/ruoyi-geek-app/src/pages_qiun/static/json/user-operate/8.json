@@ -1,0 +1,36 @@
+{
+		"categories": [
+			"高血压",
+			"糖尿病",
+			"痛风",
+			"血脂",
+			"尿酸"
+		],
+		"series": [{
+			"name": "今周脱落率",
+			"data": [{
+					"value": 6,
+					"color": "#24ABFD"
+				},
+				{
+					"value": 3.2,
+					"color": "#24ABFD"
+				},
+				{
+					"value": 5.5,
+					"color": "#24ABFD"
+				},
+				{
+					"value": 8,
+					"color": "#24ABFD"
+				},
+				{
+					"value": 6,
+					"color": "#24ABFD"
+				}
+			],
+			"type": "column",
+			"color": "#24ABFD",
+			"unit": "%"
+		}]
+	}

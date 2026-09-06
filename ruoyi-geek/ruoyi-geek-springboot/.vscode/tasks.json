@@ -1,0 +1,62 @@
+{
+  // 使用 VS Code 任务将构建与打包拆分，支持单步或一键串行执行
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "mvn: build to workspace .m2",
+      "type": "shell",
+      "command": "mvn",
+      "args": [
+        "-am",
+        "-DskipTests",
+        "clean",
+        "install",
+        "-Dmaven.repo.local=${workspaceFolder}\\.m2\\repo"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "prep: ensure dist",
+      "type": "shell",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "if not exist \"dist\" mkdir \"dist\" & del /q \"dist\\*.zip\" 2>nul"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "zip: geekxd subfolders -> dist (7z)",
+      "type": "shell",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "if exist \".m2\\repo\\com\\geek\\geekxd\" (for /d %D in (\".m2\\repo\\com\\geek\\geekxd\\*\") do 7z a -tzip \"dist\\%~nD.zip\" \"%~fD\\*\" -y) else (echo Base path not found: .m2\\repo\\com\\geek\\geekxd & exit /b 1)"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "构建minilib并打包到dist",
+      "dependsOn": [
+        "mvn: build to workspace .m2",
+        "prep: ensure dist",
+        "zip: geekxd subfolders -> dist (7z)"
+      ],
+      "dependsOrder": "sequence",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+[
+	{
+		"kind":4,
+		"background":["#0081ff","#1cbbb4"],
+		"content":[
+			{"text":"已评价数","value":"","colortext":"#fff","colorvalue":"","size":"24rpx"},
+			{"text":"","value":"161","colortext":"","colorvalue":"#fff","size":"44rpx"},
+			{"text":"增长","value":"","colortext":"#fff","colorvalue":"","size":"20rpx"},
+			{"text":"up","value":"325","colortext":"#fff","colorvalue":"#fff","size":"20rpx"}
+		]
+	},
+	{
+		"kind":4,
+		"background":["#0081ff","#1cbbb4"],
+		"content":[
+			{"text":"平均分","value":"","colortext":"#fff","colorvalue":"","size":"24rpx"},
+			{"text":"","value":"82","colortext":"","colorvalue":"#fff","size":"44rpx"},
+			{"text":"增长","value":"","colortext":"#fff","colorvalue":"","size":"20rpx"},
+			{"text":"up","value":"0.7","colortext":"#fff","colorvalue":"#fff","size":"20rpx"}
+		]
+	},
+	{
+		"kind":4,
+		"background":["#0081ff","#1cbbb4"],
+		"content":[
+			{"text":"好评率","value":"","colortext":"#fff","colorvalue":"","size":"24rpx"},
+			{"text":"","value":"161","colortext":"","colorvalue":"#fff","size":"44rpx"},
+			{"text":"增长","value":"","colortext":"#fff","colorvalue":"","size":"20rpx"},
+			{"text":"down","value":"1.2%","colortext":"#fff","colorvalue":"#fff","size":"20rpx"}
+		]
+	}
+]

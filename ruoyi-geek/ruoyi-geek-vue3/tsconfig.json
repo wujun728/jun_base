@@ -1,0 +1,31 @@
+{
+  "include": ["src/**/*", "src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "exclude": ["node_modules", "dist", "**/*.js"],
+  "compilerOptions": {
+    "types":["vite/client"],
+    "target": "ES2022",
+    "experimentalDecorators": true,
+    "noImplicitAny":true,
+    "importHelpers": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "downlevelIteration":true,
+    "outDir": "dist/compiled",
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+    "jsx": "preserve",
+    "moduleResolution": "bundler",
+    "module": "ES2022",
+    "lib": ["ES2022", "dom"],
+    "declaration": true,
+    "paths": {
+      "@": ["./src"],
+      "@/*": ["./src/*"],
+      "@lib": ["./lib"],
+      "@lib/*": ["./lib/*"],
+      "@modules": ["./src/modules"],
+      "vue": ["./node_modules/vue"],
+      "tslib" : ["./node_modules/tslib/tslib.d.ts"]
+    }
+  }
+}

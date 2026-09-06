@@ -1,0 +1,62 @@
+[
+	{
+		"series": [{
+			"color": "#fff",
+			"data": 0.224,
+			"precent":"22.4%",
+			"index": 0,
+			"legendShape": "circle",
+			"name": "B2C销售额",
+			"pointShape": "circle",
+			"show": true,
+			"type": "arcbar",
+			"value":"12786",
+			"backgroundColor":"#00AEF9"
+		}]
+	},
+	{
+		"series": [{
+			"color": "#fff",
+			"data": 0.3717,
+			"precent":"37.17%",
+			"index": 0,
+			"legendShape": "circle",
+			"name": "B2C毛利率",
+			"pointShape": "circle",
+			"show": true,
+			"type": "arcbar",
+			"value":"1096",
+			"backgroundColor":"#F55676"
+		}]
+	},
+	{
+		"series": [{
+			"color": "#fff",
+			"data": 0.0017,
+			"precent":"0.17%",
+			"index": 0,
+			"legendShape": "circle",
+			"name": "O2O销售额",
+			"pointShape": "circle",
+			"show": true,
+			"type": "arcbar",
+			"value":"147604",
+			"backgroundColor":"#FAB215"
+		}]
+	},
+	{
+		"series": [{
+			"color": "#fff",
+			"data": 0.6321,
+			"precent":"63.21%",
+			"index": 0,
+			"legendShape": "circle",
+			"name": "O2O毛利率",
+			"pointShape": "circle",
+			"show": true,
+			"type": "arcbar",
+			"value":"173",
+			"backgroundColor":"#2EC693"
+		}]
+	}
+]

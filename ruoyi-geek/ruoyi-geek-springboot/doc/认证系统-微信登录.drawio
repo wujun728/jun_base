@@ -1,0 +1,76 @@
+<mxfile host="65bd71144e">
+    <diagram id="X-9zxwZzwVme25TE_fPk" name="第 1 页">
+        <mxGraphModel dx="1674" dy="779" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="微信小程序" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" parent="1" vertex="1">
+                    <mxGeometry x="124" y="330" width="100" height="390" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" parent="2" vertex="1">
+                    <mxGeometry x="45" y="140" width="10" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="17" value="wx.login" style="edgeStyle=orthogonalEdgeStyle;html=1;align=left;spacingLeft=2;endArrow=block;rounded=0;entryX=1;entryY=0;" parent="2" target="16" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="50" y="120" as="sourcePoint"/>
+                        <Array as="points">
+                            <mxPoint x="80" y="120"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="20" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" parent="2" vertex="1">
+                    <mxGeometry x="45" y="260" width="10" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="开发者服务器" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" parent="1" vertex="1">
+                    <mxGeometry x="380" y="335" width="100" height="390" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" parent="3" vertex="1">
+                    <mxGeometry x="45" y="170" width="10" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="微信接口服务" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" parent="1" vertex="1">
+                    <mxGeometry x="614" y="330" width="100" height="400" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" parent="4" vertex="1">
+                    <mxGeometry x="45" y="175" width="10" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="" style="html=1;verticalAlign=bottom;endArrow=block;exitX=0.9;exitY=0.89;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="16" target="9" edge="1">
+                    <mxGeometry width="80" relative="1" as="geometry">
+                        <mxPoint x="179" y="505" as="sourcePoint"/>
+                        <mxPoint x="314" y="540" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="12" value="携带code" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="8" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1218" y="-1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="10" value="携带appid、appsecret、code" style="html=1;verticalAlign=bottom;endArrow=block;entryX=-0.02;entryY=0.01;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="9" target="11" edge="1">
+                    <mxGeometry width="80" relative="1" as="geometry">
+                        <mxPoint x="484" y="530" as="sourcePoint"/>
+                        <mxPoint x="574" y="530" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="18" value="返回session_key、openid" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;entryX=1.02;entryY=0.567;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="11" target="9" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="598" y="560" as="sourcePoint"/>
+                        <mxPoint x="438" y="560" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="19" value="返回token" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;entryX=0.98;entryY=0.235;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="9" target="20" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="314" y="600" as="sourcePoint"/>
+                        <mxPoint x="234" y="600" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="21" value="code：临时登录凭证，只能使用一次&lt;br&gt;appid：开发者id&lt;br&gt;appsecret：开发者密码&lt;br&gt;openid：用户唯一标识&lt;br&gt;session_key：会话密钥，对用户数据进行加密的签名" style="html=1;dropTarget=0;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="114" y="120" width="300" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" value="" style="shape=module;jettyWidth=8;jettyHeight=4;" parent="21" vertex="1">
+                    <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+                        <mxPoint x="-27" y="7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

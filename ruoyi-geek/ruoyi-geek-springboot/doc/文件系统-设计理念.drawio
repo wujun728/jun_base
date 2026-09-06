@@ -1,0 +1,137 @@
+<mxfile host="65bd71144e">
+    <diagram id="Ls2xZRtRnCpVtahIddyW" name="第 1 页">
+        <mxGraphModel dx="1634" dy="1113" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="6" style="edgeStyle=none;html=1;" parent="1" source="2" target="5" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" style="edgeStyle=none;html=1;" parent="1" source="2" target="4" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" style="edgeStyle=none;html=1;" parent="1" source="2" target="3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="2" value="fileServer" style="html=1;whiteSpace=wrap;" parent="1" vertex="1">
+                    <mxGeometry x="20" y="310" width="110" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" style="edgeStyle=none;html=1;" parent="1" source="3" target="11" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="oss" style="html=1;whiteSpace=wrap;" parent="1" vertex="1">
+                    <mxGeometry x="190" y="435" width="110" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" style="edgeStyle=none;html=1;" parent="1" source="4" target="10" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="minio" style="html=1;whiteSpace=wrap;" parent="1" vertex="1">
+                    <mxGeometry x="190" y="310" width="110" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="14" style="edgeStyle=none;html=1;" parent="1" source="5" target="9" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="local" style="html=1;whiteSpace=wrap;" parent="1" vertex="1">
+                    <mxGeometry x="190" y="180" width="110" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" style="edgeStyle=none;html=1;" parent="1" source="9" target="15" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="18" style="edgeStyle=none;html=1;" parent="1" source="9" target="17" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="local-buckets" style="html=1;whiteSpace=wrap;" parent="1" vertex="1">
+                    <mxGeometry x="359" y="180" width="110" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="minio-buckets" style="html=1;whiteSpace=wrap;" parent="1" vertex="1">
+                    <mxGeometry x="360" y="310" width="110" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="oss-buckets" style="html=1;whiteSpace=wrap;" parent="1" vertex="1">
+                    <mxGeometry x="360" y="435" width="110" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="20" style="edgeStyle=none;html=1;" parent="1" source="15" target="19" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="21" value="public" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="20" vertex="1" connectable="0">
+                    <mxGeometry x="-0.2177" y="-1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="23" style="edgeStyle=none;html=1;" parent="1" source="15" target="22" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="24" value="private" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="23" vertex="1" connectable="0">
+                    <mxGeometry x="-0.2501" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="15" value="api&lt;div&gt;服务api接口&lt;/div&gt;" style="html=1;whiteSpace=wrap;" parent="1" vertex="1">
+                    <mxGeometry x="510" y="100" width="110" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="17" value="path&lt;div&gt;本机真实目录&lt;/div&gt;" style="html=1;whiteSpace=wrap;" parent="1" vertex="1">
+                    <mxGeometry x="510" y="260" width="110" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="19" value="mvc-static" style="html=1;whiteSpace=wrap;" parent="1" vertex="1">
+                    <mxGeometry x="690" y="20" width="110" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" value="mvc-controller" style="html=1;whiteSpace=wrap;" parent="1" vertex="1">
+                    <mxGeometry x="690" y="180" width="110" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="30" style="edgeStyle=none;html=1;" parent="1" source="26" target="29" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="31" value="业务存储" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="30" vertex="1" connectable="0">
+                    <mxGeometry x="0.0769" y="-1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="33" style="edgeStyle=none;html=1;" parent="1" source="26" target="32" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="34" value="秒传" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="33" vertex="1" connectable="0">
+                    <mxGeometry x="-0.4" y="-1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="36" style="edgeStyle=none;html=1;" parent="1" source="26" target="35" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="37" value="文件存储" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="36" vertex="1" connectable="0">
+                    <mxGeometry x="-0.2727" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="38" style="edgeStyle=none;html=1;" parent="1" source="26" target="27" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="39" style="edgeStyle=none;html=1;" parent="1" source="26" target="28" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="26" value="filePath" style="html=1;whiteSpace=wrap;" parent="1" vertex="1">
+                    <mxGeometry x="324" y="770" width="110" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="27" value="presigned-url" style="html=1;whiteSpace=wrap;" parent="1" vertex="1">
+                    <mxGeometry x="224" y="630" width="110" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="28" value="public-url" style="html=1;whiteSpace=wrap;" parent="1" vertex="1">
+                    <mxGeometry x="404" y="630" width="110" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="29" value="datasource" style="html=1;whiteSpace=wrap;" parent="1" vertex="1">
+                    <mxGeometry x="114" y="770" width="110" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="32" value="cache" style="html=1;whiteSpace=wrap;" parent="1" vertex="1">
+                    <mxGeometry x="534" y="770" width="110" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="35" value="fileServer" style="html=1;whiteSpace=wrap;" parent="1" vertex="1">
+                    <mxGeometry x="324" y="930" width="110" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="40" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;FilePath&lt;/h1&gt;&lt;div&gt;1. 相对于Bucket的文件路径（真实文件路径）&lt;/div&gt;&lt;div&gt;2. 文件管理系统中的文件路径（虚拟文件路径）&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="464" y="890" width="250" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="41" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;URL&lt;/h1&gt;&lt;div&gt;直接访问链接&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="554" y="620" width="90" height="90" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

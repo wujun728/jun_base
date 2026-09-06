@@ -1,0 +1,33 @@
+{
+	"series": [
+		{
+			"data":[
+				{
+					"name": "住房相关",
+					"value": 3200,
+					"color":"#4DCCB3"
+				}, 
+				{
+					"name": "食品酒水",
+					"value": 1020,
+					"color":"#5A77EC"
+				}, 
+				{
+					"name": "娱乐休闲",
+					"value": 500,
+					"color":"#4E94EC"
+				},
+				{
+					"name": "交流通讯",
+					"value": 214.5,
+					"color":"#4FD4EB"
+				},
+				{
+					"name": "其他",
+					"value": 320.13,
+					"color":"#B5ED21"
+				} 
+			]
+		}
+	]
+}

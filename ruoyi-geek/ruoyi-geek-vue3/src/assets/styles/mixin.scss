@@ -1,0 +1,98 @@
+/**
+ * 清除浮动的Mixin
+ * 
+ * 用途：用于清除元素内部子元素浮动导致的布局问题
+ * 使用方法：在需要清除浮动的元素上使用 @include clearfix;
+ */
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+/**
+ * 定义一个混入以自定义滚动条样式
+ * 此混入旨在改善用户界面的视觉效果，通过修改滚动条的颜色和形状以更好地适应设计风格
+ */
+@mixin scrollBar {
+  // 自定义滚动条轨道的颜色
+  &::-webkit-scrollbar-track-piece {
+    background: #d3dce6;
+  }
+
+  // 设置滚动条的宽度
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  // 自定义滚动条手柄的样式，包括颜色和圆角
+  &::-webkit-scrollbar-thumb {
+    background: #99a9bf;
+    border-radius: 20px;
+  }
+}
+
+/**
+ * 定义一个mixin名为relative，用于设置元素的定位方式及其尺寸
+ * 此mixin主要用于简化元素的定位和尺寸设置，使其在父容器中占据全部空间
+ */
+@mixin relative {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/**
+ * 创建一个宽度为指定百分比的居中样式
+ * 
+ * @param {number} $pct - 元素的宽度
+ * 
+ * 此 mixin 用于生成具有指定宽度并居中的元素样式
+ * 它通过设置 width、position 和 margin 属性来实现居中效果
+ */
+@mixin pct($pct) {
+  width: #{$pct};
+  position: relative;
+  margin: 0 auto;
+}
+
+/**
+ * 生成一个三角形的mixin
+ * 
+ * @param $width 三角形的宽度
+ * @param $height 三角形的高度
+ * @param $color 三角形的颜色
+ * @param $direction 三角形的方向，可以是up, right, down, left
+ */
+@mixin triangle($width, $height, $color, $direction) {
+  $width: $width/2;
+  $color-border-style: $height solid $color;
+  $transparent-border-style: $width solid transparent;
+  height: 0;
+  width: 0;
+
+  // 根据传入的方向参数，设置不同的边框样式
+  @if $direction==up {
+    // 向上的三角形，底部边框为有色，左右边框为透明
+    border-bottom: $color-border-style;
+    border-left: $transparent-border-style;
+    border-right: $transparent-border-style;
+  } @else if $direction==right {
+    // 向右的三角形，左边框为有色，上下边框为透明
+    border-left: $color-border-style;
+    border-top: $transparent-border-style;
+    border-bottom: $transparent-border-style;
+  } @else if $direction==down {
+    // 向下的三角形，顶部边框为有色，左右边框为透明
+    border-top: $color-border-style;
+    border-left: $transparent-border-style;
+    border-right: $transparent-border-style;
+  } @else if $direction==left {
+    // 向左的三角形，右边框为有色，上下边框为透明
+    border-right: $color-border-style;
+    border-top: $transparent-border-style;
+    border-bottom: $transparent-border-style;
+  }
+}

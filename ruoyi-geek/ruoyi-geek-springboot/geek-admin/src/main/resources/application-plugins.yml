@@ -1,0 +1,49 @@
+spring:
+  data:
+    # redis 配置
+    redis:
+      # 地址
+      host: localhost
+      # 端口，默认为6379
+      port: 6379
+      # 数据库索引
+      database: 0
+      # 密码
+      password:
+      # 连接超时时间
+      timeout: 10s
+      lettuce:
+        pool:
+          # 连接池中的最小空闲连接
+          min-idle: 0
+          # 连接池中的最大空闲连接
+          max-idle: 8
+          # 连接池的最大数据库连接数
+          max-active: 8
+          # #连接池最大阻塞等待时间（使用负值表示没有限制）
+          max-wait: -1ms
+  cache:
+    redis:
+      # 指定存活时间（ms）
+      time-to-live: 86400000
+      # 指定前缀
+      use-key-prefix: true
+      # 是否缓存空值，可以防止缓存穿透
+      cache-null-values: true
+
+  #配置rabbitMq 服务器
+  rabbitmq:
+    enable: false
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+
+
+netty:
+  websocket:
+      maxMessageSize: 65536
+      bossThreads: 4
+      workerThreads: 16
+      port: 8081
+      enable: true

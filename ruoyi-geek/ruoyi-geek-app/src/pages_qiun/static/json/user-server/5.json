@@ -1,0 +1,32 @@
+[
+	{
+		"name":"华东",
+		"num":50000,
+		"width":"",
+		"background":"#FFBE68"
+	},
+	{
+		"name":"华南",
+		"num":30000,
+		"width":"",
+		"background":"#0FEBE1"
+	},
+	{
+		"name":"华北",
+		"num":45500,
+		"width":"",
+		"background":"#BF8DFC"
+	},
+	{
+		"name":"西北",
+		"num":60120,
+		"width":"",
+		"background":"#FF859C"
+	},
+	{
+		"name":"西南",
+		"num":26020,
+		"width":"",
+		"background":"#51ADCF"
+	}
+]
