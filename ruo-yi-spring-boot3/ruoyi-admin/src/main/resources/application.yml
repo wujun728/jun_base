@@ -1,4 +1,4 @@
-# 项目相关配置
+﻿# 项目相关配置
 ruoyi:
   # 名称
   name: RuoYi
@@ -16,7 +16,7 @@ ruoyi:
 # 开发环境配置
 server:
   # 服务器的HTTP端口，默认为8080
-  port: 8080
+  port:  8082
   servlet:
     encoding:
       charset: utf-8
@@ -146,3 +146,4 @@ langchain4j:
     chat-model:
       base-url: http://127.0.0.1:11434
       model-name: deepseek-r1:8b
+

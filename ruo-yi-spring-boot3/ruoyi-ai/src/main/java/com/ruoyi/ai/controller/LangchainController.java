@@ -66,6 +66,7 @@ public class LangchainController {
     private OllamaEmbeddingModel ollamaEmbeddingModel;
 
     @Autowired
+    @org.springframework.beans.factory.annotation.Qualifier("inMemoryEmbeddingStore")
     private EmbeddingStore embeddingStore;
 
     @Autowired

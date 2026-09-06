@@ -39,9 +39,9 @@ public class KnowledgeBaseLineController extends BaseController
     @Autowired
     private IKnowledgeBaseLineService knowledgeBaseLineService;
 
-    @Autowired
+    @Autowired(required = false)
+    @org.springframework.beans.factory.annotation.Qualifier("inMemoryEmbeddingStore")
     private EmbeddingStore embeddingStore;
-
     /**
      * 查询知识库单栏列表
      */
@@ -64,6 +64,9 @@ public class KnowledgeBaseLineController extends BaseController
     {
         KnowledgeBaseLine knowledgeBaseLine = knowledgeBaseLineService.selectKnowledgeBaseLineById(id);
         String context = knowledgeBaseLine.getContext();
+        if (embeddingStore == null) {
+            return AjaxResult.error("未配置向量数据库(PgVector)，无法向量化");
+        }
         EmbeddingModel embeddingModel = new AllMiniLmL6V2EmbeddingModel();
         Document document = new Document(context);
         DocumentSplitter documentSplitter = new RuoyiDocumentSplitter();

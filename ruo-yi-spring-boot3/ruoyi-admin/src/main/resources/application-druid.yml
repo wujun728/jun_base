@@ -1,4 +1,4 @@
-# 数据源配置
+﻿# 数据源配置
 spring:
     datasource:
         type: com.alibaba.druid.pool.DruidDataSource
@@ -6,9 +6,9 @@ spring:
         druid:
             # 主库数据源
             master:
-                url: jdbc:mysql://localhost:3306/ruoyi-ai?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&useSSL=true&serverTimezone=GMT%2B8
+                url: jdbc:mysql://127.0.0.1:3307/db1_ruoyi_ai?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2B8
                 username: root
-                password: root
+                password: mysqladmin
             # 从库数据源
             slave:
                 # 从数据源开关/默认关闭
@@ -59,3 +59,5 @@ spring:
                 wall:
                     config:
                         multi-statement-allow: true
+
+

@@ -71,7 +71,7 @@ public class BaseConfig {
         return chatModel;
     }
     @Bean
-    public ChatAssistant chatAssistant(StreamingChatLanguageModel streamingChatLanguageModel, PgVectorEmbeddingStore inMemoryEmbeddingStore){
+    public ChatAssistant chatAssistant(StreamingChatLanguageModel streamingChatLanguageModel, EmbeddingStore<TextSegment> inMemoryEmbeddingStore){
         ChatMemory chatMemory = MessageWindowChatMemory.withMaxMessages(10);
         return AiServices.builder(ChatAssistant.class)
                 .streamingChatLanguageModel(streamingChatLanguageModel)
@@ -116,24 +116,9 @@ public class BaseConfig {
 //                .build();
 //    }
     @Bean
-    public PgVectorEmbeddingStore embeddingStore() {
-        VectorDatabaseList vectorDatabaseList = vectorDatabaseListService.selectEnableVectorDatabase();
-        return PgVectorEmbeddingStore.builder()
-                //指定主机地址
-                .host(vectorDatabaseList.getHost())
-                //指定端口
-                .port(vectorDatabaseList.getPort())
-                //指定数据库名
-                .database(vectorDatabaseList.getDatabase())
-                //指定用户名
-                .user(vectorDatabaseList.getUser())
-                //指定密码
-                .password(vectorDatabaseList.getPassword())
-                //指定向量数据所在表名
-                .table(vectorDatabaseList.getTable())
-                //指定向量维度
-                .dimension(vectorDatabaseList.getDimension())
-                .build();
+    public PgVectorEmbeddingStore pgVectorEmbeddingStore() {
+        // 本地无 PgVector 服务, 禁用该 Bean, 使用 inMemoryEmbeddingStore
+        return null;
     }
 
 }
