@@ -1,0 +1,49 @@
+# 忽略生成的文件
+build/
+dist/
+unpackage/
+*.class
+*.jar
+*.war
+*.ear
+
+# 忽略编辑器/IDE生成的文件和目录
+.idea/
+.vscode/
+.hbuilderx
+*.swp
+*.swo
+*~
+
+# 忽略依赖管理工具生成的目录
+node_modules/
+bower_components/
+vendor/
+
+# 忽略操作系统文件
+.DS_Store
+Thumbs.db
+
+# 忽略日志文件
+*.log
+
+# 忽略敏感或包含个人信息的文件（根据需要添加更多）
+credentials.json
+config.ini
+secrets.txt
+
+# 忽略其他自定义的文件或目录
+/custom_directory/
+
+# 排除特定扩展名的文件（根据需要添加更多）
+*.bak
+*.tmp
+
+# 排除特定文件名（根据需要添加更多）
+debug.log
+
+# 不排除下列扩展名的文件
+!*.allowed_extension
+
+# 不排除下列文件名
+!important_file.txt

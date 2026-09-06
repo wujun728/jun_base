@@ -1,0 +1,27 @@
+{
+	"categories":["语文","数学","英语","物理","化学","生物"],
+	"series":[
+		{
+			"name":"一班",
+			"area":[123.45,234,192.5,245],
+			"color":"#1890ff",
+			"data":[90,110,165,195,187,172],
+			"index":0,
+			"legendShape":"circle",
+			"pointShape":"",
+			"show": true,
+			"type": "radar"
+		},
+		{
+			"name":"二班",
+			"area":[192.5,234,261.55,245],
+			"color":"#2fc25b",
+			"data":[190,210,105,35,27,102],
+			"index":0,
+			"legendShape":"circle",
+			"pointShape":"",
+			"show": true,
+			"type": "radar"
+		}
+	]
+}

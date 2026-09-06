@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "uni-segmented-control": "/uni_modules/uni-segmented-control/components/uni-segmented-control/uni-segmented-control",
+    "my-approval": "/pages/approval/myapproval",
+    "my-apply": "/pages/approval/myapply",
+    "my-rejected": "/pages/approval/myrejected"
+  }
+}

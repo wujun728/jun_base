@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>服务监控</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../static/sa.css">
+    <link rel="stylesheet" href="../../static/ruoyi.css">
+    <style>
+        .server-card { margin-bottom: 15px; }
+        .server-card .el-card__header { font-weight: bold; font-size: 14px; }
+        .server-desc-label { font-weight: bold; color: #606266; display: inline-block; width: 120px; text-align: right; padding-right: 12px; }
+        .server-desc-value { color: #303133; }
+        .server-info-item { padding: 8px 0; border-bottom: 1px solid #EBEEF5; display: flex; align-items: center; }
+        .server-info-item:last-child { border-bottom: none; }
+        .progress-item { margin-bottom: 12px; }
+        .progress-item .label { font-size: 13px; color: #606266; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+    <div class="vue-box" style="display: none;" :style="'display: block;'">
+        <div class="c-panel" v-loading="loading">
+            <div class="c-title">服务监控</div>
+
+            <!-- CPU 信息 -->
+            <el-row :gutter="15">
+                <el-col :span="12">
+                    <el-card class="server-card">
+                        <div slot="header"><i class="el-icon-cpu"></i> CPU</div>
+                        <el-table :data="cpuList" size="small" :show-header="true" stripe>
+                            <el-table-column label="属性" prop="key" width="160"></el-table-column>
+                            <el-table-column label="值" prop="value"></el-table-column>
+                        </el-table>
+                    </el-card>
+                </el-col>
+
+                <!-- 内存信息 -->
+                <el-col :span="12">
+                    <el-card class="server-card">
+                        <div slot="header"><i class="el-icon-s-platform"></i> 内存</div>
+                        <el-table :data="memList" size="small" :show-header="true" stripe>
+                            <el-table-column label="属性" prop="key" width="100"></el-table-column>
+                            <el-table-column label="内存" prop="mem"></el-table-column>
+                            <el-table-column label="JVM" prop="jvm"></el-table-column>
+                        </el-table>
+                    </el-card>
+                </el-col>
+            </el-row>
+
+            <!-- 服务器信息 -->
+            <el-row :gutter="15">
+                <el-col :span="24">
+                    <el-card class="server-card">
+                        <div slot="header"><i class="el-icon-monitor"></i> 服务器信息</div>
+                        <el-row :gutter="10">
+                            <el-col :span="8">
+                                <div class="server-info-item">
+                                    <span class="server-desc-label">服务器名称</span>
+                                    <span class="server-desc-value">{{ server.sys ? server.sys.computerName : '' }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="8">
+                                <div class="server-info-item">
+                                    <span class="server-desc-label">操作系统</span>
+                                    <span class="server-desc-value">{{ server.sys ? server.sys.osName : '' }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="8">
+                                <div class="server-info-item">
+                                    <span class="server-desc-label">服务器IP</span>
+                                    <span class="server-desc-value">{{ server.sys ? server.sys.computerIp : '' }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="8">
+                                <div class="server-info-item">
+                                    <span class="server-desc-label">系统架构</span>
+                                    <span class="server-desc-value">{{ server.sys ? server.sys.osArch : '' }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="16">
+                                <div class="server-info-item">
+                                    <span class="server-desc-label">项目路径</span>
+                                    <span class="server-desc-value">{{ server.sys ? server.sys.userDir : '' }}</span>
+                                </div>
+                            </el-col>
+                        </el-row>
+                    </el-card>
+                </el-col>
+            </el-row>
+
+            <!-- Java虚拟机信息 -->
+            <el-row :gutter="15">
+                <el-col :span="24">
+                    <el-card class="server-card">
+                        <div slot="header"><i class="el-icon-coffee"></i> Java虚拟机信息</div>
+                        <el-row :gutter="10">
+                            <el-col :span="12">
+                                <div class="server-info-item">
+                                    <span class="server-desc-label">Java名称</span>
+                                    <span class="server-desc-value">{{ server.jvm ? server.jvm.name : '' }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="12">
+                                <div class="server-info-item">
+                                    <span class="server-desc-label">Java版本</span>
+                                    <span class="server-desc-value">{{ server.jvm ? server.jvm.version : '' }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="24">
+                                <div class="server-info-item">
+                                    <span class="server-desc-label">安装路径</span>
+                                    <span class="server-desc-value">{{ server.jvm ? server.jvm.home : '' }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="8">
+                                <div class="server-info-item">
+                                    <span class="server-desc-label">启动时间</span>
+                                    <span class="server-desc-value">{{ server.jvm ? server.jvm.startTime : '' }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="8">
+                                <div class="server-info-item">
+                                    <span class="server-desc-label">运行时长</span>
+                                    <span class="server-desc-value">{{ server.jvm ? server.jvm.runTime : '' }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="8">
+                                <div class="server-info-item">
+                                    <span class="server-desc-label">运行参数</span>
+                                    <span class="server-desc-value">{{ server.jvm ? server.jvm.inputArgs : '' }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="8">
+                                <div class="server-info-item">
+                                    <span class="server-desc-label">JVM总内存</span>
+                                    <span class="server-desc-value">{{ server.jvm ? server.jvm.total + ' MB' : '' }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="8">
+                                <div class="server-info-item">
+                                    <span class="server-desc-label">JVM最大内存</span>
+                                    <span class="server-desc-value">{{ server.jvm ? server.jvm.max + ' MB' : '' }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="8">
+                                <div class="server-info-item">
+                                    <span class="server-desc-label">JVM空闲内存</span>
+                                    <span class="server-desc-value">{{ server.jvm ? server.jvm.free + ' MB' : '' }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="8">
+                                <div class="server-info-item">
+                                    <span class="server-desc-label">JVM使用率</span>
+                                    <span class="server-desc-value">
+                                        <el-progress :percentage="server.jvm ? parseFloat(server.jvm.usage) : 0" :color="getProgressColor(server.jvm ? parseFloat(server.jvm.usage) : 0)" :stroke-width="14" :text-inside="true"></el-progress>
+                                    </span>
+                                </div>
+                            </el-col>
+                        </el-row>
+                    </el-card>
+                </el-col>
+            </el-row>
+
+            <!-- 磁盘信息 -->
+            <el-row :gutter="15">
+                <el-col :span="24">
+                    <el-card class="server-card">
+                        <div slot="header"><i class="el-icon-files"></i> 磁盘状态</div>
+                        <el-table :data="server.sysFiles || []" size="small" stripe>
+                            <el-table-column label="盘符路径" align="center" prop="dirName"></el-table-column>
+                            <el-table-column label="文件系统" align="center" prop="sysTypeName"></el-table-column>
+                            <el-table-column label="盘符类型" align="center" prop="typeName"></el-table-column>
+                            <el-table-column label="总大小" align="center" prop="total"></el-table-column>
+                            <el-table-column label="可用大小" align="center" prop="free"></el-table-column>
+                            <el-table-column label="已用大小" align="center" prop="used"></el-table-column>
+                            <el-table-column label="已用百分比" align="center" width="200">
+                                <template slot-scope="scope">
+                                    <el-progress :percentage="parseFloat(scope.row.usage)" :color="getProgressColor(parseFloat(scope.row.usage))" :stroke-width="14" :text-inside="true"></el-progress>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </el-card>
+                </el-col>
+            </el-row>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui@2.13.0/lib/index.js"></script>
+    <script src="https://unpkg.com/jquery@3.4.1/dist/jquery.min.js"></script>
+    <script src="../../static/kj/layer/layer.js"></script>
+    <script src="../../static/sa.js"></script>
+    <script src="../../static/ruoyi-util.js"></script>
+    <script>
+        var app = new Vue({
+            el: '.vue-box',
+            data: {
+                loading: true,
+                // 服务器数据
+                server: {},
+                // CPU列表展示
+                cpuList: [],
+                // 内存列表展示
+                memList: []
+            },
+            methods: {
+                /** 获取服务器信息 */
+                getServer: function() {
+                    this.loading = true;
+                    ruoyi.get('/monitor/server', function(res) {
+                        this.server = res.data || {};
+                        this.buildCpuList();
+                        this.buildMemList();
+                        this.loading = false;
+                    }.bind(this));
+                },
+                /** 构建CPU信息列表 */
+                buildCpuList: function() {
+                    var cpu = this.server.cpu || {};
+                    this.cpuList = [
+                        { key: '核心数', value: cpu.cpuNum || 0 },
+                        { key: '用户使用率', value: (cpu.used || 0) + '%' },
+                        { key: '系统使用率', value: (cpu.sys || 0) + '%' },
+                        { key: '当前空闲率', value: (cpu.free || 0) + '%' },
+                        { key: '总使用率', value: (cpu.total || 0) + '%' },
+                        { key: '当前等待率', value: (cpu.wait || 0) + '%' }
+                    ];
+                },
+                /** 构建内存信息列表 */
+                buildMemList: function() {
+                    var mem = this.server.mem || {};
+                    var jvm = this.server.jvm || {};
+                    this.memList = [
+                        { key: '总内存', mem: (mem.total || 0) + ' GB', jvm: (jvm.total || 0) + ' MB' },
+                        { key: '已用内存', mem: (mem.used || 0) + ' GB', jvm: (jvm.used || 0) + ' MB' },
+                        { key: '剩余内存', mem: (mem.free || 0) + ' GB', jvm: (jvm.free || 0) + ' MB' },
+                        { key: '使用率', mem: (mem.usage || 0) + '%', jvm: (jvm.usage || 0) + '%' }
+                    ];
+                },
+                /** 根据百分比获取进度条颜色 */
+                getProgressColor: function(percentage) {
+                    if (percentage < 50) {
+                        return '#67C23A';
+                    } else if (percentage < 80) {
+                        return '#E6A23C';
+                    } else {
+                        return '#F56C6C';
+                    }
+                }
+            },
+            created: function() {
+                this.getServer();
+            }
+        });
+    </script>
+</body>
+</html>

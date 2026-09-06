@@ -1,0 +1,87 @@
+{
+  "id": "lime-drag",
+  "displayName": "拖拽排序-拖动排序-LimeUI",
+  "version": "0.1.3",
+  "description": "uniapp vue3 拖拽排序插件，用于图片或列表的拖动排序，可设置列数、增加删除等功能, vue2只要配置@vue/composition-api",
+  "keywords": [
+    "拖拽",
+    "拖拽排序",
+    "排序",
+    "拖动",
+    "拖动排序"
+],
+  "repository": "",
+  "engines": {
+    "HBuilderX": "^3.7.12"
+  },
+  "dcloudext": {
+    "type": "component-vue",
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": ""
+    },
+    "declaration": {
+      "ads": "无",
+      "data": "无",
+      "permissions": "无"
+    },
+    "npmurl": ""
+  },
+  "uni_modules": {
+    "dependencies": [
+		"lime-shared"
+	],
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "y",
+        "aliyun": "y"
+      },
+      "client": {
+        "Vue": {
+          "vue2": "n",
+          "vue3": "y"
+        },
+        "App": {
+          "app-vue": "y",
+          "app-nvue": "y"
+        },
+        "H5-mobile": {
+          "Safari": "y",
+          "Android Browser": "y",
+          "微信浏览器(Android)": "y",
+          "QQ浏览器(Android)": "y"
+        },
+        "H5-pc": {
+          "Chrome": "y",
+          "IE": "u",
+          "Edge": "u",
+          "Firefox": "u",
+          "Safari": "u"
+        },
+        "小程序": {
+          "微信": "y",
+          "阿里": "u",
+          "百度": "u",
+          "字节跳动": "u",
+          "QQ": "u",
+          "钉钉": "u",
+          "快手": "u",
+          "飞书": "u",
+          "京东": "u"
+        },
+        "快应用": {
+          "华为": "u",
+          "联盟": "u"
+        }
+      }
+    }
+  }
+}

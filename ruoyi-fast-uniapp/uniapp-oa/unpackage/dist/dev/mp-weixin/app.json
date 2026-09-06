@@ -1,0 +1,57 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/home/home",
+    "pages/apply/apply",
+    "pages/approval/approval",
+    "pages/aboutme/aboutme",
+    "pages/home/childpage/info-notice/info-notice",
+    "pages/home/childpage/info-notice/notice-detail",
+    "pages/home/childpage/address-book/address-book",
+    "pages/home/childpage/address-book/address-detail",
+    "pages/home/childpage/organition-structure/organition-structure",
+    "pages/home/childpage/shared-files/shared-files",
+    "pages/home/childpage/attendance-clock/attendance-clock",
+    "pages/home/childpage/mail-box/mail-box"
+  ],
+  "subPackages": [],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "borderStyle": "black",
+    "backgroundColor": "#F7F7F7",
+    "color": "#000000",
+    "selectedColor": "#007AFF",
+    "list": [
+      {
+        "iconPath": "static/home.png",
+        "selectedIconPath": "static/home_active.png",
+        "text": "首页",
+        "pagePath": "pages/home/home"
+      },
+      {
+        "iconPath": "static/apply.png",
+        "selectedIconPath": "static/apply_active.png",
+        "text": "申请",
+        "pagePath": "pages/apply/apply"
+      },
+      {
+        "iconPath": "static/approval.png",
+        "selectedIconPath": "./static/approval_active.png",
+        "text": "审批",
+        "pagePath": "pages/approval/approval"
+      },
+      {
+        "iconPath": "static/aboutme.png",
+        "selectedIconPath": "static/aboutme_active.png",
+        "text": "我的",
+        "pagePath": "pages/aboutme/aboutme"
+      }
+    ]
+  },
+  "usingComponents": {}
+}

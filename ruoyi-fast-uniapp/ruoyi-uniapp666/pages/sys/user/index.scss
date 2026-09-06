@@ -1,0 +1,130 @@
+/*!
+ * Copyright (c) 2013-Now http://aidex.vip All rights reserved.
+ * @author aidex
+ * @version 2020-9-1
+ */
+.header {
+	background-color: #5b95ff;
+	
+	.userinfo {
+		display: flex;
+		padding: 0rpx 30rpx 10rpx;
+
+		.image {
+			flex-shrink: 0;
+			width: 100rpx;
+			height: 100rpx;
+			image {
+				border-radius: 100%;
+				width: 100%;
+				height: 100%;
+			}
+		}
+
+		.info {
+			display: flex;
+			flex-flow: wrap;
+			padding-left: 30rpx;
+			color: #fff;
+
+			.username {
+				width: 100%;
+				font-size: 40rpx;
+			}
+
+			.usercode {
+				height: 36rpx;
+				padding: 0 20rpx;
+				margin-top: 10rpx;
+				background-color: rgba(0, 0, 0, 0.1);
+				border-radius: 20rpx;
+				font-size: 20rpx;
+			}
+		}
+	}
+
+	.logout {
+		flex-shrink: 0;
+		position: absolute;
+		right: 70rpx;
+		top: 65rpx;
+		.u-btn {
+			font-size: 30rpx;
+		}
+	}
+}
+
+.toolbar {
+	padding: 0 4%;
+	margin-bottom: 5rpx;
+	border-radius: 0 0 100% 100%;
+	background-color: #4094ff;
+
+	.box {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-around;
+		padding: 10rpx;
+		border-radius: 15rpx;
+		box-shadow: 0 0 20rpx rgba(0, 0, 0, 0.15);
+		background-color: #fefefe;
+
+		.item {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			// flex-flow: wrap;
+			height: 120rpx;
+			color: #666666;
+			font-size: 30rpx;
+			padding: 10rpx 10rpx;
+
+			.icon {
+				font-size: 50rpx;
+			}
+
+			.label {
+				padding: 10rpx;
+			}
+		}
+
+		.hover {
+			background-color: #f6f6f6;
+			border-radius: 15rpx;
+		}
+	}
+}
+.uni-input-input{
+	border: 1px solid red;
+}
+.userinfo-topbox{
+	padding: 10px 15px;
+	color: #ffffff;
+	.number{
+		font-size: 20px;
+		em{
+			font-style: normal;
+			font-size: 12px;
+		}
+	}
+}
+.user-order-top{
+	padding: 10px 15px;
+	background: #ffffff;
+}
+.user-order-box{
+	padding: 10px 15px;
+	background: #ffffff;
+	border-bottom: 1px solid #ededed;
+	.u-col{
+		position: relative;
+	}
+	.u-badge{
+		top:-8px!important;
+		right:5px!important;
+		background: #ff7001;
+		border: 1px solid #ffffff;
+		box-sizing: content-box;
+	}
+}

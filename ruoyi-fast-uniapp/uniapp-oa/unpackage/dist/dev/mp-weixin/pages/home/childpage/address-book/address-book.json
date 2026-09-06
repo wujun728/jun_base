@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "通讯录",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "uni-indexed-list": "/uni_modules/uni-indexed-list/components/uni-indexed-list/uni-indexed-list"
+  }
+}

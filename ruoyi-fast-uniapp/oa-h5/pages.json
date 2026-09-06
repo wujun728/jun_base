@@ -1,0 +1,817 @@
+{
+  "pages": [{
+      "path": "pages/index/index",
+      "navigationStyle": "custom",
+      "style": {
+        "navigationBarTitleText": "首页",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/webview/webview"
+    },
+    {
+      "path": "pages/index/manage",
+      "navigationStyle": "custom",
+      "style": {
+        "navigationBarTitleText": "应用管理"
+      }
+    },
+    {
+      "path": "pages/notice/index",
+      "navigationStyle": "custom",
+      "style": {
+        "navigationBarTitleText": "消息"
+      }
+    },
+    {
+      "path": "pages/module/list",
+      "style": {
+        "navigationBarTitleText": "低代码应用"
+      }
+    },
+    {
+      "path": "pages/module/details",
+      "style": {
+        "navigationBarTitleText": "低代码详情"
+      }
+    },
+    {
+      "path": "pages/module/addForm",
+      "style": {
+        "navigationBarTitleText": "低代码添加"
+      }
+    },
+    {
+      "path": "pages/module/oneOnOne",
+      "style": {
+        "navigationBarTitleText": "低代码一对一"
+      }
+    },
+    {
+      "path": "pages/module/dashboard",
+      "navigationStyle": "custom",
+      "style": {
+        "navigationBarTitleText": "数据统计",
+        "app-plus": {
+          "bounce": "none"
+        }
+      }
+    },
+    // #ifdef H5
+    {
+      "path": "pages/module/questionnaire",
+      "style": {
+        "navigationBarTitleText": "问卷调查"
+      }
+    },
+    // #endif
+    {
+      "path": "pages/notice/work",
+      "navigationStyle": "custom",
+      "style": {
+        "navigationBarTitleText": "工作待办",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/notice/info",
+      "navigationStyle": "custom",
+      "style": {
+        "navigationBarTitleText": "待办详情"
+      }
+    },
+    {
+      "path": "pages/forum/index",
+      "navigationStyle": "custom",
+      "style": {
+        "navigationBarTitleText": "学习",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/forum/default",
+      "navigationStyle": "custom",
+      "style": {
+        "navigationBarTitleText": "查看文章"
+      }
+    },
+    {
+      "path": "pages/forum/search",
+      "navigationStyle": "custom",
+      "style": {
+        "navigationBarTitleText": "文章搜索"
+      }
+    },
+    {
+      "path": "pages/forum/history",
+      "navigationStyle": "custom",
+      "style": {
+        "navigationBarTitleText": "阅读记录",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/workbench/index",
+      "navigationStyle": "custom",
+      "style": {
+        "navigationBarTitleText": "应用"
+      }
+    },
+    {
+      "path": "pages/cloudfile/index",
+      "navigationStyle": "custom",
+      "style": {
+        "navigationBarTitleText": "云文件"
+      }
+    },
+    {
+      "path": "pages/user/index",
+      "navigationStyle": "custom",
+      "style": {
+        "navigationBarTitleText": "通讯录"
+      }
+    },
+    {
+      "path": "pages/user/userPhone",
+      "navigationStyle": "custom",
+      "style": {
+        "navigationBarTitleText": "手机号添加"
+      }
+    },
+    {
+      "path": "pages/user/userId",
+      "navigationStyle": "custom",
+      "style": {
+        "navigationBarTitleText": "成员ID添加"
+      }
+    },
+    {
+      "path": "pages/user/userRecord",
+      "navigationStyle": "custom",
+      "style": {
+        "navigationBarTitleText": "添加成员记录"
+      }
+    },
+    {
+      "path": "pages/user/personal",
+      "navigationStyle": "custom",
+      "style": {
+        "navigationBarTitleText": "个人信息"
+      }
+    }
+  ],
+  "subPackages": [{
+      "root": "pages/users",
+      "name": "users",
+      "pages": [{
+          "path": "login/index",
+          "style": {
+            "navigationBarTitleText": "登录"
+          }
+        },
+        {
+          "path": "login/config",
+          "style": {
+            "navigationBarTitleText": "添加服务配置"
+          }
+        },
+        {
+          "path": "login/enterprise",
+          "style": {
+            "navigationBarTitleText": "切换企业"
+          }
+        },
+        {
+          "path": "login/service",
+          "style": {
+            "navigationBarTitleText": "服务协议"
+          }
+        },
+        {
+          "path": "login/privacy",
+          "style": {
+            "navigationBarTitleText": "隐私协议"
+          }
+        },
+        {
+          "path": "organization/index",
+          "style": {
+            "navigationBarTitleText": "组织架构"
+          }
+        },
+        {
+          "path": "report/index",
+          "style": {
+            "navigationBarTitleText": "工作汇报"
+          }
+        },
+        {
+          "path": "report/mine",
+          "style": {
+            "navigationBarTitleText": "汇报详情",
+            "app-plus": {
+              "softinputMode": "adjustResize"
+            }
+          }
+        },
+        {
+          "path": "report/check",
+          "style": {
+            "navigationBarTitleText": "查看汇报",
+            "enablePullDownRefresh": true
+          }
+        },
+        {
+          "path": "report/census",
+          "style": {
+            "navigationBarTitleText": "汇报统计"
+          }
+        },
+        {
+          "path": "report/search",
+          "style": {
+            "navigationBarTitleText": "汇报搜索"
+          }
+        },
+        {
+          "path": "notice/index",
+          "style": {
+            "navigationBarTitleText": "企业动态"
+          }
+        },
+        {
+          "path": "noticeDefault/index",
+          "style": {
+            "navigationBarTitleText": "企业动态"
+          }
+        },
+        {
+          "path": "assessment/index",
+          "style": {
+            "navigationBarTitleText": "绩效考核",
+            "enablePullDownRefresh": true
+          }
+        },
+        {
+          "path": "assessment/default",
+          "style": {
+            "navigationBarTitleText": "考核详情",
+            "app-plus": {
+              "softinputMode": "adjustResize"
+            }
+          }
+        },
+        {
+          "path": "schedule/index",
+          "style": {
+            "navigationBarTitleText": "我的日程"
+            // "enablePullDownRefresh": true
+          }
+        },
+        {
+          "path": "schedule/create",
+          "style": {
+            "navigationBarTitleText": "新建日程"
+          }
+        },
+        {
+          "path": "schedule/detail",
+          "style": {
+            "navigationBarTitleText": "日程详情"
+          }
+        },
+        {
+          "path": "center/index",
+          "style": {
+            "navigationBarTitleText": "个人中心"
+          }
+        },
+        {
+          "path": "center/password",
+          "style": {
+            "navigationBarTitleText": "修改密码"
+          }
+        },
+        {
+          "path": "center/phone",
+          "style": {
+            "navigationBarTitleText": "修改手机"
+          }
+        },
+        {
+          "path": "examine/index",
+          "style": {
+            "navigationBarTitleText": "申请审批"
+          }
+        },
+        {
+          "path": "examine/center",
+          "style": {
+            "navigationBarTitleText": "已提交",
+            "enablePullDownRefresh": true
+          }
+        },
+        {
+          "path": "examine/approve",
+          "style": {
+            "navigationBarTitleText": "我审批的",
+            "enablePullDownRefresh": true
+          }
+        },
+        {
+          "path": "examine/components/addSignature",
+          "style": {
+            "navigationBarTitleText": "加签",
+            "enablePullDownRefresh": true
+          }
+        }, {
+          "path": "examine/components/transfer",
+          "style": {
+            "navigationBarTitleText": "转审",
+            "enablePullDownRefresh": true
+          }
+        },
+        {
+          "path": "examine/default",
+          "style": {
+            "navigationBarTitleText": "添加审批",
+            "app-plus": {
+              "softinputMode": "adjustResize"
+            }
+          }
+        },
+        {
+          "path": "examine/defaults",
+          "style": {
+            "navigationBarTitleText": "审批详情"
+          }
+        },
+        {
+          "path": "examine/mine",
+          "style": {
+            "navigationBarTitleText": "我的审批"
+          }
+        },
+        {
+          "path": "examine/search",
+          "style": {
+            "navigationBarTitleText": "审批搜索"
+          }
+        },
+        {
+          "path": "department/index",
+          "style": {
+            "navigationBarTitleText": "选择成员"
+          }
+        },
+        {
+          "path": "memorandum/index",
+          "style": {
+            "navigationBarTitleText": "记事本",
+            "enablePullDownRefresh": true
+          }
+        },
+        {
+          "path": "memorandum/create",
+          "style": {
+            "navigationBarTitleText": "创建笔记",
+            // #ifdef APP-VUE
+            "usingComponents": {
+              "editor": "dynamicLib://editorLib/editor"
+            }
+            // #endif
+          }
+        },
+        {
+          "path": "memorandum/details",
+          "style": {
+            "navigationBarTitleText": "记事本",
+            // #ifdef APP-VUE
+            "usingComponents": {
+              "editor": "dynamicLib://editorLib/editor"
+            }
+            // #endif
+          }
+        },
+        {
+          "path": "memorandum/search",
+          "style": {
+            "navigationBarTitleText": "条件搜索"
+          }
+        },
+        {
+          "path": "scanCode/index",
+          "style": {
+            "navigationBarTitleText": "扫码登录"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/customer",
+      "name": "customer",
+      "pages": [{
+          "path": "list/index",
+          "style": {
+            "navigationBarTitleText": "客户",
+            "enablePullDownRefresh": true
+          }
+        },
+        {
+          "path": "list/addLiaison",
+          "style": {
+            "navigationBarTitleText": "添加联系人",
+            "app-plus": {
+              "softinputMode": "adjustResize"
+            }
+          }
+        },
+        {
+          "path": "list/addCustomer",
+          "style": {
+            "navigationBarTitleText": "添加客户",
+            "app-plus": {
+              "softinputMode": "adjustResize"
+            }
+          }
+        },
+        {
+          "path": "list/statistics",
+          "style": {
+            "navigationBarTitleText": "业绩统计",
+            "app-plus": {
+              "softinputMode": "adjustResize"
+            }
+          }
+        },
+        {
+          "path": "list/addFollow",
+          "style": {
+            "navigationBarTitleText": "添加跟进记录",
+            "app-plus": {
+              "softinputMode": "adjustResize"
+            }
+          }
+        },
+        {
+          "path": "list/shift",
+          "style": {
+            "navigationBarTitleText": "转移"
+          }
+        },
+        {
+          "path": "list/search",
+          "style": {
+            "navigationBarTitleText": "客户-条件搜索"
+          }
+        }, {
+          "path": "list/addSpend",
+          "style": {
+            "navigationBarTitleText": "添加支付"
+          }
+        },
+
+        {
+          "path": "list/details",
+          "style": {
+            "navigationBarTitleText": "客户详情"
+          }
+        },
+        {
+          "path": "list/contract",
+          "style": {
+            "navigationBarTitleText": "合同",
+            "enablePullDownRefresh": true
+          }
+        },
+        {
+          "path": "list/invoice",
+          "style": {
+            "navigationBarTitleText": "发票",
+            "enablePullDownRefresh": true
+          }
+        },
+        {
+          "path": "list/liaison",
+          "style": {
+            "navigationBarTitleText": "联系人",
+            "enablePullDownRefresh": true
+          }
+        },
+        {
+          "path": "list/file",
+          "style": {
+            "navigationBarTitleText": "资料",
+            "enablePullDownRefresh": true
+          }
+        },
+        {
+          "path": "contract/index",
+          "style": {
+            "navigationBarTitleText": "合同管理",
+            "enablePullDownRefresh": true
+          }
+        },
+        {
+          "path": "contract/details",
+          "style": {
+            "navigationBarTitleText": "合同详情",
+            "navigationBarBackgroundColor": "#fff"
+
+          }
+        },
+        {
+          "path": "contract/addContract",
+          "style": {
+            "navigationBarTitleText": "添加合同",
+            "app-plus": {
+              "softinputMode": "adjustResize"
+            }
+          }
+        },
+        {
+          "path": "contract/collectionDetails",
+          "style": {
+            "navigationBarTitleText": "合同回款详情"
+          }
+        },
+        {
+          "path": "contract/addPayment",
+          "style": {
+            "navigationBarTitleText": "添加付款",
+            "app-plus": {
+              "softinputMode": "adjustResize"
+            }
+          }
+        },
+        {
+          "path": "contract/addFile",
+          "style": {
+            "navigationBarTitleText": "添加合同资料",
+            "app-plus": {
+              "softinputMode": "adjustResize"
+            }
+          }
+        },
+        {
+          "path": "contract/addRemind",
+          "style": {
+            "navigationBarTitleText": "添加付款提醒",
+            "app-plus": {
+              "softinputMode": "adjustResize"
+            }
+          }
+        },
+        {
+          "path": "contract/search",
+          "style": {
+            "navigationBarTitleText": "合同-条件搜索"
+          }
+        },
+        {
+          "path": "invoice/index",
+          "style": {
+            "navigationBarTitleText": "发票管理"
+          }
+        },
+        {
+          "path": "invoice/details",
+          "style": {
+            "navigationBarTitleText": "发票详情"
+          }
+        },
+        {
+          "path": "invoice/search",
+          "style": {
+            "navigationBarTitleText": "-发票-条件搜索"
+          }
+        },
+        {
+          "path": "invoice/addInvoice",
+          "style": {
+            "navigationBarTitleText": "申请发票",
+            "app-plus": {
+              "softinputMode": "adjustResize"
+            }
+          }
+        },
+        {
+          "path": "invoice/checkPayment",
+          "style": {
+            "navigationBarTitleText": "选择付款单"
+          }
+        },
+        {
+          "path": "turnover/index",
+          "style": {
+            "navigationBarTitleText": "业绩统计"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/finance",
+      "name": "finance",
+      "pages": [{
+          "path": "invoice/index",
+          "style": {
+            "navigationBarTitleText": "开票管理",
+            "enablePullDownRefresh": true
+          }
+        },
+        {
+          "path": "invoice/details",
+          "style": {
+            "navigationBarTitleText": "发票详情"
+          }
+        },
+        {
+          "path": "invoice/search",
+          "style": {
+            "navigationBarTitleText": "发票审核-搜索"
+          }
+        },
+        {
+          "path": "payment/index",
+          "style": {
+            "navigationBarTitleText": "付款审核",
+            "enablePullDownRefresh": true
+          }
+        },
+        {
+          "path": "payment/search",
+          "style": {
+            "navigationBarTitleText": "付款搜索"
+          }
+        },
+        {
+          "path": "payment/details",
+          "style": {
+            "navigationBarTitleText": "付款详情"
+          }
+        },
+        {
+          "path": "bill/index",
+          "style": {
+            "navigationBarTitleText": "收支记账",
+            "onReachBottomDistance": 200
+          }
+        },
+        {
+          "path": "bill/statistic",
+          "style": {
+            "navigationBarTitleText": "收支统计"
+          }
+        },
+        {
+          "path": "bill/details",
+          "style": {
+            "navigationBarTitleText": "账目信息详情"
+          }
+        },
+        {
+          "path": "bill/add",
+          "style": {
+            "navigationBarTitleText": "添加账目信息"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/attendance",
+      "name": "attendance",
+      "pages": [{
+          "path": "index",
+          "style": {
+            "navigationBarTitleText": "打卡"
+          }
+        },
+        {
+          "path": "apply",
+          "style": {
+            "navigationBarTitleText": "申请"
+          }
+        },
+        {
+          "path": "statistics",
+          "style": {
+            "navigationBarTitleText": "统计"
+          }
+        },
+        {
+          "path": "teamReport",
+          "navigationStyle": "custom",
+          "style": {
+            "navigationBarTitleText": "团队月报"
+          }
+        }, {
+          "path": "personalReport",
+          "navigationStyle": "custom",
+          "style": {
+            "navigationBarTitleText": "个人月报"
+          }
+        }, {
+          "path": "rules",
+          "navigationStyle": "custom",
+          "style": {
+            "navigationBarTitleText": "考勤规则"
+          }
+        }, {
+          "path": "map",
+          "navigationStyle": "custom",
+          "style": {
+            "navigationBarTitleText": "考勤范围"
+          }
+        },
+        {
+          "path": "detailed/userVacationList",
+
+          "navigationStyle": "custom",
+          "style": {
+            "navigationBarTitleText": "假期明细"
+          }
+        }, {
+          "path": "detailed/userCheckList",
+
+          "navigationStyle": "custom",
+          "style": {
+            "navigationBarTitleText": "考勤明细"
+          }
+        }, {
+          "path": "detailed/userOvertimeList",
+
+          "navigationStyle": "custom",
+          "style": {
+            "navigationBarTitleText": "加班明细"
+          }
+        }, {
+          "path": "detailed/teamCheckList",
+
+          "navigationStyle": "custom",
+          "style": {
+            "navigationBarTitleText": "团队打卡明细"
+          }
+        }
+      ]
+    }
+  ],
+  "tabBar": {
+    "color": "#282828",
+    "selectedColor": "#308BF8",
+    //#ifdef APP-PLUS || H5
+    "borderStyle": "#ebeef5",
+    //#endif
+    //#ifdef MP-WEIXIN
+    "borderStyle": "white",
+    //#endif
+    "backgroundColor": "#ffffff",
+    "height": "54px",
+    "iconWidth": "21px",
+    "spacing": "6px",
+    "list": [{
+        "pagePath": "pages/index/index",
+        "iconPath": "static/image/bar-logo01.png",
+        "selectedIconPath": "static/image/bar-logo01-active.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/notice/index",
+        "iconPath": "static/image/bar-logo02.png",
+        "selectedIconPath": "static/image/bar-logo02-active.png",
+        "text": "消息"
+      },
+      {
+        "pagePath": "pages/users/schedule/index",
+        "iconPath": "static/image/bar-logo05.png",
+        "selectedIconPath": "static/image/bar-logo05-active.png",
+        "text": "日程"
+      },
+      {
+        "pagePath": "pages/users/memorandum/index",
+        "iconPath": "static/image/bar-logo03.png",
+        "selectedIconPath": "static/image/bar-logo03-active.png",
+        "text": "笔记"
+      },
+      {
+        "pagePath": "pages/workbench/index",
+        "iconPath": "static/image/bar-logo04.png",
+        "selectedIconPath": "static/image/bar-logo04-active.png",
+        "text": "应用"
+      }
+    ]
+  },
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "派瑞集团OA系统",
+    "navigationBarBackgroundColor": "#fff",
+    "backgroundColor": "#F8F8F8",
+    "titleNView": false,
+    "app-plus": {
+      "scrollIndicator": "none",
+      "bounce": "none"
+    }
+  }
+
+
+}

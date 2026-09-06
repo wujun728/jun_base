@@ -1,0 +1,1 @@
+<view class="container"><view class="apply"><apply-group vue-id="5cb47262-1" groupInfo="{{kaoqinInfo}}" bind:__l="__l"></apply-group><apply-group vue-id="5cb47262-2" groupInfo="{{paymentInfo}}" bind:__l="__l"></apply-group><apply-group vue-id="5cb47262-3" groupInfo="{{administrativeInfo}}" bind:__l="__l"></apply-group></view></view>

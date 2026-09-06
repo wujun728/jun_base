@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>文档</title>
+		<style type="text/css">
+			body{background-color: #f9f9f9;}
+			#md-content{padding: 1em;}
+			pre{background-color: #000; padding: 1.5em 1em; border-radius: 5px; color: #65B042; font-family: Roboto Mono,Monaco,courier,monospace;}
+			blockquote{
+				background-color: #000;
+				padding: 0.1em 0em;
+				color: #65B042; 
+				font-family: Roboto Mono,Monaco,courier,monospace;
+				margin: 0px;
+				border-radius: 5px;
+				
+				/* margin-left: 0px;
+				padding: 0.1em 0em;
+				border-left: 4px #aaa solid;
+				background-color: #CCC; */
+			}
+			blockquote a{color: #44f;}
+			button{cursor: pointer;}
+		</style>
+	</head>
+	<body>
+		<div id="md-content">
+			加载中...
+		</div>
+		<script src="https://unpkg.com/marked@0.8.0/marked.min.js"></script>
+		<script src="https://unpkg.com/jquery@3.4.1/dist/jquery.min.js"></script>
+		<script src="https://www.layuicdn.com/layer-v3.1.1/layer.js"></script>
+		<script src="../../static/sa.js"></script>
+		<script type="text/javascript">
+			
+			// 检测url的参数  
+			function p(name, defaultValue){
+				var query = window.location.search.substring(1);
+				var vars = query.split("&");
+				for (var i=0;i<vars.length;i++) {
+					var pair = vars[i].split("=");
+					if(pair[0] == name){return pair[1];}
+				}
+				return(defaultValue == undefined ? null : defaultValue);
+			}
+			
+			// 获取md文档  
+			var way = p('way', 'start-up') + '.md';		// start-up = 集成步骤， check-per=鉴权 
+			$.ajax({
+				url : way,
+				success: function(res) {
+					document.getElementById('md-content').innerHTML = marked(res);	
+				}
+			})
+			
+		</script>
+	</body>
+</html>

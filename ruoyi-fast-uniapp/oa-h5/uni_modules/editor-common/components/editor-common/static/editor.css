@@ -1,0 +1,116 @@
+/*每个页面公共css */
+.faj {
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+}
+
+.fontColor {
+	color: #007AFF;
+}
+
+.bg {
+	background-color: #F8F8F8;
+}
+
+.bgColor {
+	background-color: #007aff;
+	color: #FFFFFF;
+}
+
+.editor-content {
+	box-sizing: border-box;
+	padding: 15rpx;
+}
+
+/* 位置 */
+.editor-tool {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+}
+
+.fontsizec-warp,
+.titlep-warp {
+	padding: 15rpx 15rpx 0 15rpx;
+	padding-bottom: 100rpx;
+}
+
+.scrollClassTwo {
+	/* display: none; */
+	height: 0rpx;
+
+	width: 100%;
+	/* transition: height 1s linear; */
+}
+
+.scrollClass {
+	height: 470rpx;
+}
+
+/* 工具 */
+.editor-tool_ul {
+	border-top: 1px solid #EBEEF5;
+	border-bottom: 1px solid #F1F1F1;
+	box-shadow: 0px 0px 8px 0px rgb(0, 0, 0, 0.08);
+	background-color: #FFFFFF;
+}
+
+.editor-tool_li {
+	width: 100%;
+	text-align: center;
+	padding: 15rpx 0;
+	border-left: 1px solid #F1F1F1;
+}
+
+.editor-tool_li:nth-child(1) {
+	border-left: 0px;
+}
+
+.editor-tool_revoke,
+.editor-tool_forwarp {
+	display: block;
+	float: left;
+	width: 49%;
+}
+
+.editor-tool_forwarp {
+	transform: rotateX(180deg) rotateY(180deg);
+}
+
+/* 文字格式 */
+.editor-ul_ctool {
+	/* padding: 15rpx; */
+	/* position: fixed; */
+	background-color: #fff;
+}
+
+.editor-ul_label {
+	display: block;
+	font-size: 20rpx;
+	padding: 15rpx 0;
+}
+
+.editor-ul_fontOne {
+	margin-bottom: 10rpx;
+}
+
+.editor-ul_fontOne>text,
+.editor-ul_fontTwo>text,
+.editor-ul_align>text,
+.editor-ul_header>text {
+	display: inline-block;
+	width: 100%;
+	text-align: center;
+	padding: 15rpx 0;
+	border-left: 1px solid #F1F1F1;
+}
+
+.editor-ul_color .text {
+	display: inline-block;
+	width: 50rpx;
+	height: 50rpx;
+	margin: 15px 0;
+	border-radius: 50%;
+}

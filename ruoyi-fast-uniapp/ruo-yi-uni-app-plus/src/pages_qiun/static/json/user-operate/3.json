@@ -1,0 +1,35 @@
+[
+	{
+		"kind":5,
+		"background":["#F77E89","#F7953B"],
+		"content":[
+			{"text":"会员销售占比","value":"","colortext":"#fff","colorvalue":"","size":"24rpx"},
+			{"text":"","value":"80%","colortext":"","colorvalue":"#fff","size":"44rpx"},
+			{"text":"环比","value":"81.5%","colortext":"#fff","colorvalue":"#fff","size":"20rpx"},
+			{"text":"同比","value":"-81.3%","colortext":"#fff","colorvalue":"#fff","size":"20rpx"},
+			{"text":"平均参考水平","value":"85%","colortext":"#fff","colorvalue":"#fff","size":"20rpx"}
+		]
+	},
+	{
+		"kind":5,
+		"background":["#F77E89","#F7953B"],
+		"content":[
+			{"text":"会员客流占比","value":"","colortext":"#fff","colorvalue":"","size":"24rpx"},
+			{"text":"","value":"79%","colortext":"","colorvalue":"#fff","size":"44rpx"},
+			{"text":"环比","value":"2%","colortext":"#fff","colorvalue":"#fff","size":"20rpx"},
+			{"text":"同比","value":"-0.8%","colortext":"#fff","colorvalue":"#fff","size":"20rpx"},
+			{"text":"平均参考水平","value":"80%","colortext":"#fff","colorvalue":"#fff","size":"20rpx"}
+		]
+	},
+	{
+		"kind":5,
+		"background":["#F77E89","#F7953B"],
+		"content":[
+			{"text":"会员客单价","value":"","colortext":"#fff","colorvalue":"","size":"24rpx"},
+			{"text":"","value":"79元","colortext":"","colorvalue":"#fff","size":"44rpx"},
+			{"text":"环比","value":"1%","colortext":"#fff","colorvalue":"#fff","size":"20rpx"},
+			{"text":"同比","value":"-0.8%","colortext":"#fff","colorvalue":"#fff","size":"20rpx"},
+			{"text":"平均参考水平","value":"80%","colortext":"#fff","colorvalue":"#fff","size":"20rpx"}
+		]
+	}
+]

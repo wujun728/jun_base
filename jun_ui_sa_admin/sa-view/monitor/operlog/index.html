@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>操作日志</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../static/sa.css">
+    <link rel="stylesheet" href="../../static/ruoyi.css">
+</head>
+<body>
+    <div class="vue-box" style="display: none;" :style="'display: block;'">
+        <div class="c-panel">
+            <!-- 检索参数 -->
+            <div class="c-title">操作日志</div>
+            <el-form :inline="true" :model="queryParams" ref="queryForm" @submit.native.prevent>
+                <el-form-item label="系统模块" prop="title">
+                    <el-input v-model="queryParams.title" placeholder="请输入系统模块" clearable size="small" style="width: 200px;" @keyup.enter.native="handleQuery"></el-input>
+                </el-form-item>
+                <el-form-item label="操作人员" prop="operName">
+                    <el-input v-model="queryParams.operName" placeholder="请输入操作人员" clearable size="small" style="width: 200px;" @keyup.enter.native="handleQuery"></el-input>
+                </el-form-item>
+                <el-form-item label="业务类型" prop="businessType">
+                    <el-select v-model="queryParams.businessType" placeholder="请选择业务类型" clearable size="small" style="width: 200px;">
+                        <el-option v-for="dict in sysOperTypeOptions" :key="dict.value" :label="dict.label" :value="dict.value"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="操作状态" prop="status">
+                    <el-select v-model="queryParams.status" placeholder="请选择操作状态" clearable size="small" style="width: 200px;">
+                        <el-option :key="0" label="成功" value="0"></el-option>
+                        <el-option :key="1" label="失败" value="1"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="操作时间">
+                    <el-date-picker v-model="dateRange" size="small" style="width: 240px;" value-format="yyyy-MM-dd" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+                    <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+                </el-form-item>
+            </el-form>
+
+            <!-- 操作按钮 -->
+            <el-row :gutter="10" class="mb8">
+                <el-col :span="1.5">
+                    <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete" v-hasPermi="['monitor:operlog:remove']">删除</el-button>
+                </el-col>
+                <el-col :span="1.5">
+                    <el-button type="danger" plain icon="el-icon-delete" size="mini" @click="handleClean" v-hasPermi="['monitor:operlog:remove']">清空</el-button>
+                </el-col>
+                <el-col :span="1.5">
+                    <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport" v-hasPermi="['monitor:operlog:export']">导出</el-button>
+                </el-col>
+            </el-row>
+
+            <!-- 数据列表 -->
+            <el-table :data="list" size="small" v-loading="loading" @selection-change="handleSelectionChange">
+                <el-table-column type="selection" width="55" align="center"></el-table-column>
+                <el-table-column label="日志编号" align="center" prop="operId" width="80"></el-table-column>
+                <el-table-column label="系统模块" align="center" prop="title" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="业务类型" align="center" prop="businessType" width="100">
+                    <template slot-scope="scope">
+                        <span>{{ selectDictLabel(sysOperTypeOptions, scope.row.businessType) }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="请求方式" align="center" prop="requestMethod" width="100"></el-table-column>
+                <el-table-column label="操作人员" align="center" prop="operName" width="110" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="主机" align="center" prop="operIp" width="130" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="操作地点" align="center" prop="operLocation" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="操作状态" align="center" prop="status" width="100">
+                    <template slot-scope="scope">
+                        <el-tag :type="scope.row.status === 0 ? 'success' : 'danger'" size="small">{{ scope.row.status === 0 ? '成功' : '失败' }}</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作日期" align="center" prop="operTime" width="180" sortable="custom">
+                    <template slot-scope="scope">
+                        <span>{{ parseTime(scope.row.operTime) }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" align="center" class-name="fixed-width" width="80">
+                    <template slot-scope="scope">
+                        <el-button size="mini" type="text" icon="el-icon-view" @click="handleView(scope.row)">详细</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <!-- 分页 -->
+            <div class="pagination-container">
+                <el-pagination background layout="total, sizes, prev, pager, next, jumper" :current-page.sync="queryParams.pageNum" :page-size.sync="queryParams.pageSize" :page-sizes="[10, 20, 50, 100]" :total="total" @size-change="getList" @current-change="getList"></el-pagination>
+            </div>
+        </div>
+
+        <!-- 操作日志详细对话框 -->
+        <el-dialog title="操作日志详细" :visible.sync="openView" width="800px" append-to-body>
+            <el-form ref="viewForm" :model="form" label-width="120px" size="mini">
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item label="操作模块：">{{ form.title }} / {{ selectDictLabel(sysOperTypeOptions, form.businessType) }}</el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="登录信息：">{{ form.operName }} / {{ form.operIp }} / {{ form.operLocation }}</el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="请求地址：">{{ form.operUrl }}</el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="请求方式：">{{ form.requestMethod }}</el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="操作方法：">{{ form.method }}</el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="请求参数：">{{ form.operParam }}</el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="返回参数：">{{ form.jsonResult }}</el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item label="操作状态：">
+                            <span v-if="form.status === 0">成功</span>
+                            <span v-else-if="form.status === 1" style="color: #F56C6C;">失败</span>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="消耗时间：">{{ form.costTime }}毫秒</el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="操作时间：">{{ parseTime(form.operTime) }}</el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row v-if="form.status === 1">
+                    <el-col :span="24">
+                        <el-form-item label="异常信息：">{{ form.errorMsg }}</el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="openView = false">关 闭</el-button>
+            </div>
+        </el-dialog>
+    </div>
+
+    <script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui@2.13.0/lib/index.js"></script>
+    <script src="https://unpkg.com/jquery@3.4.1/dist/jquery.min.js"></script>
+    <script src="../../static/kj/layer/layer.js"></script>
+    <script src="../../static/sa.js"></script>
+    <script src="../../static/ruoyi-util.js"></script>
+    <script>
+        var app = new Vue({
+            el: '.vue-box',
+            data: {
+                // 遮罩层
+                loading: true,
+                // 选中数组
+                ids: [],
+                // 非多个禁用
+                multiple: true,
+                // 总条数
+                total: 0,
+                // 表格数据
+                list: [],
+                // 是否显示详细弹出层
+                openView: false,
+                // 日期范围
+                dateRange: [],
+                // 表单参数
+                form: {},
+                // 业务类型字典
+                sysOperTypeOptions: [],
+                // 查询参数
+                queryParams: {
+                    pageNum: 1,
+                    pageSize: 10,
+                    title: undefined,
+                    operName: undefined,
+                    businessType: undefined,
+                    status: undefined
+                }
+            },
+            methods: {
+                /** 查询操作日志列表 */
+                getList: function() {
+                    this.loading = true;
+                    var params = this.addDateRange(this.queryParams, this.dateRange);
+                    ruoyi.get('/monitor/operlog/list', params, function(res) {
+                        this.list = res.rows;
+                        this.total = res.total;
+                        this.loading = false;
+                    }.bind(this));
+                },
+                /** 搜索按钮操作 */
+                handleQuery: function() {
+                    this.queryParams.pageNum = 1;
+                    this.getList();
+                },
+                /** 重置按钮操作 */
+                resetQuery: function() {
+                    this.dateRange = [];
+                    this.resetForm('queryForm');
+                    this.queryParams.title = undefined;
+                    this.queryParams.operName = undefined;
+                    this.queryParams.businessType = undefined;
+                    this.queryParams.status = undefined;
+                    this.queryParams.pageNum = 1;
+                    this.handleQuery();
+                },
+                /** 多选框选中数据 */
+                handleSelectionChange: function(selection) {
+                    this.ids = selection.map(function(item) { return item.operId; });
+                    this.multiple = !selection.length;
+                },
+                /** 详细按钮操作 */
+                handleView: function(row) {
+                    this.form = row;
+                    this.openView = true;
+                },
+                /** 删除按钮操作 */
+                handleDelete: function(row) {
+                    var operIds = this.ids;
+                    this.$modal.confirm('是否确认删除日志编号为"' + operIds + '"的数据项？').then(function() {
+                        ruoyi.del('/monitor/operlog/' + operIds.join(','), function(res) {
+                            this.getList();
+                            this.$modal.msgSuccess('删除成功');
+                        }.bind(this));
+                    }.bind(this)).catch(function() {});
+                },
+                /** 清空按钮操作 */
+                handleClean: function() {
+                    this.$modal.confirm('是否确认清空所有操作日志数据项？').then(function() {
+                        ruoyi.del('/monitor/operlog/clean', function(res) {
+                            this.getList();
+                            this.$modal.msgSuccess('清空成功');
+                        }.bind(this));
+                    }.bind(this)).catch(function() {});
+                },
+                /** 导出按钮操作 */
+                handleExport: function() {
+                    var params = this.addDateRange(this.queryParams, this.dateRange);
+                    this.$modal.confirm('是否确认导出所有操作日志数据项？').then(function() {
+                        ruoyi.download('/monitor/operlog/export', params, 'operlog.xlsx');
+                    }.bind(this)).catch(function() {});
+                }
+            },
+            created: function() {
+                this.getList();
+                ruoyi.loadDicts(this, ['sys_oper_type']);
+            }
+        });
+    </script>
+</body>
+</html>

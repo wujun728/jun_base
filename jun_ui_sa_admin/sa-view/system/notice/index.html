@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>通知公告</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../static/sa.css">
+    <link rel="stylesheet" href="../../static/ruoyi.css">
+    <style>
+        .w-e-toolbar { z-index: 1002 !important; }
+        .w-e-text-container { z-index: 1001 !important; min-height: 200px; }
+        .w-e-menu { z-index: 1003 !important; }
+        .editor-container { line-height: normal; }
+    </style>
+</head>
+<body>
+    <div class="vue-box" style="display: none;" :style="'display: block;'">
+        <div class="c-panel">
+            <!-- 检索参数 -->
+            <div class="c-title">通知公告</div>
+            <el-form :inline="true" :model="queryParams" ref="queryForm" @submit.native.prevent>
+                <el-form-item label="公告标题" prop="noticeTitle">
+                    <el-input v-model="queryParams.noticeTitle" placeholder="请输入公告标题" clearable size="small" style="width: 200px;" @keyup.enter.native="handleQuery"></el-input>
+                </el-form-item>
+                <el-form-item label="操作人员" prop="createBy">
+                    <el-input v-model="queryParams.createBy" placeholder="请输入操作人员" clearable size="small" style="width: 200px;" @keyup.enter.native="handleQuery"></el-input>
+                </el-form-item>
+                <el-form-item label="类型" prop="noticeType">
+                    <el-select v-model="queryParams.noticeType" placeholder="公告类型" clearable size="small" style="width: 200px;">
+                        <el-option label="通知" value="1"></el-option>
+                        <el-option label="公告" value="2"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+                    <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+                </el-form-item>
+            </el-form>
+
+            <!-- 操作按钮 -->
+            <el-row :gutter="10" class="mb8">
+                <el-col :span="1.5">
+                    <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd" v-hasPermi="['system:notice:add']">新增</el-button>
+                </el-col>
+                <el-col :span="1.5">
+                    <el-button type="success" plain icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate" v-hasPermi="['system:notice:edit']">修改</el-button>
+                </el-col>
+                <el-col :span="1.5">
+                    <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete" v-hasPermi="['system:notice:remove']">删除</el-button>
+                </el-col>
+            </el-row>
+
+            <!-- 数据列表 -->
+            <el-table :data="noticeList" size="small" @selection-change="handleSelectionChange" v-loading="loading">
+                <el-table-column type="selection" width="55" align="center"></el-table-column>
+                <el-table-column label="序号" align="center" prop="noticeId" width="100"></el-table-column>
+                <el-table-column label="公告标题" align="center" prop="noticeTitle" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="公告类型" align="center" prop="noticeType" width="100">
+                    <template slot-scope="scope">
+                        <el-tag :type="scope.row.noticeType === '1' ? '' : 'success'" size="small">{{ scope.row.noticeType === '1' ? '通知' : '公告' }}</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column label="状态" align="center" prop="status" width="100">
+                    <template slot-scope="scope">
+                        <el-tag :type="scope.row.status === '0' ? 'success' : 'danger'" size="small">{{ selectDictLabel(sysNormalDisableOptions, scope.row.status) }}</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column label="创建者" align="center" prop="createBy" width="120"></el-table-column>
+                <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+                    <template slot-scope="scope">
+                        <span>{{ parseTime(scope.row.createTime) }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" align="center" class-name="fixed-width" width="200">
+                    <template slot-scope="scope">
+                        <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:notice:edit']">修改</el-button>
+                        <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['system:notice:remove']">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <!-- 分页 -->
+            <div class="pagination-container">
+                <el-pagination background layout="total, sizes, prev, pager, next, jumper" :current-page.sync="queryParams.pageNum" :page-size.sync="queryParams.pageSize" :page-sizes="[10, 20, 50, 100]" :total="total" @size-change="getList" @current-change="getList"></el-pagination>
+            </div>
+        </div>
+
+        <!-- 添加或修改公告对话框 -->
+        <el-dialog :title="title" :visible.sync="open" width="780px" append-to-body>
+            <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item label="公告标题" prop="noticeTitle">
+                            <el-input v-model="form.noticeTitle" placeholder="请输入公告标题"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="公告类型" prop="noticeType">
+                            <el-select v-model="form.noticeType" placeholder="请选择公告类型">
+                                <el-option label="通知" value="1"></el-option>
+                                <el-option label="公告" value="2"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="24">
+                        <el-form-item label="状态">
+                            <el-radio-group v-model="form.status">
+                                <el-radio v-for="dict in sysNormalDisableOptions" :key="dict.value" :label="dict.value">{{ dict.label }}</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="24">
+                        <el-form-item label="内容">
+                            <div class="editor-container">
+                                <div id="editor"></div>
+                            </div>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="submitForm">确 定</el-button>
+                <el-button @click="cancel">取 消</el-button>
+            </div>
+        </el-dialog>
+    </div>
+
+    <script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui@2.13.0/lib/index.js"></script>
+    <script src="https://unpkg.com/jquery@3.4.1/dist/jquery.min.js"></script>
+    <script src="../../static/kj/layer/layer.js"></script>
+    <script src="../../static/sa.js"></script>
+    <script src="../../static/ruoyi-util.js"></script>
+    <script src="../../static/kj/wangEditor.min.js"></script>
+    <script>
+        var app = new Vue({
+            el: '.vue-box',
+            data: {
+                // 遮罩层
+                loading: true,
+                // 选中数组
+                ids: [],
+                // 非单个禁用
+                single: true,
+                // 非多个禁用
+                multiple: true,
+                // 总条数
+                total: 0,
+                // 公告表格数据
+                noticeList: [],
+                // 弹出层标题
+                title: '',
+                // 是否显示弹出层
+                open: false,
+                // 字典状态选项
+                sysNormalDisableOptions: [],
+                // 编辑器实例
+                editor: null,
+                // 查询参数
+                queryParams: {
+                    pageNum: 1,
+                    pageSize: 10,
+                    noticeTitle: undefined,
+                    createBy: undefined,
+                    noticeType: undefined
+                },
+                // 表单参数
+                form: {},
+                // 表单校验
+                rules: {
+                    noticeTitle: [
+                        { required: true, message: '公告标题不能为空', trigger: 'blur' }
+                    ],
+                    noticeType: [
+                        { required: true, message: '公告类型不能为空', trigger: 'change' }
+                    ]
+                }
+            },
+            methods: {
+                /** 查询公告列表 */
+                getList: function() {
+                    this.loading = true;
+                    ruoyi.get('/system/notice/list', this.queryParams, function(res) {
+                        this.noticeList = res.rows;
+                        this.total = res.total;
+                        this.loading = false;
+                    }.bind(this));
+                },
+                /** 搜索按钮操作 */
+                handleQuery: function() {
+                    this.queryParams.pageNum = 1;
+                    this.getList();
+                },
+                /** 重置按钮操作 */
+                resetQuery: function() {
+                    this.resetForm('queryForm');
+                    this.queryParams.pageNum = 1;
+                    this.queryParams.noticeTitle = undefined;
+                    this.queryParams.createBy = undefined;
+                    this.queryParams.noticeType = undefined;
+                    this.handleQuery();
+                },
+                /** 多选框选中数据 */
+                handleSelectionChange: function(selection) {
+                    this.ids = selection.map(function(item) { return item.noticeId; });
+                    this.single = selection.length !== 1;
+                    this.multiple = !selection.length;
+                },
+                /** 初始化编辑器 */
+                initEditor: function(content) {
+                    var self = this;
+                    // 销毁旧实例
+                    if (self.editor) {
+                        self.editor.destroy();
+                        self.editor = null;
+                    }
+                    self.$nextTick(function() {
+                        var editorDom = document.getElementById('editor');
+                        if (!editorDom) return;
+                        editorDom.innerHTML = '';
+                        var editor = new wangEditor('#editor');
+                        editor.config.zIndex = 1000;
+                        editor.config.uploadImgShowBase64 = true;
+                        editor.config.showLinkImg = true;
+                        editor.config.showLinkImgAlt = false;
+                        editor.config.showLinkImgHref = false;
+                        editor.config.placeholder = '请输入公告内容';
+                        editor.create();
+                        if (content) {
+                            editor.txt.html(content);
+                        }
+                        self.editor = editor;
+                    });
+                },
+                /** 新增按钮操作 */
+                handleAdd: function() {
+                    this.reset();
+                    this.open = true;
+                    this.title = '添加公告';
+                    this.initEditor('');
+                },
+                /** 修改按钮操作 */
+                handleUpdate: function(row) {
+                    this.reset();
+                    var noticeId = row.noticeId || this.ids[0];
+                    ruoyi.get('/system/notice/' + noticeId, function(res) {
+                        this.form = res.data;
+                        this.open = true;
+                        this.title = '修改公告';
+                        this.initEditor(this.form.noticeContent);
+                    }.bind(this));
+                },
+                /** 提交按钮 */
+                submitForm: function() {
+                    this.$refs['form'].validate(function(valid) {
+                        if (valid) {
+                            if (this.editor) {
+                                this.form.noticeContent = this.editor.txt.html();
+                            }
+                            if (this.form.noticeId !== undefined) {
+                                ruoyi.put('/system/notice', this.form, function(res) {
+                                    this.$modal.msgSuccess('修改成功');
+                                    this.open = false;
+                                    this.getList();
+                                }.bind(this));
+                            } else {
+                                ruoyi.post('/system/notice', this.form, function(res) {
+                                    this.$modal.msgSuccess('新增成功');
+                                    this.open = false;
+                                    this.getList();
+                                }.bind(this));
+                            }
+                        }
+                    }.bind(this));
+                },
+                /** 删除按钮操作 */
+                handleDelete: function(row) {
+                    var noticeIds = row.noticeId ? [row.noticeId] : this.ids;
+                    this.$modal.confirm('是否确认删除公告编号为"' + noticeIds + '"的数据项？').then(function() {
+                        ruoyi.del('/system/notice/' + noticeIds.join(','), function(res) {
+                            this.getList();
+                            this.$modal.msgSuccess('删除成功');
+                        }.bind(this));
+                    }.bind(this)).catch(function() {});
+                },
+                /** 取消按钮 */
+                cancel: function() {
+                    this.open = false;
+                    this.reset();
+                },
+                /** 表单重置 */
+                reset: function() {
+                    this.form = {
+                        noticeId: undefined,
+                        noticeTitle: undefined,
+                        noticeType: undefined,
+                        noticeContent: undefined,
+                        status: '0'
+                    };
+                    if (this.$refs['form']) {
+                        this.$refs['form'].resetFields();
+                    }
+                    if (this.editor) {
+                        this.editor.destroy();
+                        this.editor = null;
+                    }
+                }
+            },
+            created: function() {
+                this.getList();
+                ruoyi.loadDicts(this, ['sys_normal_disable']);
+            }
+        });
+    </script>
+</body>
+</html>

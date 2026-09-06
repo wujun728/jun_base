@@ -1,0 +1,33 @@
+[{
+		"categories": [{
+				"value": 0.2,
+				"color": "#1890ff"
+			},
+			{
+				"value": 0.8,
+				"color": "#1890ff"
+			}
+		],
+		"series": [{
+			"name": "新增小程序会员占比",
+			"data": 0.21,
+			"color": "#24ABFD"
+		}]
+	},
+	{
+		"categories": [{
+				"value": 0.2,
+				"color": "#1890ff"
+			},
+			{
+				"value": 0.8,
+				"color": "#1890ff"
+			}
+		],
+		"series": [{
+			"name": "已回复单聊占比",
+			"data": 0.65,
+			"color": "#24ABFD"
+		}]
+	}
+]

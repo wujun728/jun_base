@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "uni-group": "/uni_modules/uni-group/components/uni-group/uni-group",
+    "uni-grid": "/uni_modules/uni-grid/components/uni-grid/uni-grid",
+    "uni-grid-item": "/uni_modules/uni-grid/components/uni-grid-item/uni-grid-item"
+  },
+  "component": true
+}

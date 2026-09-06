@@ -1,0 +1,12 @@
+# eslint 忽略检查
+node_modules
+dist
+*.css
+*.less
+*.scss
+*.jpg
+*.png
+*.gif
+*.svg
+*.html
+*.d.ts

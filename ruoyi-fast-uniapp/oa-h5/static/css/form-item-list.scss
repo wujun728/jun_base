@@ -1,0 +1,79 @@
+.cr-center-list {
+	width: 100%;
+
+	.center-list-item {
+		width: 100%;
+		margin-bottom: 20rpx;
+		border-radius: 8rpx;
+		background-color: #fff;
+
+		.center-list-item-con {
+			height: 110rpx;
+			padding-right: 24rpx;
+			margin-left: 24rpx !important;
+			border-bottom: 1px solid rgba(236, 237, 240, 0.5);
+			font-size: $uni-font-size-default;
+			font-weight: 400;
+			color: $uni-text-color;
+			display: flex;
+			align-items: center;
+
+			&:last-of-type {
+				border-bottom: none;
+			}
+			
+			.is-required {
+				font-size: 26rpx;
+				color: #FF2529;
+				font-weight: bold;
+			}
+			
+			::v-deep .uni-easyinput {
+				.uni-easyinput__content {
+					justify-content: flex-end;
+					font-size: $uni-font-size-default;
+			
+					.uni-input-wrapper {
+						text-align: right;
+					}
+				}
+			
+				.uni-input-placeholder {
+					font-size: $uni-font-size-default;
+					color: $uni-text-color-five;
+				}
+			}
+
+			.right {
+				justify-content: flex-end;
+
+				.avatar {
+					height: 70rpx;
+					width: 70rpx;
+					margin-right: 20rpx;
+				}
+
+				.title {
+					margin-right: 20rpx;
+				}
+
+				.iconfont {
+					font-size: 26rpx;
+					transform: rotate(180deg);
+					color: $uni-text-color-five;
+				}
+			}
+		}
+		
+		.add-botton {
+			padding: 36rpx 0 36rpx 24rpx;
+			font-size: $uni-font-size-default;
+		
+			.iconfont {
+				font-size: 38rpx;
+				padding-right: 16rpx;
+				color: $uni-color-primary;
+			}
+		}
+	}
+}

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>参数设置</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../static/sa.css">
+    <link rel="stylesheet" href="../../static/ruoyi.css">
+</head>
+<body>
+    <div class="vue-box" style="display: none;" :style="'display: block;'">
+        <div class="c-panel">
+            <!-- 检索参数 -->
+            <div class="c-title">参数设置</div>
+            <el-form :inline="true" :model="queryParams" ref="queryForm" @submit.native.prevent>
+                <el-form-item label="参数名称" prop="configName">
+                    <el-input v-model="queryParams.configName" placeholder="请输入参数名称" clearable size="small" style="width: 200px;" @keyup.enter.native="handleQuery"></el-input>
+                </el-form-item>
+                <el-form-item label="参数键名" prop="configKey">
+                    <el-input v-model="queryParams.configKey" placeholder="请输入参数键名" clearable size="small" style="width: 200px;" @keyup.enter.native="handleQuery"></el-input>
+                </el-form-item>
+                <el-form-item label="系统内置" prop="configType">
+                    <el-select v-model="queryParams.configType" placeholder="系统内置" clearable size="small" style="width: 200px;">
+                        <el-option label="是" value="Y"></el-option>
+                        <el-option label="否" value="N"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="创建时间">
+                    <el-date-picker v-model="dateRange" size="small" style="width: 240px;" value-format="yyyy-MM-dd" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+                    <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+                </el-form-item>
+            </el-form>
+
+            <!-- 操作按钮 -->
+            <el-row :gutter="10" class="mb8">
+                <el-col :span="1.5">
+                    <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd" v-hasPermi="['system:config:add']">新增</el-button>
+                </el-col>
+                <el-col :span="1.5">
+                    <el-button type="success" plain icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate" v-hasPermi="['system:config:edit']">修改</el-button>
+                </el-col>
+                <el-col :span="1.5">
+                    <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete" v-hasPermi="['system:config:remove']">删除</el-button>
+                </el-col>
+                <el-col :span="1.5">
+                    <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport" v-hasPermi="['system:config:export']">导出</el-button>
+                </el-col>
+                <el-col :span="1.5">
+                    <el-button type="danger" plain icon="el-icon-refresh" size="mini" @click="handleRefreshCache">刷新缓存</el-button>
+                </el-col>
+            </el-row>
+
+            <!-- 数据列表 -->
+            <el-table :data="configList" size="small" @selection-change="handleSelectionChange" v-loading="loading">
+                <el-table-column type="selection" width="55" align="center"></el-table-column>
+                <el-table-column label="参数主键" align="center" prop="configId" width="100"></el-table-column>
+                <el-table-column label="参数名称" align="center" prop="configName" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="参数键名" align="center" prop="configKey" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="参数键值" align="center" prop="configValue" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="系统内置" align="center" prop="configType" width="100">
+                    <template slot-scope="scope">
+                        <el-tag :type="scope.row.configType === 'Y' ? 'success' : 'info'" size="small">{{ scope.row.configType === 'Y' ? '是' : '否' }}</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+                    <template slot-scope="scope">
+                        <span>{{ parseTime(scope.row.createTime) }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" align="center" class-name="fixed-width" width="200">
+                    <template slot-scope="scope">
+                        <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:config:edit']">修改</el-button>
+                        <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['system:config:remove']">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <!-- 分页 -->
+            <div class="pagination-container">
+                <el-pagination background layout="total, sizes, prev, pager, next, jumper" :current-page.sync="queryParams.pageNum" :page-size.sync="queryParams.pageSize" :page-sizes="[10, 20, 50, 100]" :total="total" @size-change="getList" @current-change="getList"></el-pagination>
+            </div>
+        </div>
+
+        <!-- 添加或修改参数配置对话框 -->
+        <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+            <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+                <el-form-item label="参数名称" prop="configName">
+                    <el-input v-model="form.configName" placeholder="请输入参数名称"></el-input>
+                </el-form-item>
+                <el-form-item label="参数键名" prop="configKey">
+                    <el-input v-model="form.configKey" placeholder="请输入参数键名"></el-input>
+                </el-form-item>
+                <el-form-item label="参数键值" prop="configValue">
+                    <el-input v-model="form.configValue" placeholder="请输入参数键值"></el-input>
+                </el-form-item>
+                <el-form-item label="系统内置" prop="configType">
+                    <el-radio-group v-model="form.configType">
+                        <el-radio label="Y">是</el-radio>
+                        <el-radio label="N">否</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label="备注" prop="remark">
+                    <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="submitForm">确 定</el-button>
+                <el-button @click="cancel">取 消</el-button>
+            </div>
+        </el-dialog>
+    </div>
+
+    <script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui@2.13.0/lib/index.js"></script>
+    <script src="https://unpkg.com/jquery@3.4.1/dist/jquery.min.js"></script>
+    <script src="../../static/kj/layer/layer.js"></script>
+    <script src="../../static/sa.js"></script>
+    <script src="../../static/ruoyi-util.js"></script>
+    <script>
+        var app = new Vue({
+            el: '.vue-box',
+            data: {
+                // 遮罩层
+                loading: true,
+                // 选中数组
+                ids: [],
+                // 非单个禁用
+                single: true,
+                // 非多个禁用
+                multiple: true,
+                // 总条数
+                total: 0,
+                // 参数配置表格数据
+                configList: [],
+                // 弹出层标题
+                title: '',
+                // 是否显示弹出层
+                open: false,
+                // 日期范围
+                dateRange: [],
+                // 查询参数
+                queryParams: {
+                    pageNum: 1,
+                    pageSize: 10,
+                    configName: undefined,
+                    configKey: undefined,
+                    configType: undefined
+                },
+                // 表单参数
+                form: {},
+                // 表单校验
+                rules: {
+                    configName: [
+                        { required: true, message: '参数名称不能为空', trigger: 'blur' }
+                    ],
+                    configKey: [
+                        { required: true, message: '参数键名不能为空', trigger: 'blur' }
+                    ],
+                    configValue: [
+                        { required: true, message: '参数键值不能为空', trigger: 'blur' }
+                    ]
+                }
+            },
+            methods: {
+                /** 查询参数配置列表 */
+                getList: function() {
+                    this.loading = true;
+                    var params = this.addDateRange(this.queryParams, this.dateRange);
+                    ruoyi.get('/system/config/list', params, function(res) {
+                        this.configList = res.rows;
+                        this.total = res.total;
+                        this.loading = false;
+                    }.bind(this));
+                },
+                /** 搜索按钮操作 */
+                handleQuery: function() {
+                    this.queryParams.pageNum = 1;
+                    this.getList();
+                },
+                /** 重置按钮操作 */
+                resetQuery: function() {
+                    this.dateRange = [];
+                    this.resetForm('queryForm');
+                    this.queryParams.pageNum = 1;
+                    this.queryParams.configName = undefined;
+                    this.queryParams.configKey = undefined;
+                    this.queryParams.configType = undefined;
+                    this.handleQuery();
+                },
+                /** 多选框选中数据 */
+                handleSelectionChange: function(selection) {
+                    this.ids = selection.map(function(item) { return item.configId; });
+                    this.single = selection.length !== 1;
+                    this.multiple = !selection.length;
+                },
+                /** 新增按钮操作 */
+                handleAdd: function() {
+                    this.reset();
+                    this.open = true;
+                    this.title = '添加参数';
+                },
+                /** 修改按钮操作 */
+                handleUpdate: function(row) {
+                    this.reset();
+                    var configId = row.configId || this.ids[0];
+                    ruoyi.get('/system/config/' + configId, function(res) {
+                        this.form = res.data;
+                        this.open = true;
+                        this.title = '修改参数';
+                    }.bind(this));
+                },
+                /** 提交按钮 */
+                submitForm: function() {
+                    this.$refs['form'].validate(function(valid) {
+                        if (valid) {
+                            if (this.form.configId !== undefined) {
+                                ruoyi.put('/system/config', this.form, function(res) {
+                                    this.$modal.msgSuccess('修改成功');
+                                    this.open = false;
+                                    this.getList();
+                                }.bind(this));
+                            } else {
+                                ruoyi.post('/system/config', this.form, function(res) {
+                                    this.$modal.msgSuccess('新增成功');
+                                    this.open = false;
+                                    this.getList();
+                                }.bind(this));
+                            }
+                        }
+                    }.bind(this));
+                },
+                /** 删除按钮操作 */
+                handleDelete: function(row) {
+                    var configIds = row.configId ? [row.configId] : this.ids;
+                    this.$modal.confirm('是否确认删除参数编号为"' + configIds + '"的数据项？').then(function() {
+                        ruoyi.del('/system/config/' + configIds.join(','), function(res) {
+                            this.getList();
+                            this.$modal.msgSuccess('删除成功');
+                        }.bind(this));
+                    }.bind(this)).catch(function() {});
+                },
+                /** 导出按钮操作 */
+                handleExport: function() {
+                    var params = this.addDateRange(this.queryParams, this.dateRange);
+                    this.$modal.confirm('是否确认导出所有参数数据项？').then(function() {
+                        ruoyi.download('/system/config/export', params, 'config.xlsx');
+                    }.bind(this)).catch(function() {});
+                },
+                /** 刷新缓存按钮操作 */
+                handleRefreshCache: function() {
+                    ruoyi.del('/system/config/refreshCache', function(res) {
+                        this.$modal.msgSuccess('刷新缓存成功');
+                    }.bind(this));
+                },
+                /** 取消按钮 */
+                cancel: function() {
+                    this.open = false;
+                    this.reset();
+                },
+                /** 表单重置 */
+                reset: function() {
+                    this.form = {
+                        configId: undefined,
+                        configName: undefined,
+                        configKey: undefined,
+                        configValue: undefined,
+                        configType: 'Y',
+                        remark: undefined
+                    };
+                    if (this.$refs['form']) {
+                        this.$refs['form'].resetFields();
+                    }
+                }
+            },
+            created: function() {
+                this.getList();
+            }
+        });
+    </script>
+</body>
+</html>

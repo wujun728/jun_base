@@ -1,0 +1,88 @@
+{
+	"headers":[
+		{
+			"label": "最近活跃时间",
+			"key": "col1"
+		}, {
+			"label": "人数",
+			"key": "col2"
+		}, {
+			"label": "人数占比",
+			"key": "col3"
+		}, {
+			"label": "活跃会员环比",
+			"key": "col4"
+		}, {
+			"label": "活跃消费人数占比",
+			"key": "col5"
+		}
+	],
+	"contents":[
+		{
+			"col1": "0-30天",
+			"col2": "15350",
+			"col3": "45",
+			"col4": "9.5",
+			"col5": "29"
+		}, {
+			"col1": "30-60天",
+			"col2": "15350",
+			"col3": "13",
+			"col4": "-2.5",
+			"col5": "-25"
+		}, {
+			"col1": "60-90天",
+			"col2": "15371",
+			"col3": "15",
+			"col4": "-5.2",
+			"col5": "63"
+		}, {
+			"col1": "90-120天",
+			"col2": "12340",
+			"col3": "12",
+			"col4": "2.9",
+			"col5": "-12"
+		}, {
+			"col1": "120-180天",
+			"col2": "12360",
+			"col3": "17",
+			"col4": "3.5",
+			"col5": "11"
+		}
+	],
+	"sortCol":[
+		{
+		"key": "col1",
+		"isNumber": false
+		}, {
+			"key": "col2",
+			"isNumber": true
+		},
+		{
+			"key": "col3",
+			"isNumber": true
+		},
+		{
+			"key": "col4",
+			"isNumber": true
+		},
+		{
+			"key": "col5",
+			"isNumber": true
+		}
+	],
+	"computedCol":["col2","col3","col4","col5"],
+	"formatCol":[{
+		"key": "col3",
+		"template": "#col3#%",
+		"bottomComputedFormat": true
+	}, {
+		"key": "col4",
+		"template": "#col4#%",
+		"bottomComputedFormat": true
+	}, {
+		"key": "col5",
+		"template": "#col5#%",
+		"bottomComputedFormat": true
+	}]
+}

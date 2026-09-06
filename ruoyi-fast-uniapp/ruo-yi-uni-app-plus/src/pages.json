@@ -1,0 +1,286 @@
+{
+  "easycom": {
+    "custom": {
+      "^u--(.*)": "uview-plus/components/u-$1/u-$1.vue",
+      "^up-(.*)": "uview-plus/components/u-$1/u-$1.vue",
+      "^u-([^-].*)": "uview-plus/components/u-$1/u-$1.vue",
+      "qiun-(.*)": "@/components/qiun-data-charts/components/qiun-$1/qiun-$1.vue",
+      "geek-(.*)": "@/components/geek-xd/components/geek-$1/geek-$1.vue",
+      "gx-(.*)": "@/components/geek-xd/components/geek-$1/geek-$1.vue"
+    }
+  },
+  "pages": [
+    {
+      "path": "pages/index",
+      "style": {
+        "navigationBarTitleText": "应用中心"
+//        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/login",
+      "style": {
+        "navigationBarTitleText": "登录"
+      }
+    },
+    {
+      "path": "pages/work",
+      "style": {
+        "navigationBarTitleText": "工作台"
+      }
+    },
+    {
+      "path": "pages/template",
+      "style": {
+        "navigationBarTitleText": "模板"
+      }
+    },
+    {
+      "path": "pages/mine",
+      "style": {
+        "navigationBarTitleText": "我的"
+      }
+    },
+    {
+      "path": "pages/common/webview/index",
+      "style": {
+        "navigationBarTitleText": "浏览网页"
+      }
+    },
+    {
+      "path": "pages/common/textview/index",
+      "style": {
+        "navigationBarTitleText": "浏览文本"
+      }
+    },
+    {
+    	"path" : "pages/common/detail",
+    	"style" : 
+    	{
+    		"navigationBarTitleText" : ""
+    	}
+    }
+  ],
+  "subPackages": [
+    {
+      "root": "pages_mine/pages",
+      "pages": [
+        {
+          "path": "avatar/index",
+          "style": {
+            "navigationBarTitleText": "修改头像"
+          }
+        },
+        {
+          "path": "info/index",
+          "style": {
+            "navigationBarTitleText": "个人信息"
+          }
+        },
+        {
+          "path": "info/edit",
+          "style": {
+            "navigationBarTitleText": "编辑资料"
+          }
+        },
+        {
+          "path": "pwd/index",
+          "style": {
+            "navigationBarTitleText": "修改密码"
+          }
+        },
+        {
+          "path": "setting/index",
+          "style": {
+            "navigationBarTitleText": "应用设置"
+          }
+        },
+        {
+          "path": "help/index",
+          "style": {
+            "navigationBarTitleText": "常见问题"
+          }
+        },
+        {
+          "path": "about/index",
+          "style": {
+            "navigationBarTitleText": "关于我们"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages_template/pages",
+      "pages": [
+        {
+          "path": "wxCenter/index",
+          "style": {
+            "navigationBarTitleText": "wxCenter 仿微信个人中心",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "keyboardPay/index",
+          "style": {
+            "navigationBarTitleText": "keyboardPay 自定义键盘支付"
+          }
+        },
+        {
+          "path": "mallMenu/index2",
+          "style": {
+            "navigationBarTitleText": "mallMenu-商城分类"
+          }
+        },
+        {
+          "path": "mallMenu/index1",
+          "style": {
+            "navigationBarTitleText": "mallMenu-商城分类"
+          }
+        },
+        {
+          "path": "coupon/index",
+          "style": {
+            "navigationBarTitleText": "coupon-优惠券"
+          }
+        },
+        {
+          "path": "login/index1",
+          "style": {
+            "navigationBarTitleText": "美团登录"
+          }
+        },
+        {
+          "path": "login/index2",
+          "style": {
+            "navigationBarTitleText": "水滴登录"
+          }
+        },
+        {
+          "path": "citySelect/index",
+          "style": {
+            "navigationBarTitleText": "城市选择"
+          }
+        },
+        {
+          "path": "submitBar/index",
+          "style": {
+            "navigationBarTitleText": "提交订单栏"
+          }
+        },
+        {
+          "path": "comment/index",
+          "style": {
+            "navigationBarTitleText": "评论"
+          }
+        },
+        {
+          "path": "comment/reply",
+          "style": {
+            "navigationBarTitleText": "评论详情"
+          }
+        },
+        {
+          "path": "order/index",
+          "style": {
+            "navigationBarTitleText": "订单"
+          }
+        },
+        {
+          "path": "login/code",
+          "style": {
+            "navigationBarTitleText": "登录获取验证码"
+          }
+        },
+        {
+          "path": "address/index",
+          "style": {
+            "navigationBarTitleText": "用户地址"
+          }
+        },
+        {
+          "path": "address/addSite",
+          "style": {
+            "navigationBarTitleText": "添加用户地址"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages_qiun/pages",
+      "pages": [
+        {
+          "path": "sport/index",
+          "style": {
+            "pageOrientation": "auto"
+          }
+        },
+        {
+          "path": "school/index",
+          "style": {
+            "pageOrientation": "auto"
+          }
+        },
+        {
+          "path": "finance/index",
+          "style": {
+            "pageOrientation": "auto"
+          }
+        },
+        {
+          "path": "main/index",
+          "style": {
+            "pageOrientation": "auto"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages_geek/pages",
+      "pages": [
+        {
+          "path": "index/index"
+        },
+        {
+          "path": "code/index"
+        }
+      ]
+    }
+  ],
+  "tabBar": {
+    "color": "#000000",
+    "selectedColor": "#000000",
+    "borderStyle": "white",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index",
+        "iconPath": "static/images/tabbar/home.png",
+        "selectedIconPath": "static/images/tabbar/home_.png",
+        "text": "应用中心"
+      },
+//      {
+//        "pagePath": "pages/work",
+//        "iconPath": "static/images/tabbar/work.png",
+//        "selectedIconPath": "static/images/tabbar/work_.png",
+//        "text": "工作台"
+//      },
+      // {
+      //   "pagePath": "pages/template",
+      //   "iconPath": "static/images/tabbar/work.png",
+      //   "selectedIconPath": "static/images/tabbar/work_.png",
+      //   "text": "模板"
+      // },
+      {
+        "pagePath": "pages/mine",
+        "iconPath": "static/images/tabbar/mine.png",
+        "selectedIconPath": "static/images/tabbar/mine_.png",
+        "text": "我的"
+      }
+    ]
+  },
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "RuoYi",
+    "navigationBarBackgroundColor": "#FFFFFF"
+  }
+}

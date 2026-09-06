@@ -1,0 +1,379 @@
+{
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^wd-(.*)": "wot-design-uni/components/wd-$1/wd-$1.vue",
+      "^u--(.*)": "uview-plus/components/u-$1/u-$1.vue",
+			"^up-(.*)": "uview-plus/components/u-$1/u-$1.vue",
+	    "^u-([^-].*)": "uview-plus/components/u-$1/u-$1.vue",
+      "^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue"
+    }
+  },
+  "pages": [
+    {
+      "path" : "pages/navigation/navigation",
+      "style" :
+      {
+          "navigationBarTitleText": "",
+          "navigationStyle": "custom"
+      }
+    },
+    {
+      "name": "login",
+      "path": "pages/login/login",
+      "style": {
+        "navigationBarTitleText": "登录"
+      }
+    },
+    {
+      "name": "index",
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "南工应急OA平台"
+      }
+    },
+    {
+      "name": "office",
+      "path": "pages/office/office",
+      "style": {
+        "navigationBarTitleText": "办公"
+      }
+    },
+    {
+      "name": "message",
+      "path": "pages/message/message",
+      "style": {
+        "navigationBarTitleText": "消息"
+      }
+    },
+    {
+      "name": "mine",
+      "path": "pages/mine/mine",
+      "style": {
+        "navigationBarTitleText": "我的"
+      }
+    }
+  ],
+  "subPackages": [
+    {
+      "root": "pages/test",
+      "pages": [
+        {
+          "name": "test",
+          "path": "test",
+          "style": {
+            "navigationBarTitleText": "测试"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/personalInfo",
+      "pages": [
+        {
+          "name": "personalInfo",
+          "path": "personalInfo",
+          "style": {
+            "navigationBarTitleText": "个人信息"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/badge",
+      "pages": [
+        {
+          "name": "badge",
+          "path": "badge",
+          "style": {
+            "navigationBarTitleText": "我的徽章"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/changePassword",
+      "pages": [
+        {
+          "name": "changePassword",
+          "path": "changePassword",
+          "style": {
+            "navigationBarTitleText": "修改密码"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/messageSecond",
+      "pages": [
+        {
+          "name": "messageSecond",
+          "path": "messageSecond",
+          "style": {
+            "navigationBarTitleText": "消息"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/messageDetail",
+      "pages": [
+        {
+          "name": "messageDetail",
+          "path": "messageDetail",
+          "style": {
+            "navigationBarTitleText": "消息"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/myReport",
+      "pages": [
+        {
+          "name": "myReport",
+          "path": "myReport",
+          "style": {
+            "navigationBarTitleText": "我的汇报"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/dayReport",
+      "pages": [
+        {
+          "name": "dayReport",
+          "path": "dayReport",
+          "style": {
+            "navigationBarTitleText": ""
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/dayReport-message",
+      "pages": [
+        {
+          "name": "dayReport-message",
+          "path": "dayReport-message",
+          "style": {
+            "navigationBarTitleText": ""
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/editDayReport",
+      "pages": [
+        {
+          "name": "editDayReport",
+          "path": "editDayReport",
+          "style": {
+            "navigationBarTitleText": "研发日报"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/myReport-mySubmit",
+      "pages": [
+        {
+          "name": "myReport-mySubmit",
+          "path": "myReport-mySubmit",
+          "style": {
+            "navigationBarTitleText": "我提交的"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/myReport-myResive",
+      "pages": [
+        {
+          "name": "myReport-myResive",
+          "path": "myReport-myResive",
+          "style": {
+            "navigationBarTitleText": "我收到的"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/carManage",
+      "pages": [
+        {
+          "name": "carManage",
+          "path": "carManage",
+          "style": {
+            "navigationBarTitleText": "用车管理"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/carReservation",
+      "pages": [
+        {
+          "name": "carReservation",
+          "path": "carReservation",
+          "style": {
+            "navigationBarTitleText": "预约用车"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/carReservation-edit",
+      "pages": [
+        {
+          "name": "carReservation-edit",
+          "path": "carReservation-edit",
+          "style": {
+            "navigationBarTitleText": ""
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/carRecords",
+      "pages": [
+        {
+          "name": "carRecords",
+          "path": "carRecords",
+          "style": {
+            "navigationBarTitleText": "用车记录"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/carRecordsDetail",
+      "pages": [
+        {
+          "name": "carRecordsDetail",
+          "path": "carRecordsDetail",
+          "style": {
+            "navigationBarTitleText": "用车记录"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/myCarUse",
+      "pages": [
+        {
+          "name": "myCarUse",
+          "path": "myCarUse",
+          "style": {
+            "navigationBarTitleText": "我的用车"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/myCarUse1",
+      "pages": [
+        {
+          "name": "myCarUse1",
+          "path": "myCarUse1",
+          "style": {
+            "navigationBarTitleText": "我的用车"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/myCarUseAll",
+      "pages": [
+        {
+          "name": "myCarUseAll",
+          "path": "myCarUseAll",
+          "style": {
+            "navigationBarTitleText": "我的用车"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/myCarUse-officeTo",
+      "pages": [
+        {
+          "name": "myCarUse-officeTo",
+          "path": "myCarUse-officeTo",
+          "style": {
+            "navigationBarTitleText": "我的用车"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/takeOff",
+      "pages": [
+        {
+          "name": "takeOff",
+          "path": "takeOff",
+          "style": {
+            "navigationBarTitleText": "出车"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/returnCar",
+      "pages": [
+        {
+          "name": "returnCar",
+          "path": "returnCar",
+          "style": {
+            "navigationBarTitleText": "还车"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/userCarDetail",
+      "pages": [
+        {
+          "name": "userCarDetail",
+          "path": "userCarDetail",
+          "style": {
+            "navigationBarTitleText": "用车详情"
+          }
+        }
+      ]
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundColor": "#F8F8F8",
+    "navigationStyle": "default"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "custom": true,
+    "selectedColor": "#1AA86C",
+    "borderStyle": "white",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/office/office",
+        "text": "办公"
+      },
+      {
+        "pagePath": "pages/message/message",
+        "text": "消息"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "text": "我的"
+      }
+    ]
+  }
+}

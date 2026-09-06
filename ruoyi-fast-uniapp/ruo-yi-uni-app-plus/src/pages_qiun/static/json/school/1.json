@@ -1,0 +1,26 @@
+[
+	{
+		"name":"课题研究",
+		"num":500,
+		"width":"",
+		"background":"#FFBE68"
+	},
+	{
+		"name":"论文发布",
+		"num":300,
+		"width":"",
+		"background":"#0FEBE1"
+	},
+	{
+		"name":"实践研究",
+		"num":455,
+		"width":"",
+		"background":"#BF8DFC"
+	},
+	{
+		"name":"评教",
+		"num":601,
+		"width":"",
+		"background":"#FF859C"
+	}
+]

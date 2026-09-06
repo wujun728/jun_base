@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "v-swiper": "/pages/home/swiper",
+    "v-news": "/pages/home/news"
+  }
+}

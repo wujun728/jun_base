@@ -1,0 +1,16 @@
+.editor-tools-panel {
+  padding: 40rpx 30rpx 44rpx;
+}
+
+.font-tool-panel-row {
+  height: 80rpx;
+  background: #f8f9fa;
+  border-radius: 4rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  & + .font-tool-panel-row {
+    margin-top: 20rpx;
+  }
+}

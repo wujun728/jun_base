@@ -1,0 +1,82 @@
+{
+		"categories": [
+			"1月11",
+			"1月12",
+			"1月13",
+			"1月14",
+			"1月15",
+			"1月16",
+			"1月17"
+		],
+		"series": [{
+				"name": "新增微好友数",
+				"data": [{
+						"value": 1800,
+						"color": "#24ABFD"
+					},
+					{
+						"value": 1300,
+						"color": "#24ABFD"
+					},
+					{
+						"value": 1580,
+						"color": "#24ABFD"
+					},
+					{
+						"value": 1600,
+						"color": "#24ABFD"
+					},
+					{
+						"value": 1600,
+						"color": "#24ABFD"
+					},
+					{
+						"value": 1600,
+						"color": "#24ABFD"
+					},
+					{
+						"value": 1300,
+						"color": "#24ABFD"
+					}
+				],
+				"type": "column",
+				"color": "#24ABFD",
+				"unit": ""
+			},
+			{
+				"name": "新增小程序会员数",
+				"data": [{
+						"value": 1580,
+						"color": "#6BC588"
+					},
+					{
+						"value": 850,
+						"color": "#6BC588"
+					},
+					{
+						"value": 1100,
+						"color": "#6BC588"
+					},
+					{
+						"value": 1400,
+						"color": "#6BC588"
+					},
+					{
+						"value": 1200,
+						"color": "#6BC588"
+					},
+					{
+						"value": 980,
+						"color": "#6BC588"
+					},
+					{
+						"value": 560,
+						"color": "#6BC588"
+					}
+				],
+				"type": "column",
+				"color": "#6BC588",
+				"unit": ""
+			}
+		]
+	}

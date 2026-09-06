@@ -1,0 +1,57 @@
+{
+	"categories": [
+		"1月11",
+		"1月12",
+		"1月13",
+		"1月14",
+		"1月15"
+	],
+	"series": [{
+			"name": "当天扫码率",
+			"data": [
+				39,
+				34,
+				36,
+				45,
+				38
+			],
+			"type": "line",
+			"addPoint": true,
+			"color": "#24ABFD",
+			"unit": "%"
+		},
+		{
+			"name": "累计扫码率",
+			"data": [
+				32,
+				30,
+				31,
+				37,
+				35
+			],
+			"type": "line",
+			"addPoint": true,
+			"color": "#DF297D",
+			"unit": "%"
+		},
+		{
+			"name": "目标扫码率",
+			"data": [
+				40,
+				40,
+				40,
+				40,
+				40
+			],
+			"type": "line",
+			"color": "#FF9900",
+			"textNoShow": true,
+			"unit": ""
+		}
+
+	],
+	"yAxis": [{
+		"max": 60,
+		"min": 0
+	}]
+}

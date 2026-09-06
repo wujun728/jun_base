@@ -1,0 +1,41 @@
+
+.uni-file-picker {
+
+	box-sizing: border-box;
+	overflow: hidden;
+}
+.uni-file-picker__header {
+	padding-top: 5px;
+	padding-bottom: 10px;
+
+	display: flex;
+
+	justify-content: space-between;
+}
+.file-title {
+	font-size: 14px;
+	color: #333;
+}
+.file-count {
+	font-size: 14px;
+	color: #999;
+}
+.is-add {
+
+	display: flex;
+
+	align-items: center;
+	justify-content: center;
+}
+.icon-add {
+	width: 50px;
+	height: 5px;
+	background-color: #f1f1f1;
+	border-radius: 2px;
+}
+.rotate {
+	position: absolute;
+	-webkit-transform: rotate(90deg);
+	        transform: rotate(90deg);
+}
+

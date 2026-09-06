@@ -1,0 +1,15 @@
+{
+    "id": "piaoyi-editor",
+    "name": "多功能富文本编辑器",
+    "displayName": "多功能富文本编辑器",
+    "version": "1.0.9",
+    "description": "富文本编辑器，内置上传图片以及更改颜色， 多样化等功能",
+    "keywords": [
+        "富文本编辑器",
+        "上传图片",
+        "字体颜色"
+    ],
+    "dcloudext": {
+        "type": "component-vue"
+    }
+}

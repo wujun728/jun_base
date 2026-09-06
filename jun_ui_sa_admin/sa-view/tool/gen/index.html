@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>代码生成</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../static/sa.css">
+    <link rel="stylesheet" href="../../static/ruoyi.css">
+    <style>
+        .el-table .el-table__body-wrapper { overflow-y: auto; }
+        .preview-tabs .el-tabs__content { max-height: 60vh; overflow: auto; }
+        .preview-tabs pre { margin: 0; padding: 10px; background: #f5f7fa; border-radius: 4px; font-size: 13px; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; }
+    </style>
+</head>
+<body>
+    <div class="vue-box" style="display: none;" :style="'display: block;'">
+        <div class="app-container">
+            <!-- 搜索区域 -->
+            <el-form :model="queryParams" ref="queryForm" :inline="true" @submit.native.prevent>
+                <el-form-item label="表名称" prop="tableName">
+                    <el-input v-model="queryParams.tableName" placeholder="请输入表名称" clearable size="small" style="width: 200px;" @keyup.enter.native="handleQuery"></el-input>
+                </el-form-item>
+                <el-form-item label="表描述" prop="tableComment">
+                    <el-input v-model="queryParams.tableComment" placeholder="请输入表描述" clearable size="small" style="width: 200px;" @keyup.enter.native="handleQuery"></el-input>
+                </el-form-item>
+                <el-form-item label="创建时间">
+                    <el-date-picker v-model="dateRange" size="small" style="width: 240px;" value-format="yyyy-MM-dd" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+                    <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+                </el-form-item>
+            </el-form>
+
+            <!-- 操作按钮 -->
+            <el-row :gutter="10" class="mb8">
+                <el-col :span="1.5">
+                    <el-button type="primary" plain icon="el-icon-download" size="mini" @click="handleGenTable" v-hasPermi="['tool:gen:code']">生成</el-button>
+                </el-col>
+                <el-col :span="1.5">
+                    <el-button type="info" plain icon="el-icon-upload" size="mini" @click="openImportTable" v-hasPermi="['tool:gen:import']">导入</el-button>
+                </el-col>
+                <el-col :span="1.5">
+                    <el-button type="success" plain icon="el-icon-edit" size="mini" :disabled="single" @click="handleEditTable" v-hasPermi="['tool:gen:edit']">修改</el-button>
+                </el-col>
+                <el-col :span="1.5">
+                    <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete" v-hasPermi="['tool:gen:remove']">删除</el-button>
+                </el-col>
+            </el-row>
+
+            <!-- 数据表格 -->
+            <el-table v-loading="loading" :data="tableList" @selection-change="handleSelectionChange" size="small">
+                <el-table-column type="selection" width="55" align="center"></el-table-column>
+                <el-table-column label="序号" type="index" width="60" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ (queryParams.pageNum - 1) * queryParams.pageSize + scope.$index + 1 }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="表名称" align="center" prop="tableName" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="表描述" align="center" prop="tableComment" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="实体" align="center" prop="className" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="创建时间" align="center" prop="createTime" width="160">
+                    <template slot-scope="scope">
+                        <span>{{ parseTime(scope.row.createTime) }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="更新时间" align="center" prop="updateTime" width="160">
+                    <template slot-scope="scope">
+                        <span>{{ parseTime(scope.row.updateTime) }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" align="center" width="330" class-name="fixed-width">
+                    <template slot-scope="scope">
+                        <el-button type="text" size="small" icon="el-icon-view" @click="handlePreview(scope.row)" v-hasPermi="['tool:gen:preview']">预览</el-button>
+                        <el-button type="text" size="small" icon="el-icon-edit" @click="handleEditTable(scope.row)" v-hasPermi="['tool:gen:edit']">编辑</el-button>
+                        <el-button type="text" size="small" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['tool:gen:remove']">删除</el-button>
+                        <el-button type="text" size="small" icon="el-icon-refresh" @click="handleSynchDb(scope.row)" v-hasPermi="['tool:gen:edit']">同步</el-button>
+                        <el-button type="text" size="small" icon="el-icon-download" @click="handleGenTable(scope.row)" v-hasPermi="['tool:gen:code']">生成代码</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <!-- 分页 -->
+            <div class="pagination-container">
+                <el-pagination background layout="total, sizes, prev, pager, next, jumper" :current-page.sync="queryParams.pageNum" :page-size.sync="queryParams.pageSize" :page-sizes="[10, 20, 50, 100]" :total="total" @size-change="getList" @current-change="getList"></el-pagination>
+            </div>
+        </div>
+
+        <!-- 预览对话框 -->
+        <el-dialog title="代码预览" :visible.sync="preview.open" width="80%" top="5vh" append-to-body class="scrollbar">
+            <el-tabs v-model="preview.activeName" class="preview-tabs">
+                <el-tab-pane v-for="(value, key) in preview.data" :label="getPreviewLabel(key)" :name="key" :key="key">
+                    <el-link :underline="false" icon="el-icon-document-copy" style="float: right; margin-bottom: 5px;" @click="copyCode(value)">复制</el-link>
+                    <pre>{{ value }}</pre>
+                </el-tab-pane>
+            </el-tabs>
+        </el-dialog>
+
+        <!-- 导入表对话框 -->
+        <el-dialog title="导入表" :visible.sync="importTable.open" width="800px" top="5vh" append-to-body>
+            <el-form :model="importTable.queryParams" ref="importQueryForm" :inline="true" @submit.native.prevent>
+                <el-form-item label="表名称" prop="tableName">
+                    <el-input v-model="importTable.queryParams.tableName" placeholder="请输入表名称" clearable size="small" @keyup.enter.native="handleImportQuery"></el-input>
+                </el-form-item>
+                <el-form-item label="表描述" prop="tableComment">
+                    <el-input v-model="importTable.queryParams.tableComment" placeholder="请输入表描述" clearable size="small" @keyup.enter.native="handleImportQuery"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" icon="el-icon-search" size="mini" @click="handleImportQuery">搜索</el-button>
+                    <el-button icon="el-icon-refresh" size="mini" @click="resetImportQuery">重置</el-button>
+                </el-form-item>
+            </el-form>
+            <el-table v-loading="importTable.loading" :data="importTable.dbTableList" @selection-change="handleImportSelectionChange" ref="importTableRef" size="small" height="260px">
+                <el-table-column type="selection" width="55" align="center"></el-table-column>
+                <el-table-column label="表名称" align="center" prop="tableName" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="表描述" align="center" prop="tableComment" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="创建时间" align="center" prop="createTime" width="160">
+                    <template slot-scope="scope">
+                        <span>{{ parseTime(scope.row.createTime) }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="更新时间" align="center" prop="updateTime" width="160">
+                    <template slot-scope="scope">
+                        <span>{{ parseTime(scope.row.updateTime) }}</span>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div class="pagination-container">
+                <el-pagination background layout="total, sizes, prev, pager, next, jumper" :current-page.sync="importTable.queryParams.pageNum" :page-size.sync="importTable.queryParams.pageSize" :page-sizes="[10, 20, 50, 100]" :total="importTable.total" @size-change="getDbTableList" @current-change="getDbTableList"></el-pagination>
+            </div>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="handleImportTable">确 定</el-button>
+                <el-button @click="importTable.open = false">取 消</el-button>
+            </div>
+        </el-dialog>
+    </div>
+
+    <script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui@2.13.0/lib/index.js"></script>
+    <script src="https://unpkg.com/jquery@3.4.1/dist/jquery.min.js"></script>
+    <script src="../../static/kj/layer/layer.js"></script>
+    <script src="../../static/sa.js"></script>
+    <script src="../../static/ruoyi-util.js"></script>
+    <script>
+        var app = new Vue({
+            el: '.vue-box',
+            data: {
+                // 遮罩层
+                loading: true,
+                // 选中数组
+                ids: [],
+                // 选中表数组
+                tableNames: [],
+                // 非单个禁用
+                single: true,
+                // 非多个禁用
+                multiple: true,
+                // 总条数
+                total: 0,
+                // 表数据
+                tableList: [],
+                // 日期范围
+                dateRange: [],
+                // 查询参数
+                queryParams: {
+                    pageNum: 1,
+                    pageSize: 10,
+                    tableName: undefined,
+                    tableComment: undefined
+                },
+                // 预览参数
+                preview: {
+                    open: false,
+                    activeName: '',
+                    data: {}
+                },
+                // 导入表参数
+                importTable: {
+                    open: false,
+                    loading: false,
+                    total: 0,
+                    dbTableList: [],
+                    selectionList: [],
+                    queryParams: {
+                        pageNum: 1,
+                        pageSize: 10,
+                        tableName: undefined,
+                        tableComment: undefined
+                    }
+                }
+            },
+            methods: {
+                /** 查询表集合 */
+                getList: function() {
+                    this.loading = true;
+                    var params = ruoyi.addDateRange(this.queryParams, this.dateRange);
+                    ruoyi.get('/tool/gen/list', params, function(res) {
+                        this.tableList = res.rows;
+                        this.total = res.total;
+                        this.loading = false;
+                    }.bind(this));
+                },
+                /** 搜索按钮操作 */
+                handleQuery: function() {
+                    this.queryParams.pageNum = 1;
+                    this.getList();
+                },
+                /** 重置按钮操作 */
+                resetQuery: function() {
+                    this.dateRange = [];
+                    this.resetForm('queryForm');
+                    this.queryParams.tableName = undefined;
+                    this.queryParams.tableComment = undefined;
+                    this.handleQuery();
+                },
+                /** 多选框选中数据 */
+                handleSelectionChange: function(selection) {
+                    this.ids = selection.map(function(item) { return item.tableId; });
+                    this.tableNames = selection.map(function(item) { return item.tableName; });
+                    this.single = selection.length !== 1;
+                    this.multiple = !selection.length;
+                },
+                /** 预览按钮 */
+                handlePreview: function(row) {
+                    ruoyi.get('/tool/gen/preview/' + row.tableId, function(res) {
+                        this.preview.data = res.data;
+                        this.preview.open = true;
+                        var keys = Object.keys(res.data);
+                        this.preview.activeName = keys.length > 0 ? keys[0] : '';
+                    }.bind(this));
+                },
+                /** 获取预览标签名 */
+                getPreviewLabel: function(key) {
+                    // 从路径中提取文件名
+                    var parts = key.split('/');
+                    return parts[parts.length - 1] || key;
+                },
+                /** 复制代码 */
+                copyCode: function(code) {
+                    var textarea = document.createElement('textarea');
+                    textarea.value = code;
+                    textarea.style.position = 'fixed';
+                    textarea.style.opacity = '0';
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    try {
+                        var successful = document.execCommand('copy');
+                        if (successful) {
+                            this.$modal.msgSuccess('复制成功');
+                        } else {
+                            this.$modal.msgError('复制失败');
+                        }
+                    } catch (err) {
+                        this.$modal.msgError('复制失败');
+                    }
+                    document.body.removeChild(textarea);
+                },
+                /** 编辑按钮操作 */
+                handleEditTable: function(row) {
+                    var tableId = row.tableId || this.ids[0];
+                    parent.sa_admin.showTab({
+                        id: 'gen-edit-' + tableId,
+                        name: '生成配置',
+                        url: 'sa-view/tool/gen/editTable.html?tableId=' + tableId
+                    });
+                },
+                /** 删除按钮操作 */
+                handleDelete: function(row) {
+                    var tableIds = row.tableId ? [row.tableId] : this.ids;
+                    this.$modal.confirm('是否确认删除表编号为"' + tableIds + '"的数据项？').then(function() {
+                        ruoyi.del('/tool/gen/' + tableIds.join(','), function(res) {
+                            this.getList();
+                            this.$modal.msgSuccess('删除成功');
+                        }.bind(this));
+                    }.bind(this)).catch(function() {});
+                },
+                /** 同步数据库操作 */
+                handleSynchDb: function(row) {
+                    var tableName = row.tableName;
+                    this.$modal.confirm('确认要强制同步"' + tableName + '"表结构吗？').then(function() {
+                        ruoyi.get('/tool/gen/synchDb/' + tableName, function(res) {
+                            this.$modal.msgSuccess('同步成功');
+                        }.bind(this));
+                    }.bind(this)).catch(function() {});
+                },
+                /** 生成代码操作 */
+                handleGenTable: function(row) {
+                    if (row.tableName) {
+                        // 单行生成
+                        ruoyi.downloadGet('/tool/gen/batchGenCode?tables=' + row.tableName, row.tableName + '.zip');
+                    } else {
+                        // 批量生成
+                        if (this.tableNames.length === 0) {
+                            this.$modal.msgError('请选择要生成的数据');
+                            return;
+                        }
+                        ruoyi.downloadGet('/tool/gen/batchGenCode?tables=' + this.tableNames.join(','), 'ruoyi.zip');
+                    }
+                },
+                /** 打开导入表弹窗 */
+                openImportTable: function() {
+                    this.importTable.open = true;
+                    this.importTable.queryParams.tableName = undefined;
+                    this.importTable.queryParams.tableComment = undefined;
+                    this.importTable.queryParams.pageNum = 1;
+                    this.getDbTableList();
+                },
+                /** 查询数据库表集合 */
+                getDbTableList: function() {
+                    this.importTable.loading = true;
+                    ruoyi.get('/tool/gen/db/list', this.importTable.queryParams, function(res) {
+                        this.importTable.dbTableList = res.rows;
+                        this.importTable.total = res.total;
+                        this.importTable.loading = false;
+                    }.bind(this));
+                },
+                /** 导入表搜索按钮操作 */
+                handleImportQuery: function() {
+                    this.importTable.queryParams.pageNum = 1;
+                    this.getDbTableList();
+                },
+                /** 导入表重置按钮操作 */
+                resetImportQuery: function() {
+                    this.importTable.queryParams.tableName = undefined;
+                    this.importTable.queryParams.tableComment = undefined;
+                    this.handleImportQuery();
+                },
+                /** 导入表多选框选中数据 */
+                handleImportSelectionChange: function(selection) {
+                    this.importTable.selectionList = selection;
+                },
+                /** 导入按钮操作 */
+                handleImportTable: function() {
+                    var selectionList = this.importTable.selectionList;
+                    if (selectionList.length === 0) {
+                        this.$modal.msgError('请选择要导入的表');
+                        return;
+                    }
+                    var tableNames = selectionList.map(function(item) { return item.tableName; }).join(',');
+                    ruoyi.post('/tool/gen/importTable?tables=' + tableNames, function(res) {
+                        this.$modal.msgSuccess('导入成功');
+                        this.importTable.open = false;
+                        this.getList();
+                    }.bind(this));
+                }
+            },
+            created: function() {
+                this.getList();
+            }
+        });
+    </script>
+</body>
+</html>

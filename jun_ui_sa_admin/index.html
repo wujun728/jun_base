@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<meta charset="utf-8">
+		<link rel="shortcut icon" type="image/x-icon" href="sa-frame/admin-logo.png" class="admin-icon">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="https://unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css">
+		<link rel="stylesheet" href="sa-frame/index/index.css">
+		<link rel="stylesheet" href="sa-frame/index/theme.css">
+		<link rel="stylesheet" href="static/sa.css">
+		<link rel="stylesheet" href="static/ruoyi.css">
+	</head>
+	<body>
+		<!-- App -->
+		<div class="app" style="display: none;" :style="'display: block;'" 
+			:class="['theme-0', 'theme-' + themeV, (isOpen ? '' : 'app-fold'), (isOpenRight ? '' : 'app-fold-right')]" >
+			<!-- 左 -->
+			<div class="nav-left">
+				<!-- logo部分 -->
+				<div class="nav-left-top">
+					<nav-logo></nav-logo>
+				</div>
+				<!-- 左下：菜单 -->
+				<div class="nav-left-bottom">
+					<nav-menu-bar ref="nav-menu-bar"></nav-menu-bar>
+				</div>
+			</div>
+			<!-- 右 -->
+			<div class="nav-right">
+				<!-- 工具栏 -->
+				<div class="nav-right-1" des="">
+					<nav-tool-bar ref="nav-tool-bar"></nav-tool-bar>
+				</div>
+				<!-- Tab栏 -->
+				<div class="nav-right-2">
+					<nav-tab-bar ref="nav-tab-bar"></nav-tab-bar>
+				</div>
+				<!-- 视图容器 -->
+				<div class="nav-right-3">
+					<nav-view-vessel ref="nav-view-vessel"></nav-view-vessel>
+				</div>
+			</div>
+			<!-- 右键菜单 -->
+			<com-right-menu ref="com-right-menu"></com-right-menu>
+			<!-- 双击添加新tab -->
+			<com-add-tab ref="com-add-tab"></com-add-tab>
+		</div>
+		
+		<!-- js依赖库 -->
+		<script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
+		<script type="text/javascript">Vue.config.productionTip = false;</script>
+		<script src="https://unpkg.com/http-vue-loader@1.4.2/src/httpVueLoader.js"></script>
+		<script src="https://unpkg.com/element-ui@2.13.0/lib/index.js"></script>
+		<script src="https://unpkg.com/jquery@3.4.1/dist/jquery.min.js"></script>
+		<script src="https://www.layuicdn.com/layer-v3.1.1/layer.js"></script>
+		<script src="https://unpkg.com/sortablejs@1.14.0/Sortable.min.js"></script>
+		<script src="https://unpkg.com/vuedraggable@2.24.3/dist/vuedraggable.umd.min.js"></script>
+		<!-- <script src="https://www.itxst.com/package/sortable/sortable.min.js"></script> -->
+		<!-- <script src="https://www.itxst.com/package/vuedraggable/vuedraggable.umd.min.js"></script> -->
+		
+		<!-- js本地库 -->
+		<script src="sa-frame/index/admin-util.js"></script>
+		<script src="sa-frame/index/index.js"></script>
+		<script src="sa-frame/menu-list.js"></script>
+		<script src="static/sa.js"></script>
+		<script src="static/ruoyi-util.js"></script>
+		<script src="sa-frame/sa-code.js"></script>
+
+	</body>
+</html>

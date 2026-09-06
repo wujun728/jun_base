@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>ruoyi-fast</artifactId>
+        <groupId>com.ruoyi</groupId>
+        <version>${revision}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <modules>
+        <!-- 基座原有模块 -->
+        <module>ruoyi-demo</module>
+        <module>ruoyi-generator</module>
+        <module>ruoyi-system</module>
+
+        <!-- OA 兼容层模块 -->
+        <module>ruoyi-compat-oa</module>
+
+        <!-- OA 模块 - Phase 2: 底层模块 -->
+        <module>ruoyi-tools</module>
+        <!--<module>ruoyi-serial</module>-->
+        <!--<module>ruoyi-information</module>-->
+        <!--<module>ruoyi-kbs</module>-->
+        <!--<module>ruoyi-worksetting</module>-->
+
+        <!-- OA 模块 - Phase 3: 中间层模块 (待迁移后取消注释) -->
+        <!--<module>ruoyi-mq</module>-->
+        <!--<module>ruoyi-file</module>-->
+        <!--<module>ruoyi-template</module>-->
+        <!--<module>ruoyi-sms</module>-->
+        <!--<module>ruoyi-flowable</module>-->
+
+        <!-- OA 模块 - Phase 4: IM模块 (待迁移后取消注释) -->
+        <!--<module>ruoyi-im-broker</module>-->
+        <!--<module>ruoyi-im-process</module>-->
+
+        <!-- OA 模块 - Phase 5: 高级模块 (待迁移后取消注释) -->
+        <!--<module>ruoyi-seal</module>-->
+        <!--<module>ruoyi-workflow-file</module>-->
+        <!--<module>ruoyi-todo</module>-->
+        <!--<module>ruoyi-biz-sdk</module>-->
+        <!--<module>ruoyi-workflow</module>-->
+
+        <!-- OA 模块 - Phase 6: 其他模块 (待迁移后取消注释) -->
+        <!--<module>ruoyi-message</module>-->
+        <!--<module>ruoyi-schedule</module>-->
+    </modules>
+
+    <artifactId>ruoyi-modules</artifactId>
+    <packaging>pom</packaging>
+
+    <description>
+        ruoyi-modules 业务模块
+    </description>
+
+</project>

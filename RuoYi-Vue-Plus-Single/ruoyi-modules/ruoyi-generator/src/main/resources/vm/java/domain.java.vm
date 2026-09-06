@@ -1,0 +1,46 @@
+package ${packageName}.domain;
+
+import org.dromara.common.mybatis.core.domain.BaseEntity;
+import com.baomidou.mybatisplus.annotation.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+#foreach ($import in $importList)
+import ${import};
+#end
+
+import java.io.Serial;
+
+/**
+ * ${functionName}对象 ${tableName}
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
+@TableName("${tableName}")
+public class ${ClassName} extends BaseEntity {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+#foreach ($column in $columns)
+#if(!$table.isSuperColumn($column.javaField))
+    /**
+     * $column.columnComment
+     */
+#if($column.javaField=='delFlag')
+    @TableLogic
+#end
+#if($column.javaField=='version')
+    @Version
+#end
+#if($column.isPk==1)
+    @TableId(value = "$column.columnName")
+#end
+    private $column.javaType $column.javaField;
+
+#end
+#end
+
+}

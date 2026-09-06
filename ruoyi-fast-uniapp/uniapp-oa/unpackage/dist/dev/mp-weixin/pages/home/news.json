@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "uni-card": "/uni_modules/uni-card/components/uni-card/uni-card",
+    "uni-list": "/uni_modules/uni-list/components/uni-list/uni-list",
+    "uni-list-chat": "/uni_modules/uni-list/components/uni-list-chat/uni-list-chat"
+  },
+  "component": true
+}

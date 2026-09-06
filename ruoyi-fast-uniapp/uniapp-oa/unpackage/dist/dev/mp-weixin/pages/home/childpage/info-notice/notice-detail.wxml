@@ -1,0 +1,1 @@
+<view class="content"><view class="notice_detail"><view class="notice_title _h3">{{detail.title}}</view><block wx:if="{{detail.img}}"><image src="{{detail.img}}"></image></block><view class="notice_content _p">{{detail.detail}}</view><view class="notice_signature _p">{{detail.signature}}</view><view class="notice_date _p">{{detail.date}}</view></view></view>

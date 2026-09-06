@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>缓存监控</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../static/sa.css">
+    <link rel="stylesheet" href="../../static/ruoyi.css">
+    <style>
+        .cache-info-item { padding: 8px 0; border-bottom: 1px solid #EBEEF5; display: flex; align-items: center; font-size: 13px; }
+        .cache-info-item:last-child { border-bottom: none; }
+        .cache-info-label { font-weight: bold; color: #606266; display: inline-block; width: 160px; text-align: right; padding-right: 12px; flex-shrink: 0; }
+        .cache-info-value { color: #303133; }
+        .chart-container { width: 100%; height: 420px; }
+    </style>
+</head>
+<body>
+    <div class="vue-box" style="display: none;" :style="'display: block;'">
+        <div class="c-panel" v-loading="loading">
+            <div class="c-title">缓存监控</div>
+
+            <!-- 基本信息 -->
+            <el-row :gutter="15">
+                <el-col :span="24">
+                    <el-card style="margin-bottom: 15px;">
+                        <div slot="header"><i class="el-icon-s-data"></i> 基本信息</div>
+                        <el-row :gutter="10">
+                            <el-col :span="8">
+                                <div class="cache-info-item">
+                                    <span class="cache-info-label">Redis版本</span>
+                                    <span class="cache-info-value">{{ cache.info ? cache.info.redis_version : '' }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="8">
+                                <div class="cache-info-item">
+                                    <span class="cache-info-label">运行模式</span>
+                                    <span class="cache-info-value">{{ cache.info ? (cache.info.redis_mode === 'standalone' ? '单机' : '集群') : '' }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="8">
+                                <div class="cache-info-item">
+                                    <span class="cache-info-label">端口</span>
+                                    <span class="cache-info-value">{{ cache.info ? cache.info.tcp_port : '' }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="8">
+                                <div class="cache-info-item">
+                                    <span class="cache-info-label">客户端数</span>
+                                    <span class="cache-info-value">{{ cache.info ? cache.info.connected_clients : '' }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="8">
+                                <div class="cache-info-item">
+                                    <span class="cache-info-label">运行时间(天)</span>
+                                    <span class="cache-info-value">{{ cache.info ? cache.info.uptime_in_days : '' }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="8">
+                                <div class="cache-info-item">
+                                    <span class="cache-info-label">使用内存</span>
+                                    <span class="cache-info-value">{{ cache.info ? cache.info.used_memory_human : '' }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="8">
+                                <div class="cache-info-item">
+                                    <span class="cache-info-label">使用CPU</span>
+                                    <span class="cache-info-value">{{ cache.info ? parseFloat(cache.info.used_cpu_sys).toFixed(2) : '' }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="8">
+                                <div class="cache-info-item">
+                                    <span class="cache-info-label">内存配置</span>
+                                    <span class="cache-info-value">{{ cache.info ? cache.info.maxmemory_human : '' }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="8">
+                                <div class="cache-info-item">
+                                    <span class="cache-info-label">AOF是否开启</span>
+                                    <span class="cache-info-value">{{ cache.info ? (cache.info.aof_enabled === '0' ? '否' : '是') : '' }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="8">
+                                <div class="cache-info-item">
+                                    <span class="cache-info-label">RDB是否成功</span>
+                                    <span class="cache-info-value">{{ cache.info ? cache.info.rdb_last_bgsave_status : '' }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="8">
+                                <div class="cache-info-item">
+                                    <span class="cache-info-label">Key数量</span>
+                                    <span class="cache-info-value">{{ cache.dbSize !== undefined ? cache.dbSize : '' }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="8">
+                                <div class="cache-info-item">
+                                    <span class="cache-info-label">网络入口/出口</span>
+                                    <span class="cache-info-value">{{ cache.info ? cache.info.instantaneous_input_kbps + 'kps/' + cache.info.instantaneous_output_kbps + 'kps' : '' }}</span>
+                                </div>
+                            </el-col>
+                        </el-row>
+                    </el-card>
+                </el-col>
+            </el-row>
+
+            <!-- 图表 -->
+            <el-row :gutter="15">
+                <el-col :span="12">
+                    <el-card style="margin-bottom: 15px;">
+                        <div slot="header"><i class="el-icon-pie-chart"></i> 命令统计</div>
+                        <div id="commandStatsChart" class="chart-container"></div>
+                    </el-card>
+                </el-col>
+                <el-col :span="12">
+                    <el-card style="margin-bottom: 15px;">
+                        <div slot="header"><i class="el-icon-data-line"></i> 内存信息</div>
+                        <div id="memoryUsageChart" class="chart-container"></div>
+                    </el-card>
+                </el-col>
+            </el-row>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui@2.13.0/lib/index.js"></script>
+    <script src="https://unpkg.com/jquery@3.4.1/dist/jquery.min.js"></script>
+    <script src="../../static/kj/layer/layer.js"></script>
+    <script src="../../static/sa.js"></script>
+    <script src="../../static/ruoyi-util.js"></script>
+    <script src="../../static/kj/echarts-en.min.js"></script>
+    <script>
+        var app = new Vue({
+            el: '.vue-box',
+            data: {
+                loading: true,
+                // 缓存数据
+                cache: {
+                    info: null,
+                    dbSize: 0,
+                    commandStats: []
+                },
+                // 图表实例
+                commandStatsChart: null,
+                memoryUsageChart: null
+            },
+            methods: {
+                /** 获取缓存信息 */
+                getCache: function() {
+                    this.loading = true;
+                    ruoyi.get('/monitor/cache', function(res) {
+                        this.cache = res.data || {};
+                        this.loading = false;
+                        this.$nextTick(function() {
+                            this.initCommandStatsChart();
+                            this.initMemoryUsageChart();
+                        }.bind(this));
+                    }.bind(this));
+                },
+                /** 初始化命令统计图表 */
+                initCommandStatsChart: function() {
+                    var chartDom = document.getElementById('commandStatsChart');
+                    if (!chartDom) return;
+                    if (this.commandStatsChart) {
+                        this.commandStatsChart.dispose();
+                    }
+                    this.commandStatsChart = echarts.init(chartDom);
+
+                    var commandStats = this.cache.commandStats || [];
+                    var data = [];
+                    for (var i = 0; i < commandStats.length; i++) {
+                        data.push({
+                            name: commandStats[i].name,
+                            value: commandStats[i].value
+                        });
+                    }
+
+                    var option = {
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: '{a} <br/>{b} : {c} ({d}%)'
+                        },
+                        legend: {
+                            type: 'scroll',
+                            orient: 'vertical',
+                            right: 10,
+                            top: 20,
+                            bottom: 20,
+                            data: data.map(function(item) { return item.name; })
+                        },
+                        series: [
+                            {
+                                name: '命令',
+                                type: 'pie',
+                                radius: ['40%', '65%'],
+                                center: ['35%', '50%'],
+                                data: data,
+                                animationEasing: 'cubicInOut',
+                                animationDuration: 1000,
+                                emphasis: {
+                                    itemStyle: {
+                                        shadowBlur: 10,
+                                        shadowOffsetX: 0,
+                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                    }
+                                },
+                                label: {
+                                    show: false
+                                },
+                                labelLine: {
+                                    show: false
+                                }
+                            }
+                        ]
+                    };
+
+                    this.commandStatsChart.setOption(option);
+                },
+                /** 初始化内存使用图表 */
+                initMemoryUsageChart: function() {
+                    var chartDom = document.getElementById('memoryUsageChart');
+                    if (!chartDom) return;
+                    if (this.memoryUsageChart) {
+                        this.memoryUsageChart.dispose();
+                    }
+                    this.memoryUsageChart = echarts.init(chartDom);
+
+                    var info = this.cache.info || {};
+                    var usedMemory = parseFloat(info.used_memory_human) || 0;
+                    var maxMemory = parseFloat(info.maxmemory_human) || 0;
+                    var usedUnit = info.used_memory_human ? info.used_memory_human.replace(/[\d.]+/g, '') : 'M';
+                    var maxUnit = info.maxmemory_human ? info.maxmemory_human.replace(/[\d.]+/g, '') : 'M';
+
+                    var option = {
+                        tooltip: {
+                            formatter: '{b} <br/>{a} : {c}%'
+                        },
+                        series: [
+                            {
+                                name: '峰值',
+                                type: 'gauge',
+                                min: 0,
+                                max: 1000,
+                                detail: {
+                                    formatter: (info.used_memory_human || '0M')
+                                },
+                                data: [
+                                    {
+                                        value: parseFloat(info.used_memory_human) || 0,
+                                        name: '内存消耗'
+                                    }
+                                ],
+                                axisLine: {
+                                    lineStyle: {
+                                        color: [
+                                            [0.3, '#67e0e3'],
+                                            [0.7, '#37a2da'],
+                                            [1, '#fd666d']
+                                        ],
+                                        width: 20
+                                    }
+                                },
+                                axisTick: {
+                                    show: false
+                                },
+                                splitLine: {
+                                    length: 18,
+                                    lineStyle: {
+                                        color: 'auto'
+                                    }
+                                },
+                                pointer: {
+                                    width: 5
+                                },
+                                title: {
+                                    offsetCenter: [0, '70%'],
+                                    fontSize: 16
+                                }
+                            }
+                        ]
+                    };
+
+                    this.memoryUsageChart.setOption(option);
+                }
+            },
+            created: function() {
+                this.getCache();
+            },
+            mounted: function() {
+                // 监听窗口大小变化，自适应图表
+                var _this = this;
+                window.addEventListener('resize', function() {
+                    if (_this.commandStatsChart) _this.commandStatsChart.resize();
+                    if (_this.memoryUsageChart) _this.memoryUsageChart.resize();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

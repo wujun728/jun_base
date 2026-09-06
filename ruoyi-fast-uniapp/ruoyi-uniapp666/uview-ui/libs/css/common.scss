@@ -1,0 +1,1025 @@
+.u-relative,
+.u-rela {
+	position: relative;
+}
+
+.u-absolute,
+.u-abso {
+	position: absolute;
+}
+
+// nvue不能用标签命名样式，不能放在微信组件中，否则微信开发工具会报警告，无法使用标签名当做选择器
+/* #ifndef APP-NVUE */
+image {
+	display: inline-block;
+}
+
+// 在weex，也即nvue中，所有元素默认为border-box
+view,
+text {
+	box-sizing: border-box;
+}
+/* #endif */
+
+.u-font-xs {
+	font-size: 22rpx;
+}
+
+.u-font-sm {
+	font-size: 26rpx;
+}
+
+.u-font-md {
+	font-size: 28rpx;
+}
+
+.u-font-lg {
+	font-size: 30rpx;
+}
+
+.u-font-xl {
+	font-size: 34rpx;
+}
+
+.u-flex {
+	/* #ifndef APP-NVUE */
+	display: flex;
+	/* #endif */
+	flex-direction: row;
+	align-items: center;
+}
+
+.u-flex-wrap {
+	flex-wrap: wrap;
+}
+
+.u-flex-nowrap {
+	flex-wrap: nowrap;
+}
+
+.u-col-center {
+	align-items: center;
+}
+
+.u-col-top {
+	align-items: flex-start;
+}
+
+.u-col-bottom {
+	align-items: flex-end;
+}
+
+.u-row-center {
+	justify-content: center;
+}
+
+.u-row-left {
+	justify-content: flex-start;
+}
+
+.u-row-right {
+	justify-content: flex-end;
+}
+
+.u-row-between {
+	justify-content: space-between;
+}
+
+.u-row-around {
+	justify-content: space-around;
+}
+
+.u-text-left {
+	text-align: left;
+}
+
+.u-text-center {
+	text-align: center;
+}
+
+.u-text-right {
+	text-align: right;
+}
+
+.u-flex-col {
+	/* #ifndef APP-NVUE */
+	display: flex;
+	/* #endif */
+	flex-direction: column;
+}
+
+// 定义flex等分
+@for $i from 0 through 12 {
+	.u-flex-#{$i} {
+		flex: $i;
+	}
+}
+
+// 定义字体(px)单位，小于20都为px单位字体
+@for $i from 9 to 20 {
+	.u-font-#{$i} {
+		font-size: $i + px;
+	}
+}
+
+// 定义字体(rpx)单位，大于或等于20的都为rpx单位字体
+@for $i from 20 through 40 {
+	.u-font-#{$i} {
+		font-size: $i + rpx;
+	}
+}
+
+// 定义内外边距，历遍1-80
+@for $i from 0 through 80 {
+	// 只要双数和能被5除尽的数
+	@if $i % 2 == 0 or $i % 5 == 0 {
+		// 得出：u-margin-30或者u-m-30
+		.u-margin-#{$i}, .u-m-#{$i} {
+			margin: $i + rpx!important;
+		}
+		
+		// 得出：u-padding-30或者u-p-30
+		.u-padding-#{$i}, .u-p-#{$i} {
+			padding: $i + rpx!important;
+		}
+		
+		@each $short, $long in l left, t top, r right, b bottom {
+			// 缩写版，结果如： u-m-l-30
+			// 定义外边距
+			.u-m-#{$short}-#{$i} {
+				margin-#{$long}: $i + rpx!important;
+			}
+			
+			// 定义内边距
+			.u-p-#{$short}-#{$i} {
+				padding-#{$long}: $i + rpx!important;
+			}
+			
+			// 完整版，结果如：u-margin-left-30
+			// 定义外边距
+			.u-margin-#{$long}-#{$i} {
+				margin-#{$long}: $i + rpx!important;
+			}
+			
+			// 定义内边距
+			.u-padding-#{$long}-#{$i} {
+				padding-#{$long}: $i + rpx!important;
+			}
+		}
+	}
+}
+
+// 重置nvue的默认关于flex的样式
+.u-reset-nvue {
+	flex-direction: row;
+	align-items: center;
+}
+.uni-tabbar{
+	box-shadow: 0px 0px 10px rgba(0,0,0,0.15);
+}
+
+.uni-page-head{
+	background: #ffffff!important;
+}
+ .form_right{
+	 .u-form-item__message{
+		 text-align: right;
+	 }
+	 .u-input{
+		 textarea{
+			text-align: left!important;
+		 }
+	 }
+	 .uni-input-input{
+	 	text-align: right;
+	 }
+ }
+ .yjfk-form-right{
+	 .uni-input-input{
+	 		 text-align: right;
+	 }
+ }
+ .input-left-form{
+ 	.input-placeholder{
+ 		text-align: left!important;
+ 	}
+ 	.uni-input-input{
+ 		text-align: left!important;
+ 	}
+ }
+ .pages-sys-user-index{
+	 .uni-page-head{
+		 background: #5b95ff!important;
+		 color: #ffffff!important;
+	 }
+ }
+ .pages-sys-login-index{
+	 .uni-page-head{
+	 	display: none;
+	 }
+	 .uni-placeholder{
+		 height: 0!important;
+	 }
+ }
+.home-icon {
+ 	width: 48px;
+ 	height: 48px;
+	align-items: center;
+ 	border-radius: 6px;
+ 	box-sizing: border-box;
+	display: flex;
+	justify-content: center;
+	color:#ffffff;
+	font-size: 26px;
+ }
+ .home-icon i{
+	font-size: 26px;
+ }
+.icon-color01{
+	 background: #ef8e35;
+	 border:1rpx solid #ef8e35;
+}
+.icon-color02{
+	 background-image: linear-gradient(0deg, #5a9aec, #84acf7);
+	 border:1rpx solid #6893d5;
+}
+.icon-color03{
+	 background-image: linear-gradient(0deg, #5fceb3, #61d2ba);
+	 border:1rpx solid #58c1ab;
+}
+.icon-color03{
+	 background-image: linear-gradient(0deg, #58ca93, #58ca93);
+	 border:1rpx solid #58c1ab;
+}
+.icon-color04{
+	 background-image: linear-gradient(0deg, #4f77ed, #4f77ed);
+	 border:1rpx solid #4f77ed;
+}
+.icon-color05{
+	 background-image: linear-gradient(0deg, #eb516b, #eb516c);
+	 border:1rpx solid #cc4962;
+}
+.icon-color06{
+	 background-image: linear-gradient(0deg, #F35643, #F35643);
+	 border:1rpx solid #F35643;
+}
+.icon-color07{
+	 background-image: linear-gradient(0deg, #4b86f6, #4b86f6);
+	 border:1rpx solid #4e7fd8;
+}
+.icon-color08{
+	 background-image: linear-gradient(0deg, #f2a953, #f2a953);
+	 border:1rpx solid #d2954c;
+}
+.icon-color09{
+	 background-image: linear-gradient(-30deg, #3b6eef, #3b6eef);
+	 border:1rpx solid #3663d1;
+}
+.icon-color10{
+	 background-image: linear-gradient(0deg, #59bef7, #58bcf6);
+	 border:1rpx solid #4ea6da;
+}
+.icon-color11{
+	 background:#ffffff;
+	 border:1rpx solid #ddddde;
+}
+.icon-color12{
+	 background-image: linear-gradient(0deg, #FFC60A, #FFC60A);
+	 border:1rpx solid #FFC60A;
+}
+.icon-color13{
+	 background:#f5f6f7;
+	 border:1rpx dashed #e1e1e3;
+}
+.home-icon{
+	position: relative;
+	.u-badge{
+		top:-8px!important;
+		right:-8px!important;
+		padding:1px 4px!important;
+	}
+}
+/* .grid-height270 .u-collapse-body{
+	height: 270px!important;
+} */
+.u-grid-item-box{
+	padding: 0 0 12px!important;
+}
+.pages-sys-login-code .u-box{
+	border: 1px solid #dcdee1!important;
+}
+/* 首页样式开始 */
+.home-head{
+	margin-left: 10px;
+}
+.home-head img, .home-head  uni-image{
+	width: 32px!important;
+	height: 32px!important;
+}
+.wrap-home .u-slot-right{
+	margin-right: 20rpx!important;
+}
+.wrap-home .list .u-cell-item-box .u-cell_title{
+	width: auto!important;
+	min-width:auto!important ;
+	color: #202328;
+}
+.wrap-home .u-navbar:after{
+    border-bottom-width: 0px!important;
+}
+.side-personal-list .u-cell{
+	padding: 12px 16px;
+}
+.side-personal-list .u-cell .u-iconfont{
+	font-size: 20px!important;
+}
+.side-info .u-border-top:after, .side-info .u-border-bottom:after{
+	border-bottom-width: 0;
+	border-top-width: 0;
+}
+ .side-personal-list .u-border-top:after{
+	border-bottom-width: 0;
+	border-top-width: 0;
+}
+.u-mask-zoom{
+	background-color: rgba(0, 0, 0, 0.5)!important;
+}
+.wrap-home .u-title{
+	font-weight: bold!important;
+	color: #000000!important;
+}
+.wrap-home .u-cell__value{
+	text-align: left!important;
+}
+/* 首页样式结束 */
+/* 物联中心样式开始 */
+.pages-sys-application-index .u-slot-right{
+	margin-right: 20rpx!important;
+}
+.pages-sys-application-index .u-title{
+	font-weight: bold!important;
+	color: #000000!important;
+}
+.pages-sys-application-index .u-navbar:after {
+    border-bottom-width: 0px!important;
+}
+.apply-topbox{
+	background: #ffffff;
+	padding: 10px 0;
+}
+.apply-box{
+	padding: 10px 0 10px;
+	position: relative;
+	.u-image{
+		position: absolute;
+		left: 10px;
+	}
+	.u-image .u-image__image{
+		border-radius: 50%!important;
+		border: 1px solid #ededed;
+		box-shadow:0 3px 3px rgba(#000000, 0.2);
+	}
+	.u-size-default{
+		padding:2px 5px!important;
+		margin: 0 10rpx!important;
+	}
+	.other-title{
+		color: #999999;
+	}
+	.u-row{
+		padding-left: 10px;
+	}
+}
+.Statistics-box{
+	padding: 15px;
+	background: #ffffff;
+	.title-text{
+		color: #000000;
+		font-size: 32rpx;
+		text-align: center;
+		border-bottom: 1px solid #ededed;
+		padding-bottom: 10px;
+		margin-bottom: 5px;
+	}
+	.other-text{
+		color: #666666;
+		font-size: 28rpx;
+		text-align: left;
+		padding: 5px 0;
+	}
+	.other-text02{
+		color: #9c9c9c;
+		font-size: 24rpx;
+		padding: 5px 0;
+		em{
+			font-style: normal;
+			color: #5473e8;
+		}
+	}
+	.u-active{
+	background-image: linear-gradient(90deg, #8271ff, #65cbff);
+}
+}
+/* 物联中心样式结束 */
+/* 套餐详情开始 */
+.details-list-item {
+	margin:20rpx 0 0!important;
+	.u-card__body{
+		padding: 0!important;
+	}
+	.u-body-item{
+		padding: 15px!important;
+		.header-text{
+			color: #000000;
+			font-size: 30rpx;
+		}
+		.other-itemtext{
+			color: #999999;
+			font-size: 20rpx;
+			em{
+				font-style: normal;
+				color: #ff4400;
+			}
+		}
+	}
+	
+}
+/* 套餐详情结束 */
+/* 套餐列表开始 */
+.order-list-item {
+	margin:20rpx 0 0!important;
+	uni-image{
+		width: 130rpx;
+		height: 130rpx;
+		margin-right: 10rpx;
+	}
+	.u-card__body{
+		padding: 0!important;
+	}
+	.u-body-item{
+		padding: 15px!important;
+		background: #ffffff;
+		.u-body-item-title{
+			color: #000000;
+			font-size: 30rpx;
+		}
+		.other-itemtext{
+			color: #999999;
+			font-size: 20rpx;
+		}
+		.money-itemtext{
+			color: #ff4400;
+			font-size: 20rpx;
+			em{
+				font-style: normal;
+				color: #ff4400;
+				font-size: 36rpx;
+			}
+		}
+	}
+	
+	
+}
+/* 套餐列表结束 */
+/* 套餐购买详情 */
+.buy-box{
+	padding:0 15px 10px;
+	background: #ffffff;
+	.remind-text{
+		font-size: 12px;
+		color: #ff4300;
+	}
+	
+}
+.payment-box{
+	background: #ffffff;
+	
+	.u-form-item--left .u-icon{
+		font-size: 32px;
+		margin-top: 8px;
+	}
+	.uicon-weixin-circle-fill{
+		color: #36c956;
+	}
+	.uicon-zhifubao-circle-fill{
+		color: #06b4fd;
+	}
+	.u-form-item{
+		padding:5px 10px!important;
+	}
+}
+.pay-box{
+	background: #ffffff;
+	padding:0 0 15px;
+	.u-form-item--left .u-icon{
+		font-size: 32px;
+		margin-top: 8px;
+		color: #2e2e2e;
+	}
+	.u-btn{
+		padding: 0px 20px!important;
+	}
+	.u-form-item{
+		padding:5px 10px!important;
+	}
+	.uni-input-input{
+		font-size: 32px;
+		color: #2e2e2e;
+	}
+}
+.bottom-box{
+	position: fixed;
+	z-index: 99;
+	background: #ffffff;
+	height: 49px;
+	bottom:0;
+	width: 100%;
+	border-top: 1px solid #ededed;
+	.number-text{
+		color: #333333;
+		font-size: 20rpx;
+		em{
+			font-style: normal;
+			color: #ff4400;
+			font-size: 36rpx;
+		}
+	}
+}
+/* 套餐购买详情 */
+.amount-top-box{
+	padding: 10px 15px;
+	background: #ffffff;
+	.amount-text{
+		color: #333333;
+		font-size: 30rpx;
+		
+	}
+	.number-text{
+		color: #333333;
+		font-size: 60rpx;
+		padding-top: 10rpx;
+		float: left;
+		em{
+			font-style: normal;
+			color: #333333;
+			font-size: 20rpx;
+		}
+	}
+	.u-size-mini{
+		margin: 16px 0 0 10px;
+	}
+}
+.text-spacing{
+	color: #333333;
+	font-size: 30rpx;
+	padding: 10rpx 15px;
+}
+.u-cell-title{
+	padding: 10px 16px;
+	color: #333333;
+}
+.pay-right-box{
+	text-align: right;
+	height: 48px;
+	.number{
+		font-size: 40rpx;
+		color: #333333;
+		padding: 5px 0;
+	}
+	.up{
+		color: #ff7000;
+	}
+	.other{
+		font-size: 24rpx;
+		color: #999999;
+		padding: 3px 0 0;
+	}
+}
+/* 联系客服开始 */
+.service-banner{
+	padding: 15px 15px 0;
+	
+	uni-image{
+		height: 155px;
+		width: 100%;
+		border-radius: 8px;
+	}
+}
+
+.service-box{
+	padding:0 15px;
+	
+	.u-cell__left-icon-wrap .u-icon__icon{
+		font-size: 32px!important;
+	}
+	.u-cell_title{
+		border-left: 1px solid #d7d4d4;
+		padding-left: 10px;
+	}
+	.uicon-phone-fill{
+		color: #f3ae45;
+	}
+	.uicon-weixin-circle-fill{
+		color: #36c956;
+	}
+	.uicon-qq-circle-fill{
+		color: #23a0f0;
+	}
+	.u-cell{
+		padding:10px!important;
+		border-radius: 8px;
+		border: 1px solid #e4e7ed!important;
+		box-shadow: 0px 0px 10px rgba(0,0,0,0.15);
+		margin: 0 0 15px;
+	}
+	.u-border-bottom:after {
+	    border-bottom-width: 0px;
+	}
+	.u-border-top:after {
+	    border-top-width: 0px;
+	}
+}
+/* 联系客服结束 */
+/* 个人中心开始 */
+.user-banner{
+	padding: 0px 15px;
+	
+	uni-image{
+		height: 100px;
+		width: 100%;
+		border-radius: 8px;
+	}
+}
+.personal-list .u-cell{
+	padding: 12px 16px;
+}
+.personal-list .u-cell-box .u-cell_title{
+	color: #202328;
+}
+.personal-list .u-cell .u-iconfont{
+	font-size: 20px!important;
+}
+
+/* 个人中心结束 */
+.u-cell-title{
+	padding: 10px 16px!important;
+	color: #333333!important;
+}
+/* 全部订单列表开始 */
+.order-list-item{
+	.u-card__head{
+		padding: 8px 15px!important;
+	}
+	.u-body-item-title{
+		width: 100%;
+	}
+	.u-card__head--left__title{
+		color: #9d9d9d!important;
+		font-size: 12px!important;
+	}
+	.u-card__head--right .u-card__head__title__text{
+		color: #ff7001!important;
+		font-size: 16px!important;
+	}
+	.u-card__foot{
+		padding: 8px 15px!important;
+		font-size: 12px!important;
+	}
+	.order-list-foot{
+		height: 25px;
+		line-height: 25px;
+	}
+	.order-list-foot-btn{
+		float: right;
+		.u-btn{
+			margin: 0 2px;
+			border: 1px solid #e6e6e6!important;
+		}
+	}
+}
+/* 全部订单列表结束 */
+/* 订单详情开始 */
+.pages-sys-application-order-detailed{
+	.title-text{
+		color: #333333;
+		font-size: 15px;
+		padding:10px 15px;
+		background: #ffffff;
+	}
+	.detailed-information{
+		background: #ffffff;
+		font-size: 12px;
+		color: #1f1f1f;
+		.u-col{
+			padding: 8px 15px!important;
+		}
+	}
+}
+
+/* 订单详情结束 */
+/* 代理商样式开始 */
+.agent-box{
+	padding:10px;
+	.u-col{
+		padding:0 3px!important;
+	}
+	.u-card{
+		margin:0px!important;
+		.u-card__head{
+			padding: 8px 10px 0!important;
+			.iconfont{
+				float: left;
+				margin-right: 5px;
+			}
+		}
+		.u-card__body{
+			padding:27px 5px!important;
+			.agent-text{
+				color: #ff7001;
+				font-size: 16px;
+				font-weight: 700;
+			}
+			.agent-other-text{
+				color: #999999;
+				font-size: 12px;
+			}
+		}
+	}
+	.agent-box-right{
+		.u-card__body {
+		    padding: 5px 10px!important;
+			span{
+				margin: 0 5px;
+				color: #999999;
+				font-size: 12px;
+				em{
+					font-style: normal;
+					color: #ff7001;
+					font-size: 14px;
+					margin: 0 5px;
+					font-weight: 700;
+				}
+			}
+		}
+	}
+	.u-border-bottom:after {
+	    border-bottom-width: 0px;
+	}
+}
+/* 代理商样式结束 */
+/* 我的利益样式开始 */
+.earning-list-item{
+	margin: 0!important;
+	.u-card__head{
+		padding: 8px 15px!important;
+	}
+	.u-card__body{
+		padding: 10px 15px 0!important;
+	}
+	.u-body-item-title{
+		width: 100%;
+		font-size: 12px;
+		color: #999;
+		.type-name{
+			font-size: 16px;
+			font-weight: 500;
+			color: #000;
+			line-height: 2;
+		}
+		.type-money{
+			font-size: 18px;
+			font-weight: 500;
+			color: #ff7001;
+			line-height: 2;
+		}
+	}
+	.u-card__head--left__title{
+		color: #000000!important;
+		font-size: 16px!important;
+	}
+	.u-card__head--right .u-card__head__title__text{
+		color: #999999!important;
+		font-size: 12px!important;
+	}
+	.u-card__foot{
+		padding: 5px 15px 10px!important;
+		font-size: 12px!important;
+		
+	}
+	.earning-list-foot{
+		line-height: 20px;
+	}
+	.u-card__foot:after {
+	    border-top-width: 0px!important;
+	}
+	.earning-headleft{
+		font-size: 16px;
+		color: #000;
+		line-height: 28px;
+		.iconfont{
+			margin: 5px 5px 0 0;
+			float: left;
+		}
+	}
+	.earning-headright{
+		font-size: 12px;
+		color: #999;
+	}
+}
+/* 我的利益样式结束 */
+/* 地址管理样式开始 */
+.address-item{
+	margin: 0!important;
+	.u-card__head{
+		padding: 10px 15px 0!important;
+		.u-flex{
+			justify-content: start;
+		}
+	}
+	.u-card__head:after {
+	    border-bottom-width: 0px!important;
+	}
+	.u-card__body{
+		color: #999999!important;
+	}
+	.u-card__foot{
+		padding: 10px 15px!important;
+	}
+	.address-foot{
+		justify-content: space-between;
+		.u-radio{
+			.u-radio__label{
+			font-size: 12px!important;
+			}
+		}
+		.u-icon{
+			margin: 0 5px;
+		}
+		.u-icon__label{
+			font-size: 12px!important;
+		}
+	}
+}
+.pages-sys-user-edit-address .u-form-item{
+	padding:10px 15px!important;
+}
+/* 地址管理样式结束 */
+.sign-out{
+	margin:0;
+	border-radius: 0;
+	border: 0!important;
+	color: #ff4141!important;
+	background: #fff;
+}
+/* 批量充值样式 */
+.pages-sys-user-batch-recharge .u-form-item{
+	padding:10px 15px!important;
+}
+.batch-recharge-box{
+	background: #ffffff;
+}
+.batch-recharge-title{
+	padding: 10px 15px;
+	font-size: 30rpx;
+	background: #ffffff;
+	color: #333333;
+	em{
+		font-style: normal;
+		color: #ff4300;	
+	}
+}
+.result-text{
+	em{
+		font-style: normal;
+		color: #ff4300;	
+	}
+}
+.card-list-item{
+	background: #ffffff;
+}
+.card-list-item .u-form-item{
+	padding: 5px 15px!important;
+}
+.remind-text {
+    font-size: 12px;
+    color: #ff4300;
+}
+/* 提现样式记录 */
+
+.pages-sys-application-cash-out-record .u-input__input{
+	min-height: 25px!important;
+}
+/* 消息列表页面样式 */
+.msg-list-item{
+	.u-card__head--left__thumb{
+		width: 22px!important;
+		height:22px!important;
+	}
+}
+/* 消息列表页面样式 */
+.u-divider{
+	background: transparent!important;
+	padding: 10px 0!important;
+}
+.pages-sys-book-index{
+	.u-index-bar__sidebar{
+		top:55%!important;
+	}
+}
+.pages-sys-book-personal-details{
+	.u-icon{
+		color: #999999;
+	}
+	.u-cell_title{
+		color: #999999;
+	}
+	.u-cell__value{
+		text-align: left!important;
+		color: #000000!important;
+		font-size: 30rpx!important;
+	}
+	.connect{
+		.u-cell__value{
+			color: #5b95ff!important;
+		}
+	}
+}
+.apply-form-field{
+	background: #ffffff;
+	.u-form-item{
+		padding:5px 10px!important;
+	}
+	.input-placeholder{
+		text-align: right!important;
+	}
+	.uni-input-input{
+		text-align: right!important;
+	}
+	.form-field-select{
+		.u-iconfont{
+			font-size: 0!important;
+		}
+	}
+	.add-user{
+		color: #bfbfbf;
+		font-size: 30px;
+	}
+	
+	.apply-name{
+		color: #333333;
+		line-height: 20px;
+		span{
+			color: #999999;
+			display: block;
+			
+		}
+	}
+	.apply-link{
+		.u-link{
+			color: #5ab149!important;
+			padding: 0 5px;
+		}
+	}
+	.u-close--top-right{
+		top:5px!important;
+	}
+	.popup-title{
+		color: #333333;
+		padding:5px 10px;
+		font-size: 30rpx;
+	}
+	.u-cell{
+		padding:8px 12px!important;
+	}
+}
+/* 申请详情页面 */
+.datails-examine{
+	.u-cell{
+		padding: 15rpx 40rpx!important;
+	}
+}
+.pages-sys-msg-details{
+	.u-time-axis {
+		position: relative;
+		background: #fff;
+		padding: 15px 10px 10px 70px!important;
+	}
+	.u-time-axis-node{
+		left: -20px!important;
+	}
+	.u-time-axis::before {
+		left: 45px!important;
+		top:15px!important;
+		border-left: 2px solid #ddd!important;
+	}
+	.u-time-axis-item{
+		min-height: 40px;
+	}
+}
+.custom-header{
+ .u-title{
+	 font-size: 16px!important;
+	 color: #000!important;
+	 font-weight:700!important;
+ }
+ }

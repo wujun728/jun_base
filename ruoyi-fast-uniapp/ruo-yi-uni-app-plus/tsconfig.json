@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "forceConsistentCasingInFileNames":true,
+        "outDir": "dist/compiled",
+        "allowJs": true,
+        "lib": ["es2017"],
+        "baseUrl": "./",
+        "paths": {
+            "@": [
+                "src"
+            ],
+            "@/*": [
+                "src/*"
+            ],
+            "vue": ["node_modules/vue"]
+        },
+    }
+}

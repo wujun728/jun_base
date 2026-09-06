@@ -1,0 +1,104 @@
+.assessment {
+	::v-deep .uni-list {
+		background-color: $uni-default-bg;
+
+		.uni-list--border {
+			left: auto;
+			top: auto;
+		}
+
+		.uni-list-item {
+			margin-bottom: 20rpx;
+			border-radius: 8rpx;
+
+			.uni-list-item__container {
+				padding: 36rpx 24rpx;
+			}
+		}
+	}
+
+	.item-list {
+		width: 100%;
+		position: relative;
+
+		.item-list-top {
+			.right-title {
+				font-size: 32rpx;
+				font-weight: 600;
+				color: $uni-text-color;
+			}
+
+			::v-deep .uni-tag {
+				font-size: 24rpx;
+				padding: 0 2rpx;
+				border-radius: 4rpx;
+				font-weight: 400;
+			}
+		}
+
+		.item-list-content {
+			padding-top: 24rpx;
+			font-size: 28rpx;
+			color: $nui-text-color-four;
+
+			.items {
+				margin-bottom: 12rpx;
+
+				.default-color {
+					color: $uni-color-primary;
+				}
+
+				.image {
+					width: 50rpx;
+					height: 50rpx;
+					border-radius: 50%;
+				}
+
+				uni-text {
+					padding-left: 40rpx;
+					color: $uni-text-color;
+				}
+
+				.items-name {
+					padding-left: 10rpx;
+				}
+
+				&:last-of-type {
+					margin-bottom: 0;
+				}
+			}
+
+			uni-button {
+				width: 100%;
+				height: 74rpx;
+				line-height: 74rpx;
+				font-size: 30rpx;
+				background-color: #F0F1F5;
+				margin-right: 32rpx;
+				
+				&:last-of-type {
+					margin-right: 0;
+				}
+				
+				&::after {
+					border-radius: 8rpx;
+					border: none;
+				}
+			}
+		}
+		
+		.item-list-button {
+			padding-top: 30rpx;
+			display: flex;
+			justify-content: space-between;
+		}
+		
+		.item-list-status {
+			position: absolute;
+			top: -36rpx;
+			right: -24rpx;
+			width: 160rpx;
+			height: 188rpx;
+		}
+	}
+}

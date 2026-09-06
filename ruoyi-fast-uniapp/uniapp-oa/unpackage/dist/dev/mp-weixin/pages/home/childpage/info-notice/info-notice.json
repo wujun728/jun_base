@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "信息通知",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "uni-group": "/uni_modules/uni-group/components/uni-group/uni-group",
+    "uni-list": "/uni_modules/uni-list/components/uni-list/uni-list",
+    "uni-list-chat": "/uni_modules/uni-list/components/uni-list-chat/uni-list-chat",
+    "uni-list-item": "/uni_modules/uni-list/components/uni-list-item/uni-list-item"
+  }
+}

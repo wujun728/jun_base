@@ -1,0 +1,183 @@
+{
+	"pages": [{
+		"path": "pages/index/index",
+		"style": {
+			"navigationBarTitleText": ""
+		}
+	}, {
+		"path": "pages/home/home",
+		"style": {
+			"navigationBarTitleText": "",
+			"enablePullDownRefresh": false
+		}
+
+	}, {
+		"path": "pages/apply/apply",
+		"style": {
+			"navigationBarTitleText": "",
+			"enablePullDownRefresh": false
+		}
+
+	}, {
+		"path": "pages/approval/approval",
+		"style": {
+			"navigationBarTitleText": "",
+			"enablePullDownRefresh": false
+		}
+
+	}, {
+		"path": "pages/aboutme/aboutme",
+		"style": {
+			"navigationBarTitleText": "",
+			"enablePullDownRefresh": false
+		}
+
+	}   ,{
+            "path" : "pages/home/childpage/info-notice/info-notice",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "信息通知",
+                "enablePullDownRefresh": true
+            }
+            
+        },{
+		        "path" : "pages/home/childpage/info-notice/notice-detail",
+		        "style" :                                                                                    
+		        {
+		            "navigationBarTitleText": "通知详情",
+		            "enablePullDownRefresh": false
+		        }
+		        
+		    }
+        ,{
+            "path" : "pages/home/childpage/address-book/address-book",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "通讯录",
+                "enablePullDownRefresh": false
+            }
+            
+        },{
+            "path" : "pages/home/childpage/address-book/address-detail",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/home/childpage/organition-structure/organition-structure",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "组织架构",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+		,{
+		    "path" : "pages/home/childpage/shared-files/shared-files",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "共享文件",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		}
+        ,{
+            "path" : "pages/home/childpage/attendance-clock/attendance-clock",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "考勤打卡",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/home/childpage/mail-box/mail-box",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "邮箱",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/apply/childpage/ask-leave/ask-leave",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "请假",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/apply/childpage/extra-work/extra-work",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "加班",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/apply/childpage/go-out/go-out",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "外出",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8",
+		"app-plus": {
+			"background": "#efeff4"
+		}
+	},
+	"tabBar": {
+		"borderStyle": "black", //边框颜色
+		"backgroundColor": "#F7F7F7", //背景颜色
+		"color": "#000000", //默认颜色
+		"selectedColor": "#007AFF", //选中的颜色
+		"list": [{
+				"iconPath": "static/home.png",
+				"selectedIconPath": "static/home_active.png",
+				"text": "首页",
+				"pagePath": "pages/home/home"
+			},
+			{
+				"iconPath": "static/apply.png",
+				"selectedIconPath": "static/apply_active.png",
+				"text": "申请",
+				"pagePath": "pages/apply/apply"
+			},
+			{
+				"iconPath": "static/approval.png",
+				"selectedIconPath": "./static/approval_active.png",
+				"text": "审批",
+				"pagePath": "pages/approval/approval"
+			},
+			{
+				"iconPath": "static/aboutme.png",
+				"selectedIconPath": "static/aboutme_active.png",
+				"text": "我的",
+				"pagePath": "pages/aboutme/aboutme"
+			}
+		]
+	},
+	"condition" : { //模式配置，仅开发期间生效
+		"current": 0, //当前激活的模式(list 的索引项)
+		"list": [
+			{
+				"name": "", //模式名称
+				"path": "", //启动页面，必选
+				"query": "" //启动参数，在页面的onLoad函数里面得到
+			}
+		]
+	}
+}

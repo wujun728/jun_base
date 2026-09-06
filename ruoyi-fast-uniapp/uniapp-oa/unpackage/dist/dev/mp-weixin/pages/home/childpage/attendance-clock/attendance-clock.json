@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "考勤打卡",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "uni-segmented-control": "/uni_modules/uni-segmented-control/components/uni-segmented-control/uni-segmented-control",
+    "uni-calendar": "/uni_modules/uni-calendar/components/uni-calendar/uni-calendar"
+  }
+}

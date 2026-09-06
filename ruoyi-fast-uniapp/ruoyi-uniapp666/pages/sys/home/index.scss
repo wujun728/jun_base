@@ -1,0 +1,35 @@
+/*!
+ * Copyright (c) 2013-Now http://aidex.vip All rights reserved.
+ * @author aidex
+ * @version 2020-9-1
+ */
+
+.toolbar {
+	padding-top: 5px;
+	background-color: #fff;
+}
+.wrap .box .item{
+	margin: 0 0 0px;
+	border-radius: 0;
+	.title {
+		padding-left:0;
+		.text {
+			font-size: 30rpx;
+			font-weight:500;
+			margin: 0;
+			color: #202328;
+		}
+	}
+}
+.grid {
+	
+	.grid-icon {
+		color: #666;
+	}
+	
+	.grid-text {
+		font-size: 24rpx;
+		padding: 15rpx;
+		color: #202328;
+	}
+}

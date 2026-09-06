@@ -1,0 +1,74 @@
+{
+	"categories": [
+		"1月11",
+		"1月12",
+		"1月11",
+		"1月14",
+		"1月15"
+	],
+	"series": [{
+			"name": "新增会员数",
+			"data": [{
+					"value": 5,
+					"color": "#24ABFD"
+				},
+				{
+					"value": -3,
+					"color": "#24ABFD"
+				},
+				{
+					"value": 3.5,
+					"color": "#24ABFD"
+				},
+				{
+					"value": 10,
+					"color": "#24ABFD"
+				},
+				{
+					"value": 2.8,
+					"color": "#24ABFD"
+				}
+			],
+			"type": "column",
+			"color": "#24ABFD",
+			"unit": "",
+			"textNoShow": true
+		},
+		{
+			"name": "当日达成率",
+			"data": [
+				101,
+				91,
+				97,
+				131,
+				109
+			],
+			"type": "line",
+			"addPoint": true,
+			"color": "#DF297D",
+			"unit": "%",
+			"index": 1
+		},
+		{
+			"name": "日均达成率",
+			"data": [
+				102,
+				92,
+				96,
+				115,
+				105
+			],
+			"type": "line",
+			"color": "#24ABFD",
+			"unit": "%",
+			"index": 1
+		}
+	],
+	"yAxis": [{
+		"max": 20,
+		"min": 0
+	}, {
+		"max": 200,
+		"min": 0
+	}]
+}

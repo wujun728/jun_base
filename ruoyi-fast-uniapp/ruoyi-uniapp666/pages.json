@@ -1,0 +1,255 @@
+{
+	"easycom": {
+		"^u-(.*)": "@/uview-ui/components/u-$1/u-$1.vue"
+	},
+	"pages": [
+		{
+			"path": "pages/sys/login/index",
+			"style": {
+				"navigationBarTitleText": "登录"
+			}
+		},
+		{
+			"path": "pages/sys/login/forget",
+			"style": {
+				"navigationBarTitleText": "忘记密码"
+			}
+		},
+		{
+			"path": "pages/sys/login/reg",
+			"style": {
+				"navigationBarTitleText": "注册账号"
+			}
+		},
+		{
+			"path": "pages/sys/msg/index",
+			"style": {
+				"navigationBarTitleText": "消息"
+			}
+		},
+		{
+			"path": "pages/sys/msg/form",
+			"style": {
+				"navigationBarTitleText": "查看详情"
+			}
+		},
+		{
+			"path": "pages/sys/home/index",
+			"style": {
+				"navigationBarTitleText": "工作台",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+				
+			}
+		},
+		{
+			"path": "pages/sys/user/index",
+			"style": {
+				"navigationBarTitleText": "我的",
+				"navigationBarBackgroundColor":"#5b95ff",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/sys/user/info",
+			"style": {
+				"navigationBarTitleText": "个人信息"
+			}
+		},
+		{
+			"path": "uview-ui/components/u-avatar-cropper/u-avatar-cropper",
+			"style": {
+				"navigationBarTitleText": "头像裁剪",
+				"navigationBarBackgroundColor": "#000000"
+			}
+		},
+		{
+			"path": "pages/sys/user/help",
+			"style": {
+				"navigationBarTitleText": "帮助中心"
+			}
+		},
+		{
+			"path": "pages/sys/user/pwd",
+			"style": {
+				"navigationBarTitleText": "修改密码"
+			}
+		},
+		{
+			"path": "pages/sys/user/setting",
+			"style": {
+				"navigationBarTitleText": "系统设置"
+			}
+		},
+		{
+			"path": "pages/sys/user/comment",
+			"style": {
+				"navigationBarTitleText": "意见反馈"
+			}
+		},
+		{
+			"path": "pages/sys/user/about",
+			"style": {
+				"navigationBarTitleText": "关于我们"
+			}
+		},
+		{
+			"path": "pages/testData/form",
+			"style": {
+				"navigationBarTitleText": "新增编辑"
+			}
+		},
+		{
+			"path": "pages/testData/index",
+			"style": {
+				"navigationBarTitleText": "增删改查"
+			}
+		},
+		{
+			"path": "pages/common/webview",
+			"style": {
+				"navigationBarTitleText": "浏览网页"
+			}
+		},
+		{
+			"path": "pages/sys/login/code",
+			"style": {
+				"navigationBarTitleText": "验证码"
+			}
+		},
+		{
+			"path": "pages/sys/login/registerCode",
+			"style": {
+				"navigationBarTitleText": "验证码"
+			}
+		},
+		{
+			"path": "pages/sys/user/service",
+			"style": {
+				"navigationBarTitleText": "联系客服"
+			}
+		},
+		{
+			"path": "pages/sys/user/problem",
+			"style": {
+				"navigationBarTitleText": "常见问题"
+			}
+		},
+		{
+			"path": "pages/sys/user/currency",
+			"style": {
+				"navigationBarTitleText": "通用"
+			}
+		},
+		{
+			"path": "pages/sys/user/clear-cache",
+			"style": {
+				"navigationBarTitleText": "清除缓存"
+			}
+		},
+		{
+			"path": "pages/sys/workbench/index",
+			"style": {
+				"navigationBarTitleText": "工作台"
+			}
+		},
+		{
+			"path": "pages/sys/book/index",
+			"style": {
+				"navigationBarTitleText": "通讯录"
+			}
+		},
+		{
+			"path": "pages/sys/book/personal-details",
+			"style": {
+				"navigationBarTitleText": "详情"
+			}
+		},
+		{
+			"path": "pages/sys/msg/list-item",
+			"style": {
+				"navigationBarTitleText": "列表"
+			}
+		},
+		{
+			"path": "pages/sys/workbench/add-form",
+			"style": {
+				"navigationBarTitleText": "请假申请"
+			}
+		},
+		{
+			"path": "pages/sys/msg/examine-item",
+			"style": {
+				"navigationBarTitleText": "网上报销"
+			}
+		},
+		{
+			"path": "pages/sys/msg/details",
+			"style": {
+				"navigationBarTitleText": "详情"
+			}
+		},
+		{
+			"path": "pages/sys/user/modify",
+			"style": {
+				"navigationBarTitleText": "修改"
+			}
+		},
+		{
+			"path": "pages/sys/workbench/install",
+			"style": {
+				"navigationBarTitleText": "常用设置",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		}
+		
+	],
+	"subPackages": [
+		
+	],
+	"preloadRule": {
+		
+	},
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "Aidex",
+		"navigationBarBackgroundColor": "#ffffff"
+	},
+	"tabBar": {
+		"color": "#333333",
+		"selectedColor": "#4094ff",
+		"backgroundColor": "#ffffff",
+		"borderStyle": "white",
+		"list": [
+			 {
+				"pagePath": "pages/sys/msg/index",
+				"iconPath": "static/aidex/tabbar/msg_1.png",
+				"selectedIconPath": "static/aidex/tabbar/msg_2.png",
+				"text": "消息"
+			},
+			// {
+			// 	"pagePath": "pages/sys/home/index",
+			// 	"iconPath": "static/aidex/tabbar/home_1.png",
+			// 	"selectedIconPath": "static/aidex/tabbar/home_2.png",
+			// 	"text": "首页"
+			// },
+			{
+				"pagePath": "pages/sys/workbench/index",
+				"iconPath": "static/aidex/tabbar/apply_1.png",
+				"selectedIconPath": "static/aidex/tabbar/apply_2.png",
+				"text": "工作台"
+			},
+			{
+				"pagePath": "pages/sys/book/index",
+				"iconPath": "static/aidex/tabbar/book_1.png",
+				"selectedIconPath": "static/aidex/tabbar/book_2.png",
+				"text": "通讯录"
+			},
+			{
+				"pagePath": "pages/sys/user/index",
+				"iconPath": "static/aidex/tabbar/my_1.png",
+				"selectedIconPath": "static/aidex/tabbar/my_2.png",
+				"text": "我的"
+			}
+		]
+	}
+}

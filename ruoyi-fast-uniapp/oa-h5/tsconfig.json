@@ -1,0 +1,39 @@
+{
+	"compilerOptions": {
+		"incremental": true, // TS编译器在第一次编译之后会生成一个存储编译信息的文件，第二次编译会在第一次的基础上进行增量编译，可以提高编译的速度
+		"target": "ESNext", // 指定ECMAScript目标版本 "ES3"（默认）， "ES5"， "ES6"/ "ES2015"， "ES2016"， "ES2017"或 "ESNext"
+		"module": "ESNext", // 设置程序的模块系统， "None"， "CommonJS"， "AMD"， "System"， "UMD"， "ES6"或 "ES2015", "ESNext", "ES2020"
+		"strict": false, // 启用所有严格类型检查选项。启用 --strict相当于启用 --noImplicitAny, --noImplicitThis, --alwaysStrict， --strictNullChecks和 --strictFunctionTypes和--strictPropertyInitialization
+		"alwaysStrict": false, //alwaysStrict 开启严格模式true,默认是不开启false
+		"noImplicitAny": true,
+		"baseUrl": "./",
+		"jsx": "preserve",
+		"moduleResolution": "node", // 模块解析策略，ts默认用node的解析策略，即相对的方式导入
+		"esModuleInterop": true, // 允许module.exports=xxx 导出，由import from 导入.因为很多老的js库使用了commonjs的导出方式，并且没有导出default属性
+		"sourceMap": false, // 生成目标文件的sourceMap文件
+		"skipLibCheck": true, //忽略所有的声明文件（ *.d.ts）的类型检查
+		"importHelpers": false, // 通过tslib引入helper函数，文件必须是模块（比如 __extends， __rest等）
+		"allowSyntheticDefaultImports": true, //允许从没有设置默认导出的模块中默认导入。这并不影响代码的输出，仅为了类型检查。默认值：module === "system" 或设置了 --esModuleInterop 且 module 不为 es2015 / esnext
+		"useDefineForClassFields": true,
+		"resolveJsonModule": true,
+		"diagnostics": true, // 显示诊断信息
+		"noUnusedLocals": true, // 若有未使用的局部变量则抛错
+		"noUnusedParameters": true, // 若有未使用的参数则抛错
+		"lib": [ // //TS需要引用的库，即声明文件，es5 默认引用dom、es5、scripthost,如需要使用es的高级版本特性，通常都需要配置，如es8的数组新特性需要引入"ES2019.Array",
+			"esnext",
+			"dom"
+		],
+		"types": [
+			"@dcloudio/types"
+		],
+		"paths": {
+			"@/*": [ "./*" ]
+		}
+	},
+	"exclude": [
+		"node_modules",
+		"unpackage",
+		"./**/*.nvue"
+	],
+	"include": [ "./**/*.ts", "./**/*.d.ts", "./**/*.tsx", "./**/*.vue", "./components.d.ts" ]
+}

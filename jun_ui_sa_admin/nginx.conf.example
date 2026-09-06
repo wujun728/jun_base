@@ -1,0 +1,31 @@
+# RuoYi jun_ui_sa_admin Nginx 配置参考
+# 将此内容放在 nginx.conf 的 http → server 块内
+
+server {
+    listen       80;
+    server_name  localhost;
+
+    # 前端静态文件 - 指向 jun_ui_sa_admin 目录
+    location / {
+        root   /path/to/jun_ui_sa_admin;
+        index  index.html login.html;
+        try_files $uri $uri/ /index.html;
+    }
+
+    # 后端 API 反向代理
+    location /prod-api/ {
+        proxy_pass http://localhost:8080/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # WebSocket 支持（如需要）
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+
+        # 文件上传大小限制
+        client_max_body_size 50m;
+    }
+}

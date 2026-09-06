@@ -1,0 +1,38 @@
+{
+    "series": [
+        {
+            "data": [
+                {
+                    "name": "激活放松",
+                    "value": 5,
+                    "color": "#FDEC9F"
+                },
+                {
+                    "name": "动态热身",
+                    "value": 13,
+                    "color": "#FBCD2B"
+                },
+                {
+                    "name": "糖分消耗",
+                    "value": 8,
+                    "color": "#FC9E83"
+                },
+                {
+                    "name": "脂肪燃烧",
+                    "value": 24,
+                    "color": "#EF6DCF"
+                },
+                {
+                    "name": "心肺训练",
+                    "value": 7,
+                    "color": "#BC38E5"
+                },
+                {
+                    "name": "极限锻炼",
+                    "value": 16,
+                    "color": "#8908FA"
+                }
+            ]
+        }
+    ]
+}

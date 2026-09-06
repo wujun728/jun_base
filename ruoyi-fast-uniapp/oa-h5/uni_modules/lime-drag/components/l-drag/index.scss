@@ -1,0 +1,87 @@
+$drag-handle-size: var(--l-drag-handle-size, 50rpx);
+$drag-delete-size: var(--l-drag-delete-size, 32rpx);
+.l-drag {
+	min-height: 100rpx;
+	overflow: hidden;
+	/* #ifdef APP-NVUE */
+	flex: 1;
+	/*  #endif */
+	/* #ifndef APP-NVUE */
+	width: 100%;
+	/*  #endif */
+}
+.l-drag__inner {
+	/* #ifdef APP-NVUE */
+	flex: 1;
+	/*  #endif */
+	/* #ifndef APP-NVUE */
+	width: 100%;
+	/*  #endif */
+	min-height: 100rpx;
+}
+.l-drag__view {
+	// touch-action: none;
+	// user-select: none;
+	// -webkit-user-select: auto; 
+	z-index: 2;
+	transition: opacity 300ms ease; 
+	.mask {
+		position: absolute;
+		inset: 0;
+		background-color: transparent;
+		z-index: 9;
+	}
+	/* #ifndef APP-NVUE */
+	> view {
+		&:last-child {
+			width: 100%;
+			height: 100%;
+		}
+	}
+	box-sizing: border-box;
+	/*  #endif */
+	
+}
+.l-drag-enter {
+	opacity: 0;
+}
+.l-drag__ghost {
+	/* #ifndef APP-NVUE */
+	> view {
+		&:last-child {
+			width: 100%;
+			height: 100%;
+		}
+	}
+	box-sizing: border-box;
+	/*  #endif */
+}
+.l-is-active {
+	z-index: 3;
+}
+.l-is-hidden {
+	opacity: 0;
+}
+.l-drag__delete {
+	position: absolute;
+	z-index: 10;
+	width: $drag-delete-size; 
+	height: $drag-delete-size;
+}
+.l-drag__handle {
+	position: absolute;
+	z-index: 10;
+	width: $drag-handle-size;
+	height: $drag-handle-size;
+}
+/* #ifndef APP-NVUE */
+.l-drag__delete::before,.l-drag__handle::before {
+	content: '';
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+	z-index: 10;
+}
+/*  #endif */

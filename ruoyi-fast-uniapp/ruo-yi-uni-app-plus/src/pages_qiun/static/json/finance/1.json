@@ -1,0 +1,68 @@
+{
+	"expend":{
+		"categories": [
+			"1月",
+			"2月",
+			"2月",
+			"4月",
+			"5月"
+		],
+		"series": [
+			{
+				"name": "支出情况",
+				"data": [1201,2501.5,985,1760,2013.85],
+				"type": "line",
+				"style": "curve",
+				"color": "#4ECDB6",
+				"unit":""
+			}
+		],
+		"yAxis":[
+			{"calibration":true,"position":"left","title":"单位/元","titleFontSize":12,"unit":"","tofix":0,"min":0,"disableGrid":true}
+		]
+	},
+	"income":{
+		"categories": [
+			"1月",
+			"2月",
+			"2月",
+			"4月",
+			"5月"
+		],
+		"series": [
+			{
+				"name": "收入情况",
+				"data": [1601,1840.5,1900,1760,1500.85],
+				"type": "line",
+				"style": "curve",
+				"color": "#4ECDB6",
+				"unit":""
+			}
+		],
+		"yAxis":[
+			{"calibration":true,"position":"left","title":"单位/元","titleFontSize":12,"unit":"","tofix":0,"min":0,"disableGrid":true}
+		]
+	},
+	"remaining":{
+		"categories": [
+			"1月",
+			"2月",
+			"2月",
+			"4月",
+			"5月"
+		],
+		"series": [
+			{
+				"name": "结余情况",
+				"data": [815,712.5,378,450,600.85],
+				"type": "line",
+				"style": "curve",
+				"color": "#4ECDB6",
+				"unit":""
+			}
+		],
+		"yAxis":[
+			{"calibration":true,"position":"left","title":"单位/元","titleFontSize":12,"unit":"","tofix":0,"min":0,"disableGrid":true}
+		]
+	}
+}

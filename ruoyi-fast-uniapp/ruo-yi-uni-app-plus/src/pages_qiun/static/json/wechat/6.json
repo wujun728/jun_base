@@ -1,0 +1,57 @@
+{
+	"headers":[
+		{
+			"label": "活动名称",
+			"key": "col1"
+		}, {
+			"label": "员工总任务",
+			"key": "col2"
+		}, {
+			"label": "员工完成数",
+			"key": "col3"
+		}, {
+			"label": "完成率",
+			"key": "col4"
+		}
+	],
+	"contents":[
+		{
+			"col1": "周末秒杀",
+			"col2": "450",
+			"col3": "420",
+			"col4": "99%"
+		}, {
+			"col1": "摇号活动",
+			"col2": "430",
+			"col3": "1390",
+			"col4": "90%"
+		}, {
+			"col1": "早间问候",
+			"col2": "450",
+			"col3": "430",
+			"col4": "95%"
+		}, {
+			"col1": "汇总",
+			"col2": "1330",
+			"col3": "1240",
+			"col4": "93%"
+		}
+	],
+	"sortCol":[
+		{
+		"key": "col1",
+		"isNumber": false
+		}, {
+			"key": "col2",
+			"isNumber": true
+		},
+		{
+			"key": "col3",
+			"isNumber": true
+		},
+		{
+			"key": "col4",
+			"isNumber": true
+		}
+	]
+}

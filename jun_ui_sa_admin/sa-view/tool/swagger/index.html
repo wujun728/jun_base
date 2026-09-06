@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>系统接口</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../static/sa.css">
+    <link rel="stylesheet" href="../../static/ruoyi.css">
+    <style>
+        html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+        .vue-box { padding: 0; height: 100vh; margin: 0; }
+        .swagger-iframe { width: 100%; height: 100%; border: none; }
+    </style>
+</head>
+<body>
+    <div class="vue-box" style="display: none; padding: 0; height: 100vh;" :style="'display: block;'">
+        <iframe :src="swaggerUrl" frameborder="0" class="swagger-iframe"></iframe>
+    </div>
+
+    <script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui@2.13.0/lib/index.js"></script>
+    <script src="https://unpkg.com/jquery@3.4.1/dist/jquery.min.js"></script>
+    <script src="../../static/kj/layer/layer.js"></script>
+    <script src="../../static/sa.js"></script>
+    <script src="../../static/ruoyi-util.js"></script>
+    <script>
+        var app = new Vue({
+            el: '.vue-box',
+            data: {
+                swaggerUrl: '/prod-api/doc.html'
+            },
+            created: function() {}
+        });
+    </script>
+</body>
+</html>
