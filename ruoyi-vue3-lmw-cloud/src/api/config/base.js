@@ -1,0 +1,5 @@
+export const systemBaseUrl = '/system'
+export const monitorBaseUrl = '/monitor'
+export const tool = '/code'
+export const schedule = '/schedule'
+export const businessBase = '/business'

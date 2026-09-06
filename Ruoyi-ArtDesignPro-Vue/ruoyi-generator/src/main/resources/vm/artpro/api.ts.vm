@@ -1,0 +1,51 @@
+import request from '@/utils/http'
+import type { PageResult, Query } from '@/api/system/types'
+
+export interface ${ClassName} extends Record<string, any> {
+#foreach($column in $columns)
+#set($type = "string")
+#if($column.javaType == "Long" || $column.javaType == "Integer" || $column.javaType == "Double" || $column.javaType == "BigDecimal")
+#set($type = "number")
+#elseif($column.javaType == "Boolean")
+#set($type = "boolean")
+#end
+  /** ${column.columnComment} */
+  ${column.javaField}?: ${type}
+#end
+#if($table.sub)
+  ${subclassName}List?: ${subClassName}[]
+#end
+}
+
+export interface ${BusinessName}Query extends Query {
+#foreach($column in $columns)
+#if($column.query)
+  ${column.javaField}?: string | number
+#end
+#end
+}
+#if($table.sub)
+
+export interface ${subClassName} extends Record<string, any> {
+#foreach($column in $subTable.columns)
+  ${column.javaField}?: string | number | boolean
+#end
+}
+#end
+
+const root = '/${moduleName}/${businessName}'
+#if($table.tree)
+export const fetch${BusinessName}List = (params: ${BusinessName}Query = {}) =>
+  request.get<${ClassName}[]>({ url: root + '/list', params })
+#else
+export const fetch${BusinessName}List = (params: ${BusinessName}Query) =>
+  request.get<PageResult<${ClassName}>>({ url: root + '/list', params })
+#end
+export const fetch${BusinessName} = (${pkColumn.javaField}: number | string) =>
+  request.get<${ClassName}>({ url: root + '/' + ${pkColumn.javaField} })
+export const add${BusinessName} = (data: ${ClassName}) =>
+  request.post<void>({ url: root, data, showSuccessMessage: true })
+export const update${BusinessName} = (data: ${ClassName}) =>
+  request.put<void>({ url: root, data, showSuccessMessage: true })
+export const remove${BusinessName} = (${pkColumn.javaField}: number | string | Array<number | string>) =>
+  request.del<void>({ url: root + '/' + ${pkColumn.javaField}, showSuccessMessage: true })

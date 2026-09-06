@@ -1,0 +1,323 @@
+<template>
+  <div class="art-full-height">
+    <ArtSearchBar
+      v-show="showSearchBar"
+      v-model="filters"
+      :items="searchItems"
+      :show-expand="false"
+      @search="search"
+      @reset="resetSearch"
+    />
+    <ElCard class="art-table-card">
+      <ArtTableHeader
+        v-model:columns="columnChecks"
+        v-model:show-search-bar="showSearchBar"
+        :loading="loading"
+        @refresh="refreshData"
+      >
+        <template #left>
+          <ElSpace wrap>
+            <ElButton v-auth="'${permissionPrefix}:add'" type="primary" @click="openDialog()">
+              新增
+            </ElButton>
+            <ElButton v-auth="'${permissionPrefix}:export'" @click="handleExport">导出</ElButton>
+          </ElSpace>
+        </template>
+      </ArtTableHeader>
+      <ArtTable
+        :loading="loading"
+        :data="data"
+        :columns="columns"
+        :pagination="pagination"
+        @pagination:size-change="handleSizeChange"
+        @pagination:current-change="handleCurrentChange"
+      />
+    </ElCard>
+#if($table.formColNum == 3)
+#set($drawerSize = "920px")
+#else
+#set($drawerSize = "680px")
+#end
+    <ElDrawer v-model="visible" :title="drawerTitle" size="${drawerSize}">
+      <ArtForm
+        ref="formRef"
+        v-model="form"
+        :items="formItems"
+        :rules="rules"
+        :show-submit="false"
+        :show-reset="false"
+      />
+#if($table.sub)
+      <ElDivider content-position="left">${subTable.functionName}</ElDivider>
+      <ElButton type="primary" class="mb-3" @click="add${subClassName}">新增明细</ElButton>
+      <ElTable :data="${subclassName}List" border>
+#foreach($column in $subTable.columns)
+#if(!$column.pk && $column.javaField != $subTableFkclassName && $column.list)
+        <ElTableColumn label="${column.columnComment}" min-width="150">
+          <template #default="{ row }">
+#if($column.htmlType == "datetime")
+            <ElDatePicker v-model="row.${column.javaField}" type="date" value-format="YYYY-MM-DD" />
+#elseif($column.htmlType == "select" && "" != $column.dictType)
+            <ElSelect v-model="row.${column.javaField}">
+              <ElOption
+                v-for="item in dict.${column.dictType}"
+                :key="item.dictValue"
+                :label="item.dictLabel"
+                :value="item.dictValue"
+              />
+            </ElSelect>
+#else
+            <ElInput v-model="row.${column.javaField}" />
+#end
+          </template>
+        </ElTableColumn>
+#end
+#end
+        <ElTableColumn label="操作" width="80">
+          <template #default="{ #[[$]]#index }">
+            <ElButton type="danger" link @click="${subclassName}List.splice(#[[$]]#index, 1)">删除</ElButton>
+          </template>
+        </ElTableColumn>
+      </ElTable>
+#end
+      <template #footer>
+        <ElButton @click="visible = false">取消</ElButton>
+        <ElButton type="primary" :loading="saving" @click="submit">保存</ElButton>
+      </template>
+    </ElDrawer>
+#if($genView)
+    <${businessName}-view ref="viewRef" />
+#end
+  </div>
+</template>
+
+<script setup lang="ts">
+  import { h } from 'vue'
+  import { ElImage, ElMessageBox } from 'element-plus'
+  import ArtButtonTable from '@/components/core/forms/art-button-table/index.vue'
+  import DictTag from '@/components/business/dict-tag/index.vue'
+  import RuoYiUploadField from '@/components/business/ruoyi-upload-field/index.vue'
+  import ArtWangEditor from '@/components/core/forms/art-wang-editor/index.vue'
+  import { download } from '@/api/common'
+  import { useAuth } from '@/hooks/core/useAuth'
+  import { useDict } from '@/hooks/core/useDict'
+  import { useTable } from '@/hooks/core/useTable'
+  import type { Entity } from '@/api/system/types'
+  import {
+    add${BusinessName},
+    fetch${BusinessName},
+    fetch${BusinessName}List,
+    remove${BusinessName},
+    update${BusinessName},
+    type ${ClassName}
+  } from '@/api/${moduleName}/${businessName}'
+#if($genView)
+  import ${BusinessName}View from './view.vue'
+#end
+
+  defineOptions({ name: '${BusinessName}' })
+  const { hasAuth } = useAuth()
+#if(${dicts} != '')
+  const { dict } = useDict(${dicts})
+#else
+  const dict = reactive<Record<string, any[]>>({})
+#end
+  const showSearchBar = ref(true)
+  const visible = ref(false)
+  const saving = ref(false)
+  const mode = ref<'add' | 'edit'>('add')
+  const filters = reactive<Entity>({})
+  const form = reactive<${ClassName}>({})
+  const formRef = ref<{ validate: () => Promise<boolean> }>()
+#if($genView)
+  const viewRef = ref<InstanceType<typeof ${BusinessName}View>>()
+#end
+#if($table.sub)
+  const ${subclassName}List = ref<Entity[]>([])
+#end
+  const drawerTitle = computed(() => (mode.value === 'edit' ? '修改' : '新增') + '${functionName}')
+  const searchItems = computed(() => [
+#foreach($column in $columns)
+#if($column.query)
+#set($type = "input")
+#if($column.htmlType == "select" || $column.htmlType == "radio")
+#set($type = "select")
+#elseif($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+#set($type = "daterange")
+#elseif($column.htmlType == "datetime")
+#set($type = "date")
+#end
+    { key: '${column.javaField}', label: '${column.columnComment}', type: '${type}', props: { clearable: true#if("" != $column.dictType), options: normalizeOptions(dict.${column.dictType})#end } },
+#end
+#end
+  ])
+  const formItems = computed(() => [
+#foreach($column in $columns)
+#if($column.insert && !$column.pk && (($column.usableColumn) || (!$column.superColumn)))
+#set($type = "input")
+#if($column.htmlType == "textarea")
+#set($type = "input")
+#elseif($column.htmlType == "select")
+#set($type = "select")
+#elseif($column.htmlType == "radio")
+#set($type = "radiogroup")
+#elseif($column.htmlType == "checkbox")
+#set($type = "checkboxgroup")
+#elseif($column.htmlType == "datetime")
+#set($type = "date")
+#end
+    {
+      key: '${column.javaField}',
+      label: '${column.columnComment}',
+      type: '${type}',
+#if($column.htmlType == "textarea" || $column.htmlType == "editor")
+      span: 24,
+#else
+      span: ${colSpan},
+#end
+#if($column.htmlType == "imageUpload")
+      render: RuoYiUploadField,
+      props: { mode: 'image' }
+#elseif($column.htmlType == "fileUpload")
+      render: RuoYiUploadField,
+      props: { mode: 'file' }
+#elseif($column.htmlType == "editor")
+      render: ArtWangEditor
+#else
+      props: { clearable: true#if($column.htmlType == "textarea"), type: 'textarea'#end#if("" != $column.dictType), options: normalizeOptions(dict.${column.dictType})#end }
+#end
+    },
+#end
+#end
+  ])
+  const rules = {
+#foreach($column in $columns)
+#if($column.required)
+    ${column.javaField}: [{ required: true, message: '请输入${column.columnComment}' }],
+#end
+#end
+  }
+  const table = useTable({
+    core: {
+      apiFn: fetch${BusinessName}List,
+      apiParams: { pageNum: 1, pageSize: 10 },
+      columnsFactory: () => [
+#foreach($column in $columns)
+#if($column.list)
+        {
+          prop: '${column.javaField}',
+          label: '${column.columnComment}',
+          minWidth: 120,
+#if("" != $column.dictType)
+          formatter: (row: ${ClassName}) => h(DictTag, { options: dict.${column.dictType}, value: row.${column.javaField} })
+#elseif($column.htmlType == "imageUpload")
+          formatter: (row: ${ClassName}) => row.${column.javaField} ? h(ElImage, { src: row.${column.javaField}, previewSrcList: [row.${column.javaField}], class: 'h-10 w-10', previewTeleported: true }) : ''
+#else
+          showOverflowTooltip: true
+#end
+        },
+#end
+#end
+        {
+          prop: 'operation',
+          label: '操作',
+          fixed: 'right',
+#if($genView)
+          width: 170,
+#else
+          width: 120,
+#end
+          formatter: (row: ${ClassName}) => h('div', [
+#if($genView)
+            hasAuth('${permissionPrefix}:query') ? h(ArtButtonTable, { type: 'view', onClick: () => viewRef.value?.open(row.${pkColumn.javaField}!) }) : null,
+#end
+            hasAuth('${permissionPrefix}:edit') ? h(ArtButtonTable, { type: 'edit', onClick: () => openDialog(row) }) : null,
+            hasAuth('${permissionPrefix}:remove') ? h(ArtButtonTable, { type: 'delete', onClick: () => removeRow(row) }) : null
+          ])
+        }
+      ]
+    }
+  })
+  const { data, columns, columnChecks, loading, pagination, getData, replaceSearchParams, resetSearchParams, refreshData, handleSizeChange, handleCurrentChange } = table
+
+  function normalizeOptions(options: Entity[] = []) {
+    return options.map((item) => ({ ...item, label: item.dictLabel, value: item.dictValue }))
+  }
+  function search() {
+    const params = { ...filters }
+#foreach($column in $columns)
+#if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+    if (Array.isArray(filters.${column.javaField})) {
+      params.params = { ...(params.params || {}), begin${AttrName}: filters.${column.javaField}[0], end${AttrName}: filters.${column.javaField}[1] }
+      delete params.${column.javaField}
+    }
+#end
+#end
+    replaceSearchParams(params)
+    getData()
+  }
+  function resetSearch() {
+    Object.keys(filters).forEach((key) => delete filters[key])
+    resetSearchParams()
+    getData()
+  }
+  async function openDialog(row?: ${ClassName}) {
+    Object.keys(form).forEach((key) => delete form[key])
+#foreach($column in $columns)
+#if($column.htmlType == "checkbox")
+    form.${column.javaField} = [] as any
+#end
+#end
+#if($table.sub)
+    ${subclassName}List.value = []
+#end
+    mode.value = row ? 'edit' : 'add'
+    if (row?.${pkColumn.javaField} != null) {
+      const result = await fetch${BusinessName}(row.${pkColumn.javaField})
+      Object.assign(form, result)
+#foreach($column in $columns)
+#if($column.htmlType == "checkbox")
+      form.${column.javaField} = result.${column.javaField} ? String(result.${column.javaField}).split(',') as any : [] as any
+#end
+#end
+#if($table.sub)
+      ${subclassName}List.value = result.${subclassName}List || []
+#end
+    }
+    visible.value = true
+  }
+#if($table.sub)
+  function add${subClassName}() {
+    ${subclassName}List.value.push({})
+  }
+#end
+  async function submit() {
+    await formRef.value?.validate()
+    saving.value = true
+    try {
+      const payload = { ...form } as ${ClassName}
+#foreach($column in $columns)
+#if($column.htmlType == "checkbox")
+      payload.${column.javaField} = Array.isArray(form.${column.javaField}) ? form.${column.javaField}.join(',') as any : form.${column.javaField}
+#end
+#end
+#if($table.sub)
+      payload.${subclassName}List = ${subclassName}List.value
+#end
+      await (payload.${pkColumn.javaField} != null ? update${BusinessName}(payload) : add${BusinessName}(payload))
+      visible.value = false
+      refreshData()
+    } finally {
+      saving.value = false
+    }
+  }
+  async function removeRow(row: ${ClassName}) {
+    await ElMessageBox.confirm('确定删除该记录吗？', '提示', { type: 'warning' })
+    await remove${BusinessName}(row.${pkColumn.javaField}!)
+    refreshData()
+  }
+  function handleExport() {
+    download('/${moduleName}/${businessName}/export', filters, '${functionName}_' + Date.now() + '.xlsx')
+  }
+</script>

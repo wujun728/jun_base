@@ -1,0 +1,32 @@
+import Input from './src/Input/Input.vue'
+import InputNumber from './src/InputNumber/InputNumber.vue'
+import Textarea from './src/Textarea/Textarea.vue'
+import Cascader from './src/Cascader/Cascader.vue'
+import Custom from './src/Custom/Custom.vue'
+import Select from './src/Select/Select.vue'
+import Tree from './src/Tree/Tree.vue'
+import TreeSelect from './src/TreeSelect/TreeSelect.vue'
+import Datepicker from './src/Datepicker/Datepicker.vue'
+import CheckBox from './src/CheckBox/CheckBox.vue'
+import Radio from './src/Radio/Radio.vue'
+import InputTag from './src/InputTag/InputTag.vue'
+import Autocomplete from './src/Autocomplete/Autocomplete.vue'
+import SelectV2 from './src/SelectV2/selectV2.vue'
+import Switch from './src/Switch/Switch.vue'
+export {
+  Input,
+  InputNumber,
+  Textarea,
+  Cascader,
+  Custom,
+  Select,
+  Tree,
+  TreeSelect,
+  Datepicker,
+  CheckBox,
+  Radio,
+  InputTag,
+  Autocomplete,
+  SelectV2,
+  Switch,
+}

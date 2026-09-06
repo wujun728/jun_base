@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.SqUserBehaviorMapper">
+    <resultMap id="SqBehaviorResult" type="com.ruoyi.business.domain.SqBehaviorMonitor">
+        <id property="id" column="id"/>
+        <result property="picture" column="picture"/>
+        <result property="video" column="video"/>
+        <result property="remark" column="remark"/>
+        <result property="warningTime" column="warning_time"/>
+        <result property="handleTime" column="handle_time"/>
+        <result property="createTime" column="create_time"/>
+        <result property="instruction" column="instruction"/>
+        <result property="type" column="type"/>
+        <result property="name" column="name"/>
+        <result property="ip" column="ip"/>
+        <result property="scene" column="scene"/>
+        <result property="status" column="status"/>
+        <result property="handle" column="handle"/>
+        <result property="section" column="section"/>
+    </resultMap>
+    <sql id="selectVo">select id, picture, video, remark, warning_time, handle_time, create_time, instruction, type, name, ip, scene, status, handle, section from yn_user</sql>
+    <select id="selectSqUserBehaviorById" parameterType="Long" resultMap="SqBehaviorResult"><include refid="selectVo"/> where id = #{id}</select>
+    <select id="selectSqUserBehaviorList" parameterType="com.ruoyi.business.domain.SqBehaviorMonitor" resultMap="SqBehaviorResult">
+        <include refid="selectVo"/>
+        <where>
+            <if test="type != null and type != ''">and type = #{type}</if>
+            <if test="name != null and name != ''">and name = #{name}</if>
+            <if test="status != null and status != ''">and status = #{status}</if>
+            <if test="ip != null and ip != ''">and ip like concat('%', #{ip}, '%')</if>
+            <if test="section != null and section != ''">and section like concat('%', #{section}, '%')</if>
+            <if test="beginTime != null and beginTime != ''">and warning_time &gt;= #{beginTime}</if>
+            <if test="endTime != null and endTime != ''">and warning_time &lt;= #{endTime}</if>
+        </where>
+        order by create_time desc, id desc
+    </select>
+    <insert id="insertSqUserBehavior" parameterType="com.ruoyi.business.domain.SqBehaviorMonitor">
+        insert into yn_user(picture, video, remark, warning_time, handle_time, instruction, type, name, ip, scene, status, handle, section)
+        values(#{picture}, #{video}, #{remark}, #{warningTime}, #{handleTime}, #{instruction}, #{type}, #{name}, #{ip}, #{scene}, #{status}, #{handle}, #{section})
+    </insert>
+    <update id="updateSqUserBehavior" parameterType="com.ruoyi.business.domain.SqBehaviorMonitor">
+        update yn_user set picture=#{picture}, video=#{video}, remark=#{remark}, warning_time=#{warningTime}, handle_time=#{handleTime}, instruction=#{instruction}, type=#{type}, name=#{name}, ip=#{ip}, scene=#{scene}, status=#{status}, handle=#{handle}, section=#{section} where id=#{id}
+    </update>
+    <delete id="deleteSqUserBehaviorByIds" parameterType="Long">
+        delete from yn_user where id in <foreach collection="array" item="id" open="(" separator="," close=")">#{id}</foreach>
+    </delete>
+</mapper>

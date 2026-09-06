@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.SqTransportTeamMapper">
+    <resultMap id="SqTransportTeamResult" type="com.ruoyi.business.domain.SqTransportTeam">
+        <id property="id" column="id" />
+        <result property="tname" column="tname" />
+        <result property="tnameLabel" column="tname_label" />
+        <result property="tnameuser" column="tnameuser" />
+        <result property="createUser" column="create_user" />
+        <result property="createDept" column="create_dept" />
+        <result property="createTime" column="create_time" />
+        <result property="updateUser" column="update_user" />
+        <result property="updateTime" column="update_time" />
+        <result property="status" column="status" />
+        <result property="isDeleted" column="is_deleted" />
+        <result property="mine" column="mine" />
+        <result property="mineLabel" column="mine_label" />
+    </resultMap>
+
+    <sql id="selectSqTransportTeamVo">
+        select t.id, t.tname, unit.dept_name as tname_label, t.tnameuser,
+               t.create_user, t.create_dept, t.create_time, t.update_user, t.update_time,
+               t.status, t.is_deleted, t.mine, mine.dept_name as mine_label
+        from a_team t
+        left join sys_dept unit on unit.dept_id = t.tname
+        left join sys_dept mine on mine.dept_id = t.mine
+    </sql>
+
+    <select id="selectSqTransportTeamById" parameterType="Long" resultMap="SqTransportTeamResult">
+        <include refid="selectSqTransportTeamVo"/>
+        where t.id = #{id} and t.is_deleted = '0'
+    </select>
+
+    <select id="selectSqTransportTeamList" parameterType="com.ruoyi.business.domain.SqTransportTeam" resultMap="SqTransportTeamResult">
+        <include refid="selectSqTransportTeamVo"/>
+        <where>
+            t.is_deleted = #{isDeleted}
+            <if test="tname != null and tname != ''">and t.tname = #{tname}</if>
+            <if test="mine != null and mine != ''">and t.mine = #{mine}</if>
+            <if test="tnameuser != null and tnameuser != ''">and t.tnameuser like concat('%', #{tnameuser}, '%')</if>
+            <if test="status != null and status != ''">and t.status = #{status}</if>
+        </where>
+        order by t.id desc
+    </select>
+
+    <select id="selectSqTransportTeamOptions" parameterType="com.ruoyi.business.domain.SqTransportTeam" resultMap="SqTransportTeamResult">
+        <include refid="selectSqTransportTeamVo"/>
+        <where>
+            t.is_deleted = #{isDeleted}
+            <if test="tname != null and tname != ''">and t.tname = #{tname}</if>
+            <if test="mine != null and mine != ''">and t.mine = #{mine}</if>
+        </where>
+        order by t.id desc
+    </select>
+
+    <insert id="insertSqTransportTeam" parameterType="com.ruoyi.business.domain.SqTransportTeam">
+        insert into a_team(id, tname, tnameuser, create_user, create_dept, create_time, status, is_deleted, mine)
+        values(#{id}, #{tname}, #{tnameuser}, #{createUser}, #{createDept}, sysdate(), #{status}, #{isDeleted}, #{mine})
+    </insert>
+
+    <update id="updateSqTransportTeam" parameterType="com.ruoyi.business.domain.SqTransportTeam">
+        update a_team
+        <set>
+            tname = #{tname},
+            tnameuser = #{tnameuser},
+            mine = #{mine},
+            status = #{status},
+            <if test="updateUser != null and updateUser != ''">update_user = #{updateUser},</if>
+            update_time = sysdate()
+        </set>
+        where id = #{id} and is_deleted = '0'
+    </update>
+
+    <update id="deleteSqTransportTeamByIds" parameterType="Long">
+        update a_team set is_deleted = '1', update_time = sysdate() where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+</mapper>

@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Logo Options</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        padding: 30px;
+        font-family:
+          Inter, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+        color: #172033;
+        background: #f5f7fb;
+      }
+
+      .page-head {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 22px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 20px;
+        line-height: 1.3;
+      }
+
+      .hint {
+        margin: 5px 0 0;
+        color: #667085;
+        font-size: 13px;
+      }
+
+      .palette {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #667085;
+        font-size: 12px;
+      }
+
+      .dot {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(248px, 1fr));
+        gap: 18px;
+      }
+
+      .card {
+        border: 1px solid #e4e8f1;
+        border-radius: 8px;
+        padding: 16px;
+        background: #fff;
+      }
+
+      .title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 0 0 14px;
+        font-size: 14px;
+        font-weight: 650;
+      }
+
+      .tag {
+        color: #667085;
+        font-size: 11px;
+        font-weight: 500;
+      }
+
+      .sizes {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        min-height: 78px;
+      }
+
+      .sample-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .sample {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 52px;
+        padding: 10px;
+        border-radius: 8px;
+      }
+
+      .light {
+        border: 1px solid #e4e8f1;
+        background: #ffffff;
+      }
+
+      .dark {
+        color: #d8dee9;
+        background: #111827;
+      }
+
+      .sample-text {
+        min-width: 0;
+        font-size: 12px;
+        line-height: 1.2;
+      }
+
+      .sample-text span {
+        display: block;
+        margin-top: 2px;
+        color: #8a94a6;
+        font-size: 10px;
+      }
+
+      img {
+        display: block;
+        flex: 0 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="page-head">
+      <div>
+        <h1>Art UI 适配 Logo 候选</h1>
+        <p class="hint">重新设计的系统应用标：圆角、半填充、蓝色主题、适中块面；重点检查 36px 顶部栏和 24px 小图标清晰度。</p>
+      </div>
+      <div class="palette">
+        <span>Palette</span>
+        <i class="dot" style="background: #5d87ff"></i>
+        <i class="dot" style="background: #2563eb"></i>
+        <i class="dot" style="background: #4f46e5"></i>
+        <i class="dot" style="background: #06b6d4"></i>
+        <i class="dot" style="background: #22d3ee"></i>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="card">
+        <p class="title">01 Control Node <span class="tag">权限 / 控制</span></p>
+        <div class="sizes">
+          <img src="./logo-option-01-control-node.svg" width="64" alt="" />
+          <img src="./logo-option-01-control-node.svg" width="36" alt="" />
+          <img src="./logo-option-01-control-node.svg" width="24" alt="" />
+        </div>
+        <div class="sample-row">
+          <div class="sample light"><img src="./logo-option-01-control-node.svg" width="36" alt="" /><div class="sample-text">Nexa Admin<span>Light menu</span></div></div>
+          <div class="sample dark"><img src="./logo-option-01-control-node.svg" width="36" alt="" /><div class="sample-text">Nexa Admin<span>Dark menu</span></div></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <p class="title">02 Data Stack <span class="tag">数据 / 层级</span></p>
+        <div class="sizes">
+          <img src="./logo-option-02-data-stack.svg" width="64" alt="" />
+          <img src="./logo-option-02-data-stack.svg" width="36" alt="" />
+          <img src="./logo-option-02-data-stack.svg" width="24" alt="" />
+        </div>
+        <div class="sample-row">
+          <div class="sample light"><img src="./logo-option-02-data-stack.svg" width="36" alt="" /><div class="sample-text">Nexa Admin<span>Light menu</span></div></div>
+          <div class="sample dark"><img src="./logo-option-02-data-stack.svg" width="36" alt="" /><div class="sample-text">Nexa Admin<span>Dark menu</span></div></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <p class="title">03 Shield Grid <span class="tag">安全 / 模块</span></p>
+        <div class="sizes">
+          <img src="./logo-option-03-shield-grid.svg" width="64" alt="" />
+          <img src="./logo-option-03-shield-grid.svg" width="36" alt="" />
+          <img src="./logo-option-03-shield-grid.svg" width="24" alt="" />
+        </div>
+        <div class="sample-row">
+          <div class="sample light"><img src="./logo-option-03-shield-grid.svg" width="36" alt="" /><div class="sample-text">Nexa Admin<span>Light menu</span></div></div>
+          <div class="sample dark"><img src="./logo-option-03-shield-grid.svg" width="36" alt="" /><div class="sample-text">Nexa Admin<span>Dark menu</span></div></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <p class="title">04 Flow Mark <span class="tag">流程 / 链路</span></p>
+        <div class="sizes">
+          <img src="./logo-option-04-flow-mark.svg" width="64" alt="" />
+          <img src="./logo-option-04-flow-mark.svg" width="36" alt="" />
+          <img src="./logo-option-04-flow-mark.svg" width="24" alt="" />
+        </div>
+        <div class="sample-row">
+          <div class="sample light"><img src="./logo-option-04-flow-mark.svg" width="36" alt="" /><div class="sample-text">Nexa Admin<span>Light menu</span></div></div>
+          <div class="sample dark"><img src="./logo-option-04-flow-mark.svg" width="36" alt="" /><div class="sample-text">Nexa Admin<span>Dark menu</span></div></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <p class="title">05 Command Core <span class="tag">中枢 / 指令</span></p>
+        <div class="sizes">
+          <img src="./logo-option-05-command-core.svg" width="64" alt="" />
+          <img src="./logo-option-05-command-core.svg" width="36" alt="" />
+          <img src="./logo-option-05-command-core.svg" width="24" alt="" />
+        </div>
+        <div class="sample-row">
+          <div class="sample light"><img src="./logo-option-05-command-core.svg" width="36" alt="" /><div class="sample-text">Nexa Admin<span>Light menu</span></div></div>
+          <div class="sample dark"><img src="./logo-option-05-command-core.svg" width="36" alt="" /><div class="sample-text">Nexa Admin<span>Dark menu</span></div></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <p class="title">06 Orbit Panel <span class="tag">监控 / 面板</span></p>
+        <div class="sizes">
+          <img src="./logo-option-06-orbit-panel.svg" width="64" alt="" />
+          <img src="./logo-option-06-orbit-panel.svg" width="36" alt="" />
+          <img src="./logo-option-06-orbit-panel.svg" width="24" alt="" />
+        </div>
+        <div class="sample-row">
+          <div class="sample light"><img src="./logo-option-06-orbit-panel.svg" width="36" alt="" /><div class="sample-text">Nexa Admin<span>Light menu</span></div></div>
+          <div class="sample dark"><img src="./logo-option-06-orbit-panel.svg" width="36" alt="" /><div class="sample-text">Nexa Admin<span>Dark menu</span></div></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <p class="title">07 Module Grid <span class="tag">模块 / 架构</span></p>
+        <div class="sizes">
+          <img src="./logo-option-07-module-cube.svg" width="64" alt="" />
+          <img src="./logo-option-07-module-cube.svg" width="36" alt="" />
+          <img src="./logo-option-07-module-cube.svg" width="24" alt="" />
+        </div>
+        <div class="sample-row">
+          <div class="sample light"><img src="./logo-option-07-module-cube.svg" width="36" alt="" /><div class="sample-text">Nexa Admin<span>Light menu</span></div></div>
+          <div class="sample dark"><img src="./logo-option-07-module-cube.svg" width="36" alt="" /><div class="sample-text">Nexa Admin<span>Dark menu</span></div></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <p class="title">08 Route Switch <span class="tag">路由 / 切换</span></p>
+        <div class="sizes">
+          <img src="./logo-option-08-route-switch.svg" width="64" alt="" />
+          <img src="./logo-option-08-route-switch.svg" width="36" alt="" />
+          <img src="./logo-option-08-route-switch.svg" width="24" alt="" />
+        </div>
+        <div class="sample-row">
+          <div class="sample light"><img src="./logo-option-08-route-switch.svg" width="36" alt="" /><div class="sample-text">Nexa Admin<span>Light menu</span></div></div>
+          <div class="sample dark"><img src="./logo-option-08-route-switch.svg" width="36" alt="" /><div class="sample-text">Nexa Admin<span>Dark menu</span></div></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <p class="title">09 Dashboard Mark <span class="tag">仪表盘 / 组件</span></p>
+        <div class="sizes">
+          <img src="./logo-option-09-dashboard-mark.svg" width="64" alt="" />
+          <img src="./logo-option-09-dashboard-mark.svg" width="36" alt="" />
+          <img src="./logo-option-09-dashboard-mark.svg" width="24" alt="" />
+        </div>
+        <div class="sample-row">
+          <div class="sample light"><img src="./logo-option-09-dashboard-mark.svg" width="36" alt="" /><div class="sample-text">Nexa Admin<span>Light menu</span></div></div>
+          <div class="sample dark"><img src="./logo-option-09-dashboard-mark.svg" width="36" alt="" /><div class="sample-text">Nexa Admin<span>Dark menu</span></div></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <p class="title">10 Access Gate <span class="tag">权限 / 入口</span></p>
+        <div class="sizes">
+          <img src="./logo-option-10-access-gate.svg" width="64" alt="" />
+          <img src="./logo-option-10-access-gate.svg" width="36" alt="" />
+          <img src="./logo-option-10-access-gate.svg" width="24" alt="" />
+        </div>
+        <div class="sample-row">
+          <div class="sample light"><img src="./logo-option-10-access-gate.svg" width="36" alt="" /><div class="sample-text">Nexa Admin<span>Light menu</span></div></div>
+          <div class="sample dark"><img src="./logo-option-10-access-gate.svg" width="36" alt="" /><div class="sample-text">Nexa Admin<span>Dark menu</span></div></div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

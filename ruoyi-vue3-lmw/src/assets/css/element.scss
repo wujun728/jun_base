@@ -1,0 +1,202 @@
+@use 'sass:math';
+
+/* 修复 Chrome 浏览器输入框内选中字符行高异常的bug-s */
+.el-input .el-input__inner {
+  line-height: calc(var(--el-input-height, 40px) - 4px);
+}
+/* 修复 Chrome 浏览器输入框内选中字符行高异常的bug-e */
+
+.datetime-picker {
+  height: 32px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.el-divider__text.is-center {
+  transform: translateX(-50%) translateY(-62%);
+}
+
+.el-menu {
+  user-select: none;
+  // .el-sub-menu__title:hover {
+  //   background-color: var(--el-color-primary-light-9) !important;
+  // }
+}
+
+.el-table {
+  --el-table-border-color: var(--ba-border-color);
+}
+
+.el-card {
+  border: none;
+}
+.el-card__header {
+  border-bottom: 1px solid var(--el-border-color-extra-light);
+}
+.el-textarea__inner {
+  padding: 5px 11px;
+}
+
+/* dialog滚动条-s */
+.el-overlay-dialog,
+.ba-scroll-style {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #eaeaea;
+    border-radius: var(--el-border-radius-base);
+    box-shadow: none;
+    -webkit-box-shadow: none;
+  }
+  &:hover {
+    &::-webkit-scrollbar-thumb:hover {
+      background: #c8c9cc;
+    }
+  }
+}
+.el-dialog__header,
+.el-message-box__header {
+  text-align: left;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--ba-bg-color);
+}
+.el-dialog__header {
+  .el-dialog__title {
+    font-size: 16px;
+  }
+}
+.el-button:focus-visible {
+  outline: none !important;
+}
+/* dialog滚动条-e */
+
+.el-table .el-table__row .el-table__cell {
+  padding: 12px 0px;
+}
+
+.el-table__body-wrapper .el-scrollbar__bar.is-horizontal {
+  height: 10px;
+}
+
+.el-dialog__footer {
+  padding: var(--el-dialog-padding-primary);
+}
+.el-dialog__header {
+  padding: var(--el-dialog-padding-primary);
+}
+.el-dialog {
+  padding: 0;
+}
+
+.el-dialog__headerbtn {
+  top: 6px;
+}
+
+.el-form-item__label {
+  font-weight: 500;
+  color: var(--el-text-color-primary);
+}
+
+.el-table__header {
+  .cell {
+    color: var(--el-text-color-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+/** 移动端展示 **/
+@media screen and (max-width: 500px) {
+  .el-picker-panel {
+    width: 300px !important;
+  }
+  .el-picker-panel__content {
+    width: 100%;
+  }
+  .el-picker-panel__body {
+    height: 330px;
+    margin-left: 0 !important;
+    display: flex;
+    flex-direction: column;
+    min-width: auto !important;
+    overflow-y: scroll;
+  }
+  .el-picker-panel__sidebar {
+    position: relative;
+  }
+  .el-picker-panel__body-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+/* 自定义Element Plus断点 - xs从768px改为700px */
+// 生成Element Plus断点样式的Sass函数
+@function generate-breakpoint-styles($breakpoint, $min-width, $max-width) {
+  $media-query: '';
+
+  @if $min-width and $max-width {
+    $media-query: 'only screen and (min-width: #{$min-width}) and (max-width: #{$max-width})';
+  } @else if $min-width {
+    $media-query: 'only screen and (min-width: #{$min-width})';
+  } @else if $max-width {
+    $media-query: 'only screen and (max-width: #{$max-width})';
+  }
+
+  @return $media-query;
+}
+
+// 生成断点样式的mixin
+@mixin generate-breakpoint($breakpoint, $min-width: null, $max-width: null) {
+  $media-query: generate-breakpoint-styles($breakpoint, $min-width, $max-width);
+
+  @media #{$media-query} {
+    @for $i from 0 through 24 {
+      .el-col-#{$breakpoint}-#{$i} {
+        @if $i == 0 {
+          display: none;
+          flex: 0 0 0%;
+          max-width: 0;
+          &.is-guttered {
+            display: none;
+          }
+        } @else {
+          display: block;
+          flex: 0 0 percentage(math.div($i, 24));
+          max-width: percentage(math.div($i, 24));
+          &.is-guttered {
+            display: block;
+          }
+        }
+      }
+      .el-col-#{$breakpoint}-offset-#{$i} {
+        margin-left: percentage(math.div($i, 24));
+      }
+      .el-col-#{$breakpoint}-pull-#{$i} {
+        position: relative;
+        right: percentage(math.div($i, 24));
+      }
+      .el-col-#{$breakpoint}-push-#{$i} {
+        position: relative;
+        left: percentage(math.div($i, 24));
+      }
+    }
+  }
+}
+
+/* 自定义Element Plus断点 - xs从768px改为700px */
+// xs断点（小于700px）
+@include generate-breakpoint('xs', 0px, 699px);
+
+// sm断点（大于等于700px）< 992px
+@include generate-breakpoint('sm', 700px, 991px);
+
+// 由于打开调试工具时1920的屏幕宽度会显示1919px，所以lg断点设置为1918px
+// lg断点（大于等于1200px）< 1920px
+@include generate-breakpoint('lg', 1200px, 1918px);
+
+// xl断点（大于等于1919px
+@include generate-breakpoint('xl', 1919px, null);

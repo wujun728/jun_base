@@ -1,0 +1,145 @@
+package com.ruoyi.common.utils.sign;
+
+import cn.hutool.core.util.HexUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.SmUtil;
+import cn.hutool.crypto.asymmetric.KeyType;
+import cn.hutool.crypto.asymmetric.SM2;
+import com.antherd.smcrypto.sm2.Sm2;
+import com.antherd.smcrypto.sm4.Sm4;
+import com.antherd.smcrypto.sm4.Sm4Options;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.script.ScriptException;
+/**
+ * 加密工具类，本框架目前使用 <a href="https://github.com/antherd/sm-crypto">sm-crypto</a> 项目中一些加解密方式
+ * 使用小伙伴需要过等保密评相关，请在此处更改为自己的加密方法，或加密机，使用加密机同时需要替换公钥，私钥在内部无法导出，提供加密的方法
+ * 如果不涉及到加密机方面的内容，请更改公私要为自己重新生成的，生成方式请看集成的sm-crypto主页
+ */
+public class SmCryptoUtils {
+    private static final Logger log = LoggerFactory.getLogger(SmCryptoUtils.class);
+
+    /** 公钥 */
+    private static final String PUBLIC_KEY = "04298364ec840088475eae92a591e01284d1abefcda348b47eb324bb521bb03b0b2a5bc393f6b71dabb8f15c99a0050818b56b23f31743b93df9cf8948f15ddb54";
+
+    /** 私钥 */
+    private static final String PRIVATE_KEY = "3037723d47292171677ec8bd7dc9af696c7472bc5f251b2cec07e65fdef22e25";
+
+    /** SM4的对称秘钥（生产环境需要改成自己使用的） 16 进制字符串，要求为 128 比特 */
+    private static final String KEY = "0123456789abcdeffedcba9876543210";
+
+    /** Hutool SM2 对象 */
+    private static final SM2 sm2 = SmUtil.sm2(HexUtil.decodeHex(PRIVATE_KEY), HexUtil.decodeHex(PUBLIC_KEY));
+
+    /**
+     * 加密方法（Sm2 的专门针对前后端分离，非对称秘钥对的方式，暴露出去的公钥，对传输过程中的密码加个密）
+     *
+     * @author yubaoshan
+     * @date 2022/9/15 21:51
+     * @param str 待加密数据
+     * @return 加密后的密文
+     */
+    public static String doSm2Encrypt(String str) {
+        return sm2.encryptHex(str, KeyType.PublicKey);
+    }
+
+    /**
+     * 解密方法
+     * 如果采用加密机的方法，用try catch 捕捉异常，返回原文值即可
+     *
+     * @author yubaoshan
+     * @date 2022/9/15 21:51
+     * @param str 密文
+     * @return 解密后的明文
+     */
+    public static String doSm2Decrypt(String str) throws ScriptException {
+        try {
+            // 兼容性处理：Hutool要求密文以04开头（Uncompressed），如果前端传来的是不带04的（虽然sm-crypto默认带），则补上
+            String text = str;
+            if (StrUtil.isNotBlank(text) && !text.startsWith("04")) {
+                text = "04" + text;
+            }
+            return sm2.decryptStr(text, KeyType.PrivateKey);
+        } catch (Exception e) {
+            // 降级处理：使用原版 antherd sm-crypto 解密（兼容性好但性能稍差）
+            return Sm2.doDecrypt(str, PRIVATE_KEY);
+        }
+    }
+
+    /**
+     * 加密方法
+     *
+     * @author yubaoshan
+     * @date 2022/9/15 21:51
+     * @param str 待加密数据
+     * @return 加密后的密文
+     */
+    public static String doSm4CbcEncrypt(String str) throws ScriptException {
+        // SM4 加密  cbc模式
+        Sm4Options sm4Options4 = new Sm4Options();
+        sm4Options4.setMode("cbc");
+        sm4Options4.setIv("fedcba98765432100123456789abcdef");
+        return Sm4.encrypt(str, KEY, sm4Options4);
+    }
+
+    /**
+     * 解密方法
+     * 如果采用加密机的方法，用try catch 捕捉异常，返回原文值即可
+     *
+     * @author yubaoshan
+     * @date 2022/9/15 21:51
+     * @param str 密文
+     * @return 解密后的明文
+     */
+    public static String doSm4CbcDecrypt(String str) throws ScriptException {
+        // 解密，cbc 模式，输出 utf8 字符串
+        Sm4Options sm4Options8 = new Sm4Options();
+        sm4Options8.setMode("cbc");
+        sm4Options8.setIv("fedcba98765432100123456789abcdef");
+        String docString =  Sm4.decrypt(str, KEY, sm4Options8);
+        if ("".equals(docString)) {
+            log.warn(">>> 字段解密失败，返回原文值：{}", str);
+            return str;
+        } else {
+            return docString;
+        }
+    }
+
+    /**
+     * 纯签名
+     *
+     * @author yubaoshan
+     * @date 2022/9/15 21:51
+     * @param str 待签名数据
+     * @return 签名结果
+     */
+    public static String doSignature(String str) {
+        return HexUtil.encodeHexStr(sm2.sign(StrUtil.utf8Bytes(str)));
+    }
+
+    /**
+     * 验证签名结果
+     *
+     * @author yubaoshan
+     * @date 2022/9/15 21:51
+     * @param originalStr 签名原文数据
+     * @param str 签名结果
+     * @return 是否通过
+     */
+    public static boolean doVerifySignature(String originalStr, String str) {
+        return sm2.verify(StrUtil.utf8Bytes(originalStr), HexUtil.decodeHex(str));
+    }
+
+    /**
+     * 通过杂凑算法取得hash值，用于做数据完整性保护
+     *
+     * @author yubaoshan
+     * @date 2022/9/15 21:51
+     * @param str 字符串
+     * @return hash 值
+     */
+    public static String doHashValue(String str) {
+        return SmUtil.sm3(str);
+    }
+}

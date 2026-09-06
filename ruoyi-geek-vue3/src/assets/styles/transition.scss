@@ -1,0 +1,108 @@
+@use "sass:map";
+
+/*
+  Vue 3 过渡类名规则:
+  - .v-enter-from: 进入动画的开始状态。
+  - .v-enter-active: 进入动画的激活状态。
+  - .v-enter-to: 进入动画的结束状态。 (Vue 2 的 .v-enter-to)
+  - .v-leave-from: 离开动画的开始状态。
+  - .v-leave-active: 离开动画的激活状态。
+  - .v-leave-to: 离开动画的结束状态。 (Vue 2 的 .v-leave-to)
+
+  注意: 'v' 是 <transition> 组件 name 属性的默认值。
+  如果 <transition name="fade">, 那么类名将是 .fade-enter-from 等。
+  在 Vue 2 中，进入的起始类是 .v-enter，在 Vue 3 中是 .v-enter-from。
+*/
+// global transition css
+
+/* 淡入淡出（fade） */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.28s;
+}
+
+.fade-enter-from,
+.fade-leave-active {
+  opacity: 0;
+}
+
+// 淡入淡出带位移（支持四方向，Sass 简写）
+$fade-transform-map: (
+  "": (
+    x: -30px,
+    y: 0,
+    out-x: 30px,
+    out-y: 0
+  ),
+  "-left": (
+    x: -30px,
+    y: 0,
+    out-x: 30px,
+    out-y: 0
+  ),
+  // 默认左进右出
+  "-right":
+    (
+      x: 30px,
+      y: 0,
+      out-x: -30px,
+      out-y: 0
+    ),
+  // 右进左出
+  "-down":
+    (
+      x: 0,
+      y: -30px,
+      out-x: 0,
+      out-y: 30px
+    ),
+  // 上进下出
+  "-up":
+    (
+      x: 0,
+      y: 30px,
+      out-x: 0,
+      out-y: -30px
+    )
+    // 下进上出
+);
+
+@each $suffix, $val in $fade-transform-map {
+  .fade-transform#{$suffix}-enter-active,
+  .fade-transform#{$suffix}-leave-active {
+    transition: all 0.5s;
+  }
+  .fade-transform#{$suffix}-enter-from {
+    opacity: 0;
+    transform: translateX(map.get($val, x)) translateY(map.get($val, y));
+  }
+  .fade-transform#{$suffix}-enter-to,
+  .fade-transform#{$suffix}-leave-from {
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+  }
+  .fade-transform#{$suffix}-leave-to {
+    opacity: 0;
+    transform: translateX(map.get($val, out-x)) translateY(map.get($val, out-y));
+  }
+}
+
+/* 面包屑过度（breadcrumb transition） */
+.breadcrumb-enter-active,
+.breadcrumb-leave-active {
+  transition: all 0.5s;
+}
+
+.breadcrumb-enter-from,
+.breadcrumb-leave-active {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+.breadcrumb-move {
+  transition: all 0.5s;
+}
+
+.breadcrumb-leave-active {
+  position: absolute;
+}

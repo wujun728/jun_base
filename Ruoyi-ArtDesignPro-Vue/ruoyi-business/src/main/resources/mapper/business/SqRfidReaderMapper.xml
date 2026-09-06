@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.SqRfidReaderMapper">
+    <resultMap id="SqRfidReaderResult" type="com.ruoyi.business.domain.SqRfidReader">
+        <id property="id" column="id" />
+        <result property="location" column="location" />
+        <result property="status" column="status" />
+        <result property="mark" column="mark" />
+        <result property="createTime" column="create_time" />
+        <result property="name" column="name" />
+        <result property="ip" column="ip" />
+        <result property="username" column="username" />
+        <result property="psw" column="psw" />
+        <result property="port" column="port" />
+        <result property="lUserid" column="l_userid" />
+        <result property="tname" column="tname" />
+        <result property="tnameLabel" column="tname_label" />
+    </resultMap>
+
+    <sql id="selectSqRfidReaderVo">
+        select r.id, r.location, r.status, r.mark, r.create_time, r.name, r.ip,
+               r.username, r.psw, r.port, r.l_userid, r.tname, c.lname as tname_label
+        from yn_rfid_ydq r
+        left join a_camera c on c.id = r.tname
+    </sql>
+
+    <select id="selectSqRfidReaderById" parameterType="Long" resultMap="SqRfidReaderResult">
+        <include refid="selectSqRfidReaderVo"/>
+        where r.id = #{id}
+    </select>
+
+    <select id="selectSqRfidReaderList" parameterType="com.ruoyi.business.domain.SqRfidReader" resultMap="SqRfidReaderResult">
+        <include refid="selectSqRfidReaderVo"/>
+        <where>
+            <if test="location != null and location != ''">and r.location like concat('%', #{location}, '%')</if>
+            <if test="status != null and status != ''">and r.status = #{status}</if>
+            <if test="name != null and name != ''">and r.name like concat('%', #{name}, '%')</if>
+            <if test="ip != null and ip != ''">and r.ip like concat('%', #{ip}, '%')</if>
+            <if test="tname != null and tname != ''">and r.tname = #{tname}</if>
+        </where>
+        order by r.id desc
+    </select>
+
+    <insert id="insertSqRfidReader" parameterType="com.ruoyi.business.domain.SqRfidReader" useGeneratedKeys="true" keyProperty="id">
+        insert into yn_rfid_ydq(location, status, mark, create_time, name, ip, username, psw, port, l_userid, tname)
+        values(#{location}, #{status}, #{mark}, sysdate(), #{name}, #{ip}, #{username}, #{psw}, #{port}, #{lUserid}, #{tname})
+    </insert>
+
+    <update id="updateSqRfidReader" parameterType="com.ruoyi.business.domain.SqRfidReader">
+        update yn_rfid_ydq
+        <set>
+            location = #{location},
+            status = #{status},
+            mark = #{mark},
+            name = #{name},
+            ip = #{ip},
+            username = #{username},
+            psw = #{psw},
+            port = #{port},
+            l_userid = #{lUserid},
+            tname = #{tname}
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSqRfidReaderByIds" parameterType="Long">
+        delete from yn_rfid_ydq where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

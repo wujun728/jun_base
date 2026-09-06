@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.SqTransportCarMapper">
+    <resultMap id="SqTransportCarResult" type="com.ruoyi.business.domain.SqTransportCar">
+        <id property="id" column="id" />
+        <result property="cars" column="cars" />
+        <result property="carsNum" column="cars_num" />
+        <result property="carsXh" column="cars_xh" />
+        <result property="mine" column="mine" />
+        <result property="mineLabel" column="mine_label" />
+        <result property="carsComp" column="cars_comp" />
+        <result property="carsCompLabel" column="cars_comp_label" />
+        <result property="carsW" column="cars_w" />
+        <result property="teamid" column="teamid" />
+        <result property="teamName" column="team_name" />
+        <result property="createUser" column="create_user" />
+        <result property="createDept" column="create_dept" />
+        <result property="createTime" column="create_time" />
+        <result property="updateUser" column="update_user" />
+        <result property="updateTime" column="update_time" />
+        <result property="status" column="status" />
+        <result property="isDeleted" column="is_deleted" />
+        <result property="ctype" column="ctype" />
+        <result property="color" column="color" />
+        <result property="rfid" column="rfid" />
+        <result property="volume" column="volume" />
+    </resultMap>
+
+    <sql id="selectSqTransportCarVo">
+        select c.id, c.cars, c.cars_num, c.cars_xh, c.mine, mine.dept_name as mine_label,
+               c.cars_comp, unit.dept_name as cars_comp_label, c.cars_w, c.teamid,
+               concat(coalesce(team_unit.dept_name, team.tname), '/', coalesce(team_mine.dept_name, team.mine), '/', coalesce(team.tnameuser, '')) as team_name,
+               c.create_user, c.create_dept, c.create_time, c.update_user, c.update_time,
+               c.status, c.is_deleted, c.ctype, c.color, c.rfid, c.volume
+        from a_cars c
+        left join a_team team on team.id = c.teamid
+        left join sys_dept unit on unit.dept_id = c.cars_comp
+        left join sys_dept mine on mine.dept_id = c.mine
+        left join sys_dept team_unit on team_unit.dept_id = team.tname
+        left join sys_dept team_mine on team_mine.dept_id = team.mine
+    </sql>
+
+    <select id="selectSqTransportCarById" parameterType="Long" resultMap="SqTransportCarResult">
+        <include refid="selectSqTransportCarVo"/>
+        where c.id = #{id} and c.is_deleted = '0'
+    </select>
+
+    <select id="selectSqTransportCarList" parameterType="com.ruoyi.business.domain.SqTransportCar" resultMap="SqTransportCarResult">
+        <include refid="selectSqTransportCarVo"/>
+        <where>
+            c.is_deleted = #{isDeleted}
+            <if test="ctype != null and ctype != ''">and c.ctype = #{ctype}</if>
+            <if test="carsNum != null and carsNum != ''">and c.cars_num like concat('%', #{carsNum}, '%')</if>
+            <if test="carsXh != null and carsXh != ''">and c.cars_xh like concat('%', #{carsXh}, '%')</if>
+            <if test="carsComp != null and carsComp != ''">and c.cars_comp = #{carsComp}</if>
+            <if test="mine != null and mine != ''">and c.mine = #{mine}</if>
+            <if test="teamid != null and teamid != ''">and c.teamid = #{teamid}</if>
+            <if test="rfid != null and rfid != ''">and c.rfid like concat('%', #{rfid}, '%')</if>
+            <if test="status != null and status != ''">and c.status = #{status}</if>
+        </where>
+        order by c.id desc
+    </select>
+
+    <insert id="insertSqTransportCar" parameterType="com.ruoyi.business.domain.SqTransportCar">
+        insert into a_cars(cars, cars_num, cars_xh, mine, cars_comp, cars_w, teamid, create_user,
+                           create_dept, create_time, status, is_deleted, ctype, color, rfid, volume)
+        values(#{cars}, #{carsNum}, #{carsXh}, #{mine}, #{carsComp}, #{carsW}, #{teamid}, #{createUser},
+               #{createDept}, sysdate(), #{status}, #{isDeleted}, #{ctype}, #{color}, #{rfid}, #{volume})
+    </insert>
+
+    <update id="updateSqTransportCar" parameterType="com.ruoyi.business.domain.SqTransportCar">
+        update a_cars
+        <set>
+            cars = #{cars},
+            cars_num = #{carsNum},
+            cars_xh = #{carsXh},
+            mine = #{mine},
+            cars_comp = #{carsComp},
+            cars_w = #{carsW},
+            teamid = #{teamid},
+            status = #{status},
+            ctype = #{ctype},
+            color = #{color},
+            rfid = #{rfid},
+            volume = #{volume},
+            <if test="updateUser != null and updateUser != ''">update_user = #{updateUser},</if>
+            update_time = sysdate()
+        </set>
+        where id = #{id} and is_deleted = '0'
+    </update>
+
+    <update id="deleteSqTransportCarByIds" parameterType="Long">
+        update a_cars set is_deleted = '1', update_time = sysdate() where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+</mapper>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysUserUiSettingMapper">
+
+    <resultMap type="SysUserUiSetting" id="SysUserUiSettingResult">
+        <id property="userId" column="user_id" />
+        <id property="configKey" column="config_key" />
+        <result property="configValue" column="config_value" />
+        <result property="updateBy" column="update_by" />
+        <result property="updateTime" column="update_time" />
+    </resultMap>
+
+    <select id="selectByUserId" parameterType="Long" resultMap="SysUserUiSettingResult">
+        select user_id, config_key, config_value, update_by, update_time
+        from sys_user_ui_setting
+        where user_id = #{userId}
+    </select>
+
+    <insert id="upsert" parameterType="SysUserUiSetting">
+        insert into sys_user_ui_setting(user_id, config_key, config_value, update_by, update_time)
+        values(#{userId}, #{configKey}, #{configValue}, #{updateBy}, sysdate())
+        on duplicate key update
+            config_value = values(config_value),
+            update_by = values(update_by),
+            update_time = sysdate()
+    </insert>
+
+</mapper>

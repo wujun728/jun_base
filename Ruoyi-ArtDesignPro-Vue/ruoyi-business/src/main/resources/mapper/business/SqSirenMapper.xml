@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.SqSirenMapper">
+    <resultMap id="SqSirenResult" type="com.ruoyi.business.domain.SqSiren">
+        <id property="id" column="id"/>
+        <result property="location" column="location"/>
+        <result property="ip" column="ip"/>
+        <result property="flag" column="flag"/>
+        <result property="mark" column="mark"/>
+        <result property="cameras" column="cameras"/>
+        <result property="volume" column="volume"/>
+        <result property="isWarning" column="is_warning"/>
+        <result property="name" column="name"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <select id="selectSqSirenById" parameterType="Long" resultMap="SqSirenResult">
+        select id, location, ip, flag, mark, cameras, volume, is_warning, name, status from yn_siren where id = #{id}
+    </select>
+
+    <select id="selectSqSirenList" parameterType="com.ruoyi.business.domain.SqSiren" resultMap="SqSirenResult">
+        select id, location, ip, flag, mark, cameras, volume, is_warning, name, status
+        from yn_siren
+        <where>
+            <if test="location != null and location != ''">and location like concat('%', #{location}, '%')</if>
+            <if test="ip != null and ip != ''">and ip like concat('%', #{ip}, '%')</if>
+            <if test="flag != null and flag != ''">and flag = #{flag}</if>
+            <if test="isWarning != null and isWarning != ''">and is_warning = #{isWarning}</if>
+            <if test="name != null and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="status != null and status != ''">and status = #{status}</if>
+        </where>
+        order by id desc
+    </select>
+
+    <insert id="insertSqSiren" parameterType="com.ruoyi.business.domain.SqSiren">
+        insert into yn_siren(location, ip, flag, mark, cameras, volume, is_warning, name, status)
+        values(#{location}, #{ip}, #{flag}, #{mark}, #{cameras}, #{volume}, #{isWarning}, #{name}, #{status})
+    </insert>
+
+    <update id="updateSqSiren" parameterType="com.ruoyi.business.domain.SqSiren">
+        update yn_siren set location=#{location}, ip=#{ip}, flag=#{flag}, mark=#{mark}, cameras=#{cameras}, volume=#{volume}, is_warning=#{isWarning}, name=#{name}, status=#{status} where id=#{id}
+    </update>
+
+    <delete id="deleteSqSirenByIds" parameterType="Long">
+        delete from yn_siren where id in <foreach collection="array" item="id" open="(" separator="," close=")">#{id}</foreach>
+    </delete>
+</mapper>

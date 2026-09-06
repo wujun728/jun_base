@@ -1,0 +1,41 @@
+name: Bug 报告
+description: 提交可复现的问题
+title: "[Bug] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: 感谢反馈。请提供足够信息，便于快速定位问题。
+  - type: textarea
+    id: description
+    attributes:
+      label: 问题描述
+      description: 请说明实际结果和预期结果。
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 复现步骤
+      placeholder: |
+        1. 登录系统
+        2. 打开某个菜单
+        3. 执行某个操作
+    validations:
+      required: true
+  - type: input
+    id: commit
+    attributes:
+      label: 版本或提交
+      description: 请提供版本号或 Git commit SHA。
+  - type: textarea
+    id: environment
+    attributes:
+      label: 运行环境
+      description: 请填写 JDK、Node.js、浏览器、数据库和操作系统版本。
+  - type: textarea
+    id: logs
+    attributes:
+      label: 日志或截图
+      description: 请移除密码、Token、API Key 等敏感信息。

@@ -1,0 +1,101 @@
+@use './assets/css/index.scss';
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  &:focus {
+    outline: none;
+  }
+}
+
+ul {
+  list-style-type: none;
+}
+a {
+  color: var(--el-text-color-primary);
+  text-decoration: none;
+}
+
+@for $i from 1 through 20 {
+  .mt#{$i} {
+    margin-top: #{$i}px;
+  }
+  .mr#{$i} {
+    margin-right: #{$i}px;
+  }
+  .mb#{$i} {
+    margin-bottom: #{$i}px;
+  }
+  .ml#{$i} {
+    margin-left: #{$i}px;
+  }
+  .pt#{$i} {
+    padding-top: #{$i}px;
+  }
+  .pr#{$i} {
+    padding-right: #{$i}px;
+  }
+  .pb#{$i} {
+    padding-bottom: #{$i}px;
+  }
+  .pl#{$i} {
+    padding-left: #{$i}px;
+  }
+  .order#{$i} {
+    order: #{$i};
+  }
+}
+
+.hoverColor {
+  &:hover {
+    color: var(--el-color-primary) !important;
+  }
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.vp-adaptive-theme {
+  margin: 0 !important;
+  border-radius: 0 !important;
+}
+
+.vp-doc h2 {
+  margin-top: 22px;
+  border-top: none;
+}
+
+.vp-doc [class*='language-'] code {
+  padding-right: 0;
+}
+
+.demo-content {
+  padding: 20px;
+  border: 1px solid var(--el-border-color);
+}
+
+.customLabel {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--el-text-color-primary);
+}
+
+.flex {
+  display: flex;
+}
+
+.el-tag {
+  font-size: 14px;
+}
+.font {
+  font-weight: 500;
+  color: var(--el-text-color-primary);
+  font-size: 14px;
+}
+
+.baseTable {
+  .el-pager {
+    padding-left: 0;
+  }
+}

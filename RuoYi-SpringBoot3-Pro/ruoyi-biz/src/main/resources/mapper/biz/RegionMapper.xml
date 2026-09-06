@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.biz.mapper.RegionMapper">
+
+    <resultMap type="Region" id="RegionResult">
+        <result property="id" column="id" />
+        <result property="parentId" column="parent_id" />
+        <result property="name" column="name" />
+        <result property="level" column="level" />
+        <result property="upperCase" column="upper_case" />
+    </resultMap>
+
+    <sql id="selectRegionVo"> select id, parent_id, name, level, upper_case from biz_region </sql>
+
+    <select id="selectRegionList" parameterType="Region" resultMap="RegionResult">
+        <include refid="selectRegionVo" />
+        <where>
+            <if test="userId != null">and user_id = #{userId}</if>
+            <if test="deptId != null">and
+        dept_id = #{deptId}</if>
+            <if test="status != null">and status = #{status}</if>
+                        <if
+                test="parentId != null  and parentId != ''"> and parent_id = #{parentId} </if>
+                        <if
+                test="name != null  and name != ''"> and name like concat('%', #{name}, '%') </if>
+                        <if
+                test="level != null "> and level = #{level} </if>
+                        <if
+                test="upperCase != null  and upperCase != ''"> and upper_case = #{upperCase} </if>
+            <if
+                test="params.begincreateTime != null and params.begincreateTime != ''"><!-- 开始时间检索 -->
+                <choose>
+                    <when test="'pgsql' == _databaseId || 'hg' == _databaseId"> and
+        create_time::DATE <![CDATA[ >= ]]> concat(#{params.begincreateTime}, ' 00:00:00')::DATE </when>
+                    <otherwise> and date_format(create_time,'%Y-%m-%d') <![CDATA[ >= ]]>
+        date_format(#{params.begincreateTime},'%Y-%m-%d') </otherwise>
+                </choose>
+            </if>
+            <if
+                test="params.endcreateTime != null and params.endcreateTime != ''"><!-- 结束时间检索 -->
+                <choose>
+                    <when test="'pgsql' == _databaseId || 'hg' == _databaseId"> and
+        create_time::DATE <![CDATA[ <= ]]> concat(#{params.endcreateTime}, ' 23:59:59')::DATE </when>
+                    <otherwise> and date_format(create_time,'%Y-%m-%d') <![CDATA[ <= ]]>
+        date_format(#{params.endcreateTime},'%Y-%m-%d') </otherwise>
+                </choose>
+            </if>
+        </where>
+        order by id desc </select>
+</mapper>

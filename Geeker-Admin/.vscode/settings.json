@@ -1,0 +1,97 @@
+{
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.stylelint": "explicit"
+  },
+  "stylelint.enable": true,
+  "stylelint.validate": ["css", "less", "postcss", "scss", "vue", "sass", "html"],
+  "files.eol": "\n",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[less]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "cSpell.words": [
+    "AMAP",
+    "apng",
+    "axios",
+    "Biao",
+    "brotli",
+    "cascader",
+    "commitlint",
+    "contentleft",
+    "contentright",
+    "CSDN",
+    "daterange",
+    "datetimerange",
+    "echarts",
+    "fangda",
+    "geeker",
+    "Gitee",
+    "hexs",
+    "huiche",
+    "iconfont",
+    "juejin",
+    "liquidfill",
+    "longpress",
+    "monthrange",
+    "nprogress",
+    "officedocument",
+    "openxmlformats",
+    "Pageable",
+    "persistedstate",
+    "pinia",
+    "pjpeg",
+    "Prefixs",
+    "screenfull",
+    "sortablejs",
+    "sousuo",
+    "spreadsheetml",
+    "styl",
+    "stylelint",
+    "stylelintignore",
+    "stylelintrc",
+    "suoxiao",
+    "truetype",
+    "tuichu",
+    "unplugin",
+    "unref",
+    "VITE",
+    "vuedraggable",
+    "vueuse",
+    "Vuex",
+    "wangeditor",
+    "xiala",
+    "xiaoxi",
+    "Yahei",
+    "yiwen",
+    "zhongyingwen",
+    "zhuti"
+  ]
+}

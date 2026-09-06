@@ -1,0 +1,28 @@
+name: 功能建议
+description: 提交功能改进建议
+title: "[Feature] "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: scenario
+    attributes:
+      label: 使用场景
+      description: 请说明当前遇到的问题或希望提升的体验。
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 建议方案
+      description: 请描述期望行为、界面或接口变化。
+    validations:
+      required: true
+  - type: dropdown
+    id: contribution
+    attributes:
+      label: 是否愿意提交 PR
+      options:
+        - 愿意
+        - 暂时不能
+        - 需要讨论后确认

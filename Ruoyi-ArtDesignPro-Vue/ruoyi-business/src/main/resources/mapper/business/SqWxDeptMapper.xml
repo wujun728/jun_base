@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.SqWxDeptMapper">
+    <resultMap id="SqWxDeptResult" type="com.ruoyi.business.domain.SqWxDept">
+        <id property="deptId" column="dept_id" />
+        <result property="pid" column="pid" />
+        <result property="subCount" column="sub_count" />
+        <result property="name" column="name" />
+        <result property="deptSort" column="dept_sort" />
+        <result property="enabled" column="enabled" />
+        <result property="createBy" column="create_by" />
+        <result property="updateBy" column="update_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+        <result property="type" column="type" />
+        <result property="parentName" column="parent_name" />
+    </resultMap>
+
+    <sql id="selectSqWxDeptVo">
+        select d.dept_id, d.pid, d.sub_count, d.name, d.dept_sort, d.enabled, d.create_by,
+               d.update_by, d.create_time, d.update_time, d.type, p.name as parent_name
+        from yn_wx_dept d
+        left join yn_wx_dept p on p.dept_id = d.pid
+    </sql>
+
+    <select id="selectSqWxDeptById" parameterType="Long" resultMap="SqWxDeptResult">
+        <include refid="selectSqWxDeptVo"/>
+        where d.dept_id = #{deptId}
+    </select>
+
+    <select id="selectSqWxDeptList" parameterType="com.ruoyi.business.domain.SqWxDept" resultMap="SqWxDeptResult">
+        <include refid="selectSqWxDeptVo"/>
+        <where>
+            <if test="pid != null">and d.pid = #{pid}</if>
+            <if test="name != null and name != ''">and d.name like concat('%', #{name}, '%')</if>
+            <if test="enabled != null and enabled != ''">and d.enabled = #{enabled}</if>
+        </where>
+        order by cast(ifnull(d.dept_sort, '999') as unsigned), d.dept_id
+    </select>
+
+    <insert id="insertSqWxDept" parameterType="com.ruoyi.business.domain.SqWxDept" useGeneratedKeys="true" keyProperty="deptId">
+        insert into yn_wx_dept(pid, sub_count, name, dept_sort, enabled, create_by, create_time, type)
+        values(#{pid}, '0', #{name}, #{deptSort}, #{enabled}, #{createBy}, sysdate(), #{type})
+    </insert>
+
+    <update id="updateSqWxDept" parameterType="com.ruoyi.business.domain.SqWxDept">
+        update yn_wx_dept
+        <set>
+            pid = #{pid},
+            name = #{name},
+            dept_sort = #{deptSort},
+            enabled = #{enabled},
+            type = #{type},
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </set>
+        where dept_id = #{deptId}
+    </update>
+
+    <delete id="deleteSqWxDeptByIds" parameterType="Long">
+        delete from yn_wx_dept where dept_id in
+        <foreach collection="array" item="deptId" open="(" separator="," close=")">#{deptId}</foreach>
+    </delete>
+
+    <select id="countSqWxDeptByPid" parameterType="Long" resultType="int">
+        select count(1) from yn_wx_dept where pid = #{pid}
+    </select>
+
+    <update id="updateSubCount" parameterType="Long">
+        update yn_wx_dept set sub_count = (select count(1) from (select dept_id from yn_wx_dept where pid = #{deptId}) t)
+        where dept_id = #{deptId}
+    </update>
+</mapper>

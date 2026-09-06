@@ -1,0 +1,43 @@
+export default (otherConfig = {}) => {
+  return {
+    formItems: [
+#foreach($column in $columns)
+#if($column.query)
+#set($dictType=$column.dictType)
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#if($column.htmlType == "input")
+      {
+        label: '${comment}',
+        field: '${column.javaField}',
+        type: 'input',
+      },
+#elseif(($column.htmlType == "select" || $column.htmlType == "radio") && "" != $dictType)
+      {
+        label: '${comment}',
+        field: '${column.javaField}',
+        type: '${column.htmlType}',
+        options: [],
+      },
+#elseif($column.htmlType == "datetime" && $column.queryType != "BETWEEN")
+      {
+        label: '${comment}',
+        field: '${column.javaField}',
+        type: 'datepicker',
+        config: {
+          type: 'daterange',
+          valueFormat: 'YYYY-MM-DD',
+          format: 'YYYY/MM/DD',
+        },
+      },
+#end
+#end
+#end
+    ],
+  }
+}

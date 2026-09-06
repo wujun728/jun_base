@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.SqLevelLogMapper">
+    <resultMap id="SqLevelLogResult" type="com.ruoyi.business.domain.SqLevelLog">
+        <id property="id" column="id" />
+        <result property="times" column="times" />
+        <result property="dates" column="dates" />
+        <result property="lname" column="lname" />
+        <result property="chuteName" column="chute_name" />
+        <result property="cars" column="cars" />
+        <result property="heights" column="heights" />
+    </resultMap>
+
+    <sql id="selectSqLevelLogVo">
+        select l.id, l.times, l.dates, l.lname, coalesce(c.lname, l.lname) as chute_name, l.cars, l.heights
+        from yn_logs_level l
+        left join a_camera c on c.id = l.lname
+    </sql>
+
+    <select id="selectSqLevelLogById" parameterType="Long" resultMap="SqLevelLogResult">
+        <include refid="selectSqLevelLogVo"/>
+        where l.id = #{id}
+    </select>
+
+    <select id="selectSqLevelLogList" parameterType="com.ruoyi.business.domain.SqLevelLog" resultMap="SqLevelLogResult">
+        <include refid="selectSqLevelLogVo"/>
+        <where>
+            <if test="lname != null and lname != ''">and l.lname = #{lname}</if>
+            <if test="times != null">and l.times = #{times}</if>
+            <if test="beginTime != null and beginTime != ''">and l.dates &gt;= #{beginTime}</if>
+            <if test="endTime != null and endTime != ''">and l.dates &lt;= #{endTime}</if>
+        </where>
+        order by l.dates desc, l.times desc, l.id desc
+    </select>
+
+    <insert id="insertSqLevelLog" parameterType="com.ruoyi.business.domain.SqLevelLog">
+        insert into yn_logs_level(times, dates, lname, cars, heights)
+        values(#{times}, #{dates}, #{lname}, #{cars}, #{heights})
+    </insert>
+
+    <update id="updateSqLevelLog" parameterType="com.ruoyi.business.domain.SqLevelLog">
+        update yn_logs_level
+        <set>
+            times = #{times}, dates = #{dates}, lname = #{lname}, cars = #{cars}, heights = #{heights}
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSqLevelLogByIds" parameterType="Long">
+        delete from yn_logs_level where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

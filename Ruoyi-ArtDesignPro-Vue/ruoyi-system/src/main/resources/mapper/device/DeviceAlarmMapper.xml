@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.device.DeviceAlarmMapper">
+    <resultMap id="DeviceAlarmResult" type="com.ruoyi.system.domain.device.DeviceAlarm">
+        <id property="alarmId" column="alarm_id" />
+        <result property="alarmName" column="alarm_name" />
+        <result property="alarmCode" column="alarm_code" />
+        <result property="alarmType" column="alarm_type" />
+        <result property="ipAddr" column="ip_addr" />
+        <result property="installPosition" column="install_position" />
+        <result property="chuteId" column="chute_id" />
+        <result property="chuteName" column="chute_name" />
+        <result property="deptId" column="dept_id" />
+        <result property="deptName" column="dept_name" />
+        <result property="status" column="status" />
+        <result property="delFlag" column="del_flag" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateBy" column="update_by" />
+        <result property="updateTime" column="update_time" />
+        <result property="remark" column="remark" />
+    </resultMap>
+
+    <sql id="selectDeviceAlarmVo">
+        select a.alarm_id, a.alarm_name, a.alarm_code, a.alarm_type, a.ip_addr,
+               a.install_position, a.chute_id, c.chute_name, a.dept_id, d.dept_name,
+               a.status, a.del_flag, a.create_by, a.create_time, a.update_by,
+               a.update_time, a.remark
+        from device_alarm a
+        left join device_chute c on c.chute_id = a.chute_id
+        left join sys_dept d on d.dept_id = a.dept_id
+    </sql>
+
+    <select id="selectDeviceAlarmById" parameterType="Long" resultMap="DeviceAlarmResult">
+        <include refid="selectDeviceAlarmVo"/>
+        where a.alarm_id = #{alarmId} and a.del_flag = '0'
+    </select>
+
+    <select id="selectDeviceAlarmList" parameterType="com.ruoyi.system.domain.device.DeviceAlarm" resultMap="DeviceAlarmResult">
+        <include refid="selectDeviceAlarmVo"/>
+        <where>
+            a.del_flag = '0'
+            <if test="alarmName != null and alarmName != ''">and a.alarm_name like concat('%', #{alarmName}, '%')</if>
+            <if test="alarmCode != null and alarmCode != ''">and a.alarm_code like concat('%', #{alarmCode}, '%')</if>
+            <if test="ipAddr != null and ipAddr != ''">and a.ip_addr like concat('%', #{ipAddr}, '%')</if>
+            <if test="alarmType != null and alarmType != ''">and a.alarm_type = #{alarmType}</if>
+            <if test="chuteId != null">and a.chute_id = #{chuteId}</if>
+            <if test="deptId != null">and a.dept_id = #{deptId}</if>
+            <if test="status != null and status != ''">and a.status = #{status}</if>
+            ${params.dataScope}
+        </where>
+        order by a.alarm_id desc
+    </select>
+
+    <insert id="insertDeviceAlarm" parameterType="com.ruoyi.system.domain.device.DeviceAlarm" useGeneratedKeys="true" keyProperty="alarmId">
+        insert into device_alarm(alarm_name, alarm_code, alarm_type, ip_addr, install_position, chute_id, dept_id, status, del_flag, create_by, create_time, remark)
+        values(#{alarmName}, #{alarmCode}, #{alarmType}, #{ipAddr}, #{installPosition}, #{chuteId}, #{deptId}, #{status}, '0', #{createBy}, sysdate(), #{remark})
+    </insert>
+
+    <update id="updateDeviceAlarm" parameterType="com.ruoyi.system.domain.device.DeviceAlarm">
+        update device_alarm
+        <set>
+            alarm_name = #{alarmName},
+            alarm_code = #{alarmCode},
+            alarm_type = #{alarmType},
+            ip_addr = #{ipAddr},
+            install_position = #{installPosition},
+            chute_id = #{chuteId},
+            dept_id = #{deptId},
+            status = #{status},
+            remark = #{remark},
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </set>
+        where alarm_id = #{alarmId}
+    </update>
+
+    <update id="deleteDeviceAlarmByIds" parameterType="Long">
+        update device_alarm set del_flag = '2' where alarm_id in
+        <foreach collection="array" item="alarmId" open="(" separator="," close=")">
+            #{alarmId}
+        </foreach>
+    </update>
+</mapper>

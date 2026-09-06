@@ -1,0 +1,308 @@
+<template>
+  <a-modal 
+    v-model:visible="pageDataObj.visible" 
+    :title="pageDataObj.title" 
+    width="60%" 
+    :destroyOnClose="true" 
+    @ok="clickModalOk" 
+    @cancel="handleModalCancel"
+  >
+    <a-form ref="formRef" :model="addUpdateFormObj.data" :rules="addUpdateFormObj.rules" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+      <a-row :gutter="16">
+#foreach($column in $columns)
+#if($column.insert || $column.edit)
+#set($field=$column.javaField)
+#set($dictType=$column.dictType)
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#if(!$column.pk)
+#if($column.htmlType == "input")
+        <a-col span="12">
+          <a-form-item name="${field}" label="${comment}" :rules="[{required: ${column.required}, message: '${comment}不能为空！'}]">
+            <a-input v-model:value="addUpdateFormObj.data.${field}" placeholder="请输入${comment}" />
+          </a-form-item>
+        </a-col>
+#elseif($column.htmlType == "imageUpload")
+        <a-col span="12">
+          <a-form-item name="${field}" label="${comment}">
+            <image-upload v-model:value="addUpdateFormObj.data.${field}" />
+          </a-form-item>
+        </a-col>
+#elseif($column.htmlType == "fileUpload")
+        <a-col span="12">
+          <a-form-item name="${field}" label="${comment}">
+            <file-upload v-model:value="addUpdateFormObj.data.${field}" />
+          </a-form-item>
+        </a-col>
+#elseif($column.htmlType == "editor")
+        <a-col span="24">
+          <a-form-item name="${field}" label="${comment}" :label-col="{ span: 3 }" :wrapper-col="{ span: 21 }">
+            <WangEditor v-model:value="addUpdateFormObj.data.${field}" :height="300" />
+          </a-form-item>
+        </a-col>
+#elseif($column.htmlType == "select" && "" != $dictType)
+        <a-col span="12">
+          <a-form-item name="${field}" label="${comment}" :rules="[{required: ${column.required}, message: '请选择${comment}！'}]">
+            <a-select v-model:value="addUpdateFormObj.data.${field}" placeholder="请选择${comment}">
+              <a-select-option v-for="dict in ${field}Options" :key="dict.value" :value="dict.value">
+                {{ dict.label }}
+              </a-select-option>
+            </a-select>
+          </a-form-item>
+        </a-col>
+#elseif($column.htmlType == "select" && $dictType)
+        <a-col span="12">
+          <a-form-item name="${field}" label="${comment}" :rules="[{required: ${column.required}, message: '请选择${comment}！'}]">
+            <a-select v-model:value="addUpdateFormObj.data.${field}" placeholder="请选择${comment}">
+              <a-select-option value="">请选择字典生成</a-select-option>
+            </a-select>
+          </a-form-item>
+        </a-col>
+#elseif($column.htmlType == "checkbox" && "" != $dictType)
+        <a-col span="12">
+          <a-form-item name="${field}" label="${comment}">
+            <a-checkbox-group v-model:value="addUpdateFormObj.data.${field}">
+              <a-checkbox v-for="dict in ${field}Options" :key="dict.value" :value="dict.value">
+                {{ dict.label }}
+              </a-checkbox>
+            </a-checkbox-group>
+          </a-form-item>
+        </a-col>
+#elseif($column.htmlType == "checkbox" && $dictType)
+        <a-col span="12">
+          <a-form-item name="${field}" label="${comment}">
+            <a-checkbox-group v-model:value="addUpdateFormObj.data.${field}">
+              <a-checkbox>请选择字典生成</a-checkbox>
+            </a-checkbox-group>
+          </a-form-item>
+        </a-col>
+#elseif($column.htmlType == "radio" && "" != $dictType)
+        <a-col span="12">
+          <a-form-item name="${field}" label="${comment}" :rules="[{required: ${column.required}, message: '请选择${comment}！'}]">
+            <a-radio-group v-model:value="addUpdateFormObj.data.${field}">
+              <a-radio v-for="dict in ${field}Options" :key="dict.value" :value="dict.value">
+                {{ dict.label }}
+              </a-radio>
+            </a-radio-group>
+          </a-form-item>
+        </a-col>
+#elseif($column.htmlType == "radio" && $dictType)
+        <a-col span="12">
+          <a-form-item name="${field}" label="${comment}" :rules="[{required: ${column.required}, message: '请选择${comment}！'}]">
+            <a-radio-group v-model:value="addUpdateFormObj.data.${field}">
+              <a-radio value="">请选择字典生成</a-radio>
+            </a-radio-group>
+          </a-form-item>
+        </a-col>
+#elseif($column.htmlType == "datetime")
+        <a-col span="12">
+          <a-form-item name="${field}" label="${comment}" :rules="[{required: ${column.required}, message: '请选择${comment}！'}]">
+            <a-date-picker 
+              v-model:value="addUpdateFormObj.data.${field}" 
+              style="width: 100%" 
+              format="YYYY-MM-DD HH:mm:ss" 
+              placeholder="请选择${comment}" 
+            />
+          </a-form-item>
+        </a-col>
+#elseif($column.htmlType == "textarea")
+        <a-col span="24">
+          <a-form-item name="${field}" label="${comment}" :label-col="{ span: 3 }" :wrapper-col="{ span: 21 }">
+            <a-textarea v-model:value="addUpdateFormObj.data.${field}" placeholder="请输入${comment}" :rows="4" />
+          </a-form-item>
+        </a-col>
+#end
+#end
+#end
+#end
+#if($tplCategory == 'tree')
+        <a-col span="12">
+          <a-form-item name="${treeParentCode}" label="上级${functionName}">
+            <a-tree-select
+              v-model:value="addUpdateFormObj.data.${treeParentCode}"
+              style="width: 100%"
+              :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+              :tree-data="${businessName}Options"
+              placeholder="选择上级${functionName}"
+              tree-default-expand-all
+              :field-names="{ children: 'children', label: '${treeName}', value: '${treeCode}' }"
+            />
+          </a-form-item>
+        </a-col>
+#end
+      </a-row>
+    </a-form>
+  </a-modal>
+</template>
+
+<script setup>
+import { getCurrentInstance, reactive, ref } from 'vue';
+import { message } from 'ant-design-vue';
+import dayjs from 'dayjs';
+import { get${BusinessName}, add${BusinessName}, update${BusinessName} } from '@/api/${moduleName}/${businessName}';
+#if($table.sub)
+import WangEditor from '@/components/editor/WangEditor.vue';
+#end
+
+// 获取当前实例
+const { proxy } = getCurrentInstance();
+
+// Props
+const props = defineProps({
+#foreach ($column in $columns)
+#if(${column.dictType} != '')
+  ${column.javaField}Options: {
+    type: Array,
+    default: () => []
+  },
+#end
+#end
+#if($tplCategory == 'tree')
+  ${businessName}Options: {
+    type: Array,
+    default: () => []
+  },
+#end
+});
+
+// Emits
+const emit = defineEmits(['success']);
+
+// 组件引用
+const formRef = ref();
+
+// 页面数据对象
+const pageDataObj = reactive({
+  visible: false,
+  title: '',
+  type: ''
+});
+
+// 表单数据对象
+const addUpdateFormObj = reactive({
+  data: {
+#foreach ($column in $columns)
+#if($column.insert || $column.edit)
+#if(!$column.pk)
+    ${column.javaField}: undefined,
+#end
+#end
+#end
+  },
+  rules: {
+#foreach ($column in $columns)
+#if($column.insert || $column.edit)
+#if($column.required && !$column.pk)
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+    ${column.javaField}: [
+      { required: true, message: '${comment}不能为空', trigger: 'blur' }
+    ],
+#end
+#end
+#end
+  }
+});
+
+// 打开弹窗
+const open = async (type, record = {}) => {
+  pageDataObj.type = type;
+  pageDataObj.title = type === 'add' ? '新增${functionName}' : '编辑${functionName}';
+  pageDataObj.visible = true;
+
+  // 重置表单
+  resetForm();
+
+  if (type === 'edit' && record.${pkColumn.javaField}) {
+    try {
+      const response = await get${BusinessName}(record.${pkColumn.javaField});
+      const data = response.data;
+
+      // 转换日期字符串为dayjs对象
+      Object.keys(data).forEach(key => {
+        const value = data[key];
+        // 检查是否是日期时间字符串格式 (YYYY-MM-DD HH:mm:ss)
+        if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(value)) {
+          data[key] = dayjs(value);
+        }
+      });
+
+      Object.assign(addUpdateFormObj.data, data);
+    } catch (error) {
+      console.error('获取数据失败:', error);
+      message.error('获取数据失败');
+    }
+  } else if (type === 'add' && record) {
+    // 新增时可能需要设置父级ID等
+    Object.assign(addUpdateFormObj.data, record);
+  }
+};
+
+// 重置表单
+const resetForm = () => {
+  addUpdateFormObj.data = {
+#foreach ($column in $columns)
+#if($column.insert || $column.edit)
+#if(!$column.pk)
+    ${column.javaField}: undefined,
+#end
+#end
+#end
+  };
+  formRef.value?.resetFields();
+};
+
+// 确定按钮点击
+const clickModalOk = async () => {
+  try {
+    await formRef.value.validate();
+
+    // 转换dayjs对象为字符串格式
+    const submitData = { ...addUpdateFormObj.data };
+    Object.keys(submitData).forEach(key => {
+      const value = submitData[key];
+      // 如果是dayjs对象，转换为字符串
+      if (value && typeof value === 'object' && value.format) {
+        submitData[key] = value.format('YYYY-MM-DD HH:mm:ss');
+      }
+    });
+
+    if (pageDataObj.type === 'add') {
+      await add${BusinessName}(submitData);
+      message.success('新增成功');
+    } else {
+      await update${BusinessName}(submitData);
+      message.success('修改成功');
+    }
+
+    pageDataObj.visible = false;
+    emit('success');
+  } catch (error) {
+    console.error('操作失败:', error);
+  }
+};
+
+// 取消按钮点击
+const handleModalCancel = () => {
+  pageDataObj.visible = false;
+  resetForm();
+};
+
+// 暴露方法
+defineExpose({
+  open
+});
+</script>
+
+<style lang="less" scoped>
+// 自定义样式
+</style>

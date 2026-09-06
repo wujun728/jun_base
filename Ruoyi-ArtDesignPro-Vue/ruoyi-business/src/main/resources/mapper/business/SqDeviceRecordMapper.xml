@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.SqDeviceRecordMapper">
+    <resultMap id="SqDeviceRecordResult" type="com.ruoyi.business.domain.SqDeviceRecord">
+        <id property="id" column="id" />
+        <result property="channelId" column="channel_id" />
+        <result property="lname" column="lname" />
+        <result property="isOpen" column="is_open" />
+        <result property="carmip" column="carmip" />
+        <result property="createTime" column="create_time" />
+        <result property="type" column="type" />
+    </resultMap>
+
+    <sql id="selectSqDeviceRecordVo">
+        select id, channel_id, lname, is_open, carmip, create_time, type
+        from yn_camera_record
+    </sql>
+
+    <select id="selectSqDeviceRecordById" parameterType="Long" resultMap="SqDeviceRecordResult">
+        <include refid="selectSqDeviceRecordVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectSqDeviceRecordList" parameterType="com.ruoyi.business.domain.SqDeviceRecord" resultMap="SqDeviceRecordResult">
+        <include refid="selectSqDeviceRecordVo"/>
+        <where>
+            <if test="channelId != null and channelId != ''">and channel_id like concat('%', #{channelId}, '%')</if>
+            <if test="lname != null and lname != ''">and lname = #{lname}</if>
+            <if test="isOpen != null and isOpen != ''">and is_open = #{isOpen}</if>
+            <if test="carmip != null and carmip != ''">and carmip like concat('%', #{carmip}, '%')</if>
+            <if test="type != null and type != ''">and type = #{type}</if>
+            <if test="beginTime != null and beginTime != ''">and create_time &gt;= #{beginTime}</if>
+            <if test="endTime != null and endTime != ''">and create_time &lt;= #{endTime}</if>
+        </where>
+        order by create_time desc, id desc
+    </select>
+
+    <insert id="insertSqDeviceRecord" parameterType="com.ruoyi.business.domain.SqDeviceRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into yn_camera_record(channel_id, lname, is_open, carmip, create_time, type)
+        values(#{channelId}, #{lname}, #{isOpen}, #{carmip}, sysdate(), #{type})
+    </insert>
+
+    <update id="updateSqDeviceRecord" parameterType="com.ruoyi.business.domain.SqDeviceRecord">
+        update yn_camera_record
+        <set>
+            channel_id = #{channelId},
+            lname = #{lname},
+            is_open = #{isOpen},
+            carmip = #{carmip},
+            type = #{type}
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSqDeviceRecordByIds" parameterType="Long">
+        delete from yn_camera_record where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

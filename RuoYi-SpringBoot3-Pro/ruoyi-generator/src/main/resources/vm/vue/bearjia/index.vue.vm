@@ -1,0 +1,293 @@
+<template>
+  <div class="app-container">
+    <ProTable
+      ref="proTableRef"
+      :api="tableApi"
+      :columns="columns"
+      :searchFields="searchFields"
+      :initialSearchParams="initialSearchParams"
+      :exportConfig="exportConfig"
+#if($tplCategory == 'tree')
+      :isTreeTable="true"
+#end
+      rowKey="${pkColumn.javaField}"
+    >
+      <!-- 自定义操作按钮 -->
+      <template #actions="{ selectedRowKeys, selectedRows }">
+#set($isInsert=0)
+#set($isEdit=0)
+#foreach($column in $columns)
+#if($column.insert)
+#set($isInsert=1)
+#end
+#if($column.edit)
+#set($isEdit=1)
+#end
+#end
+#if($isInsert == 1)
+        <a-button type="primary" @click="handleAdd" v-hasPermi="['${moduleName}:${businessName}:add']">
+          <BearJiaIcon icon="plus-outlined" />
+          新增
+        </a-button>
+#end
+#if($isEdit == 1)
+        <a-button 
+          type="primary" 
+          :disabled="selectedRowKeys.length !== 1" 
+          @click="handleEdit(selectedRows[0])" 
+          v-hasPermi="['${moduleName}:${businessName}:edit']"
+        >
+          <BearJiaIcon icon="edit-outlined" />
+          修改
+        </a-button>
+#end
+        <a-button 
+          type="primary" 
+          danger 
+          :disabled="selectedRowKeys.length === 0" 
+          @click="handleDelete(selectedRowKeys)" 
+          v-hasPermi="['${moduleName}:${businessName}:remove']"
+        >
+          <BearJiaIcon icon="delete-outlined" />
+          删除
+        </a-button>
+      </template>
+
+      <!-- 自定义列渲染 -->
+      <template #bodyCell="{ column, record }">
+#foreach($column in $columns)
+#set($javaField=$column.javaField)
+#if($column.list && $column.htmlType == "datetime")
+        <template v-if="column.dataIndex === '${javaField}'">
+          {{ BearJiaUtil.formatTime(record.${javaField}) }}
+        </template>
+#elseif($column.list && "" != $column.dictType)
+        <template v-if="column.dataIndex === '${javaField}'">
+          <dict-tag :options="${column.javaField}Options" :value="record.${javaField}" />
+        </template>
+#end
+#end
+        <!-- 操作列 -->
+        <template v-if="column.dataIndex === 'action'">
+          <TableActionBar
+              :hasDelete="false"
+              :hasEdit="true"
+              :hasView="true"
+              :record="record"
+              @edit="handleEdit"
+              @view="handleView"/>
+        </template>
+      </template>
+    </ProTable>
+
+#if($isInsert == 1 || $isEdit == 1)
+    <!-- 新增/编辑弹窗 -->
+    <AddUpdateModal
+      ref="addUpdateModalRef"
+#foreach ($column in $columns)
+#if(${column.dictType} != '')
+      :${column.javaField}Options="${column.javaField}Options"
+#end
+#end
+#if($tplCategory == 'tree')
+      :${businessName}Options="${businessName}Options"
+#end
+      @success="refreshTable"
+    />
+#end
+
+    <!-- 详情弹窗 -->
+    <DetailModal ref="detailModalRef" />
+  </div>
+</template>
+
+<script setup>
+import { getCurrentInstance, ref, computed } from 'vue';
+import { message } from 'ant-design-vue';
+import ProTable from '@/components/BearJiaProTable/index.vue';
+import TableActionBar from '@/components/TableActionBar/index.vue';
+import { BearJiaIcon } from '@/utils/BearJiaIcon.js';
+import BearJiaUtil from '@/utils/BearJiaUtil.js';
+
+#if($isInsert == 1 || $isEdit == 1)
+import AddUpdateModal from './addUpdateModal.vue';
+#end
+import DetailModal from './detailModal.vue';
+import { list${BusinessName}, del${BusinessName} } from '@/api/${moduleName}/${businessName}';
+
+// 获取当前实例
+const { proxy } = getCurrentInstance();
+
+// 字典数据
+#if(${dicts} != '')
+const { ${dicts} } = proxy.useDict(${dicts});
+#end
+#foreach ($column in $columns)
+#if(${column.dictType} != '')
+const ${column.javaField}Options = ref(${column.javaField});
+#end
+#end
+
+// 组件引用
+const proTableRef = ref();
+const addUpdateModalRef = ref();
+const detailModalRef = ref();
+
+#if($tplCategory == 'tree')
+// 树形数据选项
+const ${businessName}Options = ref([]);
+#end
+
+// 表格API配置
+const tableApi = {
+  list: list${BusinessName},
+  delete: del${BusinessName},
+#if($tplCategory == 'tree')
+  processListData: (data) => {
+    return BearJiaUtil.handleTree(data, '${treeCode}', '${treeParentCode}', 'children');
+  }
+#end
+};
+
+// 初始搜索参数
+const initialSearchParams = {
+#foreach($column in $columns)
+#if($column.query)
+  ${column.javaField}: null,
+#end
+#end
+};
+
+// 导出配置
+const exportConfig = {
+  url: '${moduleName}/${businessName}/export',
+  fileName: '${functionName}数据'
+};
+
+// 搜索字段配置
+const searchFields = computed(() => [
+#foreach($column in $columns)
+#if($column.query)
+#set($dictType=$column.dictType)
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#if($column.htmlType == "input")
+  {name: '${column.javaField}', label: '${comment}', type: 'input'},
+#elseif(($column.htmlType == "select" || $column.htmlType == "radio") && "" != $dictType)
+  {name: '${column.javaField}', label: '${comment}', type: 'select', options: ${column.javaField}.value},
+#elseif($column.htmlType == "datetime" && $column.queryType != "BETWEEN")
+  {name: '${column.javaField}', label: '${comment}', type: 'date'},
+  {name: '${column.javaField}', label: '${comment}', type: 'daterange'},
+#end
+#end
+#end
+]);
+
+// 表格列配置
+const columns = [
+#foreach($column in $columns)
+#set($javaField=$column.javaField)
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#if($column.list)
+  {
+    title: '${comment}',
+    dataIndex: '${javaField}',
+    key: '${javaField}',
+#if($column.pk)
+    width: 80,
+#end
+    align: 'center',
+    ellipsis: true
+  },
+#end
+#end
+  {
+    title: '操作',
+    dataIndex: 'action',
+    key: 'action',
+    width: 200,
+    align: 'center',
+    fixed: 'right'
+  }
+];
+
+// 新增
+const handleAdd = () => {
+#if($isInsert == 1)
+  addUpdateModalRef.value.open('add');
+#end
+};
+
+// 编辑
+const handleEdit = (record) => {
+#if($isEdit == 1)
+  addUpdateModalRef.value.open('edit', record);
+#end
+};
+
+#if($tplCategory == 'tree' && $isInsert == 1)
+// 新增下级
+const handleAddChild = (record) => {
+  addUpdateModalRef.value.open('add', { ${treeParentCode}: record.${treeCode} });
+};
+#end
+
+// 查看详情
+const handleView = (record) => {
+  detailModalRef.value.open(record);
+};
+
+// 删除
+const handleDelete = async (ids) => {
+  try {
+    await del${BusinessName}(ids.join(','));
+    message.success('删除成功');
+    refreshTable();
+  } catch (error) {
+    console.error('删除失败:', error);
+  }
+};
+
+// 刷新表格
+const refreshTable = () => {
+  proTableRef.value.reload();
+};
+
+#if($tplCategory == 'tree')
+// 获取树形选择数据
+const getTreeSelect = async () => {
+  try {
+    const response = await list${BusinessName}();
+    const treeData = BearJiaUtil.handleTree(response.data || response, '${treeCode}', '${treeParentCode}', 'children');
+    ${businessName}Options.value = [
+      {
+        ${treeCode}: 0,
+        ${treeName}: '顶级节点',
+        children: treeData
+      }
+    ];
+  } catch (error) {
+    console.error('获取树形数据失败:', error);
+  }
+};
+
+// 初始化时获取树形数据
+getTreeSelect();
+#end
+</script>
+
+<style lang="less" scoped>
+.app-container {
+  padding: 16px;
+}
+</style>

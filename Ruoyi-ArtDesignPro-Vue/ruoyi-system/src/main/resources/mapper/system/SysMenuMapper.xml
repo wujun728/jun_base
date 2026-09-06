@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysMenuMapper">
+
+	<resultMap type="SysMenu" id="SysMenuResult">
+		<id     property="menuId"         column="menu_id"        />
+		<result property="menuName"       column="menu_name"      />
+		<result property="parentName"     column="parent_name"    />
+		<result property="parentId"       column="parent_id"      />
+		<result property="orderNum"       column="order_num"      />
+		<result property="path"           column="path"           />
+		<result property="component"      column="component"      />
+		<result property="query"          column="query"          />
+		<result property="routeName"      column="route_name"     />
+		<result property="isFrame"        column="is_frame"       />
+		<result property="isCache"        column="is_cache"       />
+		<result property="menuType"       column="menu_type"      />
+		<result property="visible"        column="visible"        />
+		<result property="status"         column="status"         />
+		<result property="perms"          column="perms"          />
+		<result property="icon"           column="icon"           />
+		<result property="externalLink"   column="external_link"  />
+		<result property="showBadge"      column="show_badge"     />
+		<result property="showTextBadge"  column="show_text_badge"/>
+		<result property="isHideTab"      column="is_hide_tab"    />
+		<result property="fixedTab"       column="fixed_tab"      />
+		<result property="activePath"     column="active_path"    />
+		<result property="isFullPage"     column="is_full_page"   />
+		<result property="newTab"         column="new_tab"        />
+		<result property="createBy"       column="create_by"      />
+		<result property="createTime"     column="create_time"    />
+		<result property="updateTime"     column="update_time"    />
+		<result property="updateBy"       column="update_by"      />
+		<result property="remark"         column="remark"         />
+	</resultMap>
+
+	<sql id="selectMenuVo">
+        select menu_id, menu_name, parent_id, order_num, path, component, `query`, route_name, is_frame, is_cache, menu_type, visible, status, ifnull(perms,'') as perms, icon, external_link, show_badge, show_text_badge, is_hide_tab, fixed_tab, active_path, is_full_page, new_tab, create_time 
+		from sys_menu
+    </sql>
+    
+    <select id="selectMenuList" parameterType="SysMenu" resultMap="SysMenuResult">
+		<include refid="selectMenuVo"/>
+		<where>
+			<if test="menuName != null and menuName != ''">
+				AND menu_name like concat('%', #{menuName}, '%')
+			</if>
+			<if test="visible != null and visible != ''">
+				AND visible = #{visible}
+			</if>
+			<if test="status != null and status != ''">
+				AND status = #{status}
+			</if>
+		</where>
+		order by parent_id, order_num
+	</select>
+	
+	<select id="selectMenuTreeAll" resultMap="SysMenuResult">
+		select distinct m.menu_id, m.parent_id, m.menu_name, m.path, m.component, m.`query`, m.route_name, m.visible, m.status, ifnull(m.perms,'') as perms, m.is_frame, m.is_cache, m.menu_type, m.icon, m.external_link, m.show_badge, m.show_text_badge, m.is_hide_tab, m.fixed_tab, m.active_path, m.is_full_page, m.new_tab, m.order_num, m.create_time
+		from sys_menu m where m.menu_type in ('M', 'C', 'F') and m.status = 0
+		order by m.parent_id, m.order_num
+	</select>
+	
+	<select id="selectMenuListByUserId" parameterType="SysMenu" resultMap="SysMenuResult">
+		select distinct m.menu_id, m.parent_id, m.menu_name, m.path, m.component, m.`query`, m.route_name, m.visible, m.status, ifnull(m.perms,'') as perms, m.is_frame, m.is_cache, m.menu_type, m.icon, m.external_link, m.show_badge, m.show_text_badge, m.is_hide_tab, m.fixed_tab, m.active_path, m.is_full_page, m.new_tab, m.order_num, m.create_time
+		from sys_menu m
+		left join sys_role_menu rm on m.menu_id = rm.menu_id
+		left join sys_user_role ur on rm.role_id = ur.role_id
+		left join sys_role ro on ur.role_id = ro.role_id
+		where ur.user_id = #{params.userId}
+		<if test="menuName != null and menuName != ''">
+            AND m.menu_name like concat('%', #{menuName}, '%')
+		</if>
+		<if test="visible != null and visible != ''">
+            AND m.visible = #{visible}
+		</if>
+		<if test="status != null and status != ''">
+            AND m.status = #{status}
+		</if>
+		order by m.parent_id, m.order_num
+	</select>
+    
+    <select id="selectMenuTreeByUserId" parameterType="Long" resultMap="SysMenuResult">
+		select distinct m.menu_id, m.parent_id, m.menu_name, m.path, m.component, m.`query`, m.route_name, m.visible, m.status, ifnull(m.perms,'') as perms, m.is_frame, m.is_cache, m.menu_type, m.icon, m.external_link, m.show_badge, m.show_text_badge, m.is_hide_tab, m.fixed_tab, m.active_path, m.is_full_page, m.new_tab, m.order_num, m.create_time
+		from sys_menu m
+			 left join sys_role_menu rm on m.menu_id = rm.menu_id
+			 left join sys_user_role ur on rm.role_id = ur.role_id
+			 left join sys_role ro on ur.role_id = ro.role_id
+			 left join sys_user u on ur.user_id = u.user_id
+		where u.user_id = #{userId} and m.menu_type in ('M', 'C', 'F') and m.status = 0  AND ro.status = 0
+		order by m.parent_id, m.order_num
+	</select>
+	
+	<select id="selectMenuListByRoleId" resultType="Long">
+		select m.menu_id
+		from sys_menu m
+            left join sys_role_menu rm on m.menu_id = rm.menu_id
+        where rm.role_id = #{roleId}
+            <if test="menuCheckStrictly">
+              and m.menu_id not in (select m.parent_id from sys_menu m inner join sys_role_menu rm on m.menu_id = rm.menu_id and rm.role_id = #{roleId})
+            </if>
+		order by m.parent_id, m.order_num
+	</select>
+	
+	<select id="selectMenuPerms" resultType="String">
+		select distinct m.perms
+		from sys_menu m
+			 left join sys_role_menu rm on m.menu_id = rm.menu_id
+			 left join sys_user_role ur on rm.role_id = ur.role_id
+	</select>
+
+	<select id="selectMenuPermsByUserId" parameterType="Long" resultType="String">
+		select distinct m.perms
+		from sys_menu m
+			 left join sys_role_menu rm on m.menu_id = rm.menu_id
+			 left join sys_user_role ur on rm.role_id = ur.role_id
+			 left join sys_role r on r.role_id = ur.role_id
+		where m.status = '0' and r.status = '0' and ur.user_id = #{userId}
+	</select>
+	
+	<select id="selectMenuPermsByRoleId" parameterType="Long" resultType="String">
+		select distinct m.perms
+		from sys_menu m
+			 left join sys_role_menu rm on m.menu_id = rm.menu_id
+		where m.status = '0' and rm.role_id = #{roleId}
+	</select>
+	
+	<select id="selectMenuById" parameterType="Long" resultMap="SysMenuResult">
+		<include refid="selectMenuVo"/>
+		where menu_id = #{menuId}
+	</select>
+	
+	<select id="hasChildByMenuId" resultType="Integer">
+	    select count(1) from sys_menu where parent_id = #{menuId}  
+	</select>
+	
+	<select id="checkMenuNameUnique" parameterType="SysMenu" resultMap="SysMenuResult">
+		<include refid="selectMenuVo"/>
+		where menu_name= #{menuName} and parent_id = #{parentId} limit 1
+	</select>
+	
+	<select id="selectMenusByPathOrRouteName" parameterType="SysMenu" resultMap="SysMenuResult">
+		<include refid="selectMenuVo"/>
+		where menu_type in ('M', 'C') and (path = #{path} or path = #{routeName} or route_name = #{path} or route_name = #{routeName})
+	</select>
+	
+	<update id="updateMenu" parameterType="SysMenu">
+		update sys_menu
+		<set>
+			<if test="menuName != null and menuName != ''">menu_name = #{menuName},</if>
+			<if test="parentId != null">parent_id = #{parentId},</if>
+			<if test="orderNum != null">order_num = #{orderNum},</if>
+			<if test="path != null and path != ''">path = #{path},</if>
+			<if test="component != null">component = #{component},</if>
+			<if test="query != null">`query` = #{query},</if>
+			<if test="routeName != null">route_name = #{routeName},</if>
+			<if test="isFrame != null and isFrame != ''">is_frame = #{isFrame},</if>
+			<if test="isCache != null and isCache != ''">is_cache = #{isCache},</if>
+			<if test="menuType != null and menuType != ''">menu_type = #{menuType},</if>
+			<if test="visible != null">visible = #{visible},</if>
+			<if test="status != null">status = #{status},</if>
+			<if test="perms !=null">perms = #{perms},</if>
+			<if test="icon !=null and icon != ''">icon = #{icon},</if>
+			<if test="externalLink != null">external_link = #{externalLink},</if>
+			<if test="showBadge != null">show_badge = #{showBadge},</if>
+			<if test="showTextBadge != null">show_text_badge = #{showTextBadge},</if>
+			<if test="isHideTab != null">is_hide_tab = #{isHideTab},</if>
+			<if test="fixedTab != null">fixed_tab = #{fixedTab},</if>
+			<if test="activePath != null">active_path = #{activePath},</if>
+			<if test="isFullPage != null">is_full_page = #{isFullPage},</if>
+			<if test="newTab != null">new_tab = #{newTab},</if>
+			<if test="remark != null and remark != ''">remark = #{remark},</if>
+			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+			update_time = sysdate()
+		</set>
+		where menu_id = #{menuId}
+	</update>
+
+	<insert id="insertMenu" parameterType="SysMenu">
+		insert into sys_menu(
+		<if test="menuId != null and menuId != 0">menu_id,</if>
+		<if test="parentId != null and parentId != 0">parent_id,</if>
+		<if test="menuName != null and menuName != ''">menu_name,</if>
+		<if test="orderNum != null">order_num,</if>
+		<if test="path != null and path != ''">path,</if>
+		<if test="component != null and component != ''">component,</if>
+		<if test="query != null and query != ''">`query`,</if>
+		<if test="routeName != null">route_name,</if>
+		<if test="isFrame != null and isFrame != ''">is_frame,</if>
+		<if test="isCache != null and isCache != ''">is_cache,</if>
+		<if test="menuType != null and menuType != ''">menu_type,</if>
+		<if test="visible != null">visible,</if>
+		<if test="status != null">status,</if>
+		<if test="perms !=null and perms != ''">perms,</if>
+		<if test="icon != null and icon != ''">icon,</if>
+		<if test="externalLink != null">external_link,</if>
+		<if test="showBadge != null">show_badge,</if>
+		<if test="showTextBadge != null">show_text_badge,</if>
+		<if test="isHideTab != null">is_hide_tab,</if>
+		<if test="fixedTab != null">fixed_tab,</if>
+		<if test="activePath != null">active_path,</if>
+		<if test="isFullPage != null">is_full_page,</if>
+		<if test="newTab != null">new_tab,</if>
+		<if test="remark != null and remark != ''">remark,</if>
+		<if test="createBy != null and createBy != ''">create_by,</if>
+		create_time
+		)values(
+		<if test="menuId != null and menuId != 0">#{menuId},</if>
+		<if test="parentId != null and parentId != 0">#{parentId},</if>
+		<if test="menuName != null and menuName != ''">#{menuName},</if>
+		<if test="orderNum != null">#{orderNum},</if>
+		<if test="path != null and path != ''">#{path},</if>
+		<if test="component != null and component != ''">#{component},</if>
+		<if test="query != null and query != ''">#{query},</if>
+		<if test="routeName != null">#{routeName},</if>
+		<if test="isFrame != null and isFrame != ''">#{isFrame},</if>
+		<if test="isCache != null and isCache != ''">#{isCache},</if>
+		<if test="menuType != null and menuType != ''">#{menuType},</if>
+		<if test="visible != null">#{visible},</if>
+		<if test="status != null">#{status},</if>
+		<if test="perms !=null and perms != ''">#{perms},</if>
+		<if test="icon != null and icon != ''">#{icon},</if>
+		<if test="externalLink != null">#{externalLink},</if>
+		<if test="showBadge != null">#{showBadge},</if>
+		<if test="showTextBadge != null">#{showTextBadge},</if>
+		<if test="isHideTab != null">#{isHideTab},</if>
+		<if test="fixedTab != null">#{fixedTab},</if>
+		<if test="activePath != null">#{activePath},</if>
+		<if test="isFullPage != null">#{isFullPage},</if>
+		<if test="newTab != null">#{newTab},</if>
+		<if test="remark != null and remark != ''">#{remark},</if>
+		<if test="createBy != null and createBy != ''">#{createBy},</if>
+		sysdate()
+		)
+	</insert>
+
+	<update id="updateMenuSort" parameterType="SysMenu">
+	    update sys_menu set order_num = #{orderNum} where menu_id = #{menuId}
+	</update>
+
+	<delete id="deleteMenuById" parameterType="Long">
+	    delete from sys_menu where menu_id = #{menuId}
+	</delete>
+
+</mapper> 

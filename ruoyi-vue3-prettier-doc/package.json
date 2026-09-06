@@ -1,0 +1,33 @@
+{
+  "name": "ruoyi-vue3-prettier-doc",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vitepress dev src",
+    "build": "vitepress build src",
+    "preview": "vitepress preview src"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@vitepress-demo-preview/component": "^2.3.2",
+    "@vitepress-demo-preview/plugin": "^1.4.0",
+    "sass-embedded": "^1.86.0",
+    "vitepress": "^1.6.3",
+    "vitepress-plugin-demoblock": "^1.0.10",
+    "vue": "^3.5.13"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "element-plus": "^2.9.7",
+    "normalize.css": "^8.0.1",
+    "postcss": "^8.5.3",
+    "sass": "^1.86.1",
+    "vite-plugin-svg-icons": "^2.0.1",
+    "vitepress-plugin-group-icons": "^1.3.8"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "若依管理系统",
+  "short_name": "若依",
+  "description": "若依管理系统",
+  "background_color": "#fff",
+  "display": "standalone",
+  "orientation": "portrait",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/manifest/vite.png",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/png"
+    }
+  ]
+}

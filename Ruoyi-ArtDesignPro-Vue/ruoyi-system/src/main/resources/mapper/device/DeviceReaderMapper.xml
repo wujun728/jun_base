@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.device.DeviceReaderMapper">
+    <resultMap id="DeviceReaderResult" type="com.ruoyi.system.domain.device.DeviceReader">
+        <id property="readerId" column="reader_id" />
+        <result property="readerName" column="reader_name" />
+        <result property="readerCode" column="reader_code" />
+        <result property="readerType" column="reader_type" />
+        <result property="ipAddr" column="ip_addr" />
+        <result property="installPosition" column="install_position" />
+        <result property="chuteId" column="chute_id" />
+        <result property="chuteName" column="chute_name" />
+        <result property="deptId" column="dept_id" />
+        <result property="deptName" column="dept_name" />
+        <result property="status" column="status" />
+        <result property="delFlag" column="del_flag" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateBy" column="update_by" />
+        <result property="updateTime" column="update_time" />
+        <result property="remark" column="remark" />
+    </resultMap>
+
+    <sql id="selectDeviceReaderVo">
+        select r.reader_id, r.reader_name, r.reader_code, r.reader_type, r.ip_addr,
+               r.install_position, r.chute_id, c.chute_name, r.dept_id, d.dept_name,
+               r.status, r.del_flag, r.create_by, r.create_time, r.update_by,
+               r.update_time, r.remark
+        from device_reader r
+        left join device_chute c on c.chute_id = r.chute_id
+        left join sys_dept d on d.dept_id = r.dept_id
+    </sql>
+
+    <select id="selectDeviceReaderById" parameterType="Long" resultMap="DeviceReaderResult">
+        <include refid="selectDeviceReaderVo"/>
+        where r.reader_id = #{readerId} and r.del_flag = '0'
+    </select>
+
+    <select id="selectDeviceReaderList" parameterType="com.ruoyi.system.domain.device.DeviceReader" resultMap="DeviceReaderResult">
+        <include refid="selectDeviceReaderVo"/>
+        <where>
+            r.del_flag = '0'
+            <if test="readerName != null and readerName != ''">and r.reader_name like concat('%', #{readerName}, '%')</if>
+            <if test="readerCode != null and readerCode != ''">and r.reader_code like concat('%', #{readerCode}, '%')</if>
+            <if test="ipAddr != null and ipAddr != ''">and r.ip_addr like concat('%', #{ipAddr}, '%')</if>
+            <if test="readerType != null and readerType != ''">and r.reader_type = #{readerType}</if>
+            <if test="chuteId != null">and r.chute_id = #{chuteId}</if>
+            <if test="deptId != null">and r.dept_id = #{deptId}</if>
+            <if test="status != null and status != ''">and r.status = #{status}</if>
+            ${params.dataScope}
+        </where>
+        order by r.reader_id desc
+    </select>
+
+    <insert id="insertDeviceReader" parameterType="com.ruoyi.system.domain.device.DeviceReader" useGeneratedKeys="true" keyProperty="readerId">
+        insert into device_reader(reader_name, reader_code, reader_type, ip_addr, install_position, chute_id, dept_id, status, del_flag, create_by, create_time, remark)
+        values(#{readerName}, #{readerCode}, #{readerType}, #{ipAddr}, #{installPosition}, #{chuteId}, #{deptId}, #{status}, '0', #{createBy}, sysdate(), #{remark})
+    </insert>
+
+    <update id="updateDeviceReader" parameterType="com.ruoyi.system.domain.device.DeviceReader">
+        update device_reader
+        <set>
+            reader_name = #{readerName},
+            reader_code = #{readerCode},
+            reader_type = #{readerType},
+            ip_addr = #{ipAddr},
+            install_position = #{installPosition},
+            chute_id = #{chuteId},
+            dept_id = #{deptId},
+            status = #{status},
+            remark = #{remark},
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </set>
+        where reader_id = #{readerId}
+    </update>
+
+    <update id="deleteDeviceReaderByIds" parameterType="Long">
+        update device_reader set del_flag = '2' where reader_id in
+        <foreach collection="array" item="readerId" open="(" separator="," close=")">
+            #{readerId}
+        </foreach>
+    </update>
+</mapper>

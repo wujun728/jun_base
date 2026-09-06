@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>ruoyi</artifactId>
+        <groupId>com.ruoyi</groupId>
+        <version>3.9.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>jar</packaging>
+<!--    <packaging>war</packaging>-->
+    <artifactId>ruoyi-admin</artifactId>
+
+    <description>
+        web服务入口
+    </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.ssssssss</groupId>
+            <artifactId>magic-api-spring-boot-starter</artifactId>
+            <version>2.2.2</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commons-logging</artifactId>
+                    <groupId>commons-logging</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ssssssss</groupId>
+            <artifactId>magic-api-plugin-redis</artifactId>
+            <version>2.2.2</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.alibaba.fastjson2/fastjson2 -->
+        <dependency>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
+            <version>2.0.51</version>
+        </dependency>
+
+        <!-- spring-boot-devtools -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional> <!-- 表示依赖不会传递 -->
+        </dependency>
+
+        <!-- spring-doc -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+        </dependency>
+
+        <!-- Mysql驱动包 -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.5</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.dameng/DmJdbcDriver18 -->
+        <dependency>
+            <groupId>com.dameng</groupId>
+            <artifactId>DmJdbcDriver18</artifactId>
+            <version>8.1.3.140</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.highgo/HgdbJdbc -->
+        <dependency>
+            <groupId>com.highgo</groupId>
+            <artifactId>HgdbJdbc</artifactId>
+            <version>6.2.4</version>
+        </dependency>
+
+        <!-- 核心模块-->
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-framework</artifactId>
+        </dependency>
+
+        <!-- 定时任务-->
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-quartz</artifactId>
+        </dependency>
+
+        <!-- 代码生成-->
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-generator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-biz</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.5.4</version>
+                <configuration>
+                    <addResources>true</addResources>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <warName>RuoyiSpringBoot3</warName>
+                </configuration>
+            </plugin>
+            <plugin>
+                <!-- https://gitee.com/lcm742320521/class-final -->
+                <groupId>com.gitee.lcm742320521</groupId>
+                <artifactId>classfinal-maven-plugin</artifactId>
+                <version>1.4.1</version>
+                <configuration>
+                    <libjars>ruoyi-biz-3.9.1.jar</libjars>
+                    <packages>com.ruoyi.biz</packages>
+                    <password>RuoyiSpringBoot3@123456!</password>
+                    <code></code>
+                    <debug>true</debug>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>classFinal</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <finalName>RuoyiSpringBoot3</finalName>
+    </build>
+
+</project>

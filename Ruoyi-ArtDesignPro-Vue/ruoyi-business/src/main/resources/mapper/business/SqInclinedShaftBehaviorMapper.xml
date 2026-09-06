@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.SqInclinedShaftBehaviorMapper">
+    <resultMap id="SqBehaviorResult" type="com.ruoyi.business.domain.SqBehaviorMonitor">
+        <id property="id" column="id"/>
+        <result property="picture" column="picture"/>
+        <result property="video" column="video"/>
+        <result property="warningTime" column="warning_time"/>
+        <result property="handleTime" column="handle_time"/>
+        <result property="createTime" column="create_time"/>
+        <result property="instruction" column="instruction"/>
+        <result property="type" column="type"/>
+        <result property="name" column="name"/>
+        <result property="scene" column="scene"/>
+        <result property="status" column="status"/>
+        <result property="handle" column="handle"/>
+        <result property="ip" column="ip"/>
+        <result property="section" column="section"/>
+    </resultMap>
+    <sql id="selectVo">select id, picture, video, warning_time, handle_time, create_time, instruction, type, name, scene, status, handle, ip, section from yn_user_xj</sql>
+    <select id="selectSqInclinedShaftBehaviorById" parameterType="Long" resultMap="SqBehaviorResult"><include refid="selectVo"/> where id = #{id}</select>
+    <select id="selectSqInclinedShaftBehaviorList" parameterType="com.ruoyi.business.domain.SqBehaviorMonitor" resultMap="SqBehaviorResult">
+        <include refid="selectVo"/>
+        <where>
+            <if test="type != null and type != ''">and type = #{type}</if>
+            <if test="name != null and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="status != null and status != ''">and status = #{status}</if>
+            <if test="ip != null and ip != ''">and ip like concat('%', #{ip}, '%')</if>
+            <if test="section != null and section != ''">and section like concat('%', #{section}, '%')</if>
+            <if test="beginTime != null and beginTime != ''">and warning_time &gt;= #{beginTime}</if>
+            <if test="endTime != null and endTime != ''">and warning_time &lt;= #{endTime}</if>
+        </where>
+        order by create_time desc, id desc
+    </select>
+    <insert id="insertSqInclinedShaftBehavior" parameterType="com.ruoyi.business.domain.SqBehaviorMonitor">
+        insert into yn_user_xj(picture, video, warning_time, handle_time, instruction, type, name, scene, status, handle, ip, section)
+        values(#{picture}, #{video}, #{warningTime}, #{handleTime}, #{instruction}, #{type}, #{name}, #{scene}, #{status}, #{handle}, #{ip}, #{section})
+    </insert>
+    <update id="updateSqInclinedShaftBehavior" parameterType="com.ruoyi.business.domain.SqBehaviorMonitor">
+        update yn_user_xj set picture=#{picture}, video=#{video}, warning_time=#{warningTime}, handle_time=#{handleTime}, instruction=#{instruction}, type=#{type}, name=#{name}, scene=#{scene}, status=#{status}, handle=#{handle}, ip=#{ip}, section=#{section} where id=#{id}
+    </update>
+    <delete id="deleteSqInclinedShaftBehaviorByIds" parameterType="Long">
+        delete from yn_user_xj where id in <foreach collection="array" item="id" open="(" separator="," close=")">#{id}</foreach>
+    </delete>
+</mapper>

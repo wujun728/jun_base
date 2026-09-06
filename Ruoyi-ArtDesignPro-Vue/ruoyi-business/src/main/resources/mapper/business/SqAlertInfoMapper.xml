@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.SqAlertInfoMapper">
+    <resultMap id="SqAlertInfoResult" type="com.ruoyi.business.domain.SqAlertInfo">
+        <id property="id" column="id"/>
+        <result property="voice" column="voice"/>
+        <result property="name" column="name"/>
+        <result property="types" column="types"/>
+        <result property="status" column="status"/>
+        <result property="createUser" column="create_user"/>
+        <result property="createDept" column="create_dept"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateUser" column="update_user"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="level" column="level"/>
+        <result property="text" column="text"/>
+        <result property="isopen" column="isopen"/>
+        <result property="isSend" column="is_send"/>
+        <result property="sendUser" column="send_user"/>
+        <result property="isReceive" column="is_receive"/>
+    </resultMap>
+
+    <select id="selectSqAlertInfoById" parameterType="Long" resultMap="SqAlertInfoResult">
+        select id, voice, name, types, status, create_user, create_dept, create_time, update_user,
+               update_time, is_deleted, level, text, isopen, is_send, send_user, is_receive
+        from a_alert_info
+        where id = #{id} and is_deleted = '0'
+    </select>
+
+    <select id="selectSqAlertInfoList" parameterType="com.ruoyi.business.domain.SqAlertInfo" resultMap="SqAlertInfoResult">
+        select id, voice, name, types, status, create_user, create_dept, create_time, update_user,
+               update_time, is_deleted, level, text, isopen, is_send, send_user, is_receive
+        from a_alert_info
+        <where>
+            is_deleted = #{isDeleted}
+            <if test="name != null and name != ''">and name = #{name}</if>
+            <if test="types != null">and types = #{types}</if>
+            <if test="level != null and level != ''">and level = #{level}</if>
+            <if test="isopen != null and isopen != ''">and isopen = #{isopen}</if>
+            <if test="isSend != null and isSend != ''">and is_send = #{isSend}</if>
+            <if test="isReceive != null and isReceive != ''">and is_receive = #{isReceive}</if>
+            <if test="status != null and status != ''">and status = #{status}</if>
+        </where>
+        order by types desc, id desc
+    </select>
+
+    <insert id="insertSqAlertInfo" parameterType="com.ruoyi.business.domain.SqAlertInfo">
+        insert into a_alert_info(id, voice, name, types, status, create_user, create_dept, create_time,
+                                 is_deleted, level, text, isopen, is_send, send_user, is_receive)
+        values(#{id}, #{voice}, #{name}, #{types}, #{status}, #{createUser}, #{createDept}, sysdate(),
+               #{isDeleted}, #{level}, #{text}, #{isopen}, #{isSend}, #{sendUser}, #{isReceive})
+    </insert>
+
+    <update id="updateSqAlertInfo" parameterType="com.ruoyi.business.domain.SqAlertInfo">
+        update a_alert_info
+        <set>
+            voice=#{voice}, name=#{name}, types=#{types}, status=#{status}, level=#{level}, text=#{text},
+            isopen=#{isopen}, is_send=#{isSend}, send_user=#{sendUser}, is_receive=#{isReceive},
+            <if test="updateUser != null and updateUser != ''">update_user=#{updateUser},</if>
+            update_time=sysdate()
+        </set>
+        where id=#{id} and is_deleted='0'
+    </update>
+
+    <update id="deleteSqAlertInfoByIds" parameterType="Long">
+        update a_alert_info set is_deleted='1', update_time=sysdate() where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">#{id}</foreach>
+    </update>
+</mapper>

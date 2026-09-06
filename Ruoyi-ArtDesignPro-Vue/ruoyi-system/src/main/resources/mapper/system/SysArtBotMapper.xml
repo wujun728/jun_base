@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysArtBotMapper">
+    <resultMap id="ModelResult" type="SysArtBotModel">
+        <id property="modelId" column="model_id"/>
+        <result property="modelName" column="model_name"/>
+        <result property="baseUrl" column="base_url"/>
+        <result property="apiKey" column="api_key"/>
+        <result property="modelCode" column="model_code"/>
+        <result property="status" column="status"/>
+        <result property="isDefault" column="is_default"/>
+        <result property="temperature" column="temperature"/>
+        <result property="maxTokens" column="max_tokens"/>
+        <result property="systemPrompt" column="system_prompt"/>
+        <result property="remark" column="remark"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <resultMap id="ConversationResult" type="SysArtBotConversation">
+        <id property="conversationId" column="conversation_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="modelId" column="model_id"/>
+        <result property="title" column="title"/>
+        <result property="modelName" column="model_name"/>
+        <result property="modelCode" column="model_code"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <resultMap id="MessageResult" type="SysArtBotMessage">
+        <id property="messageId" column="message_id"/>
+        <result property="conversationId" column="conversation_id"/>
+        <result property="role" column="role"/>
+        <result property="content" column="content"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <select id="selectModelList" parameterType="SysArtBotModel" resultMap="ModelResult">
+        select * from sys_artbot_model
+        <where>
+            <if test="modelName != null and modelName != ''">and model_name like concat('%', #{modelName}, '%')</if>
+            <if test="modelCode != null and modelCode != ''">and model_code like concat('%', #{modelCode}, '%')</if>
+            <if test="status != null and status != ''">and status = #{status}</if>
+        </where>
+        order by is_default desc, model_id desc
+    </select>
+    <select id="selectEnabledModels" resultMap="ModelResult">
+        select * from sys_artbot_model where status = '0' order by is_default desc, model_id desc
+    </select>
+    <select id="selectModelById" resultMap="ModelResult">
+        select * from sys_artbot_model where model_id = #{modelId}
+    </select>
+    <insert id="insertModel" parameterType="SysArtBotModel" useGeneratedKeys="true" keyProperty="modelId">
+        insert into sys_artbot_model(model_name, base_url, api_key, model_code, status, is_default, temperature, max_tokens, system_prompt, create_by, create_time, remark)
+        values(#{modelName}, #{baseUrl}, #{apiKey}, #{modelCode}, #{status}, #{isDefault}, #{temperature}, #{maxTokens}, #{systemPrompt}, #{createBy}, sysdate(), #{remark})
+    </insert>
+    <update id="updateModel" parameterType="SysArtBotModel">
+        update sys_artbot_model
+        <set>
+            <if test="modelName != null">model_name = #{modelName},</if>
+            <if test="baseUrl != null">base_url = #{baseUrl},</if>
+            <if test="apiKey != null and apiKey != ''">api_key = #{apiKey},</if>
+            <if test="modelCode != null">model_code = #{modelCode},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="isDefault != null">is_default = #{isDefault},</if>
+            <if test="temperature != null">temperature = #{temperature},</if>
+            <if test="maxTokens != null">max_tokens = #{maxTokens},</if>
+            <if test="systemPrompt != null">system_prompt = #{systemPrompt},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </set>
+        where model_id = #{modelId}
+    </update>
+    <update id="clearDefaultModel">
+        update sys_artbot_model set is_default = '0'
+        <if test="excludeModelId != null">where model_id != #{excludeModelId}</if>
+    </update>
+    <delete id="deleteModel">delete from sys_artbot_model where model_id = #{modelId}</delete>
+    <select id="countConversationsByModelId" resultType="int">select count(*) from sys_artbot_conversation where model_id = #{modelId}</select>
+
+    <select id="selectConversationList" resultMap="ConversationResult">
+        select c.*, m.model_name, m.model_code from sys_artbot_conversation c
+        inner join sys_artbot_model m on m.model_id = c.model_id
+        where c.user_id = #{userId} order by c.update_time desc, c.conversation_id desc
+    </select>
+    <select id="selectConversation" resultMap="ConversationResult">
+        select c.*, m.model_name, m.model_code from sys_artbot_conversation c
+        inner join sys_artbot_model m on m.model_id = c.model_id
+        where c.conversation_id = #{conversationId} and c.user_id = #{userId}
+    </select>
+    <insert id="insertConversation" parameterType="SysArtBotConversation" useGeneratedKeys="true" keyProperty="conversationId">
+        insert into sys_artbot_conversation(user_id, model_id, title, create_time, update_time)
+        values(#{userId}, #{modelId}, #{title}, sysdate(), sysdate())
+    </insert>
+    <update id="updateConversationTitle">update sys_artbot_conversation set title = #{title}, update_time = sysdate() where conversation_id = #{conversationId}</update>
+    <update id="touchConversation">update sys_artbot_conversation set update_time = sysdate() where conversation_id = #{conversationId}</update>
+    <delete id="deleteMessagesByConversationId">delete from sys_artbot_message where conversation_id = #{conversationId}</delete>
+    <delete id="deleteConversation">delete from sys_artbot_conversation where conversation_id = #{conversationId} and user_id = #{userId}</delete>
+
+    <select id="selectMessageList" resultMap="MessageResult">select * from sys_artbot_message where conversation_id = #{conversationId} order by message_id</select>
+    <select id="selectRecentMessages" resultMap="MessageResult">
+        select * from (select * from sys_artbot_message where conversation_id = #{conversationId} order by message_id desc limit #{limit}) recent order by message_id
+    </select>
+    <insert id="insertMessage" parameterType="SysArtBotMessage" useGeneratedKeys="true" keyProperty="messageId">
+        insert into sys_artbot_message(conversation_id, role, content, create_time) values(#{conversationId}, #{role}, #{content}, sysdate())
+    </insert>
+</mapper>

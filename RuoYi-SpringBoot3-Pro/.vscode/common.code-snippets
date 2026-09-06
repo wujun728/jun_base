@@ -1,0 +1,48 @@
+{
+  // Place your RuoYi-RuoyiSpringBoot3 工作区 snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and
+  // description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope
+  // is left empty or omitted, the snippet gets applied to all languages. The prefix is what is
+  // used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+  // $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders.
+  // Placeholders with the same ids are connected.
+  // Example:
+  // "Print to console": {
+  // 	"scope": "javascript,typescript",
+  // 	"prefix": "log",
+  // 	"body": [
+  // 		"console.log('$1');",
+  // 		"$2"
+  // 	],
+  // 	"description": "Log output to console"
+  // }
+  "ai-json": {
+    "prefix": "ai-json",
+    "body": [
+      "### 输出",
+      "- 以 JSON 格式返回生成的数据，不要包含```json```或其他代码块标记，直接返回可解析的JSON文本，除了 JSON 数据其他任何内容都不要",
+      "- 格式模版为`{\"$1\":\"{{$2}}\"}`"
+    ]
+  },
+  "ruoyi-logger": {
+    "prefix": "ruoyi-logger",
+    "body": [
+      "private final Logger logger = LoggerFactory.getLogger(this.getClass());"
+    ]
+  },
+  "ruoyi-async": {
+    "prefix": "ruoyi-async",
+    "body": [
+      "CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {",
+      "    return \"\";",
+      "});",
+      "",
+      "// 处理响应结果",
+      "future.thenAccept(response -> {",
+      "    logger.info(response);",
+      "}).exceptionally(ex -> {",
+      "    logger.error(ex.getMessage());",
+      "    return null;",
+      "});"
+    ]
+  }
+}

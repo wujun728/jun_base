@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.SqWxUserMapper">
+    <resultMap id="SqWxUserResult" type="com.ruoyi.business.domain.SqWxUser">
+        <id property="userId" column="user_id" />
+        <result property="deptName" column="dept_name" />
+        <result property="deptId" column="dept_id" />
+        <result property="deptLabel" column="dept_label" />
+        <result property="username" column="username" />
+        <result property="nickName" column="nick_name" />
+        <result property="createBy" column="create_by" />
+        <result property="updateBy" column="update_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+    </resultMap>
+
+    <sql id="selectSqWxUserVo">
+        select u.user_id, u.dept_name, u.dept_id, d.name as dept_label, u.username,
+               u.nick_name, u.create_by, u.update_by, u.create_time, u.update_time
+        from yn_wx_user u
+        left join yn_wx_dept d on d.dept_id = u.dept_id
+    </sql>
+
+    <select id="selectSqWxUserById" parameterType="Long" resultMap="SqWxUserResult">
+        <include refid="selectSqWxUserVo"/>
+        where u.user_id = #{userId}
+    </select>
+
+    <select id="selectSqWxUserList" parameterType="com.ruoyi.business.domain.SqWxUser" resultMap="SqWxUserResult">
+        <include refid="selectSqWxUserVo"/>
+        <where>
+            <if test="deptId != null">and u.dept_id = #{deptId}</if>
+            <if test="username != null and username != ''">and u.username like concat('%', #{username}, '%')</if>
+            <if test="nickName != null and nickName != ''">and u.nick_name like concat('%', #{nickName}, '%')</if>
+        </where>
+        order by u.user_id desc
+    </select>
+
+    <insert id="insertSqWxUser" parameterType="com.ruoyi.business.domain.SqWxUser" useGeneratedKeys="true" keyProperty="userId">
+        insert into yn_wx_user(dept_name, dept_id, username, nick_name, create_by, create_time)
+        values(#{deptName}, #{deptId}, #{username}, #{nickName}, #{createBy}, sysdate())
+    </insert>
+
+    <update id="updateSqWxUser" parameterType="com.ruoyi.business.domain.SqWxUser">
+        update yn_wx_user
+        <set>
+            dept_name = #{deptName},
+            dept_id = #{deptId},
+            username = #{username},
+            nick_name = #{nickName},
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </set>
+        where user_id = #{userId}
+    </update>
+
+    <delete id="deleteSqWxUserByIds" parameterType="Long">
+        delete from yn_wx_user where user_id in
+        <foreach collection="array" item="userId" open="(" separator="," close=")">#{userId}</foreach>
+    </delete>
+</mapper>

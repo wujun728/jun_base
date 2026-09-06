@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.logic.mapper.LogicLogicMapper">
+    
+    <resultMap type="LogicLogic" id="LogicLogicResult">
+        <result property="id"    column="id"    />
+        <result property="logicRemark"    column="logic_remark"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="userId"    column="user_id"    />
+        <result property="deptId"    column="dept_id"    />
+    </resultMap>
+
+    <sql id="selectLogicLogicVo">
+        select id, logic_remark, create_time, create_by, update_time, update_by, user_id, dept_id from logic_logic
+    </sql>
+
+    <select id="selectLogicLogicList" parameterType="LogicLogic" resultMap="LogicLogicResult">
+        <include refid="selectLogicLogicVo"/>
+        <where>  
+            <if test="logicRemark != null  and logicRemark != ''"> and logic_remark = #{logicRemark}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+        </where>
+        <if test="order != null and order != ''">
+            order by ${order}
+        </if>
+    </select>
+    
+    <select id="selectLogicLogicById" parameterType="Long" resultMap="LogicLogicResult">
+        <include refid="selectLogicLogicVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertLogicLogic" parameterType="LogicLogic">
+        insert into logic_logic
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="logicRemark != null">logic_remark,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="deptId != null">dept_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="logicRemark != null">#{logicRemark},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="deptId != null">#{deptId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLogicLogic" parameterType="LogicLogic">
+        update logic_logic
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="logicRemark != null">logic_remark = #{logicRemark},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+        <!-- 物理删除：不存在del_flag字段，使用物理删除 -->
+        <delete id="deleteLogicLogicById" parameterType="Long">
+            delete from logic_logic where id = #{id}
+        </delete>
+
+        <delete id="deleteLogicLogicByIds" parameterType="String">
+            delete from logic_logic where id in
+            <foreach item="id" collection="array" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </delete>
+</mapper>

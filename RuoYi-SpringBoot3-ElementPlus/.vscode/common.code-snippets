@@ -1,0 +1,226 @@
+{
+    // Place your yiqiyiguan-admin 工作区 snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and
+    // description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope
+    // is left empty or omitted, the snippet gets applied to all languages. The prefix is what is
+    // used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+    // $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders.
+    // Placeholders with the same ids are connected.
+    // Example:
+    // "Print to console": {
+    // 	"scope": "javascript,typescript",
+    // 	"prefix": "log",
+    // 	"body": [
+    // 		"console.log('$1');",
+    // 		"$2"
+    // 	],
+    // 	"description": "Log output to console"
+    // }
+    "dept-html": {
+        "scope": "html",
+        "prefix": "dept-html",
+        "body": [
+            "<el-tree-select v-model=\"$0\" :data=\"enabledDeptOptions\" :props=\"{ value: 'deptId', label: 'deptName', children: 'children' }\" value-key=\"deptId\" placeholder=\"请选择部门\" check-strictly />"
+        ],
+        "description": "部门选择-html"
+    },
+    "dept-js": {
+        "scope": "javascript,typescript",
+        "prefix": "dept-js",
+        "body": [
+            "import { listDept } from \"@/api/system/dept\";",
+            "const enabledDeptOptions = ref(undefined);",
+            "listDept({",
+            "status: 0,",
+            "}).then((response) => {",
+            "enabledDeptOptions.value = proxy.handleTree(response.data, \"deptId\");",
+            "});"
+        ],
+        "description": "部门选择-js"
+    },
+    "region-html": {
+        "scope": "html",
+        "prefix": "region-html",
+        "body": ["<RegionCascader ref=\"$regionCascaderRef\" v-model=\"$0\" placeholder=\"请选择省市区\" />"],
+        "description": "区域选择-html"
+    },
+    "region-js-text": {
+        "scope": "javascript,typescript",
+        "prefix": "region-js-text",
+        "body": ["proxy.\\$refs['$regionCascaderRef'].getSelectedInfo().text;"],
+        "description": "区域选择的文本"
+    },
+    "echarts-import": {
+        "scope": "javascript,typescript",
+        "prefix": "echarts-import",
+        "body": ["import * as echarts from \"echarts\";"],
+        "description": "echarts导入"
+    },
+    "echarts-ref": {
+        "scope": "javascript,typescript",
+        "prefix": "echarts-ref",
+        "body": ["const ${1:echarts} = ref(null);"],
+        "description": "echarts引用"
+    },
+    "echarts-init": {
+        "scope": "javascript,typescript",
+        "prefix": "echarts-init",
+        "body": [
+            "${1:echarts}.value = markRaw(echarts.init(document.getElementById('${1:echarts}')));",
+            "/** @type EChartsOption */",
+            "const ${1:echarts}Option = {$0}",
+            "${1:echarts}.value.setOption(${1:echarts}Option,true);"
+        ],
+        "description": "echarts初始化"
+    },
+    "modal-msg": {
+        "scope": "javascript,typescript",
+        "prefix": "modal-msg",
+        "body": ["proxy.\\$modal.msg('$0');"],
+        "description": "模态框消息提示"
+    },
+    "modal-msg-error": {
+        "scope": "javascript,typescript",
+        "prefix": "modal-msg-error",
+        "body": ["proxy.\\$modal.msgError('$0');"],
+        "description": "模态框错误消息"
+    },
+    "modal-msg-success": {
+        "scope": "javascript,typescript",
+        "prefix": "modal-msg-success",
+        "body": ["proxy.\\$modal.msgSuccess('$0');"],
+        "description": "模态框成功消息"
+    },
+    "modal-msg-warning": {
+        "scope": "javascript,typescript",
+        "prefix": "modal-msg-warning",
+        "body": ["proxy.\\$modal.msgWarning('$0');"],
+        "description": "模态框警告消息"
+    },
+    "modal-alert": {
+        "scope": "javascript,typescript",
+        "prefix": "modal-alert",
+        "body": ["proxy.\\$modal.alert('$0');"],
+        "description": "模态框弹出提示"
+    },
+    "modal-alert-error": {
+        "scope": "javascript,typescript",
+        "prefix": "modal-alert-error",
+        "body": ["proxy.\\$modal.alertError('$0');"],
+        "description": "模态框错误提示"
+    },
+    "modal-alert-success": {
+        "scope": "javascript,typescript",
+        "prefix": "modal-alert-success",
+        "body": ["proxy.\\$modal.alertSuccess('$0');"],
+        "description": "模态框成功提示"
+    },
+    "modal-alert-warning": {
+        "scope": "javascript,typescript",
+        "prefix": "modal-alert-warning",
+        "body": ["proxy.\\$modal.alertWarning('$0');"],
+        "description": "模态框警告提示"
+    },
+    "modal-notify": {
+        "scope": "javascript,typescript",
+        "prefix": "modal-notify",
+        "body": ["proxy.\\$modal.notify('$0');"],
+        "description": "模态框通知提示"
+    },
+    "modal-notify-error": {
+        "scope": "javascript,typescript",
+        "prefix": "modal-notify-error",
+        "body": ["proxy.\\$modal.notifyError('$0');"],
+        "description": "模态框错误通知"
+    },
+    "modal-notify-success": {
+        "scope": "javascript,typescript",
+        "prefix": "modal-notify-success",
+        "body": ["proxy.\\$modal.notifySuccess('$0');"],
+        "description": "模态框成功通知"
+    },
+    "modal-notify-warning": {
+        "scope": "javascript,typescript",
+        "prefix": "modal-notify-warning",
+        "body": ["proxy.\\$modal.notifyWarning('$0');"],
+        "description": "模态框警告通知"
+    },
+    "modal-confirm": {
+        "scope": "javascript,typescript",
+        "prefix": "modal-confirm",
+        "body": ["proxy.\\$modal.confirm('$0').then(() => {$1}).catch(() => {});"],
+        "description": "模态框确认窗体"
+    },
+    "modal-prompt": {
+        "scope": "javascript,typescript",
+        "prefix": "modal-prompt",
+        "body": ["proxy.\\$modal.prompt('$0').then(({ value }) => {$1}).catch(() => {});"],
+        "description": "模态框提交内容"
+    },
+    "modal-loading": {
+        "scope": "javascript,typescript",
+        "prefix": "modal-loading",
+        "body": ["proxy.\\$modal.loading('$0');"],
+        "description": "模态框打开遮罩层"
+    },
+    "modal-loading-close": {
+        "scope": "javascript,typescript",
+        "prefix": "modal-loading-close",
+        "body": ["proxy.\\$modal.closeLoading();"],
+        "description": "模态框关闭遮罩层"
+    },
+    "auth-import": {
+        "scope": "javascript,typescript",
+        "prefix": "auth-import",
+        "body": ["import auth from '@/plugins/auth';"],
+        "description": "权限导入"
+    }
+,
+    "auth-hasPermi": {
+        "scope": "javascript,typescript",
+        "prefix": "auth-hasPermi",
+        "body": ["auth.hasPermi('$0')"],
+        "description": "验证用户是否具备某权限"
+    },
+    "auth-hasRole": {
+        "scope": "javascript,typescript",
+        "prefix": "auth-hasRole",
+        "body": ["auth.hasRole('$0')"],
+        "description": "验证用户是否含有指定角色"
+    },
+    "auth-hasPermiOr": {
+        "scope": "javascript,typescript",
+        "prefix": "auth-hasPermiOr",
+        "body": ["auth.hasPermiOr(['$0'])"],
+        "description": "验证用户是否含有指定权限,只需包含其中一个"
+    },
+    "auth-hasPermiAnd": {
+        "scope": "javascript,typescript",
+        "prefix": "auth-hasPermiAnd",
+        "body": ["auth.hasPermiAnd(['$0'])"],
+        "description": "验证用户是否含有指定权限,必须全部拥有"
+    },
+    "auth-hasRoleOr": {
+        "scope": "javascript,typescript",
+        "prefix": "auth-hasRoleOr",
+        "body": ["auth.hasRoleOr(['$0'])"],
+        "description": "验证用户是否含有指定角色,只需包含其中一个"
+    },
+    "v-hasRole": {
+        "scope": "html",
+        "prefix": "v-hasRole",
+        "body": ["v-hasRole=\"['$0']\""],
+        "description": "Vue指令-角色权限验证"
+    },
+    "v-hasPermi": {
+        "scope": "html", 
+        "prefix": "v-hasPermi",
+        "body": ["v-hasPermi=\"['$0']\""],
+        "description": "Vue指令-操作权限验证"
+    },
+    "v-copyText": {
+        "scope": "html",
+        "prefix": "v-copyText",
+        "body": ["v-copyText=\"'$0'\""],
+        "description": "Vue指令-复制文本到剪贴板"
+    }
+}

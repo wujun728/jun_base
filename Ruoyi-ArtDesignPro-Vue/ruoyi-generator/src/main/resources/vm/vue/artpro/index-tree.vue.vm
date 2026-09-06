@@ -1,0 +1,229 @@
+<template>
+  <div class="art-full-height">
+    <ArtSearchBar v-show="showSearchBar" v-model="filters" :items="searchItems" :show-expand="false" @search="load" @reset="resetSearch" />
+    <ElCard class="art-table-card">
+      <ArtTableHeader v-model:columns="columnChecks" v-model:show-search-bar="showSearchBar" :loading="loading" @refresh="load">
+        <template #left>
+          <ElSpace wrap>
+            <ElButton v-auth="'${permissionPrefix}:add'" type="primary" @click="openDialog()">新增</ElButton>
+            <ElButton @click="toggleExpand">{{ expanded ? '收起' : '展开' }}</ElButton>
+          </ElSpace>
+        </template>
+      </ArtTableHeader>
+      <ArtTable ref="tableRef" row-key="${treeCode}" :loading="loading" :data="treeData" :columns="columns" :pagination="undefined" />
+    </ElCard>
+    <ElDrawer v-model="visible" :title="drawerTitle" size="680px">
+      <ArtForm ref="formRef" v-model="form" :items="formItems" :rules="rules" :show-submit="false" :show-reset="false" />
+      <template #footer>
+        <ElButton @click="visible = false">取消</ElButton>
+        <ElButton type="primary" :loading="saving" @click="submit">保存</ElButton>
+      </template>
+    </ElDrawer>
+#if($genView)
+    <${businessName}-view ref="viewRef" />
+#end
+  </div>
+</template>
+
+<script setup lang="ts">
+  import { h, nextTick } from 'vue'
+  import { ElImage, ElMessageBox } from 'element-plus'
+  import ArtButtonTable from '@/components/core/forms/art-button-table/index.vue'
+  import DictTag from '@/components/business/dict-tag/index.vue'
+  import RuoYiUploadField from '@/components/business/ruoyi-upload-field/index.vue'
+  import ArtWangEditor from '@/components/core/forms/art-wang-editor/index.vue'
+  import { useAuth } from '@/hooks/core/useAuth'
+  import { useDict } from '@/hooks/core/useDict'
+  import { useTableColumns } from '@/hooks/core/useTableColumns'
+  import { buildTree } from '@/utils/system/tree'
+  import type { Entity } from '@/api/system/types'
+  import { add${BusinessName}, fetch${BusinessName}, fetch${BusinessName}List, remove${BusinessName}, update${BusinessName}, type ${ClassName} } from '@/api/${moduleName}/${businessName}'
+#if($genView)
+  import ${BusinessName}View from './view.vue'
+#end
+
+  defineOptions({ name: '${BusinessName}' })
+  const { hasAuth } = useAuth()
+#if(${dicts} != '')
+  const { dict } = useDict(${dicts})
+#else
+  const dict = reactive<Record<string, any[]>>({})
+#end
+  const showSearchBar = ref(true)
+  const loading = ref(false)
+  const saving = ref(false)
+  const expanded = ref(false)
+  const visible = ref(false)
+  const tableRef = ref<any>()
+  const formRef = ref<{ validate: () => Promise<boolean> }>()
+  const filters = reactive<Entity>({})
+  const rows = ref<${ClassName}[]>([])
+  const form = reactive<${ClassName}>({})
+#if($genView)
+  const viewRef = ref<InstanceType<typeof ${BusinessName}View>>()
+#end
+  const treeData = computed(() => buildTree(rows.value, '${treeCode}', '${treeParentCode}'))
+  const drawerTitle = computed(() => (form.${pkColumn.javaField} != null ? '修改' : '新增') + '${functionName}')
+  const searchItems = computed(() => [
+#foreach($column in $columns)
+#if($column.query)
+#set($searchType = "input")
+#if($column.htmlType == "select" || $column.htmlType == "radio")
+#set($searchType = "select")
+#elseif($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+#set($searchType = "daterange")
+#elseif($column.htmlType == "datetime")
+#set($searchType = "date")
+#end
+    { key: '${column.javaField}', label: '${column.columnComment}', type: '${searchType}', props: { clearable: true#if("" != $column.dictType), options: normalizeOptions(dict.${column.dictType})#end } },
+#end
+#end
+  ])
+  const formItems = computed(() => [
+    {
+      key: '${treeParentCode}',
+      label: '上级${functionName}',
+      type: 'treeselect',
+      span: 12,
+      props: { data: [{ ${treeCode}: 0, ${treeName}: '顶级节点', children: treeData.value }], nodeKey: '${treeCode}', valueKey: '${treeCode}', props: { value: '${treeCode}', label: '${treeName}', children: 'children' }, checkStrictly: true }
+    },
+#foreach($column in $columns)
+#if($column.insert && !$column.pk && $column.javaField != $treeParentCode && (($column.usableColumn) || (!$column.superColumn)))
+#set($type = "input")
+#if($column.htmlType == "select")
+#set($type = "select")
+#elseif($column.htmlType == "radio")
+#set($type = "radiogroup")
+#elseif($column.htmlType == "checkbox")
+#set($type = "checkboxgroup")
+#elseif($column.htmlType == "datetime")
+#set($type = "date")
+#end
+    {
+      key: '${column.javaField}',
+      label: '${column.columnComment}',
+      type: '${type}',
+      span: 12,
+#if($column.htmlType == "imageUpload")
+      render: RuoYiUploadField,
+      props: { mode: 'image' }
+#elseif($column.htmlType == "fileUpload")
+      render: RuoYiUploadField,
+      props: { mode: 'file' }
+#elseif($column.htmlType == "editor")
+      render: ArtWangEditor
+#else
+      props: { clearable: true#if($column.htmlType == "textarea"), type: 'textarea'#end#if("" != $column.dictType), options: normalizeOptions(dict.${column.dictType})#end }
+#end
+    },
+#end
+#end
+  ])
+  const rules = {
+    ${treeParentCode}: [{ required: true, message: '请选择上级${functionName}' }],
+#foreach($column in $columns)
+#if($column.required)
+    ${column.javaField}: [{ required: true, message: '请输入${column.columnComment}' }],
+#end
+#end
+  }
+  const { columns, columnChecks } = useTableColumns(() => [
+#foreach($column in $columns)
+#if($column.list)
+    {
+      prop: '${column.javaField}',
+      label: '${column.columnComment}',
+      minWidth: 120,
+#if("" != $column.dictType)
+      formatter: (row: ${ClassName}) => h(DictTag, { options: dict.${column.dictType}, value: row.${column.javaField} })
+#elseif($column.htmlType == "imageUpload")
+      formatter: (row: ${ClassName}) => row.${column.javaField} ? h(ElImage, { src: row.${column.javaField}, previewSrcList: [row.${column.javaField}], class: 'h-10 w-10', previewTeleported: true }) : ''
+#else
+      showOverflowTooltip: true
+#end
+    },
+#end
+#end
+    {
+      prop: 'operation',
+      label: '操作',
+      fixed: 'right',
+      width: 220,
+      formatter: (row: ${ClassName}) => h('div', [
+#if($genView)
+        hasAuth('${permissionPrefix}:query') ? h(ArtButtonTable, { type: 'view', onClick: () => viewRef.value?.open(row.${pkColumn.javaField}!) }) : null,
+#end
+        hasAuth('${permissionPrefix}:add') ? h(ArtButtonTable, { type: 'add', onClick: () => openDialog(undefined, row.${treeCode}) }) : null,
+        hasAuth('${permissionPrefix}:edit') ? h(ArtButtonTable, { type: 'edit', onClick: () => openDialog(row) }) : null,
+        hasAuth('${permissionPrefix}:remove') ? h(ArtButtonTable, { type: 'delete', onClick: () => removeRow(row) }) : null
+      ])
+    }
+  ])
+
+  function normalizeOptions(options: Entity[] = []) {
+    return options.map((item) => ({ ...item, label: item.dictLabel, value: item.dictValue }))
+  }
+  async function load() {
+    loading.value = true
+    try {
+      const params = { ...filters }
+#foreach($column in $columns)
+#if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+      if (Array.isArray(filters.${column.javaField})) {
+        params.params = { ...(params.params || {}), begin${AttrName}: filters.${column.javaField}[0], end${AttrName}: filters.${column.javaField}[1] }
+        delete params.${column.javaField}
+      }
+#end
+#end
+      rows.value = await fetch${BusinessName}List(params)
+    } finally {
+      loading.value = false
+    }
+  }
+  function resetSearch() {
+    Object.keys(filters).forEach((key) => delete filters[key])
+    load()
+  }
+  function toggleExpand() {
+    expanded.value = !expanded.value
+    nextTick(() => treeData.value.forEach((row) => tableRef.value?.ref?.toggleRowExpansion(row, expanded.value)))
+  }
+  async function openDialog(row?: ${ClassName}, parentId: number | string = 0) {
+    Object.keys(form).forEach((key) => delete form[key])
+    Object.assign(form, { ${treeParentCode}: parentId })
+    if (row?.${pkColumn.javaField} != null) {
+      const result = await fetch${BusinessName}(row.${pkColumn.javaField})
+      Object.assign(form, result)
+#foreach($column in $columns)
+#if($column.htmlType == "checkbox")
+      form.${column.javaField} = result.${column.javaField} ? String(result.${column.javaField}).split(',') as any : [] as any
+#end
+#end
+    }
+    visible.value = true
+  }
+  async function submit() {
+    await formRef.value?.validate()
+    saving.value = true
+    try {
+      const payload = { ...form } as ${ClassName}
+#foreach($column in $columns)
+#if($column.htmlType == "checkbox")
+      payload.${column.javaField} = Array.isArray(form.${column.javaField}) ? form.${column.javaField}.join(',') as any : form.${column.javaField}
+#end
+#end
+      await (payload.${pkColumn.javaField} != null ? update${BusinessName}(payload) : add${BusinessName}(payload))
+      visible.value = false
+      load()
+    } finally {
+      saving.value = false
+    }
+  }
+  async function removeRow(row: ${ClassName}) {
+    await ElMessageBox.confirm('确定删除该记录吗？', '提示', { type: 'warning' })
+    await remove${BusinessName}(row.${pkColumn.javaField}!)
+    load()
+  }
+  load()
+</script>

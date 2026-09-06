@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.SqFeedLogMapper">
+    <resultMap id="SqFeedLogResult" type="com.ruoyi.business.domain.SqFeedLog">
+        <id property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="chuteName" column="chute_name" />
+        <result property="cars" column="cars" />
+        <result property="fulls" column="fulls" />
+        <result property="bigs" column="bigs" />
+        <result property="yiwu" column="yiwu" />
+        <result property="shitype" column="shitype" />
+        <result property="videopath" column="videopath" />
+        <result property="imgpath" column="imgpath" />
+        <result property="timecha" column="timecha" />
+        <result property="createdate" column="createdate" />
+        <result property="isDeleted" column="is_deleted" />
+        <result property="createUser" column="create_user" />
+        <result property="createDept" column="create_dept" />
+        <result property="createTime" column="create_time" />
+        <result property="updateUser" column="update_user" />
+        <result property="updateTime" column="update_time" />
+        <result property="status" column="status" />
+        <result property="ctype" column="ctype" />
+        <result property="company" column="company" />
+        <result property="person" column="person" />
+        <result property="forkcar" column="forkcar" />
+        <result property="water" column="water" />
+        <result property="mud" column="mud" />
+        <result property="safeline" column="safeline" />
+        <result property="shift" column="shift" />
+        <result property="groups" column="groups" />
+        <result property="persons" column="persons" />
+        <result property="rate" column="rate" />
+    </resultMap>
+
+    <sql id="selectSqFeedLogVo">
+        select l.id, l.name, c.lname as chute_name, l.cars, l.fulls, l.bigs, l.yiwu,
+               l.shitype, l.videopath, l.imgpath, l.timecha, l.createdate, l.is_deleted,
+               l.create_user, l.create_dept, l.create_time, l.update_user, l.update_time,
+               l.status, l.ctype, l.company, l.person, l.forkcar, l.water, l.mud,
+               l.safeline, l.shift, l.`groups`, l.persons, l.rate
+        from a_cars_logs l
+        left join a_camera c on c.id = l.name
+    </sql>
+
+    <select id="selectSqFeedLogById" parameterType="Long" resultMap="SqFeedLogResult">
+        <include refid="selectSqFeedLogVo"/>
+        where l.id = #{id} and l.is_deleted = '0'
+    </select>
+
+    <select id="selectSqFeedLogList" parameterType="com.ruoyi.business.domain.SqFeedLog" resultMap="SqFeedLogResult">
+        <include refid="selectSqFeedLogVo"/>
+        <where>
+            l.is_deleted = #{isDeleted}
+            <if test="name != null and name != ''">and l.name = #{name}</if>
+            <if test="cars != null and cars != ''">and l.cars like concat('%', #{cars}, '%')</if>
+            <if test="shitype != null and shitype != ''">and l.shitype = #{shitype}</if>
+            <if test="fulls != null and fulls != ''">and l.fulls = #{fulls}</if>
+            <if test="bigs != null and bigs != ''">and l.bigs = #{bigs}</if>
+            <if test="yiwu != null and yiwu != ''">and l.yiwu = #{yiwu}</if>
+            <if test="company != null and company != ''">and l.company like concat('%', #{company}, '%')</if>
+            <if test="beginTime != null and beginTime != ''">and l.create_time &gt;= #{beginTime}</if>
+            <if test="endTime != null and endTime != ''">and l.create_time &lt;= #{endTime}</if>
+        </where>
+        order by l.create_time desc, l.id desc
+    </select>
+
+    <insert id="insertSqFeedLog" parameterType="com.ruoyi.business.domain.SqFeedLog">
+        insert into a_cars_logs(name, cars, fulls, bigs, yiwu, shitype, videopath, imgpath, timecha,
+                                createdate, is_deleted, create_user, create_dept, create_time, status,
+                                ctype, company, person, forkcar, water, mud, safeline, shift, `groups`, persons, rate)
+        values(#{name}, #{cars}, #{fulls}, #{bigs}, #{yiwu}, #{shitype}, #{videopath}, #{imgpath}, #{timecha},
+               #{createdate}, #{isDeleted}, #{createUser}, #{createDept}, sysdate(), #{status},
+               #{ctype}, #{company}, #{person}, #{forkcar}, #{water}, #{mud}, #{safeline}, #{shift}, #{groups}, #{persons}, #{rate})
+    </insert>
+
+    <update id="updateSqFeedLog" parameterType="com.ruoyi.business.domain.SqFeedLog">
+        update a_cars_logs
+        <set>
+            name = #{name}, cars = #{cars}, fulls = #{fulls}, bigs = #{bigs}, yiwu = #{yiwu},
+            shitype = #{shitype}, videopath = #{videopath}, imgpath = #{imgpath}, timecha = #{timecha},
+            createdate = #{createdate}, status = #{status}, ctype = #{ctype}, company = #{company},
+            person = #{person}, forkcar = #{forkcar}, water = #{water}, mud = #{mud}, safeline = #{safeline},
+            shift = #{shift}, `groups` = #{groups}, persons = #{persons}, rate = #{rate},
+            <if test="updateUser != null and updateUser != ''">update_user = #{updateUser},</if>
+            update_time = sysdate()
+        </set>
+        where id = #{id} and is_deleted = '0'
+    </update>
+
+    <update id="deleteSqFeedLogByIds" parameterType="Long">
+        update a_cars_logs set is_deleted = '1', update_time = sysdate() where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+</mapper>

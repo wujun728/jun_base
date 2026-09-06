@@ -1,0 +1,47 @@
+@use 'sass:map';
+@use 'mixins.scss' as *;
+@use 'element-plus/theme-chalk/dark/css-vars.css';
+
+// Background
+$bg-color: () !default;
+$bg-color: map.merge(
+  (
+    '': #141414,
+    'overlay': #1d1e1f,
+  ),
+  $bg-color
+);
+
+// Border
+$border-color: () !default;
+$border-color: map.merge(
+  (
+    '': #58585b,
+  ),
+  $border-color
+);
+
+html.dark {
+  @include set-component-css-var('bg-color', $bg-color);
+  @include set-component-css-var('border-color', $border-color);
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  height: auto;
+  width: 100vw;
+  animation: none;
+  mix-blend-mode: normal;
+}
+html.dark::view-transition-old(root) {
+  z-index: 2;
+}
+html.dark::view-transition-new(root) {
+  z-index: 1;
+}
+html::view-transition-old(root) {
+  z-index: 1;
+}
+html::view-transition-new(root) {
+  z-index: 2;
+}

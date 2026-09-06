@@ -1,0 +1,689 @@
+<template>
+  <div class="container"> ## Changed class from app-container
+    <!--面包屑-->
+    <Breadcrumb :items="['${moduleName}', '${functionName}']" />
+    <a-card
+        class="general-card"
+        :title="'${functionName}管理'" ## Added title prop
+        :body-style="{ padding: '15px' }" ## Simplified card styling
+        :header-style="{ padding: '15px' }"
+    >
+      <!-- 搜索区块 -->
+      <a-row v-show="showSearch"> ## Use v-show for search area visibility
+        <a-col :flex="1">
+          <a-form
+              :model="queryParams"
+              :label-col-props="{ span: 6 }"
+              :wrapper-col-props="{ span: 18 }"
+              label-align="left"
+              auto-label-width
+              @submit="handleQuery"
+          >
+            <a-row :gutter="16">
+#foreach($column in $columns)
+#if($column.query)
+#set($dictType=$column.dictType)
+#set($AttrName=$column.javaField)
+#set($QueryType=$column.queryType)
+#set($dateType="")
+#if($column.htmlType == "datetime")
+    #set($dateType="timestamp")
+#end
+              <a-col :span="8">
+                <a-form-item field="${AttrName}" label="${column.columnComment}">
+#if($column.htmlType == "input")
+                  <a-input
+                      v-model="queryParams.${AttrName}"
+                      placeholder="请输入${column.columnComment}"
+                      allow-clear
+                      @press-enter="handleQuery" ## Added press-enter listener
+                  />
+#elseif(($column.htmlType == "select" || $column.htmlType == "radio") && "" != $dictType)
+                  <a-select
+                      v-model="queryParams.${AttrName}"
+                      :options="dict.getType('${dictType}')" ## Use dict util
+                      placeholder="请选择${column.columnComment}"
+                      allow-clear
+                  />
+#elseif(($column.htmlType == "select" || $column.htmlType == "radio") && $dictType)
+                  <a-select
+                      v-model="queryParams.${AttrName}"
+                      placeholder="请选择${column.columnComment}"
+                      allow-clear
+                  >
+                    <a-option :value="''">请选择字典生成</a-option>
+                  </a-select>
+#elseif($column.htmlType == "datetime") ## Use range picker for date queries by default
+                  <a-range-picker
+                      v-model="dateRange${AttrName}" ## Use separate model for range picker
+                      style="width: 100%"
+                  />
+#else ## Default to input
+                   <a-input
+                      v-model="queryParams.${AttrName}"
+                      placeholder="请输入${column.columnComment}"
+                      allow-clear
+                      @press-enter="handleQuery"
+                  />
+#end
+                </a-form-item>
+              </a-col>
+#end
+#end
+            </a-row>
+          </a-form>
+        </a-col>
+        <a-divider style="height: 84px" direction="vertical"/> ## Adjusted height based on typical layout
+        <a-col :flex="'86px'" style="text-align: right">
+          <a-space direction="vertical" :size="18">
+            <a-button type="primary" html-type="submit"> ## Use html-type submit
+              <template #icon><icon-search /></template>
+              查询
+            </a-button>
+            <a-button @click="resetQuery">
+              <template #icon><icon-refresh /></template>
+              重置
+            </a-button>
+          </a-space>
+        </a-col>
+      </a-row>
+      <a-divider style="margin-top: 0"/>
+      <!-- 工具栏 -->
+      <a-row style="margin-bottom: 16px">
+        <a-col :span="12">
+          <a-space>
+            <a-button v-permission="['${permissionPrefix}:add']" type="primary" @click="handleAdd">
+              <template #icon><icon-plus /></template>
+              新增
+            </a-button>
+            <a-button v-permission="['${permissionPrefix}:edit']" type="primary" status="success" :disabled="single" @click="handleUpdate()"> ## Pass no arg for multi-select update
+              <template #icon><icon-edit /></template>
+              修改
+            </a-button>
+            <a-button v-permission="['${permissionPrefix}:remove']" type="primary" status="danger" :disabled="multiple" @click="handleDelete()"> ## Pass no arg for multi-select delete
+              <template #icon><icon-delete /></template>
+              删除
+            </a-button>
+             <a-button v-permission="['${permissionPrefix}:export']" @click="handleExport"> ## Moved Export here
+              <template #icon><icon-download /></template>
+              导出
+            </a-button>
+          </a-space>
+        </a-col>
+        <a-col
+            :span="12"
+            style="display: flex; align-items: center; justify-content: end"
+        >
+           <!-- Replicate RightToolbar functionality: Show Search & Refresh -->
+           <a-tooltip content="显示/隐藏搜索">
+             <a-button shape="circle" @click="showSearch = !showSearch">
+               <icon-search />
+             </a-button>
+           </a-tooltip>
+           <a-tooltip content="刷新">
+             <a-button shape="circle" @click="fetchData">
+               <icon-refresh />
+             </a-button>
+           </a-tooltip>
+        </a-col>
+      </a-row>
+      <!-- 表格数据-->
+      <a-table
+          row-key="${pkColumn.javaField}"
+          :loading="loading"
+          :pagination="pagination"
+          :columns="(columns as TableColumnData[])" ## Type assertion for columns
+          :data="renderData" ## Changed from ${businessName}List
+          :row-selection="rowSelection"
+          :bordered="false"
+          :size="size" ## Add size control if needed
+          @page-change="onPageChange"
+          @page-size-change="onPageSizeChange"
+          @selection-change="handleSelectionChange" ## Listen to selection change directly
+      >
+#foreach($column in $columns)
+#set($javaField=$column.javaField)
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#if($column.isList() && !$column.isPk() && !$column.isSuperColumn()) ## Exclude PK and super columns from default slots
+           <template #${javaField}="{ record }"> ## Use Arco slot syntax
+    #if($column.htmlType == "datetime")
+                <span>{{ formatTime(record.${javaField}) }}</span> ## Use formatTime util
+    #elseif($column.htmlType == "imageUpload")
+                 <a-image :src="record.${javaField}" width="40" /> ## Use a-image
+    #elseif("" != $column.dictType)
+        #if($column.htmlType == "checkbox")
+                <!-- Assuming dict.getLabels returns formatted string or tags -->
+                <span v-html="dict.getLabels('${column.dictType}', record.${javaField} ? String(record.${javaField}).split(',') : [])"></span>
+        #else
+                 <span>{{ dict.getLabel('${column.dictType}', record.${javaField}) }}</span>
+                 <!-- Or use tags -->
+                 <!-- <a-tag v-if="dict.getTag('${column.dictType}', record.${javaField})" :color="dict.getTag('${column.dictType}', record.${javaField}).listClass">
+                      {{ dict.getLabel('${column.dictType}', record.${javaField}) }}
+                  </a-tag>
+                  <span v-else>{{ dict.getLabel('${column.dictType}', record.${javaField}) }}</span> -->
+        #end
+    #else
+                <span>{{ record.${javaField} }}</span>
+    #end
+            </template>
+#end
+#end
+        <template #operations="{ record }"> ## Changed slot name
+          <a-space> ## Use a-space for actions
+            <a-button v-permission="['${permissionPrefix}:edit']" type="text" size="small" @click="handleUpdate(record)"> ## Pass record for single update
+              修改
+            </a-button>
+            <a-button v-permission="['${permissionPrefix}:remove']" type="text" status="danger" size="small" @click="handleDelete(record)"> ## Pass record for single delete
+              删除
+            </a-button>
+          </a-space>
+        </template>
+      </a-table>
+
+      <!-- 添加或修改${functionName}对话框 (Now Arco Modal) -->
+      <a-modal
+          v-model:visible="open" ## Changed from :visible.sync="open"
+          :title="title"
+          :mask-closable="false"
+          width="700px" ## Adjusted width
+          @cancel="cancel"
+          @before-ok="submitForm" ## Use @before-ok for async validation/submit
+          :ok-loading="modalLoading" ## Add loading state to OK button
+          :unmount-on-close="true" ## Reset form state on close
+      >
+        <a-form ref="formRef" :model="form" :rules="rules" :label-col-props="{ span: 6 }" :wrapper-col-props="{ span: 18 }">
+#foreach($column in $columns)
+#set($field=$column.javaField)
+#if($column.insert && !$column.pk)
+#if(($column.usableColumn) || (!$column.superColumn))
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#set($dictType=$column.dictType)
+#if($column.htmlType == "input")
+          <a-form-item field="${field}" label="${comment}"#if($column.required) :rules="[{ required: true, message: '${comment}不能为空'}]"#end>
+            <a-input v-model="form.${field}" placeholder="请输入${comment}" />
+          </a-form-item>
+#elseif($column.htmlType == "imageUpload")
+          <a-form-item field="${field}" label="${comment}"#if($column.required) :rules="[{ required: true, message: '${comment}不能为空'}]"#end>
+             <!-- Integrate with your Upload component -->
+            <upload-image v-model="form.${field}"/>
+          </a-form-item>
+#elseif($column.htmlType == "fileUpload")
+          <a-form-item field="${field}" label="${comment}"#if($column.required) :rules="[{ required: true, message: '${comment}不能为空'}]"#end>
+            <!-- Integrate with your Upload component -->
+            <upload-file v-model="form.${field}"/>
+          </a-form-item>
+#elseif($column.htmlType == "editor")
+          <a-form-item field="${field}" label="${comment}"#if($column.required) :rules="[{ required: true, message: '${comment}不能为空'}]"#end>
+            <!-- Integrate with your Editor component -->
+            <editor v-model="form.${field}" :min-height="192"/>
+          </a-form-item>
+#elseif($column.htmlType == "select" && "" != $dictType)
+          <a-form-item field="${field}" label="${comment}"#if($column.required) :rules="[{ required: true, message: '${comment}不能为空'}]"#end>
+            <a-select v-model="form.${field}" :options="dict.getType('${dictType}')" placeholder="请选择${comment}" />
+          </a-form-item>
+#elseif($column.htmlType == "select" && $dictType)
+          <a-form-item field="${field}" label="${comment}"#if($column.required) :rules="[{ required: true, message: '${comment}不能为空'}]"#end>
+            <a-select v-model="form.${field}" placeholder="请选择${comment}">
+              <a-option :value="''">请选择字典生成</a-option>
+            </a-select>
+          </a-form-item>
+#elseif($column.htmlType == "checkbox" && "" != $dictType)
+          <a-form-item field="${field}" label="${comment}"#if($column.required) :rules="[{ required: true, message: '${comment}不能为空'}]"#end>
+            <a-checkbox-group v-model="form.${field}" :options="dict.getType('${dictType}')" />
+          </a-form-item>
+#elseif($column.htmlType == "checkbox" && $dictType)
+          <a-form-item field="${field}" label="${comment}"#if($column.required) :rules="[{ required: true, message: '${comment}不能为空'}]"#end>
+            <a-checkbox-group v-model="form.${field}">
+              <a-checkbox value="">请选择字典生成</a-checkbox>
+            </a-checkbox-group>
+          </a-form-item>
+#elseif($column.htmlType == "radio" && "" != $dictType)
+          <a-form-item field="${field}" label="${comment}"#if($column.required) :rules="[{ required: true, message: '${comment}不能为空'}]"#end>
+            <a-radio-group v-model="form.${field}" :options="dict.getType('${dictType}')" />
+          </a-form-item>
+#elseif($column.htmlType == "radio" && $dictType)
+          <a-form-item field="${field}" label="${comment}"#if($column.required) :rules="[{ required: true, message: '${comment}不能为空'}]"#end>
+            <a-radio-group v-model="form.${field}">
+              <a-radio value="">请选择字典生成</a-radio>
+            </a-radio-group>
+          </a-form-item>
+#elseif($column.htmlType == "datetime")
+          <a-form-item field="${field}" label="${comment}"#if($column.required) :rules="[{ required: true, message: '${comment}不能为空'}]"#end>
+            <a-date-picker
+                v-model="form.${field}"
+                show-time
+                format="YYYY-MM-DD HH:mm:ss" ## Ensure format matches backend expectation
+                style="width: 100%"
+                placeholder="请选择${comment}"
+            />
+          </a-form-item>
+#elseif($column.htmlType == "textarea")
+          <a-form-item field="${field}" label="${comment}"#if($column.required) :rules="[{ required: true, message: '${comment}不能为空'}]"#end>
+            <a-textarea v-model="form.${field}" :placeholder="'请输入${comment}'" allow-clear :auto-size="{minRows:3, maxRows:5}" />
+          </a-form-item>
+#else ## Fallback to input for other types
+           <a-form-item field="${field}" label="${comment}"#if($column.required) :rules="[{ required: true, message: '${comment}不能为空'}]"#end>
+             <a-input v-model="form.${field}" placeholder="请输入${comment}" />
+           </a-form-item>
+#end
+#end
+#end
+#end
+        </a-form>
+         <!-- Footer buttons are handled by a-modal's ok/cancel props/events -->
+      </a-modal>
+    </a-card>
+  </div>
+</template>
+
+<script setup lang="ts" name="${ClassNameUp}"> ## Changed name and added setup lang="ts"
+import { ref, reactive, computed, onMounted, nextTick } from 'vue';
+import { Message, Modal } from '@arco-design/web-vue';
+import type { TableColumnData, TableRowSelection } from '@arco-design/web-vue/es/table/interface'; ## Import Arco types
+import type { PaginationProps } from '@arco-design/web-vue/es/pagination';
+import type { FormInstance } from '@arco-design/web-vue/es/form'; ## Import FormInstance
+import useLoading from '@/hooks/loading';
+import { formatTime, addDateRange } from '@/utils/common'; ## Use common utils
+import * as dict from '@/utils/dict'; ## Import dict utils
+import { download } from '@/utils/download'; // Assuming download util exists
+import {
+    list${ClassNameUp}, ## Use consistent naming
+    get${ClassNameUp},
+    del${ClassNameUp},
+    add${ClassNameUp},
+    update${ClassNameUp},
+    export${ClassNameUp},
+    type ${ClassNameUp}Record, ## Import generated types
+    type ${ClassNameUp}Query
+} from '@/api/${moduleName}/${businessName}'; ## Import generated API
+
+#if(${dicts} != '')
+// Load dictionaries if needed, adapt to your dict implementation
+// const dict = useDict(${dicts});
+#end
+
+const { loading, setLoading } = useLoading(true);
+const modalLoading = ref(false); // Loading state for modal OK button
+const renderData = ref<${ClassNameUp}Record[]>([]); ## Renamed list variable
+const selectedKeys = ref<(string|number)[]>([]); // Store selected row keys
+const ids = ref<(string|number)[]>([]); // Store selected ids (used in original template, maps to selectedKeys)
+const total = ref(0);
+const showSearch = ref(true); // Control search form visibility
+const open = ref(false); // Renamed modalVisible to open for consistency with original template
+const title = ref(''); // Renamed modalTitle to title
+const size = ref('medium'); // Table size
+const formRef = ref<FormInstance>(); // Ref for the modal form
+
+// Define query params models for date ranges separately
+#foreach ($column in $columns)
+#if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+#set($AttrName=$column.javaField)
+const dateRange${AttrName} = ref<[string, string] | []>([]);
+#end
+#end
+
+// Query parameters
+const queryParams = reactive<${ClassNameUp}Query>({
+    pageNum: 1,
+    pageSize: 10,
+#foreach ($column in $columns)
+#if($column.query)
+#if(!($column.htmlType == "datetime" && $column.queryType == "BETWEEN")) ## Don't include range picker models here
+    $column.javaField: undefined,
+#end
+#end
+#end
+});
+
+// Form data (now defined inside setup)
+const form = reactive<Partial<${ClassNameUp}Record>>({
+#foreach($column in $columns)
+#if($column.insert || $column.edit)
+#if($column.htmlType == "checkbox")
+  $column.javaField: [], ## Initialize checkbox group as array
+#else
+  $column.javaField: undefined,
+#end
+#end
+#end
+});
+
+// Form validation rules (now defined inside setup)
+const rules = {
+#foreach($column in $columns)
+#if($column.required && $column.isEdit && !$column.isPk())
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+  ${column.javaField}: [
+    { required: true, message: '${comment}不能为空', trigger: #if($column.htmlType == "select" || $column.htmlType == "radio" || $column.htmlType == "checkbox")'change'#else'blur'#end }
+  ],
+#end
+#end
+};
+
+// Pagination configuration
+const pagination = reactive<PaginationProps>({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+    showTotal: true,
+    showPageSize: true,
+    showJumper: true,
+});
+
+// Row selection configuration
+const rowSelection = reactive<TableRowSelection>({
+  type: 'checkbox',
+  showCheckedAll: true,
+  onlyCurrent: false,
+});
+
+// Computed properties for button disabling
+const single = computed(() => selectedKeys.value.length !== 1);
+const multiple = computed(() => !selectedKeys.value.length);
+
+// Table columns definition (Adjust based on your needs)
+const columns = computed<TableColumnData[]>(() => [
+#foreach($column in $columns)
+#set($javaField=$column.javaField)
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#if($column.pk)
+  { title: '${comment}', dataIndex: '${javaField}', width: 80 }, ## PK column
+#elseif($column.isList() && !$column.isSuperColumn())
+  { title: '${comment}', dataIndex: '${javaField}', slotName: '${javaField}', ellipsis: true, tooltip: true }, ## Other list columns
+#end
+#end
+  { title: '操作', slotName: 'operations', align: 'center', width: 150, fixed: 'right' }, // Operations column
+]);
+
+// --- Methods ---
+
+// Fetch data from API
+const fetchData = async (params: ${ClassNameUp}Query = { ...queryParams }) => {
+  setLoading(true);
+  try {
+    // Process date ranges before sending query
+    const queryToSend = { ...params };
+    #foreach ($column in $columns)
+    #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+    #set($AttrName=$column.javaField)
+    if (dateRange${AttrName}.value && dateRange${AttrName}.value.length === 2) {
+       // Assuming addDateRange handles adding begin/end params correctly
+       // If not, add them manually:
+       // queryToSend['begin${AttrName}'] = dateRange${AttrName}.value[0];
+       // queryToSend['end${AttrName}'] = dateRange${AttrName}.value[1];
+       addDateRange(queryToSend, dateRange${AttrName}.value, ['begin${AttrName}', 'end${AttrName}']);
+    }
+    #end
+    #end
+
+    // Assuming API returns { data: [], total: number } structure now
+    const { data, total: totalCount } = await list${ClassNameUp}(queryToSend);
+    renderData.value = data || []; // Ensure it's an array
+    total.value = totalCount || 0;
+    pagination.current = queryToSend.pageNum;
+    pagination.total = totalCount || 0;
+  } catch (err) {
+    renderData.value = [];
+    total.value = 0;
+    pagination.total = 0;
+    // console.error(err);
+  } finally {
+    setLoading(false);
+  }
+};
+
+// Handle search query
+const handleQuery = () => {
+  queryParams.pageNum = 1; // Reset to first page on search
+  fetchData();
+};
+
+// Reset query form
+const resetQuery = () => {
+    // Reset query params
+    Object.keys(queryParams).forEach(key => {
+        if (key !== 'pageNum' && key !== 'pageSize') {
+             queryParams[key as keyof typeof queryParams] = undefined;
+        }
+    });
+     queryParams.pageNum = 1;
+     queryParams.pageSize = 10;
+
+     // Reset date range pickers
+    #foreach ($column in $columns)
+    #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+    #set($AttrName=$column.javaField)
+    dateRange${AttrName}.value = [];
+    #end
+    #end
+
+    handleQuery(); // Fetch data with reset params
+};
+
+// Handle pagination change
+const onPageChange = (current: number) => {
+  queryParams.pageNum = current;
+  fetchData();
+};
+const onPageSizeChange = (pageSize: number) => {
+  queryParams.pageSize = pageSize;
+  queryParams.pageNum = 1; // Reset to first page
+  fetchData();
+}
+
+// Handle row selection change
+const handleSelectionChange = (keys: (string|number)[]) => {
+   selectedKeys.value = keys;
+   ids.value = keys; // Keep ids for compatibility if needed elsewhere, but use selectedKeys primarily
+}
+
+// Reset form data (now clears the reactive object)
+const resetForm = () => {
+  formRef.value?.resetFields(); // Reset validation state
+  Object.keys(form).forEach(key => { // Clear properties
+    delete form[key as keyof typeof form];
+  });
+   // Re-initialize default values if necessary, e.g., for checkboxes
+  #foreach($column in $columns)
+  #if($column.insert || $column.edit)
+  #if($column.htmlType == "checkbox")
+    form.$column.javaField = [];
+  #else
+    // form.$column.javaField = undefined; // Properties are deleted, no need to set to undefined
+  #end
+  #end
+  #end
+};
+
+// Handle Add button click
+const handleAdd = () => {
+  resetForm();
+  title.value = "添加${functionName}";
+  open.value = true; // Show the modal
+};
+
+// Handle Update button click (can be single or from toolbar)
+const handleUpdate = async (record?: ${ClassNameUp}Record) => {
+  resetForm();
+  const idToUpdate = record ? record.${pkColumn.javaField} : selectedKeys.value[0];
+  if (!idToUpdate) {
+      Message.warning('请选择一条记录进行修改');
+      return;
+  }
+  title.value = "修改${functionName}";
+  setLoading(true); // Show loading state
+  try {
+      const res = await get${ClassNameUp}(idToUpdate as #if(${pkColumn.javaType} == 'Long' || ${pkColumn.javaType} == 'Integer')number#else string#end);
+      // Handle checkbox string to array conversion before assigning to form
+      #foreach($column in $columns)
+      #if($column.htmlType == "checkbox" && $column.isEdit)
+      res.data.$column.javaField = res.data.${column.javaField} ? String(res.data.${column.javaField}).split(',') : [];
+      #end
+      #end
+      Object.assign(form, res.data); // Assign fetched data to reactive form object
+      open.value = true; // Show the modal
+  } catch (err) {
+       Message.error('获取详情失败');
+  } finally {
+       setLoading(false);
+  }
+};
+
+/** 提交按钮（由 @before-ok 调用） */
+const submitForm = async (): Promise<boolean> => { // Return boolean for @before-ok
+  const validation = await formRef.value?.validate();
+  if (validation) {
+      return false; // Validation failed, prevent modal close
+  }
+  modalLoading.value = true;
+  try {
+      const dataToSubmit = { ...form };
+      // Handle checkbox array to string conversion before submitting
+      #foreach($column in $columns)
+      #if($column.htmlType == "checkbox" && $column.isEdit)
+      if (Array.isArray(dataToSubmit.$column.javaField)) {
+         dataToSubmit.${column.javaField} = dataToSubmit.${column.javaField}.join(',');
+      }
+      #end
+      #end
+
+      if (dataToSubmit.${pkColumn.javaField}) { // Check if it's an update
+          await update${ClassNameUp}(dataToSubmit as ${ClassNameUp}Record);
+          Message.success("修改成功");
+      } else { // Otherwise it's an add
+          await add${ClassNameUp}(dataToSubmit as ${ClassNameUp}Record);
+          Message.success("新增成功");
+      }
+      fetchData(); // Refresh table data
+      return true; // Validation and submission successful, allow modal close
+  } catch (err) {
+      // Message.error('操作失败'); // Error handled by interceptor usually
+      return false; // Submission failed, prevent modal close
+  } finally {
+       modalLoading.value = false;
+  }
+};
+
+/** 取消按钮（由 @cancel 调用） */
+const cancel = () => {
+  open.value = false;
+  resetForm(); // Also reset form on cancel
+};
+
+// Handle Delete button click (can be single or from toolbar)
+const handleDelete = (record?: ${ClassNameUp}Record) => {
+  const idsToDelete = record ? [record.${pkColumn.javaField}] : selectedKeys.value;
+  if (!idsToDelete.length) {
+    Message.warning('请选择要删除的数据');
+    return;
+  }
+
+  Modal.confirm({
+    title: '确认删除',
+    content: `确定要删除选中的 ${idsToDelete.length} 条数据吗？`,
+    okButtonProps: { status: 'danger'},
+    onOk: async () => {
+      setLoading(true);
+      try {
+        #if(${pkColumn.javaType} == 'Long' || ${pkColumn.javaType} == 'Integer')
+            await del${ClassNameUp}(idsToDelete as number[]);
+        #else
+            await del${ClassNameUp}(idsToDelete as string[]);
+        #end
+        Message.success("删除成功");
+        selectedKeys.value = []; // Clear selection
+        ids.value = []; // Clear ids as well
+        // Refresh data after delete
+        fetchData();
+      } catch (err) {
+        // Error handled by interceptor
+      } finally {
+        setLoading(false);
+      }
+    }
+  });
+};
+
+// Handle Export button click
+const handleExport = () => {
+    const currentQueryParams = { ...queryParams };
+     // Process date ranges before sending query
+    #foreach ($column in $columns)
+    #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+    #set($AttrName=$column.javaField)
+    if (dateRange${AttrName}.value && dateRange${AttrName}.value.length === 2) {
+       // Assuming addDateRange handles adding begin/end params correctly
+       // If not, add them manually:
+       // currentQueryParams['begin${AttrName}'] = dateRange${AttrName}.value[0];
+       // currentQueryParams['end${AttrName}'] = dateRange${AttrName}.value[1];
+       addDateRange(currentQueryParams, dateRange${AttrName}.value, ['begin${AttrName}', 'end${AttrName}']);
+    }
+    #end
+    #end
+
+   Modal.confirm({
+       title: '确认导出',
+       content: '是否确认导出所有${functionName}数据项?',
+       onOk: async () => {
+            setLoading(true);
+            try {
+                const res = await export${ClassNameUp}(currentQueryParams);
+                download(res, `${businessName}_#[[${new Date().getTime()}]]#.xlsx`); ## Use download util
+                 Message.success("导出成功");
+            } catch(err) {
+                // Message.error("导出失败");
+            } finally {
+                setLoading(false);
+            }
+       }
+   })
+};
+
+// --- Lifecycle ---
+onMounted(() => {
+  fetchData(); // Fetch initial data
+});
+
+</script>
+
+<style scoped lang="less"> ## Use less
+.container {
+  padding: 0 20px 20px 20px;
+}
+.general-card {
+  &:first-child {
+     margin-bottom: 16px;
+  }
+}
+.action-icon {
+  margin-left: 12px;
+  cursor: pointer;
+}
+:deep(.arco-table-th) { // Style table header like original template
+  background-color: var(--color-fill-2);
+}
+:deep(.arco-modal-body) { // Ensure modal content scrolls if too long
+  max-height: 60vh; // Adjust as needed
+  overflow-y: auto;
+}
+</style>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.SqWxSendMapper">
+    <resultMap id="SqWxSendResult" type="com.ruoyi.business.domain.SqWxSend">
+        <id property="id" column="id" />
+        <result property="types" column="types" />
+        <result property="sendUser" column="send_user" />
+        <result property="isSend" column="is_send" />
+        <result property="level" column="level" />
+        <result property="createUser" column="create_user" />
+        <result property="createDept" column="create_dept" />
+        <result property="createTime" column="create_time" />
+        <result property="updateUser" column="update_user" />
+        <result property="updateTime" column="update_time" />
+        <result property="tname" column="tname" />
+        <result property="userName" column="user_name" />
+        <result property="deptId" column="dept_id" />
+        <result property="deptLabel" column="dept_label" />
+    </resultMap>
+
+    <sql id="selectSqWxSendVo">
+        select s.id, s.types, s.send_user, s.is_send, s.level, s.create_user, s.create_dept,
+               s.create_time, s.update_user, s.update_time, s.tname, s.user_name, s.dept_id,
+               d.name as dept_label
+        from yn_wx_send s
+        left join yn_wx_dept d on d.dept_id = s.dept_id
+    </sql>
+
+    <select id="selectSqWxSendById" parameterType="Long" resultMap="SqWxSendResult">
+        <include refid="selectSqWxSendVo"/>
+        where s.id = #{id}
+    </select>
+
+    <select id="selectSqWxSendList" parameterType="com.ruoyi.business.domain.SqWxSend" resultMap="SqWxSendResult">
+        <include refid="selectSqWxSendVo"/>
+        <where>
+            <if test="types != null">and s.types = #{types}</if>
+            <if test="level != null and level != ''">and s.level = #{level}</if>
+            <if test="isSend != null and isSend != ''">and s.is_send = #{isSend}</if>
+            <if test="tname != null and tname != ''">and s.tname = #{tname}</if>
+            <if test="deptId != null and deptId != ''">and s.dept_id = #{deptId}</if>
+            <if test="userName != null and userName != ''">and s.user_name like concat('%', #{userName}, '%')</if>
+        </where>
+        order by s.create_time desc, s.id desc
+    </select>
+
+    <insert id="insertSqWxSend" parameterType="com.ruoyi.business.domain.SqWxSend">
+        insert into yn_wx_send(id, types, send_user, is_send, level, create_user, create_dept, create_time, tname, user_name, dept_id)
+        values(#{id}, #{types}, #{sendUser}, #{isSend}, #{level}, #{createUser}, #{createDept}, sysdate(), #{tname}, #{userName}, #{deptId})
+    </insert>
+
+    <update id="updateSqWxSend" parameterType="com.ruoyi.business.domain.SqWxSend">
+        update yn_wx_send
+        <set>
+            types = #{types},
+            send_user = #{sendUser},
+            is_send = #{isSend},
+            level = #{level},
+            tname = #{tname},
+            user_name = #{userName},
+            dept_id = #{deptId},
+            <if test="updateUser != null and updateUser != ''">update_user = #{updateUser},</if>
+            update_time = sysdate()
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSqWxSendByIds" parameterType="Long">
+        delete from yn_wx_send where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">#{id}</foreach>
+    </delete>
+</mapper>

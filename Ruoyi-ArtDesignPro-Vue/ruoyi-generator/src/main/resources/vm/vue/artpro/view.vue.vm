@@ -1,0 +1,48 @@
+<template>
+  <ElDrawer v-model="visible" title="${functionName}详情" size="680px">
+    <ElDescriptions v-loading="loading" :column="2" border>
+#foreach($column in $columns)
+#if(!$column.pk && $column.list)
+      <ElDescriptionsItem label="${column.columnComment}">
+#if("" != $column.dictType)
+        <DictTag :options="dict.${column.dictType}" :value="info.${column.javaField}" />
+#elseif($column.htmlType == "imageUpload")
+        <ElImage v-if="info.${column.javaField}" :src="info.${column.javaField}" :preview-src-list="[info.${column.javaField}]" class="h-16 w-16" preview-teleported />
+#else
+        {{ info.${column.javaField} }}
+#end
+      </ElDescriptionsItem>
+#end
+#end
+    </ElDescriptions>
+  </ElDrawer>
+</template>
+
+<script setup lang="ts">
+  import DictTag from '@/components/business/dict-tag/index.vue'
+  import { useDict } from '@/hooks/core/useDict'
+  import { fetch${BusinessName}, type ${ClassName} } from '@/api/${moduleName}/${businessName}'
+
+  defineOptions({ name: '${BusinessName}View' })
+#if(${dicts} != '')
+  const { dict } = useDict(${dicts})
+#else
+  const dict = reactive<Record<string, any[]>>({})
+#end
+  const visible = ref(false)
+  const loading = ref(false)
+  const info = reactive<${ClassName}>({})
+
+  async function open(${pkColumn.javaField}: number | string) {
+    visible.value = true
+    loading.value = true
+    try {
+      Object.keys(info).forEach((key) => delete info[key])
+      Object.assign(info, await fetch${BusinessName}(${pkColumn.javaField}))
+    } finally {
+      loading.value = false
+    }
+  }
+
+  defineExpose({ open })
+</script>

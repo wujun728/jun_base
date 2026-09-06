@@ -1,0 +1,677 @@
+<template>
+  <div class="container"> ## Changed class from app-container
+    <!--面包屑-->
+    <Breadcrumb :items="['${moduleName}', '${functionName}']"/>
+    <a-card
+        class="general-card"
+        :title="'${functionName}管理'" ## Added title prop
+        :body-style="{ padding: '15px' }" ## Simplified card styling
+        :header-style="{ padding: '15px' }"
+    >
+      <!-- 搜索区块 -->
+      <a-row v-show="showSearch"> ## Use v-show for search area visibility
+        <a-col :flex="1">
+          <a-form
+              :model="queryParams"
+              :label-col-props="{ span: 6 }"
+              :wrapper-col-props="{ span: 18 }"
+              label-align="left"
+              auto-label-width
+              @submit="handleQuery"
+          >
+            <a-row :gutter="16">
+#foreach($column in $columns)
+#if($column.query)
+#set($dictType=$column.dictType)
+#set($AttrName=$column.javaField)
+#set($QueryType=$column.queryType)
+#set($dateType="")
+#if($column.htmlType == "datetime")
+    #set($dateType="timestamp")
+#end
+              <a-col :span="8">
+                <a-form-item field="${AttrName}" label="${column.columnComment}">
+#if($column.htmlType == "input")
+                  <a-input
+                      v-model="queryParams.${AttrName}"
+                      placeholder="请输入${column.columnComment}"
+                      allow-clear
+                      @press-enter="handleQuery" ## Added press-enter listener
+                  />
+#elseif(($column.htmlType == "select" || $column.htmlType == "radio") && "" != $dictType)
+                  <a-select
+                      v-model="queryParams.${AttrName}"
+                      :options="dict.getType('${dictType}')" ## Use dict util
+                      placeholder="请选择${column.columnComment}"
+                      allow-clear
+                  />
+#elseif(($column.htmlType == "select" || $column.htmlType == "radio") && $dictType)
+                  <a-select
+                      v-model="queryParams.${AttrName}"
+                      placeholder="请选择${column.columnComment}"
+                      allow-clear
+                  >
+                    <a-option :value="''">请选择字典生成</a-option>
+                  </a-select>
+#elseif($column.htmlType == "datetime") ## Use range picker for date queries by default
+                  <a-range-picker
+                      v-model="dateRange${AttrName}" ## Use separate model for range picker
+                      style="width: 100%"
+                  />
+#else ## Default to input
+                   <a-input
+                      v-model="queryParams.${AttrName}"
+                      placeholder="请输入${column.columnComment}"
+                      allow-clear
+                      @press-enter="handleQuery"
+                  />
+#end
+                </a-form-item>
+              </a-col>
+#end
+#end
+            </a-row>
+          </a-form>
+        </a-col>
+        <a-divider style="height: 84px" direction="vertical"/> ## Adjusted height based on typical layout
+        <a-col :flex="'86px'" style="text-align: right">
+          <a-space direction="vertical" :size="18">
+            <a-button type="primary" html-type="submit"> ## Use html-type submit
+              <template #icon><icon-search /></template>
+              查询
+            </a-button>
+            <a-button @click="resetQuery">
+              <template #icon><icon-refresh /></template>
+              重置
+            </a-button>
+          </a-space>
+        </a-col>
+      </a-row>
+      <a-divider style="margin-top: 0"/>
+      <!-- 工具栏 -->
+       <a-row style="margin-bottom: 16px">
+        <a-col :span="12">
+          <a-space>
+            <a-button v-permission="['${permissionPrefix}:add']" type="primary" @click="handleAdd()"> ## Add root node
+              <template #icon><icon-plus /></template>
+              新增
+            </a-button>
+             <a-button type="primary" status="warning" @click="toggleExpandAll"> ## Changed icon and status
+              <template #icon><icon-apps /></template> ## Changed icon
+              展开/折叠
+            </a-button>
+             <a-button v-permission="['${permissionPrefix}:export']" @click="handleExport"> ## Moved export here
+              <template #icon><icon-download /></template>
+              导出
+            </a-button>
+          </a-space>
+        </a-col>
+        <a-col
+            :span="12"
+            style="display: flex; align-items: center; justify-content: end"
+        >
+          <!-- Replicate RightToolbar functionality: Show Search & Refresh -->
+           <a-tooltip content="显示/隐藏搜索">
+             <a-button shape="circle" @click="showSearch = !showSearch">
+               <icon-search />
+             </a-button>
+           </a-tooltip>
+           <a-tooltip content="刷新">
+             <a-button shape="circle" @click="fetchData">
+               <icon-refresh />
+             </a-button>
+           </a-tooltip>
+        </a-col>
+      </a-row>
+      <!-- 表格 -->
+       <a-table
+          v-if="refreshTable"
+          row-key="${treeCode}" ## Use the tree code as row key
+          :loading="loading"
+          :columns="(columns as TableColumnData[])" ## Type assertion
+          :data="renderData" ## Changed from ${businessName}List
+          :bordered="false"
+          :pagination="false" ## Tree tables usually don't use pagination
+          :default-expand-all-rows="isExpandAll" ## Control initial expand state
+          :hide-expand-button-on-empty="true" ## Hide expand icon if no children
+          :size="size"
+      >
+           <!-- 自定义列渲染 -->
+#foreach($column in $columns)
+#set($javaField=$column.javaField)
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#if($column.isList() && !$column.isSuperColumn()) ## Exclude super columns, but maybe keep PK if needed
+           <template #${javaField}="{ record }">
+    #if($column.htmlType == "datetime")
+                <span>{{ formatTime(record.${javaField}) }}</span>
+    #elseif("" != ${column.dictType}) ## Use dict util/store
+        #if($column.htmlType == "checkbox")
+                <!-- Assuming dict.getLabels returns formatted string or tags -->
+                <span v-html="dict.getLabels('${column.dictType}', record.${javaField} ? String(record.${javaField}).split(',') : [])"></span>
+        #else
+                 <span>{{ dict.getLabel('${column.dictType}', record.${javaField}) }}</span>
+        #end
+    #elseif($column.htmlType == "imageUpload")
+                 <a-image :src="record.${javaField}" width="40" />
+    #elseif($column.htmlType == "fileUpload")
+                 <a-link :href="record.${javaField}" target="_blank">查看文件</a-link>
+    #else
+                <span>{{ record.${javaField} }}</span>
+    #end
+            </template>
+#end
+#end
+           <template #operations="{ record }"> ## Changed from 'optional' to 'operations' for clarity
+             <a-space>
+                 <a-button v-permission="['${permissionPrefix}:edit']" type="text" size="small" @click="handleUpdate(record)">
+                   修改
+                 </a-button>
+                  <a-button v-permission="['${permissionPrefix}:add']" type="text" size="small" @click="handleAdd(record)"> ## Add child node button
+                   新增
+                 </a-button>
+                 <a-button v-permission="['${permissionPrefix}:remove']" type="text" status="danger" size="small" @click="handleDelete(record)">
+                   删除
+                 </a-button>
+             </a-space>
+           </template>
+       </a-table>
+
+       <!-- 添加或修改${functionName}对话框 (Now Arco Modal) -->
+       <a-modal
+          v-model:visible="open" ## Use open ref
+          :title="title" ## Use title ref
+          :mask-closable="false"
+          width="700px" ## Adjusted width
+          @cancel="cancel"
+          @before-ok="submitForm" ## Use @before-ok
+          :ok-loading="modalLoading" ## Add loading state
+          :unmount-on-close="true" ## Reset form state on close
+       >
+            <a-form ref="formRef" :model="form" :rules="rules" :label-col-props="{ span: 6 }" :wrapper-col-props="{ span: 18 }">
+#foreach($column in $columns)
+#if($column.insert && !$column.pk) ## Exclude PK from form
+#if(($column.usableColumn) || (!$column.superColumn))
+#set($field=$column.javaField)
+#set($label=$column.columnComment)
+#set($dictType=$column.dictType)
+#if("" != $treeParentCode && $column.javaField == $treeParentCode) ## Handle tree parent selection
+                 <a-form-item field="${treeParentCode}" label="${label}"#if($column.required) :rules="[{ required: true, message: '${label}不能为空'}]"#end>
+                     <a-tree-select
+                         v-model="form.${treeParentCode}"
+                         :data="treeOptions" ## Use formatted tree data
+                         placeholder="请选择上级${label}"
+                         allow-clear
+                         allow-search
+                         :field-names="{ key: '${treeCode}', title: '${treeName}', children: 'children' }" ## Map fields for tree select
+                     />
+                 </a-form-item>
+#elseif($column.htmlType == "input")
+                 <a-form-item field="$field" label="$label"#if($column.required) :rules="[{ required: true, message: '${label}不能为空'}]"#end>
+                    <a-input v-model="form.$field" placeholder="请输入$label" />
+                 </a-form-item>
+#elseif($column.htmlType == "textarea")
+                 <a-form-item field="$field" label="$label"#if($column.required) :rules="[{ required: true, message: '${label}不能为空'}]"#end>
+                     <a-textarea v-model="form.$field" placeholder="请输入$label" :auto-size="{minRows:3, maxRows:5}" />
+                 </a-form-item>
+#elseif($column.htmlType == "select" && "" != $dictType)
+                 <a-form-item field="$field" label="$label"#if($column.required) :rules="[{ required: true, message: '${label}不能为空'}]"#end>
+                     <a-select v-model="form.$field" :options="dict.getType('$dictType')" placeholder="请选择$label" />
+                 </a-form-item>
+#elseif($column.htmlType == "select" && $dictType)
+                 <a-form-item field="$field" label="$label"#if($column.required) :rules="[{ required: true, message: '${label}不能为空'}]"#end>
+                     <a-select v-model="form.$field" placeholder="请选择$label">
+                        <a-option :value="''">请选择字典生成</a-option>
+                     </a-select>
+                 </a-form-item>
+#elseif($column.htmlType == "radio" && "" != $dictType)
+                 <a-form-item field="$field" label="$label"#if($column.required) :rules="[{ required: true, message: '${label}不能为空'}]"#end>
+                     <a-radio-group v-model="form.$field" :options="dict.getType('$dictType')" />
+                 </a-form-item>
+#elseif($column.htmlType == "radio" && $dictType)
+                  <a-form-item field="$field" label="$label"#if($column.required) :rules="[{ required: true, message: '${label}不能为空'}]"#end>
+                     <a-radio-group v-model="form.$field">
+                        <a-radio value="">请选择字典生成</a-radio>
+                     </a-radio-group>
+                 </a-form-item>
+#elseif($column.htmlType == "checkbox" && "" != $dictType)
+                 <a-form-item field="$field" label="$label"#if($column.required) :rules="[{ required: true, message: '${label}不能为空'}]"#end>
+                     <a-checkbox-group v-model="form.$field" :options="dict.getType('$dictType')" />
+                 </a-form-item>
+#elseif($column.htmlType == "checkbox" && $dictType)
+                 <a-form-item field="$field" label="$label"#if($column.required) :rules="[{ required: true, message: '${label}不能为空'}]"#end>
+                     <a-checkbox-group v-model="form.$field">
+                         <a-checkbox value="">请选择字典生成</a-checkbox>
+                     </a-checkbox-group>
+                 </a-form-item>
+#elseif($column.htmlType == "datetime")
+                 <a-form-item field="$field" label="$label"#if($column.required) :rules="[{ required: true, message: '${label}不能为空'}]"#end>
+                     <a-date-picker v-model="form.$field" show-time format="YYYY-MM-DD HH:mm:ss" style="width: 100%;" placeholder="请选择${comment}" />
+                 </a-form-item>
+#elseif($column.htmlType == "imageUpload")
+                <a-form-item field="$field" label="$label"#if($column.required) :rules="[{ required: true, message: '${label}不能为空'}]"#end>
+                    <!-- Integrate with your Upload component -->
+                    <upload-image v-model="form.$field"/>
+                </a-form-item>
+#elseif($column.htmlType == "fileUpload")
+                <a-form-item field="$field" label="$label"#if($column.required) :rules="[{ required: true, message: '${label}不能为空'}]"#end>
+                     <!-- Integrate with your Upload component -->
+                     <upload-file v-model="form.$field"/>
+                </a-form-item>
+#elseif($column.htmlType == "editor")
+                <a-form-item field="$field" label="$label"#if($column.required) :rules="[{ required: true, message: '${label}不能为空'}]"#end>
+                     <!-- Integrate with your Editor component -->
+                     <editor v-model="form.$field" :min-height="192"/>
+                </a-form-item>
+#else ## Fallback to input
+                 <a-form-item field="$field" label="$label"#if($column.required) :rules="[{ required: true, message: '${label}不能为空'}]"#end>
+                    <a-input v-model="form.$field" placeholder="请输入$label" />
+                 </a-form-item>
+#end
+#end
+#end
+#end
+            </a-form>
+       </a-modal>
+    </a-card>
+  </div>
+</template>
+
+<script setup lang="ts" name="${ClassNameUp}Tree"> ## Changed name for clarity
+import { ref, reactive, computed, onMounted, nextTick } from 'vue';
+import { Message, Modal } from '@arco-design/web-vue';
+import type { TableColumnData } from '@arco-design/web-vue/es/table/interface'; ## Import Arco types
+import type { FormInstance } from '@arco-design/web-vue/es/form';
+import type { TreeSelectOptionData } from '@arco-design/web-vue/es/tree-select/interface'; ## Import TreeSelect type
+import useLoading from '@/hooks/loading';
+import { formatTime, addDateRange } from '@/utils/common'; // Assuming parseTime is formatTime
+import * as dict from '@/utils/dict'; // Assuming dict utils
+import { download } from '@/utils/download'; // Assuming download util exists
+#*#foreach($column in $columns)
+#if(${column.dictType} != '')
+// import { getDicts } from '@/api/system/dict-data'; // Assuming dicts are loaded differently now
+#break
+#end
+#end*#
+import {
+    list${ClassNameUp}, ## Renamed from list${BusinessName}
+    get${ClassNameUp}, ## Renamed from get${BusinessName}
+    del${ClassNameUp}, ## Renamed from del${BusinessName}
+    add${ClassNameUp}, ## Renamed from add${BusinessName}
+    update${ClassNameUp}, ## Renamed from update${BusinessName}
+    export${ClassNameUp}, ## Renamed from export${BusinessName}
+    type ${ClassNameUp}Record,
+    type ${ClassNameUp}Query
+} from '@/api/${moduleName}/${businessName}';
+
+#if(${dicts} != '')
+// Load dictionaries if needed, adapt to your dict implementation
+// const dict = useDict(${dicts});
+#end
+
+// Reactive states
+const { loading, setLoading } = useLoading(true); // Start loading true
+const modalLoading = ref(false); // Modal OK button loading
+const renderData = ref<${ClassNameUp}Record[]>([]); ## Renamed from ${businessName}List
+const treeOptions = ref<TreeSelectOptionData[]>([]); // Options for TreeSelect
+const showSearch = ref(true); // Control search form visibility
+const open = ref(false); // Modal visibility
+const title = ref(''); // Modal title
+const isExpandAll = ref(true); // Control initial expand state
+const refreshTable = ref(true); // For expand/collapse trick
+const formRef = ref<FormInstance>(); // Modal form ref
+const size = ref('medium'); // Table size
+
+// Define query params models for date ranges separately
+#foreach ($column in $columns)
+#if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+#set($AttrName=$column.javaField)
+const dateRange${AttrName} = ref<[string, string] | []>([]);
+#end
+#end
+
+// Query parameters
+const queryParams = reactive<${ClassNameUp}Query>({
+    // Removed pagination params
+#foreach ($column in $columns)
+#if($column.query)
+#if(!($column.htmlType == "datetime" && $column.queryType == "BETWEEN"))
+    $column.javaField: undefined,
+#end
+#end
+#end
+});
+
+// Form data (now defined inside setup)
+const form = reactive<Partial<${ClassNameUp}Record>>({
+#foreach($column in $columns)
+#if($column.insert || $column.edit)
+#if($column.htmlType == "checkbox")
+  $column.javaField: [], ## Initialize checkbox group as array
+#else
+  $column.javaField: undefined,
+#end
+#end
+#end
+});
+
+// Form validation rules (now defined inside setup)
+const rules = {
+#foreach($column in $columns)
+#if($column.required && $column.isEdit && !$column.isPk())
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+  ${column.javaField}: [
+    { required: true, message: '${comment}不能为空', trigger: #if($column.htmlType == "select" || $column.htmlType == "treeSelect" || $column.htmlType == "radio" || $column.htmlType == "checkbox")'change'#else'blur'#end }
+  ],
+#end
+#end
+};
+
+// Table columns definition (adapt based on needs)
+const columns = computed<TableColumnData[]>(() => [
+#foreach($column in $columns)
+#set($javaField=$column.javaField)
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#if($column.pk)
+    // { title: '${comment}', dataIndex: '${javaField}', width: 80 }, ## Optionally hide PK in tree view
+#elseif($column.list && !$column.isSuperColumn())
+#if($column.javaField == ${treeName}) ## Tree name column should not have slot usually
+    { title: '${comment}', dataIndex: '${javaField}' },
+#else
+    { title: '${comment}', dataIndex: '${javaField}', slotName: '${javaField}', ellipsis: true, tooltip: true },
+#end
+#end
+#end
+  { title: '操作', slotName: 'operations', align: 'center', width: 180 }, // Operations column, adjust width
+]);
+
+
+// --- Methods ---
+
+/** Helper to build tree structure for TreeSelect */
+const buildTreeSelectOptions = (nodes: ${ClassNameUp}Record[]): TreeSelectOptionData[] => {
+  if (!nodes || nodes.length === 0) return [];
+  return nodes.map(node => ({
+    key: node.${treeCode}, // Use treeCode as key
+    value: node.${treeCode}, // Use treeCode as value
+    title: node.${treeName}, // Use treeName as title
+    children: node.children ? buildTreeSelectOptions(node.children) : undefined,
+    // Add disabled property if needed, e.g., disable selecting current node's parent as itself
+    // disabled: form.${pkColumn.javaField} === node.${treeCode},
+  }));
+};
+
+// Fetch data
+const fetchData = async (params: ${ClassNameUp}Query = { ...queryParams }) => {
+  setLoading(true);
+  try {
+    // Process date ranges before sending query
+    const queryToSend = { ...params };
+    #foreach ($column in $columns)
+    #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+    #set($AttrName=$column.javaField)
+    if (dateRange${AttrName}.value && dateRange${AttrName}.value.length === 2) {
+       addDateRange(queryToSend, dateRange${AttrName}.value, ['begin${AttrName}', 'end${AttrName}']);
+    }
+    #end
+    #end
+    // Assuming list${ClassNameUp} returns the tree structure directly (usually as root array)
+    const { data } = await list${ClassNameUp}(queryToSend);
+    renderData.value = data || []; // Ensure it's an array
+  } catch (err) {
+    renderData.value = [];
+    // console.error(err);
+  } finally {
+    setLoading(false);
+  }
+};
+
+/** Fetch data for TreeSelect options */
+const fetchTreeSelectOptions = async () => {
+    // Fetch the full list without pagination for the tree select
+    const queryToSend = { ...queryParams };
+    #foreach ($column in $columns)
+    #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+    #set($AttrName=$column.javaField)
+    if (dateRange${AttrName}.value && dateRange${AttrName}.value.length === 2) {
+       addDateRange(queryToSend, dateRange${AttrName}.value, ['begin${AttrName}', 'end${AttrName}']);
+    }
+    #end
+    #end
+    delete queryToSend.pageNum;
+    delete queryToSend.pageSize;
+   try {
+      const { data } = await list${ClassNameUp}(queryToSend);
+       // Add a root node option for adding top-level items
+      const rootOption: TreeSelectOptionData = {
+        key: 0, // Or appropriate root value like '0' or null
+        value: 0,
+        title: '顶级节点', // Adjust label as needed
+        children: buildTreeSelectOptions(data || []),
+      };
+      treeOptions.value = [rootOption];
+   } catch (err) {
+      treeOptions.value = []; // Clear options on error
+   }
+};
+
+// Query
+const handleQuery = () => {
+    fetchData();
+};
+
+// Reset query
+const resetQuery = () => {
+    // Reset query params
+    Object.keys(queryParams).forEach(key => {
+        queryParams[key as keyof typeof queryParams] = undefined;
+    });
+    // Reset date range pickers
+    #foreach ($column in $columns)
+    #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+    #set($AttrName=$column.javaField)
+    dateRange${AttrName}.value = [];
+    #end
+    #end
+    handleQuery(); // Fetch data with reset params
+};
+
+// Reset form data
+const resetForm = () => {
+  formRef.value?.resetFields(); // Reset validation state
+  Object.keys(form).forEach(key => { // Clear properties
+    delete form[key as keyof typeof form];
+  });
+   // Re-initialize default values if necessary
+  #foreach($column in $columns)
+  #if($column.insert || $column.edit)
+  #if($column.htmlType == "checkbox")
+    form.$column.javaField = [];
+  #else
+    // form.$column.javaField = undefined; // Properties deleted
+  #end
+  #end
+  #end
+};
+
+// Toggle expand/collapse
+const toggleExpandAll = () => {
+  refreshTable.value = false;
+  isExpandAll.value = !isExpandAll.value;
+  nextTick(() => {
+    refreshTable.value = true;
+  });
+};
+
+// Handle Add button click
+const handleAdd = (record?: ${ClassNameUp}Record) => {
+    resetForm();
+    fetchTreeSelectOptions(); // Load/refresh options before opening modal
+    title.value = '新增${functionName}';
+    if (record != null && record.${treeCode}) {
+        form.${treeParentCode} = record.${treeCode}; // Set parent based on clicked node
+    } else {
+        form.${treeParentCode} = 0; // Default to root parent ID (adjust if needed)
+    }
+    open.value = true; // Show the modal
+};
+
+// Handle Update button click
+const handleUpdate = async (record: ${ClassNameUp}Record) => {
+    resetForm();
+    fetchTreeSelectOptions(); // Load/refresh options
+    title.value = '修改${functionName}';
+    setLoading(true); // Show loading state for main table might be confusing, consider modalLoading
+    try {
+        const res = await get${ClassNameUp}(record.${pkColumn.javaField} as #if(${pkColumn.javaType} == 'Long' || ${pkColumn.javaType} == 'Integer')number#else string#end);
+        // Handle checkbox string to array conversion before assigning to form
+        #foreach($column in $columns)
+        #if($column.htmlType == "checkbox" && $column.isEdit)
+        res.data.$column.javaField = res.data.${column.javaField} ? String(res.data.${column.javaField}).split(',') : [];
+        #end
+        #end
+        Object.assign(form, res.data); // Assign fetched data to reactive form object
+        open.value = true; // Show the modal AFTER data is assigned
+    } catch (err) {
+         Message.error('获取详情失败');
+    } finally {
+         setLoading(false);
+    }
+};
+
+/** 提交按钮（由 @before-ok 调用） */
+const submitForm = async (): Promise<boolean> => { // Return boolean for @before-ok
+  const validation = await formRef.value?.validate();
+  if (validation) {
+      return false; // Validation failed, prevent modal close
+  }
+  modalLoading.value = true;
+  try {
+      const dataToSubmit = { ...form };
+      // Handle checkbox array to string conversion before submitting
+      #foreach($column in $columns)
+      #if($column.htmlType == "checkbox" && $column.isEdit)
+      if (Array.isArray(dataToSubmit.$column.javaField)) {
+         dataToSubmit.${column.javaField} = dataToSubmit.${column.javaField}.join(',');
+      }
+      #end
+      #end
+
+      if (dataToSubmit.${pkColumn.javaField}) { // Check if it's an update
+          await update${ClassNameUp}(dataToSubmit as ${ClassNameUp}Record);
+          Message.success("修改成功");
+      } else { // Otherwise it's an add
+          await add${ClassNameUp}(dataToSubmit as ${ClassNameUp}Record);
+          Message.success("新增成功");
+      }
+      fetchData(); // Refresh table data
+      return true; // Validation and submission successful, allow modal close
+  } catch (err) {
+      // Message.error('操作失败'); // Error handled by interceptor usually
+      return false; // Submission failed, prevent modal close
+  } finally {
+       modalLoading.value = false;
+  }
+};
+
+/** 取消按钮（由 @cancel 调用） */
+const cancel = () => {
+  open.value = false;
+  resetForm(); // Also reset form on cancel
+};
+
+// Handle Delete button click
+const handleDelete = (record: ${ClassNameUp}Record) => {
+  Modal.confirm({
+    title: '确认删除',
+    content: `确定要删除“${record.${treeName}}”#if(${treeParentCode} != '')及其所有子节点#end 吗？`, // More specific message
+    okButtonProps: { status: 'danger'},
+    onOk: async () => {
+      setLoading(true);
+      try {
+        await del${ClassNameUp}(record.${pkColumn.javaField} as #if(${pkColumn.javaType} == 'Long' || ${pkColumn.javaType} == 'Integer')number#else string#end);
+        Message.success("删除成功");
+        // Refresh data after delete
+        fetchData();
+      } catch (err) {
+        // Error handled by interceptor
+      } finally {
+        setLoading(false);
+      }
+    }
+  });
+};
+
+// Handle Export button click
+const handleExport = () => {
+    const currentQueryParams = { ...queryParams };
+     // Process date ranges before sending query
+    #foreach ($column in $columns)
+    #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+    #set($AttrName=$column.javaField)
+    if (dateRange${AttrName}.value && dateRange${AttrName}.value.length === 2) {
+       addDateRange(currentQueryParams, dateRange${AttrName}.value, ['begin${AttrName}', 'end${AttrName}']);
+    }
+    #end
+    #end
+
+   Modal.confirm({
+       title: '确认导出',
+       content: '是否确认导出所有${functionName}数据项?',
+       onOk: async () => {
+            setLoading(true);
+            try {
+                const res = await export${ClassNameUp}(currentQueryParams);
+                download(res, `${businessName}_#[[${new Date().getTime()}]]#.xlsx`); ## Use download util
+                 Message.success("导出成功");
+            } catch(err) {
+                // Message.error("导出失败");
+            } finally {
+                setLoading(false);
+            }
+       }
+   })
+};
+
+// --- Lifecycle ---
+onMounted(() => {
+  fetchData(); // Fetch initial data
+});
+
+</script>
+
+<style scoped lang="less"> ## Use less
+.container {
+  padding: 0 20px 20px 20px;
+}
+.general-card {
+  &:first-child {
+     margin-bottom: 16px;
+  }
+}
+.action-icon {
+  margin-left: 12px;
+  cursor: pointer;
+}
+:deep(.arco-table-th) { // Style table header like original template
+  background-color: var(--color-fill-2);
+}
+:deep(.arco-modal-body) { // Ensure modal content scrolls if too long
+  max-height: 60vh; // Adjust as needed
+  overflow-y: auto;
+}
+</style>

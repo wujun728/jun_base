@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 微信交流群
+    url: https://github.com/Searchld/Nexa-Admin#加入微信交流群
+    about: 使用交流和一般问题请优先查看 README 中的交流群入口。
+  - name: 安全问题
+    url: https://github.com/Searchld/Nexa-Admin/security
+    about: 请不要通过公开 Issue 披露安全漏洞。

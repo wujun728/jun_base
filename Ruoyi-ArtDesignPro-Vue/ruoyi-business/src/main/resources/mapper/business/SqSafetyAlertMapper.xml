@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.SqSafetyAlertMapper">
+    <resultMap id="SqSafetyAlertResult" type="com.ruoyi.business.domain.SqSafetyAlert">
+        <id property="id" column="id"/>
+        <result property="ip" column="ip"/>
+        <result property="name" column="name"/>
+        <result property="chuteName" column="chute_name"/>
+        <result property="tnameLabel" column="tname_label"/>
+        <result property="company" column="company"/>
+        <result property="status" column="status"/>
+        <result property="createUser" column="create_user"/>
+        <result property="createDept" column="create_dept"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateUser" column="update_user"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="img" column="img"/>
+        <result property="state" column="state"/>
+        <result property="handleTime" column="handle_time"/>
+        <result property="handle" column="handle"/>
+    </resultMap>
+
+    <sql id="selectVo">
+        select a.id, a.ip, a.name, c.lname as chute_name, d.dept_name as tname_label, c.company,
+               a.status, a.create_user, a.create_dept, a.create_time, a.update_user, a.update_time,
+               a.is_deleted, a.img, a.state, a.handle_time, a.handle
+        from a_alert a
+        left join a_camera c on c.id = a.name
+        left join sys_dept d on d.dept_id = c.tname
+    </sql>
+
+    <select id="selectSqSafetyAlertById" parameterType="Long" resultMap="SqSafetyAlertResult">
+        <include refid="selectVo"/> where a.id = #{id} and a.is_deleted = '0'
+    </select>
+
+    <select id="selectSqSafetyAlertList" parameterType="com.ruoyi.business.domain.SqSafetyAlert" resultMap="SqSafetyAlertResult">
+        <include refid="selectVo"/>
+        <where>
+            a.is_deleted = #{isDeleted}
+            <if test="status != null and status != ''">and a.status = #{status}</if>
+            <if test="name != null and name != ''">and a.name = #{name}</if>
+            <if test="state != null and state != ''">and a.state = #{state}</if>
+            <if test="ip != null and ip != ''">and a.ip like concat('%', #{ip}, '%')</if>
+            <if test="beginTime != null and beginTime != ''">and a.create_time &gt;= #{beginTime}</if>
+            <if test="endTime != null and endTime != ''">and a.create_time &lt;= #{endTime}</if>
+        </where>
+        order by a.create_time desc, a.id desc
+    </select>
+
+    <insert id="insertSqSafetyAlert" parameterType="com.ruoyi.business.domain.SqSafetyAlert">
+        insert into a_alert(id, ip, name, status, create_user, create_dept, create_time, is_deleted, img, state, handle_time, handle)
+        values(#{id}, #{ip}, #{name}, #{status}, #{createUser}, #{createDept}, sysdate(), #{isDeleted}, #{img}, #{state}, #{handleTime}, #{handle})
+    </insert>
+
+    <update id="updateSqSafetyAlert" parameterType="com.ruoyi.business.domain.SqSafetyAlert">
+        update a_alert
+        <set>
+            ip = #{ip}, name = #{name}, status = #{status}, img = #{img}, state = #{state},
+            handle_time = #{handleTime}, handle = #{handle},
+            <if test="updateUser != null and updateUser != ''">update_user = #{updateUser},</if>
+            update_time = sysdate()
+        </set>
+        where id = #{id} and is_deleted = '0'
+    </update>
+
+    <update id="deleteSqSafetyAlertByIds" parameterType="Long">
+        update a_alert set is_deleted = '1', update_time = sysdate() where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">#{id}</foreach>
+    </update>
+</mapper>

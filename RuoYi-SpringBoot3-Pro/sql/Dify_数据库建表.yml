@@ -1,0 +1,719 @@
+app:
+  description: ''
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: advanced-chat
+  name: 数据库建表
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/tongyi:0.0.20@d66b57b98d86bdc4eefbe3bbb0d780050cc76e7e5d188724e610be945b28d8f3
+kind: app
+version: 0.2.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 50
+        file_size_limit: 1024
+        image_file_size_limit: 1000
+        video_file_size_limit: 10000
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: if-else
+      id: 1746770066983-source-1746773912525-target
+      selected: false
+      source: '1746770066983'
+      sourceHandle: source
+      target: '1746773912525'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: if-else
+        targetType: llm
+      id: 1746773912525-d26d597f-4cc7-4070-8679-ff8d2b5e3bc4-1746774003725-target
+      selected: false
+      source: '1746773912525'
+      sourceHandle: d26d597f-4cc7-4070-8679-ff8d2b5e3bc4
+      target: '1746774003725'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: llm
+      id: 1746773912525-true-1746774189852-target
+      selected: false
+      source: '1746773912525'
+      sourceHandle: 'true'
+      target: '1746774189852'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: llm
+      id: 1746773912525-4f4b4fc4-456b-4015-80a8-e5fcb3391ff3-1746774427645-target
+      selected: false
+      source: '1746773912525'
+      sourceHandle: 4f4b4fc4-456b-4015-80a8-e5fcb3391ff3
+      target: '1746774427645'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: answer
+      id: 1746774189852-source-1746774658109-target
+      selected: false
+      source: '1746774189852'
+      sourceHandle: source
+      target: '1746774658109'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: answer
+      id: 1746774427645-source-1746774664716-target
+      selected: false
+      source: '1746774427645'
+      sourceHandle: source
+      target: '1746774664716'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: answer
+      id: 1746774003725-source-1746774646142-target
+      selected: false
+      source: '1746774003725'
+      sourceHandle: source
+      target: '1746774646142'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: llm
+      id: 1746773912525-88a8bef4-555a-4cf3-814c-5e28a8540a08-1765511203704-target
+      source: '1746773912525'
+      sourceHandle: 88a8bef4-555a-4cf3-814c-5e28a8540a08
+      target: '1765511203704'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: answer
+      id: 1765511203704-source-1765511258000-target
+      source: '1765511203704'
+      sourceHandle: source
+      target: '1765511258000'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: 开始
+        type: start
+        variables:
+        - label: 数据库
+          max_length: 48
+          options:
+          - MySQL
+          - 瀚高/PostgreSQL
+          - openGauss
+          - SQLite
+          required: true
+          type: select
+          variable: database
+        - label: 字段命名规范
+          max_length: 48
+          options:
+          - 拼音
+          - 英文
+          required: true
+          type: select
+          variable: language
+      height: 116
+      id: '1746770066983'
+      position:
+        x: 30
+        y: 335
+      positionAbsolute:
+        x: 30
+        y: 335
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        cases:
+        - case_id: 'true'
+          conditions:
+          - comparison_operator: contains
+            id: 6e5cedcf-65b0-466a-9741-469ac32e63b1
+            value: 瀚高/PostgreSQL
+            varType: string
+            variable_selector:
+            - '1746770066983'
+            - database
+          id: 'true'
+          logical_operator: and
+        - case_id: 4f4b4fc4-456b-4015-80a8-e5fcb3391ff3
+          conditions:
+          - comparison_operator: contains
+            id: 2479bb3d-e81e-4544-be06-eb348b384757
+            value: openGauss
+            varType: string
+            variable_selector:
+            - '1746770066983'
+            - database
+          id: 4f4b4fc4-456b-4015-80a8-e5fcb3391ff3
+          logical_operator: and
+        - case_id: d26d597f-4cc7-4070-8679-ff8d2b5e3bc4
+          conditions:
+          - comparison_operator: contains
+            id: 728c6c56-f710-475d-998d-e857d60564e8
+            value: MySQL
+            varType: string
+            variable_selector:
+            - '1746770066983'
+            - database
+          id: d26d597f-4cc7-4070-8679-ff8d2b5e3bc4
+          logical_operator: or
+        - case_id: 88a8bef4-555a-4cf3-814c-5e28a8540a08
+          conditions:
+          - comparison_operator: contains
+            id: d2681a89-383b-4217-8e58-57229f62eefa
+            value: SQLite
+            varType: string
+            variable_selector:
+            - '1746770066983'
+            - database
+          logical_operator: and
+        desc: ''
+        selected: false
+        title: 条件分支
+        type: if-else
+      height: 270
+      id: '1746773912525'
+      position:
+        x: 334
+        y: 335
+      positionAbsolute:
+        x: 334
+        y: 335
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params: {}
+          mode: chat
+          name: deepseek-v3
+          provider: langgenius/tongyi/tongyi
+        prompt_config:
+          jinja2_variables:
+          - value_selector:
+            - '1746770066983'
+            - database
+            variable: database
+          - value_selector:
+            - '1746770066983'
+            - language
+            variable: language
+        prompt_template:
+        - edition_type: basic
+          id: c4300f03-668d-4454-bc4f-162d29a8320c
+          jinja2_text: "### 角色\r\n---\r\n你是一名MySQL专家，根据以下表结构，生成建表语句。\r\n\r\n\r\n###\
+            \ 表结构\r\n---\r\n```sql\r\nCREATE TABLE `biz_1temp`  (\r\n  `id` bigint(20)\
+            \ NOT NULL AUTO_INCREMENT COMMENT 'ID',\r\n  `tenant_id` bigint(20) NULL\
+            \ DEFAULT NULL COMMENT '租户ID',\r\n  `user_id` bigint(20) NULL DEFAULT\
+            \ NULL COMMENT '用户ID',\r\n  `dept_id` bigint(20) NULL DEFAULT NULL COMMENT\
+            \ '部门ID',\r\n  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci\
+            \ NULL DEFAULT '0' COMMENT '状态',\r\n  `create_by` varchar(30) CHARACTER\
+            \ SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '创建者',\r\
+            \n  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',\r\n  `update_by`\
+            \ varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT\
+            \ '' COMMENT '更新者',\r\n  `update_time` datetime(0) NULL DEFAULT NULL COMMENT\
+            \ '更新时间',\r\n  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci\
+            \ NULL DEFAULT NULL COMMENT '备注',\r\n  `sort` int(11) NULL DEFAULT 0 COMMENT\
+            \ '排序',\r\n  PRIMARY KEY (`id`) USING BTREE,\r\n  INDEX `idx_tenant_id`(`tenant_id`)\
+            \ USING BTREE,\r\n  INDEX `idx_user_id`(`user_id`) USING BTREE,\r\n  INDEX\
+            \ `idx_dept_id`(`dept_id`) USING BTREE\r\n) ENGINE = InnoDB AUTO_INCREMENT\
+            \ = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'demo'\
+            \ ROW_FORMAT = Dynamic; \r\n```\r\n\r\n\r\n### 要求\r\n---  \r\n1. 保留表结构的所有内容，不要改动。\r\
+            \n2. 将 `biz_1temp` 替换为`biz_表名小写{{#1746770066983.language#}}`。\r\n3. 将\
+            \ `表模版` 替换为表名。\r\n4. 新增的列名为字段名小写{{#1746770066983.language#}}，注释为原本的字段名，如果未提供类型则由你自主判定。\r\
+            \n5. `decimal` 类型使用 `decimal(20,4)`。\r\n\r\n\r\n### 用户输入表名和字段名格式\r\n---\r\
+            \n表名：字段（类型）\r\n**一行代表一张表**"
+          role: system
+          text: "### 角色\n---\n你是一名MySQL专家，根据以下表结构，生成建表语句。\n\n### 表结构\n---\n```sql\n\
+            DROP TABLE IF EXISTS `biz_1temp`;\nCREATE TABLE `biz_1temp`  (\n  `id`\
+            \ bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',\n  `tenant_id` bigint(20)\
+            \ NULL DEFAULT NULL COMMENT '租户ID',\n  `user_id` bigint(20) NULL DEFAULT\
+            \ NULL COMMENT '用户ID',\n  `dept_id` bigint(20) NULL DEFAULT NULL COMMENT\
+            \ '部门ID',\n  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci\
+            \ NULL DEFAULT '0' COMMENT '状态',\n  `create_by` varchar(30) CHARACTER\
+            \ SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '创建者',\n\
+              `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',\n  `update_by`\
+            \ varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT\
+            \ '' COMMENT '更新者',\n  `update_time` datetime(0) NULL DEFAULT NULL COMMENT\
+            \ '更新时间',\n  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci\
+            \ NULL DEFAULT NULL COMMENT '备注',\n  `sort` int(11) NULL DEFAULT 0 COMMENT\
+            \ '排序',\n  PRIMARY KEY (`id`) USING BTREE,\n  INDEX `idx_tenant_id`(`tenant_id`)\
+            \ USING BTREE,\n  INDEX `idx_user_id`(`user_id`) USING BTREE,\n  INDEX\
+            \ `idx_dept_id`(`dept_id`) USING BTREE\n) ENGINE = InnoDB AUTO_INCREMENT\
+            \ = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'demo'\
+            \ ROW_FORMAT = Dynamic; \n```\n\n### 要求\n---  \n\n+ 一定要保留原表结构的所有内容\n+\
+            \ 表名和字段名不能使用简写并且不能包含特殊字符，如果存在大写字母转为小写\n+ 将 `biz_1temp` 替换为`biz_表名小写{{#1746770066983.language#}}`\n\
+            + 将 `表模版` 替换为表名\n+ 新增的列名为字段名小写{{#1746770066983.language#}}，注释为原本的字段名，如果未提供类型则由你自主判定\n\
+            + `decimal` 类型使用 `decimal(20,4)`\n+ 如果 {{#1746770066983.language#}}是英文，避免与数据库关键字冲突\n\
+            + 只返回 SQL，其他都不要，而且不要用 ```sql ``` 包裹\n\n### 用户输入表名和字段名格式\n---\n表名：字段（类型）\n\
+            **一行代表一张表**"
+        - id: 0e201e35-3173-42a2-a80c-5dfcfd2872fe
+          role: user
+          text: '{{#sys.query#}}'
+        selected: true
+        title: MySQL
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '1746774003725'
+      position:
+        x: 638
+        y: 335
+      positionAbsolute:
+        x: 638
+        y: 335
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params: {}
+          mode: chat
+          name: deepseek-v3
+          provider: langgenius/tongyi/tongyi
+        prompt_template:
+        - id: ae567b76-df2e-46b9-8a02-e1e06546c458
+          role: system
+          text: "### 角色\n---\n你是一名瀚高数据库专家，根据以下表结构，生成建表语句。\n\n### 表结构\n---\n```sql\n\
+            DROP TABLE IF EXISTS `biz_1temp`;\nCREATE TABLE \"biz_1temp\" (\n  \"\
+            id\" int8 NOT NULL GENERATED BY DEFAULT AS IDENTITY (\nINCREMENT 1\nMINVALUE\
+            \  1\nMAXVALUE 9223372036854775807\nSTART 1\nCACHE 1\n),\n  \"tenant_id\"\
+            \ int8,\n  \"user_id\" int8,\n  \"dept_id\" int8,\n  \"status\" char(1)\
+            \ COLLATE \"pg_catalog\".\"default\" DEFAULT '0'::bpchar,\n  \"create_by\"\
+            \ varchar(30) COLLATE \"pg_catalog\".\"default\" DEFAULT ''::character\
+            \ varying,\n  \"create_time\" timestamp(6),\n  \"update_by\" varchar(30)\
+            \ COLLATE \"pg_catalog\".\"default\" DEFAULT ''::character varying,\n\
+              \"update_time\" timestamp(6),\n  \"remark\" varchar(255) COLLATE \"\
+            pg_catalog\".\"default\",\n  \"sort\" int4 DEFAULT 0\n);\nCOMMENT ON TABLE\
+            \ \"biz_1temp\" IS '表模版';\nCOMMENT ON COLUMN \"biz_1temp\".\"id\" IS 'ID';\n\
+            COMMENT ON COLUMN \"biz_1temp\".\"tenant_id\" IS '租户ID';\nCOMMENT ON COLUMN\
+            \ \"biz_1temp\".\"user_id\" IS '用户ID';\nCOMMENT ON COLUMN \"biz_1temp\"\
+            .\"dept_id\" IS '部门ID';\nCOMMENT ON COLUMN \"biz_1temp\".\"status\" IS\
+            \ '状态';\nCOMMENT ON COLUMN \"biz_1temp\".\"create_by\" IS '创建者';\nCOMMENT\
+            \ ON COLUMN \"biz_1temp\".\"create_time\" IS '创建时间';\nCOMMENT ON COLUMN\
+            \ \"biz_1temp\".\"update_by\" IS '更新者';\nCOMMENT ON COLUMN \"biz_1temp\"\
+            .\"update_time\" IS '更新时间';\nCOMMENT ON COLUMN \"biz_1temp\".\"remark\"\
+            \ IS '备注';\nCOMMENT ON COLUMN \"biz_1temp\".\"sort\" IS '排序';\nCREATE\
+            \ INDEX \"biz_1temp_idx_tenant_id\" ON \"biz_1temp\" USING btree (\n\"\
+            tenant_id\" \"pg_catalog\".\"int8_ops\" ASC NULLS LAST\n);\nCREATE INDEX\
+            \ \"biz_1temp_idx_dept_id\" ON \"biz_1temp\" USING btree (\n  \"dept_id\"\
+            \ \"pg_catalog\".\"int8_ops\" ASC NULLS LAST\n);\nCREATE INDEX \"biz_1temp_idx_user_id\"\
+            \ ON \"biz_1temp\" USING btree (\n  \"user_id\" \"pg_catalog\".\"int8_ops\"\
+            \ ASC NULLS LAST\n);\nALTER TABLE \"biz_1temp\" ADD CONSTRAINT \"biz_1temp_pkey\"\
+            \ PRIMARY KEY (\"id\"); \n```\n\n### 要求\n---  \n\n+ 一定要保留原表结构的所有内容\n+\
+            \ 表名和字段名不能使用简写并且不能包含特殊字符，如果存在大写字母转为小写\n+ 将 `biz_1temp` 替换为`biz_表名小写{{#1746770066983.language#}}`\n\
+            + 将 `表模版` 替换为表名\n+ 新增的列名为字段名小写{{#1746770066983.language#}}，注释为原本的字段名，如果未提供类型则由你自主判定\n\
+            + `numeric` 类型使用 `numeric(20,4)`\n+ 如果 {{#1746770066983.language#}}是英文，避免与数据库关键字冲突\n\
+            + 只返回 SQL，其他都不要，而且不要用 ```sql ``` 包裹\n+ `COMMENT`不要写在`CREATE TABLE`里\n\n\
+            ### 用户输入表名和字段名格式\n---\n表名：字段（类型）\n**一行代表一张表**"
+        - id: ed63fffb-2f9e-4232-9c1b-993bb159bc9e
+          role: user
+          text: '{{#sys.query#}}'
+        selected: false
+        title: 瀚高/PostgreSQL
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '1746774189852'
+      position:
+        x: 638
+        y: 480
+      positionAbsolute:
+        x: 638
+        y: 480
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params: {}
+          mode: chat
+          name: deepseek-v3
+          provider: langgenius/tongyi/tongyi
+        prompt_template:
+        - id: 93a4e0e4-9f16-41c4-b60b-d16cf3ce9255
+          role: system
+          text: '### 角色
+
+            ---
+
+            你是一名 `openGauss` 数据库专家，根据以下表结构，生成建表语句。
+
+
+            ### 表结构
+
+            ---
+
+            ```sql
+
+            DROP TABLE IF EXISTS `biz_1temp`;
+
+            CREATE TABLE "biz_1temp" (
+
+              "id" BIGSERIAL PRIMARY KEY NOT NULL,
+
+              "tenant_id" int8,
+
+              "user_id" int8,
+
+              "dept_id" int8,
+
+              "status" char(1) COLLATE "pg_catalog"."default" DEFAULT ''0''::bpchar,
+
+              "create_by" varchar(30) COLLATE "pg_catalog"."default" DEFAULT NULL::character
+            varying,
+
+              "create_time" timestamp(6),
+
+              "update_by" varchar(30) COLLATE "pg_catalog"."default" DEFAULT NULL::character
+            varying,
+
+              "update_time" timestamp(6),
+
+              "remark" varchar(255) COLLATE "pg_catalog"."default",
+
+              "sort" int4 DEFAULT 0
+
+            );
+
+            COMMENT ON TABLE "biz_1temp" IS ''表模版'';
+
+            COMMENT ON COLUMN "biz_1temp"."tenant_id" IS ''租户ID'';
+
+            COMMENT ON COLUMN "biz_1temp"."user_id" IS ''用户ID'';
+
+            COMMENT ON COLUMN "biz_1temp"."dept_id" IS ''部门ID'';
+
+            COMMENT ON COLUMN "biz_1temp"."status" IS ''状态'';
+
+            COMMENT ON COLUMN "biz_1temp"."create_by" IS ''创建者'';
+
+            COMMENT ON COLUMN "biz_1temp"."create_time" IS ''创建时间'';
+
+            COMMENT ON COLUMN "biz_1temp"."update_by" IS ''更新者'';
+
+            COMMENT ON COLUMN "biz_1temp"."update_time" IS ''更新时间'';
+
+            COMMENT ON COLUMN "biz_1temp"."remark" IS ''备注'';
+
+            COMMENT ON COLUMN "biz_1temp"."sort" IS ''排序'';
+
+            COMMENT ON COLUMN "biz_1temp"."id" IS ''ID'';
+
+            CREATE INDEX "biz_1temp_idx_tenant_id" ON "biz_1temp" USING btree ("tenant_id"
+            "pg_catalog"."int8_ops" ASC NULLS LAST
+
+            );
+
+            CREATE INDEX "biz_1temp_idx_dept_id" ON "biz_1temp" USING btree (
+
+              "dept_id" "pg_catalog"."int8_ops" ASC NULLS LAST
+
+            );
+
+            CREATE INDEX "biz_1temp_idx_user_id" ON "biz_1temp" USING btree (
+
+              "user_id" "pg_catalog"."int8_ops" ASC NULLS LAST
+
+            );
+
+            ```
+
+
+            ### 要求
+
+            ---  
+
+
+            + 一定要保留原表结构的所有内容
+
+            + 表名和字段名不能使用简写并且不能包含特殊字符，如果存在大写字母转为小写
+
+            + 将 `biz_1temp` 替换为`biz_表名小写{{#1746770066983.language#}}`
+
+            + 将 `表模版` 替换为表名
+
+            + 新增的列名为字段名小写{{#1746770066983.language#}}，注释为原本的字段名，如果未提供类型则由你自主判定
+
+            + `numeric` 类型使用 `numeric(20,4)`
+
+            + 如果 {{#1746770066983.language#}}是英文，避免与数据库关键字冲突
+
+            + 只返回 SQL，其他都不要，而且不要用 ```sql ``` 包裹
+
+            + `COMMENT`不要写在`CREATE TABLE`里
+
+
+            ### 用户输入表名和字段名格式
+
+            ---
+
+            表名：字段（类型）
+
+            **一行代表一张表**'
+        - id: c3fc36f3-fa3b-488d-a0c2-6975adbd822c
+          role: user
+          text: '{{#sys.query#}}'
+        selected: false
+        title: openGauss
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '1746774427645'
+      position:
+        x: 638
+        y: 625
+      positionAbsolute:
+        x: 638
+        y: 625
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        answer: '{{#1746774003725.text#}}'
+        desc: ''
+        selected: false
+        title: 直接回复
+        type: answer
+        variables: []
+      height: 105
+      id: '1746774646142'
+      position:
+        x: 942
+        y: 335
+      positionAbsolute:
+        x: 942
+        y: 335
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        answer: '{{#1746774189852.text#}}'
+        desc: ''
+        selected: false
+        title: 直接回复 2
+        type: answer
+        variables: []
+      height: 105
+      id: '1746774658109'
+      position:
+        x: 942
+        y: 480
+      positionAbsolute:
+        x: 942
+        y: 480
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        answer: '{{#1746774427645.text#}}'
+        desc: ''
+        selected: false
+        title: 直接回复 3
+        type: answer
+        variables: []
+      height: 105
+      id: '1746774664716'
+      position:
+        x: 942
+        y: 625
+      positionAbsolute:
+        x: 942
+        y: 625
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params: {}
+          mode: chat
+          name: deepseek-v3
+          provider: langgenius/tongyi/tongyi
+        prompt_template:
+        - id: 97a324fd-e701-4040-85b6-c775cfc0ac45
+          role: system
+          text: "### 角色\n---\n你是一名SQLite专家，根据以下表结构，生成建表语句。\n\n### 表结构\n---\n```sql\n\
+            DROP TABLE IF EXISTS `biz_1temp`;\n\nCREATE TABLE `biz_1temp` (\n  `id`\
+            \ INTEGER PRIMARY KEY AUTOINCREMENT,\n  `tenant_id` INTEGER DEFAULT NULL,\n\
+            \  `user_id` INTEGER DEFAULT NULL,\n  `dept_id` INTEGER DEFAULT NULL,\n\
+            \  `status` TEXT DEFAULT '0',\n  `create_by` TEXT DEFAULT '',\n  `create_time`\
+            \ DATETIME DEFAULT NULL,\n  `update_by` TEXT DEFAULT '',\n  `update_time`\
+            \ DATETIME DEFAULT NULL,\n  `remark` TEXT DEFAULT NULL,\n  `sort` INTEGER\
+            \ DEFAULT 0\n);\n\nCREATE INDEX `idx_tenant_id` ON `biz_1temp` (`tenant_id`);\n\
+            CREATE INDEX `idx_user_id` ON `biz_1temp` (`user_id`);\nCREATE INDEX `idx_dept_id`\
+            \ ON `biz_1temp` (`dept_id`);\n```\n\n### 要求\n---  \n\n+ 一定要保留原表结构的所有内容\n\
+            + 表名和字段名不能使用简写并且不能包含特殊字符，如果存在大写字母转为小写\n+ 将 `biz_1temp` 替换为`biz_表名小写{{#1746770066983.language#}}`\n\
+            + 将 `表模版` 替换为表名\n+ 新增的列名为字段名小写{{#1746770066983.language#}}，如果未提供类型则由你自主判定\n\
+            + 如果 {{#1746770066983.language#}}是英文，避免与数据库关键字冲突\n+ 只返回 SQL，其他都不要，而且不要用\
+            \ ```sql ``` 包裹\n\n### 用户输入表名和字段名格式\n---\n表名：字段（类型）\n**一行代表一张表**"
+        - id: 7b0e1925-68a0-4a91-909d-356ba7e40fe1
+          role: user
+          text: '{{#sys.query#}}'
+        selected: false
+        title: SQLite
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '1765511203704'
+      position:
+        x: 638
+        y: 770
+      positionAbsolute:
+        x: 638
+        y: 770
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        answer: '{{#1765511203704.text#}}'
+        desc: ''
+        selected: false
+        title: 直接回复 4
+        type: answer
+        variables: []
+      height: 105
+      id: '1765511258000'
+      position:
+        x: 942
+        y: 770
+      positionAbsolute:
+        x: 942
+        y: 770
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    viewport:
+      x: 0
+      y: 0
+      zoom: 0.7

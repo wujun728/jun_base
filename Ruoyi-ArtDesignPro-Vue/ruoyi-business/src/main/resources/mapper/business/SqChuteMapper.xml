@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.SqChuteMapper">
+    <resultMap id="SqChuteResult" type="com.ruoyi.business.domain.SqChute">
+        <id property="id" column="id" />
+        <result property="shitype" column="shitype" />
+        <result property="shitypename" column="shitypename" />
+        <result property="lname" column="lname" />
+        <result property="company" column="company" />
+        <result property="carmname" column="carmname" />
+        <result property="carmip" column="carmip" />
+        <result property="username" column="username" />
+        <result property="password" column="password" />
+        <result property="createUser" column="create_user" />
+        <result property="createDept" column="create_dept" />
+        <result property="createTime" column="create_time" />
+        <result property="updateUser" column="update_user" />
+        <result property="updateTime" column="update_time" />
+        <result property="status" column="status" />
+        <result property="isDeleted" column="is_deleted" />
+        <result property="type" column="type" />
+        <result property="serverUrl" column="server_url" />
+        <result property="serverUrl2" column="server_url2" />
+        <result property="carmstar" column="carmstar" />
+        <result property="px" column="px" />
+        <result property="dppx" column="dppx" />
+        <result property="srcimg" column="srcimg" />
+        <result property="clist" column="clist" />
+        <result property="rlist" column="rlist" />
+        <result property="nowQuantity" column="now_quantity" />
+        <result property="allQuantity" column="all_quantity" />
+        <result property="ton" column="ton" />
+        <result property="locationx" column="locationx" />
+        <result property="locationy" column="locationy" />
+        <result property="width" column="width" />
+        <result property="height" column="height" />
+        <result property="depth" column="depth" />
+        <result property="safeAlert" column="safe_alert" />
+        <result property="channel" column="channel" />
+        <result property="mine" column="mine" />
+        <result property="tname" column="tname" />
+        <result property="config" column="config" />
+        <result property="rad" column="rad" />
+        <result property="tnameLabel" column="tname_label" />
+        <result property="mineLabel" column="mine_label" />
+        <result property="shitypeLabel" column="shitype_label" />
+    </resultMap>
+
+    <sql id="selectSqChuteVo">
+        select c.id, c.shitype, c.shitypename, c.lname, c.company, c.carmname, c.carmip,
+               c.username, c.password, c.create_user, c.create_dept, c.create_time,
+               c.update_user, c.update_time, c.status, c.is_deleted, c.type,
+               c.server_url, c.server_url2, c.carmstar, c.px, c.dppx, c.srcimg,
+               c.clist, c.rlist, c.now_quantity, c.all_quantity, c.ton, c.locationx,
+               c.locationy, c.width, c.height, c.depth, c.safe_alert, c.channel,
+               c.mine, c.tname, c.config, c.rad,
+               unit.dept_name as tname_label,
+               work.dept_name as mine_label,
+               dict.dict_label as shitype_label
+        from a_camera c
+        left join sys_dept unit on unit.dept_id = c.tname
+        left join sys_dept work on work.dept_id = c.mine
+        left join sys_dict_data dict on dict.dict_type = 'shitype' and dict.dict_value = c.shitype
+    </sql>
+
+    <select id="selectSqChuteById" parameterType="Long" resultMap="SqChuteResult">
+        <include refid="selectSqChuteVo"/>
+        where c.id = #{id} and c.is_deleted = '0'
+    </select>
+
+    <select id="selectSqChuteList" parameterType="com.ruoyi.business.domain.SqChute" resultMap="SqChuteResult">
+        <include refid="selectSqChuteVo"/>
+        <where>
+            c.is_deleted = #{isDeleted}
+            <if test="shitype != null and shitype != ''">and c.shitype = #{shitype}</if>
+            <if test="lname != null and lname != ''">and c.lname like concat('%', #{lname}, '%')</if>
+            <if test="company != null and company != ''">and c.company like concat('%', #{company}, '%')</if>
+            <if test="tname != null and tname != ''">and c.tname = #{tname}</if>
+            <if test="mine != null and mine != ''">and c.mine = #{mine}</if>
+            <if test="status != null and status != ''">and c.status = #{status}</if>
+        </where>
+        order by c.status asc, c.id desc
+    </select>
+
+    <select id="selectSqChuteHeightList" parameterType="com.ruoyi.business.domain.SqChute" resultMap="SqChuteResult">
+        <include refid="selectSqChuteVo"/>
+        <where>
+            c.is_deleted = #{isDeleted}
+            and (c.lname is null or c.lname not like '%斜井%')
+            <if test="lname != null and lname != ''">and c.lname = #{lname}</if>
+            <if test="company != null and company != ''">and c.company like concat('%', #{company}, '%')</if>
+            <if test="tname != null and tname != ''">and c.tname = #{tname}</if>
+        </where>
+        order by c.px asc, c.id desc
+    </select>
+
+    <select id="selectSqChuteOptions" parameterType="com.ruoyi.business.domain.SqChute" resultMap="SqChuteResult">
+        select c.id, c.lname, c.company, c.channel, c.shitype, c.status
+        from a_camera c
+        <where>
+            c.is_deleted = #{isDeleted}
+            <if test="lname != null and lname != ''">and c.lname like concat('%', #{lname}, '%')</if>
+            <if test="company != null and company != ''">and c.company like concat('%', #{company}, '%')</if>
+            <if test="status != null and status != ''">and c.status = #{status}</if>
+        </where>
+        order by c.px asc, c.id desc
+    </select>
+
+    <insert id="insertSqChute" parameterType="com.ruoyi.business.domain.SqChute">
+        insert into a_camera(id, shitype, shitypename, lname, company, carmname, carmip, username,
+                             password, create_user, create_dept, create_time, status, is_deleted,
+                             type, server_url, server_url2, carmstar, px, dppx, srcimg, clist, rlist,
+                             now_quantity, all_quantity, ton, locationx, locationy, width, height,
+                             depth, safe_alert, channel, mine, tname, config, rad)
+        values(#{id}, #{shitype}, #{shitypename}, #{lname}, #{company}, #{carmname}, #{carmip},
+               #{username}, #{password}, #{createUser}, #{createDept}, sysdate(), #{status},
+               #{isDeleted}, #{type}, #{serverUrl}, #{serverUrl2}, #{carmstar}, #{px}, #{dppx},
+               #{srcimg}, #{clist}, #{rlist}, #{nowQuantity}, #{allQuantity}, #{ton},
+               #{locationx}, #{locationy}, #{width}, #{height}, #{depth}, #{safeAlert},
+               #{channel}, #{mine}, #{tname}, #{config}, #{rad})
+    </insert>
+
+    <update id="updateSqChute" parameterType="com.ruoyi.business.domain.SqChute">
+        update a_camera
+        <set>
+            shitype = #{shitype},
+            shitypename = #{shitypename},
+            lname = #{lname},
+            company = #{company},
+            carmname = #{carmname},
+            carmip = #{carmip},
+            username = #{username},
+            <if test="password != null and password != ''">password = #{password},</if>
+            status = #{status},
+            type = #{type},
+            server_url = #{serverUrl},
+            server_url2 = #{serverUrl2},
+            carmstar = #{carmstar},
+            px = #{px},
+            dppx = #{dppx},
+            srcimg = #{srcimg},
+            clist = #{clist},
+            rlist = #{rlist},
+            now_quantity = #{nowQuantity},
+            all_quantity = #{allQuantity},
+            ton = #{ton},
+            locationx = #{locationx},
+            locationy = #{locationy},
+            width = #{width},
+            height = #{height},
+            depth = #{depth},
+            safe_alert = #{safeAlert},
+            channel = #{channel},
+            mine = #{mine},
+            tname = #{tname},
+            config = #{config},
+            rad = #{rad},
+            <if test="updateUser != null and updateUser != ''">update_user = #{updateUser},</if>
+            update_time = sysdate()
+        </set>
+        where id = #{id} and is_deleted = '0'
+    </update>
+
+    <update id="updateSqChuteHeight" parameterType="com.ruoyi.business.domain.SqChute">
+        update a_camera
+        <set>
+            now_quantity = #{nowQuantity},
+            <if test="ton != null and ton != ''">ton = #{ton},</if>
+            <if test="updateUser != null and updateUser != ''">update_user = #{updateUser},</if>
+            update_time = sysdate()
+        </set>
+        where id = #{id} and is_deleted = '0'
+    </update>
+
+    <update id="deleteSqChuteByIds" parameterType="Long">
+        update a_camera set is_deleted = '1', update_time = sysdate() where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <select id="countSqChuteByIp" parameterType="com.ruoyi.business.domain.SqChute" resultType="int">
+        select count(1)
+        from a_camera
+        where is_deleted = '0'
+          and carmip = #{carmip}
+          <if test="id != null">and id != #{id}</if>
+    </select>
+
+    <select id="selectDictLabel" resultType="String">
+        select dict_label
+        from sys_dict_data
+        where dict_type = #{dictType}
+          and dict_value = #{dictValue}
+          and status = '0'
+        limit 1
+    </select>
+
+    <select id="selectDensityByLabel" resultType="String">
+        select dict_value
+        from sys_dict_data
+        where dict_type = 'ks_density'
+          and dict_label = #{dictLabel}
+          and status = '0'
+        limit 1
+    </select>
+</mapper>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.device.DeviceCameraMapper">
+    <resultMap id="DeviceCameraResult" type="com.ruoyi.system.domain.device.DeviceCamera">
+        <id property="cameraId" column="camera_id" />
+        <result property="cameraName" column="camera_name" />
+        <result property="ipAddr" column="ip_addr" />
+        <result property="username" column="username" />
+        <result property="password" column="password" />
+        <result property="rtspUrl" column="rtsp_url" />
+        <result property="chuteId" column="chute_id" />
+        <result property="chuteName" column="chute_name" />
+        <result property="deptId" column="dept_id" />
+        <result property="deptName" column="dept_name" />
+        <result property="status" column="status" />
+        <result property="delFlag" column="del_flag" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateBy" column="update_by" />
+        <result property="updateTime" column="update_time" />
+        <result property="remark" column="remark" />
+    </resultMap>
+
+    <sql id="selectDeviceCameraVo">
+        select c.camera_id, c.camera_name, c.ip_addr, c.username, c.password, c.rtsp_url, c.chute_id,
+               chute.chute_name, c.dept_id, d.dept_name, c.status, c.del_flag, c.create_by,
+               c.create_time, c.update_by, c.update_time, c.remark
+        from device_camera c
+        left join device_chute chute on chute.chute_id = c.chute_id
+        left join sys_dept d on d.dept_id = c.dept_id
+    </sql>
+
+    <select id="selectDeviceCameraById" parameterType="Long" resultMap="DeviceCameraResult">
+        <include refid="selectDeviceCameraVo"/>
+        where c.camera_id = #{cameraId} and c.del_flag = '0'
+    </select>
+
+    <select id="selectDeviceCameraList" parameterType="com.ruoyi.system.domain.device.DeviceCamera" resultMap="DeviceCameraResult">
+        <include refid="selectDeviceCameraVo"/>
+        <where>
+            c.del_flag = '0'
+            <if test="cameraName != null and cameraName != ''">and c.camera_name like concat('%', #{cameraName}, '%')</if>
+            <if test="ipAddr != null and ipAddr != ''">and c.ip_addr like concat('%', #{ipAddr}, '%')</if>
+            <if test="chuteId != null">and c.chute_id = #{chuteId}</if>
+            <if test="deptId != null">and c.dept_id = #{deptId}</if>
+            <if test="status != null and status != ''">and c.status = #{status}</if>
+            ${params.dataScope}
+        </where>
+        order by c.camera_id desc
+    </select>
+
+    <insert id="insertDeviceCamera" parameterType="com.ruoyi.system.domain.device.DeviceCamera" useGeneratedKeys="true" keyProperty="cameraId">
+        insert into device_camera(camera_name, ip_addr, username, password, rtsp_url, chute_id, dept_id, status, del_flag, create_by, create_time, remark)
+        values(#{cameraName}, #{ipAddr}, #{username}, #{password}, #{rtspUrl}, #{chuteId}, #{deptId}, #{status}, '0', #{createBy}, sysdate(), #{remark})
+    </insert>
+
+    <update id="updateDeviceCamera" parameterType="com.ruoyi.system.domain.device.DeviceCamera">
+        update device_camera
+        <set>
+            camera_name = #{cameraName},
+            ip_addr = #{ipAddr},
+            username = #{username},
+            <if test="password != null and password != ''">password = #{password},</if>
+            rtsp_url = #{rtspUrl},
+            chute_id = #{chuteId},
+            dept_id = #{deptId},
+            status = #{status},
+            remark = #{remark},
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </set>
+        where camera_id = #{cameraId}
+    </update>
+
+    <update id="deleteDeviceCameraByIds" parameterType="Long">
+        update device_camera set del_flag = '2' where camera_id in
+        <foreach collection="array" item="cameraId" open="(" separator="," close=")">
+            #{cameraId}
+        </foreach>
+    </update>
+</mapper>

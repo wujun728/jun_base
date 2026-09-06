@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.SqReportMapper">
+    <resultMap id="SqDispatchReportResult" type="com.ruoyi.business.domain.SqDispatchReport">
+        <id property="id" column="id" />
+        <result property="lname" column="lname" />
+        <result property="company" column="company" />
+        <result property="theday" column="theday" />
+        <result property="createTime" column="create_time" />
+        <result property="bigc" column="bigc" />
+        <result property="bigck" column="bigck" />
+        <result property="bigf" column="bigf" />
+        <result property="smailc" column="smailc" />
+        <result property="smailck" column="smailck" />
+        <result property="smailf" column="smailf" />
+        <result property="bigcRen" column="bigc_ren" />
+        <result property="bigckRen" column="bigck_ren" />
+        <result property="bigfRen" column="bigf_ren" />
+        <result property="smailcRen" column="smailc_ren" />
+        <result property="smailckRen" column="smailck_ren" />
+        <result property="smailfRen" column="smailf_ren" />
+        <result property="bigcKuang" column="bigc_kuang" />
+        <result property="bigcFei" column="bigc_fei" />
+        <result property="bigckKuang" column="bigck_kuang" />
+        <result property="bigckFei" column="bigck_fei" />
+        <result property="bigfKuang" column="bigf_kuang" />
+        <result property="bigfFei" column="bigf_fei" />
+        <result property="smailcKuang" column="smailc_kuang" />
+        <result property="smailcFei" column="smailc_fei" />
+        <result property="smailckKuang" column="smailck_kuang" />
+        <result property="smailckFei" column="smailck_fei" />
+        <result property="smailfKuang" column="smailf_kuang" />
+        <result property="smailfFei" column="smailf_fei" />
+    </resultMap>
+
+    <resultMap id="SqSafetyEventStatResult" type="com.ruoyi.business.domain.SqSafetyEventStat">
+        <result property="statDate" column="stat_date" />
+        <result property="status" column="status" />
+        <result property="state" column="state" />
+        <result property="eventCount" column="event_count" />
+    </resultMap>
+
+    <sql id="selectDispatchVo">
+        select id, lname, company, date_format(theday, '%Y-%m-%d') as theday, create_time,
+               bigc, bigck, bigf, smailc, smailck, smailf,
+               bigc_ren, bigck_ren, bigf_ren, smailc_ren, smailck_ren, smailf_ren,
+               bigc_kuang, bigc_fei, bigck_kuang, bigck_fei, bigf_kuang, bigf_fei,
+               smailc_kuang, smailc_fei, smailck_kuang, smailck_fei, smailf_kuang, smailf_fei
+        from a_mdispatch
+    </sql>
+
+    <select id="selectDispatchReportById" parameterType="Long" resultMap="SqDispatchReportResult">
+        <include refid="selectDispatchVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectDispatchReportList" parameterType="com.ruoyi.business.domain.SqDispatchReport" resultMap="SqDispatchReportResult">
+        <include refid="selectDispatchVo"/>
+        <where>
+            <if test="lname != null and lname != ''">and lname like concat('%', #{lname}, '%')</if>
+            <if test="company != null and company != ''">and company like concat('%', #{company}, '%')</if>
+            <if test="theday != null and theday != ''">and date_format(theday, '%Y-%m-%d') = #{theday}</if>
+            <if test="beginTime != null and beginTime != ''">and theday &gt;= #{beginTime}</if>
+            <if test="endTime != null and endTime != ''">and theday &lt;= #{endTime}</if>
+        </where>
+        order by theday desc, id desc
+    </select>
+
+    <select id="selectDispatchMonthReportList" parameterType="com.ruoyi.business.domain.SqDispatchReport" resultMap="SqDispatchReportResult">
+        select min(id) as id, lname, company, date_format(theday, '%Y-%m') as theday,
+               sum(cast(ifnull(bigc, 0) as decimal(18,2))) as bigc,
+               sum(cast(ifnull(bigck, 0) as decimal(18,2))) as bigck,
+               sum(cast(ifnull(bigf, 0) as decimal(18,2))) as bigf,
+               sum(cast(ifnull(smailc, 0) as decimal(18,2))) as smailc,
+               sum(cast(ifnull(smailck, 0) as decimal(18,2))) as smailck,
+               sum(cast(ifnull(smailf, 0) as decimal(18,2))) as smailf,
+               sum(cast(ifnull(bigc_kuang, 0) as decimal(18,2))) as bigc_kuang,
+               sum(cast(ifnull(bigc_fei, 0) as decimal(18,2))) as bigc_fei,
+               sum(cast(ifnull(bigck_kuang, 0) as decimal(18,2))) as bigck_kuang,
+               sum(cast(ifnull(bigck_fei, 0) as decimal(18,2))) as bigck_fei,
+               sum(cast(ifnull(bigf_kuang, 0) as decimal(18,2))) as bigf_kuang,
+               sum(cast(ifnull(bigf_fei, 0) as decimal(18,2))) as bigf_fei,
+               sum(cast(ifnull(smailc_kuang, 0) as decimal(18,2))) as smailc_kuang,
+               sum(cast(ifnull(smailc_fei, 0) as decimal(18,2))) as smailc_fei,
+               sum(cast(ifnull(smailck_kuang, 0) as decimal(18,2))) as smailck_kuang,
+               sum(cast(ifnull(smailck_fei, 0) as decimal(18,2))) as smailck_fei,
+               sum(cast(ifnull(smailf_kuang, 0) as decimal(18,2))) as smailf_kuang,
+               sum(cast(ifnull(smailf_fei, 0) as decimal(18,2))) as smailf_fei
+        from a_mdispatch
+        <where>
+            <if test="lname != null and lname != ''">and lname like concat('%', #{lname}, '%')</if>
+            <if test="company != null and company != ''">and company like concat('%', #{company}, '%')</if>
+            <if test="theday != null and theday != ''">and date_format(theday, '%Y-%m') = #{theday}</if>
+            <if test="beginTime != null and beginTime != ''">and theday &gt;= #{beginTime}</if>
+            <if test="endTime != null and endTime != ''">and theday &lt;= #{endTime}</if>
+        </where>
+        group by date_format(theday, '%Y-%m'), lname, company
+        order by date_format(theday, '%Y-%m') desc, lname asc
+    </select>
+
+    <select id="selectSafetyEventStatList" parameterType="com.ruoyi.business.domain.SqSafetyEventStat" resultMap="SqSafetyEventStatResult">
+        select date_format(create_time, '%Y-%m-%d') as stat_date, status, state, count(1) as event_count
+        from a_alert
+        <where>
+            ifnull(is_deleted, '0') = '0'
+            <if test="status != null and status != ''">and status = #{status}</if>
+            <if test="state != null and state != ''">and state = #{state}</if>
+            <if test="beginTime != null and beginTime != ''">and create_time &gt;= #{beginTime}</if>
+            <if test="endTime != null and endTime != ''">and create_time &lt;= #{endTime}</if>
+        </where>
+        group by date_format(create_time, '%Y-%m-%d'), status, state
+        order by stat_date desc, event_count desc
+    </select>
+</mapper>

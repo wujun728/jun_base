@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.device.DeviceChuteMapper">
+    <resultMap id="DeviceChuteResult" type="com.ruoyi.system.domain.device.DeviceChute">
+        <id property="chuteId" column="chute_id" />
+        <result property="chuteName" column="chute_name" />
+        <result property="chuteCode" column="chute_code" />
+        <result property="chuteHeight" column="chute_height" />
+        <result property="location" column="location" />
+        <result property="deptId" column="dept_id" />
+        <result property="deptName" column="dept_name" />
+        <result property="status" column="status" />
+        <result property="delFlag" column="del_flag" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateBy" column="update_by" />
+        <result property="updateTime" column="update_time" />
+        <result property="remark" column="remark" />
+    </resultMap>
+
+    <sql id="selectDeviceChuteVo">
+        select c.chute_id, c.chute_name, c.chute_code, c.chute_height, c.location, c.dept_id,
+               d.dept_name, c.status, c.del_flag, c.create_by, c.create_time, c.update_by,
+               c.update_time, c.remark
+        from device_chute c
+        left join sys_dept d on d.dept_id = c.dept_id
+    </sql>
+
+    <select id="selectDeviceChuteById" parameterType="Long" resultMap="DeviceChuteResult">
+        <include refid="selectDeviceChuteVo"/>
+        where c.chute_id = #{chuteId} and c.del_flag = '0'
+    </select>
+
+    <select id="selectDeviceChuteList" parameterType="com.ruoyi.system.domain.device.DeviceChute" resultMap="DeviceChuteResult">
+        <include refid="selectDeviceChuteVo"/>
+        <where>
+            c.del_flag = '0'
+            <if test="chuteName != null and chuteName != ''">and c.chute_name like concat('%', #{chuteName}, '%')</if>
+            <if test="chuteCode != null and chuteCode != ''">and c.chute_code like concat('%', #{chuteCode}, '%')</if>
+            <if test="deptId != null">and c.dept_id = #{deptId}</if>
+            <if test="status != null and status != ''">and c.status = #{status}</if>
+            ${params.dataScope}
+        </where>
+        order by c.chute_id desc
+    </select>
+
+    <select id="selectDeviceChuteOptions" parameterType="com.ruoyi.system.domain.device.DeviceChute" resultMap="DeviceChuteResult">
+        <include refid="selectDeviceChuteVo"/>
+        <where>
+            c.del_flag = '0' and c.status = '0'
+            ${params.dataScope}
+        </where>
+        order by c.chute_id desc
+    </select>
+
+    <insert id="insertDeviceChute" parameterType="com.ruoyi.system.domain.device.DeviceChute" useGeneratedKeys="true" keyProperty="chuteId">
+        insert into device_chute(chute_name, chute_code, chute_height, location, dept_id, status, del_flag, create_by, create_time, remark)
+        values(#{chuteName}, #{chuteCode}, #{chuteHeight}, #{location}, #{deptId}, #{status}, '0', #{createBy}, sysdate(), #{remark})
+    </insert>
+
+    <update id="updateDeviceChute" parameterType="com.ruoyi.system.domain.device.DeviceChute">
+        update device_chute
+        <set>
+            chute_name = #{chuteName},
+            chute_code = #{chuteCode},
+            chute_height = #{chuteHeight},
+            location = #{location},
+            dept_id = #{deptId},
+            status = #{status},
+            remark = #{remark},
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </set>
+        where chute_id = #{chuteId}
+    </update>
+
+    <update id="deleteDeviceChuteByIds" parameterType="Long">
+        update device_chute set del_flag = '2' where chute_id in
+        <foreach collection="array" item="chuteId" open="(" separator="," close=")">
+            #{chuteId}
+        </foreach>
+    </update>
+</mapper>

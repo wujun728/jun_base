@@ -1,0 +1,84 @@
+export default (listeners = {}) => {
+  return {
+    itemStyle: {
+      padding: '0px 8px 0px 8px',
+    },
+    rules: {
+          #foreach ($column in $columns)
+      #if($column.required)
+      #set($parentheseIndex=$column.columnComment.indexOf("（"))
+      #if($parentheseIndex != -1)
+      #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+      #else
+      #set($comment=$column.columnComment)
+      #end
+          $column.javaField: [
+            { required: true, message: "$comment不能为空", trigger: #if($column.htmlType == "select" || $column.htmlType == "radio")"change"#else"blur"#end }
+          ]#if($foreach.count != $columns.size()),#end
+      #end
+      #end
+    },
+    formItems: [
+#foreach($column in $columns)
+#set($field=$column.javaField)
+#if($column.insert && !$column.pk)
+#if(($column.usableColumn) || (!$column.superColumn))
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#set($dictType=$column.dictType)
+#if($column.htmlType == "input")
+      {
+        field: '${field}',
+        type: 'input',
+        label: '${comment}',
+      },
+#elseif($column.htmlType == "inputNumber")
+      {
+        field: '${field}',
+        type: 'inputNumber',
+        label: '${comment}',
+        config: {
+          controlsPosition: 'right',
+          min: 0,
+        },
+      },
+#elseif($column.htmlType == "textarea")
+      {
+        field: '${field}',
+        type: 'textarea',
+        label: '${comment}',
+      },
+#elseif(($column.htmlType == "select" || $column.htmlType == "radio"))
+    {
+        field: '${field}',
+        type: '$column.htmlType',
+        options: [],
+        label: '${comment}',
+        #if($column.htmlType == "radio")
+        isGroup: true,
+        #end
+      },
+#elseif($column.htmlType == "datetime")
+    {
+      field: '${field}',
+      label: '${comment}',
+      config: { clearable: false },
+      type: 'datepicker',
+      config: {
+        type: 'date',
+        disabledDate: (time) => {
+          return time.getTime() > Date.now()
+        },
+      },
+    },
+#end
+#end
+#end
+#end
+    ],
+  }
+}

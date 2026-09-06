@@ -1,0 +1,10 @@
+# https://prettier.io/docs/en/ignore.html
+
+node_modules/*
+uni_modules/*
+build/*
+dist/*
+unpackage/*
+static/*
+*.min.js
+*/*.min.js

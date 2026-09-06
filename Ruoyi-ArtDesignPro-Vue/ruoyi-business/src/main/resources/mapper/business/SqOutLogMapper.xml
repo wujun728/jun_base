@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.SqOutLogMapper">
+    <resultMap id="SqOutLogResult" type="com.ruoyi.business.domain.SqOutLog">
+        <id property="id" column="id" />
+        <result property="ydNo" column="yd_no" />
+        <result property="leader" column="leader" />
+        <result property="plateNumber" column="plate_number" />
+        <result property="taskTime" column="task_time" />
+        <result property="createTime" column="create_time" />
+        <result property="instruction" column="instruction" />
+        <result property="team" column="team" />
+        <result property="vehicles" column="vehicles" />
+        <result property="schedule" column="schedule" />
+        <result property="carType" column="car_type" />
+        <result property="wellingPoint" column="welling_point" />
+        <result property="wellingPointName" column="welling_point_name" />
+        <result property="mineralType" column="mineral_type" />
+        <result property="miners" column="miners" />
+        <result property="discharge" column="discharge" />
+        <result property="releaseDate" column="release_date" />
+        <result property="releaseConfirmation" column="release_confirmation" />
+        <result property="weighingTime" column="weighing_time" />
+        <result property="totalTonnage" column="total_tonnage" />
+        <result property="unloadingPoint" column="unloading_point" />
+        <result property="unloadingTypes" column="unloading_types" />
+        <result property="unloadUser" column="unload_user" />
+        <result property="unloadingTime" column="unloading_time" />
+        <result property="numberVehicles" column="number_vehicles" />
+        <result property="unloadingConfirmation" column="unloading_confirmation" />
+        <result property="progress" column="progress" />
+    </resultMap>
+
+    <sql id="selectSqOutLogVo">
+        select o.id, o.yd_no, o.leader, o.plate_number, o.task_time, o.create_time,
+               o.instruction, o.team, o.vehicles, o.schedule, o.car_type, o.welling_point,
+               c.lname as welling_point_name, o.mineral_type, o.miners, o.discharge,
+               o.release_date, o.release_confirmation, o.weighing_time, o.total_tonnage,
+               o.unloading_point, o.unloading_types, o.unload_user, o.unloading_time,
+               o.number_vehicles, o.unloading_confirmation, o.progress
+        from yn_logs_out o
+        left join a_camera c on c.id = o.welling_point
+    </sql>
+
+    <select id="selectSqOutLogById" parameterType="Long" resultMap="SqOutLogResult">
+        <include refid="selectSqOutLogVo"/>
+        where o.id = #{id}
+    </select>
+
+    <select id="selectSqOutLogList" parameterType="com.ruoyi.business.domain.SqOutLog" resultMap="SqOutLogResult">
+        <include refid="selectSqOutLogVo"/>
+        <where>
+            <if test="ydNo != null and ydNo != ''">and o.yd_no like concat('%', #{ydNo}, '%')</if>
+            <if test="schedule != null and schedule != ''">and o.schedule = #{schedule}</if>
+            <if test="wellingPoint != null and wellingPoint != ''">and o.welling_point = #{wellingPoint}</if>
+            <if test="mineralType != null and mineralType != ''">and o.mineral_type = #{mineralType}</if>
+            <if test="plateNumber != null and plateNumber != ''">and o.plate_number like concat('%', #{plateNumber}, '%')</if>
+            <if test="beginTime != null and beginTime != ''">and o.weighing_time &gt;= #{beginTime}</if>
+            <if test="endTime != null and endTime != ''">and o.weighing_time &lt;= #{endTime}</if>
+        </where>
+        order by o.id desc
+    </select>
+
+    <insert id="insertSqOutLog" parameterType="com.ruoyi.business.domain.SqOutLog">
+        insert into yn_logs_out(yd_no, leader, plate_number, task_time, create_time, instruction,
+                                team, vehicles, schedule, car_type, welling_point, mineral_type,
+                                miners, discharge, release_date, release_confirmation, weighing_time,
+                                total_tonnage, unloading_point, unloading_types, unload_user,
+                                unloading_time, number_vehicles, unloading_confirmation, progress)
+        values(#{ydNo}, #{leader}, #{plateNumber}, #{taskTime}, sysdate(), #{instruction},
+               #{team}, #{vehicles}, #{schedule}, #{carType}, #{wellingPoint}, #{mineralType},
+               #{miners}, #{discharge}, #{releaseDate}, #{releaseConfirmation}, #{weighingTime},
+               #{totalTonnage}, #{unloadingPoint}, #{unloadingTypes}, #{unloadUser},
+               #{unloadingTime}, #{numberVehicles}, #{unloadingConfirmation}, #{progress})
+    </insert>
+
+    <update id="updateSqOutLog" parameterType="com.ruoyi.business.domain.SqOutLog">
+        update yn_logs_out
+        <set>
+            yd_no = #{ydNo}, leader = #{leader}, plate_number = #{plateNumber}, task_time = #{taskTime},
+            instruction = #{instruction}, team = #{team}, vehicles = #{vehicles}, schedule = #{schedule},
+            car_type = #{carType}, welling_point = #{wellingPoint}, mineral_type = #{mineralType},
+            miners = #{miners}, discharge = #{discharge}, release_date = #{releaseDate},
+            release_confirmation = #{releaseConfirmation}, weighing_time = #{weighingTime},
+            total_tonnage = #{totalTonnage}, unloading_point = #{unloadingPoint},
+            unloading_types = #{unloadingTypes}, unload_user = #{unloadUser},
+            unloading_time = #{unloadingTime}, number_vehicles = #{numberVehicles},
+            unloading_confirmation = #{unloadingConfirmation}, progress = #{progress}
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSqOutLogByIds" parameterType="Long">
+        delete from yn_logs_out where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

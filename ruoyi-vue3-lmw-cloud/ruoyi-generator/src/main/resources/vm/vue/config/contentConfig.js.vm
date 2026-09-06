@@ -1,0 +1,57 @@
+export const tableItem = [
+#foreach($column in $columns)
+#set($javaField=$column.javaField)
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#if($column.pk)
+  {
+    prop: '${javaField}',
+    label: '${comment}',
+    width: '80',
+  },
+
+#elseif($column.list && "" != $column.dictType)
+  {
+    prop: '${javaField}',
+    label: '${comment}',
+    width: '100',
+    slotName: '${javaField}',
+    isDict: true
+  },
+
+#elseif($column.list && "" != $javaField)
+  {
+    prop: '${javaField}',
+    label: '${comment}'
+  },
+#end
+#end
+  {
+    prop: 'todo',
+    label: '操作',
+    width: '200',
+    fixed: !window.isSmallScreen ? 'right' : false,
+    slotName: 'todo',
+    showOverflowTooltip: false,
+  },
+
+]
+export default () => {
+  return {
+    tableItem,
+    elTableConfig: {
+      tooltipOptions: {
+        popperClass: 'lmw_popper',
+        effect: 'light',
+      },
+      rowKey: '${businessName}Id',
+    },
+    showIndex: false,
+    showChoose: true,
+    pagination: false,
+  }
+}

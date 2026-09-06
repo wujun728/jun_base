@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.SqOfflineTaskMapper">
+    <resultMap id="SqOfflineTaskResult" type="com.ruoyi.business.domain.SqOfflineTask">
+        <id property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="startTime" column="start_time" />
+        <result property="endTime" column="end_time" />
+        <result property="lname" column="lname" />
+        <result property="chuteName" column="chute_name" />
+        <result property="channel" column="channel" />
+        <result property="status" column="status" />
+        <result property="createTime" column="create_time" />
+    </resultMap>
+
+    <sql id="selectSqOfflineTaskVo">
+        select t.id, t.name, t.start_time, t.end_time, t.lname, coalesce(c.lname, t.lname) as chute_name,
+               t.channel, t.status, t.create_time
+        from yn_task t
+        left join a_camera c on c.id = t.lname
+    </sql>
+
+    <select id="selectSqOfflineTaskById" parameterType="Long" resultMap="SqOfflineTaskResult">
+        <include refid="selectSqOfflineTaskVo"/>
+        where t.id = #{id}
+    </select>
+
+    <select id="selectSqOfflineTaskList" parameterType="com.ruoyi.business.domain.SqOfflineTask" resultMap="SqOfflineTaskResult">
+        <include refid="selectSqOfflineTaskVo"/>
+        <where>
+            <if test="name != null and name != ''">and t.name like concat('%', #{name}, '%')</if>
+            <if test="lname != null and lname != ''">and t.lname = #{lname}</if>
+            <if test="channel != null and channel != ''">and t.channel like concat('%', #{channel}, '%')</if>
+            <if test="status != null and status != ''">and t.status = #{status}</if>
+            <if test="beginTime != null and beginTime != ''">and t.start_time &gt;= #{beginTime}</if>
+            <if test="searchEndTime != null and searchEndTime != ''">and t.start_time &lt;= #{searchEndTime}</if>
+        </where>
+        order by t.create_time desc, t.id desc
+    </select>
+
+    <insert id="insertSqOfflineTask" parameterType="com.ruoyi.business.domain.SqOfflineTask">
+        insert into yn_task(name, start_time, end_time, lname, channel, status, create_time)
+        values(#{name}, #{startTime}, #{endTime}, #{lname}, #{channel}, #{status}, sysdate())
+    </insert>
+
+    <update id="updateSqOfflineTask" parameterType="com.ruoyi.business.domain.SqOfflineTask">
+        update yn_task
+        <set>
+            name = #{name}, start_time = #{startTime}, end_time = #{endTime},
+            lname = #{lname}, channel = #{channel}, status = #{status}
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="updateSqOfflineTaskStatus" parameterType="com.ruoyi.business.domain.SqOfflineTask">
+        update yn_task set status = #{status} where id = #{id}
+    </update>
+
+    <delete id="deleteSqOfflineTaskByIds" parameterType="Long">
+        delete from yn_task where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

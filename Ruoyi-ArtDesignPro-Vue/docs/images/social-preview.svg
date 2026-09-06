@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="1280" viewBox="0 0 1280 1280">
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#081938"/>
+      <stop offset="55%" stop-color="#102d66"/>
+      <stop offset="100%" stop-color="#1268b3"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#35c6ff"/>
+      <stop offset="100%" stop-color="#7a7cff"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#001536" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+  <g transform="translate(0 320)">
+  <rect width="1280" height="640" fill="url(#background)"/>
+  <circle cx="1140" cy="80" r="220" fill="#62d9ff" opacity="0.10"/>
+  <circle cx="1040" cy="580" r="290" fill="#7d6cff" opacity="0.12"/>
+  <rect x="72" y="72" width="1136" height="496" rx="34" fill="#ffffff" opacity="0.08"/>
+  <rect x="92" y="92" width="1096" height="456" rx="28" fill="#061b3c" opacity="0.56" filter="url(#shadow)"/>
+  <g transform="translate(142 148)">
+    <path d="M0 94L52 0l52 94z" fill="#36b7ff"/>
+    <path d="M52 94L104 0l52 94z" fill="#5678ff" opacity="0.92"/>
+    <circle cx="140" cy="20" r="16" fill="#35c6ff"/>
+  </g>
+  <text x="342" y="194" fill="#ffffff" font-size="58" font-weight="700" font-family="Arial, Helvetica, sans-serif">Nexa Admin</text>
+  <text x="342" y="254" fill="#bdeaff" font-size="27" font-family="Arial, Helvetica, sans-serif">Modern Enterprise Admin Console</text>
+  <rect x="142" y="326" width="208" height="66" rx="18" fill="#ffffff" opacity="0.10"/>
+  <rect x="372" y="326" width="242" height="66" rx="18" fill="#ffffff" opacity="0.10"/>
+  <rect x="636" y="326" width="174" height="66" rx="18" fill="#ffffff" opacity="0.10"/>
+  <rect x="832" y="326" width="180" height="66" rx="18" fill="#ffffff" opacity="0.10"/>
+  <text x="176" y="368" fill="#ffffff" font-size="25" font-weight="600" font-family="Arial, Helvetica, sans-serif">RuoYi RBAC</text>
+  <text x="406" y="368" fill="#ffffff" font-size="25" font-weight="600" font-family="Arial, Helvetica, sans-serif">Art Code Generator</text>
+  <text x="676" y="368" fill="#ffffff" font-size="25" font-weight="600" font-family="Arial, Helvetica, sans-serif">Art Bot</text>
+  <text x="870" y="368" fill="#ffffff" font-size="25" font-weight="600" font-family="Arial, Helvetica, sans-serif">Vue 3 + TS</text>
+  <rect x="142" y="454" width="870" height="4" rx="2" fill="url(#accent)"/>
+  <text x="142" y="510" fill="#d3eeff" font-size="23" font-family="Arial, Helvetica, sans-serif">github.com/Searchld/Nexa-Admin</text>
+  </g>
+</svg>

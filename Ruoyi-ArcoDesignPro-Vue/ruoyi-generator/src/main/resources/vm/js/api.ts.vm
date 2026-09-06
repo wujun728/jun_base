@@ -1,0 +1,100 @@
+#if($pkColumn.javaType == "Integer" || $pkColumn.javaType == 'Long')
+  #set($pkTsType='number')
+#else
+  #set($pkTsType='string')
+#end
+import axios from 'axios';
+import { parseStrEmpty } from "@/utils/common";
+
+// ${functionName}查询参数
+export interface ${ClassName}QueryParams {
+  pageNum?: number;
+  pageSize?: number;
+#foreach($column in $columns)
+#if($column.query)
+  #if($column.javaType == "Integer" || $column.javaType == 'Long')
+    #set($tsType='number')
+  #else
+    #set($tsType='string')
+  #end
+  ${column.javaField}?: ${tsType};
+#end
+#end
+  params?: any;
+}
+
+// ${functionName}对象
+export interface ${ClassName}Record {
+#foreach($column in $columns)
+#if($column.isInsert)
+  #set($dictType=$column.dictType)
+  #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+  #set($parentheseIndex=$column.columnComment.indexOf("（"))
+  #if($parentheseIndex != -1)
+    #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+  #else
+    #set($comment=$column.columnComment)
+  #end
+  #if($column.javaType == "Integer" || $column.javaType == 'Long')
+    #set($tsType='number')
+  #else
+    #set($tsType='string')
+  #end
+  /** ${comment} */
+  ${column.javaField}#if($column.isPk && $column.isIncrement): ${tsType} | undefined#else?: ${tsType}#end;
+#end
+#end
+}
+
+// 查询${functionName}列表
+export function list${ClassName}(query: ${ClassName}QueryParams) {
+  return axios({
+    url: '/${moduleName}/${businessName}/list',
+    method: 'get',
+    params: query
+  });
+}
+
+// 查询${functionName}详细
+export function get${ClassName}(${pkColumn.javaField}: ${pkTsType}) {
+  return axios({
+    url: `/${moduleName}/${businessName}/${parseStrEmpty}${pkColumn.javaField}}`,
+    method: 'get'
+  });
+}
+
+// 新增${functionName}
+export function add${ClassName}(data: ${ClassName}Record) {
+  return axios({
+    url: '/${moduleName}/${businessName}',
+    method: 'post',
+    data
+  });
+}
+
+// 修改${functionName}
+export function update${ClassName}(data: ${ClassName}Record) {
+  return axios({
+    url: '/${moduleName}/${businessName}',
+    method: 'put',
+    data
+  });
+}
+
+// 删除${functionName}
+export function del${ClassName}(${pkColumn.javaField}: ${pkTsType} | ${pkTsType}[]) {
+  return axios({
+    url: `/${moduleName}/${businessName}/${${pkColumn.javaField}}`,
+    method: 'delete'
+  });
+}
+
+// 导出${functionName}
+export function export${ClassName}(query?: ${ClassName}QueryParams) {
+  return axios({
+    url: '/${moduleName}/${businessName}/export',
+    method: 'get',
+    params: query,
+    responseType: 'blob'
+  });
+}
