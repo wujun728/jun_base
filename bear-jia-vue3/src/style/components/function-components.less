@@ -1,0 +1,308 @@
+/* 功能组件样式 */
+
+@import '../mixins.less';
+
+/* 全局搜索组件 */
+.global-search-modal {
+  .ant-modal-header {
+    border-bottom: 1px solid var(--border-color-split);
+    background-color: var(--component-background);
+  }
+  
+  .ant-modal-content {
+    background-color: var(--modal-bg);
+  }
+  
+  .search-container {
+    .search-input {
+      .ant-input-search {
+        .ant-input {
+          border-radius: 8px;
+          font-size: 16px;
+          background-color: var(--input-bg);
+          color: var(--text-primary);
+          border-color: var(--border-color-base);
+        }
+        
+        .ant-input-search-button {
+          border-radius: 0 8px 8px 0;
+        }
+      }
+    }
+    
+    .search-results {
+      max-height: 300px;
+      overflow-y: auto;
+      
+      .result-item {
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        background-color: var(--component-background);
+        border-color: var(--border-color-base);
+        
+        &:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+    
+    .quick-actions {
+      .action-item {
+        transition: all 0.3s ease;
+        background-color: var(--component-background);
+        
+        &:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+  }
+}
+
+/* 消息中心组件 */
+.message-center-drawer {
+  .ant-drawer-content {
+    .drawer-content-base();
+  }
+  
+  .ant-drawer-header {
+    .drawer-gradient-header();
+  }
+  
+  .message-container {
+    .message-tabs {
+      .ant-tabs-tab {
+        padding: 12px 16px;
+        color: var(--text-primary);
+        
+        .ant-badge {
+          .ant-badge-count {
+            font-size: 10px;
+            min-width: 16px;
+            height: 16px;
+            line-height: 16px;
+          }
+        }
+      }
+    }
+    
+    .message-list {
+      .message-item {
+        .base-list-item();
+        
+        &.unread {
+          border-left: 3px solid #1890ff;
+          background: linear-gradient(90deg, var(--primary-1) 0%, var(--component-background) 100%);
+        }
+        
+        &.urgent {
+          border-left-color: #ff4d4f;
+          background: linear-gradient(90deg, #fff2f0 0%, var(--component-background) 100%);
+        }
+      }
+    }
+    
+    .message-footer {
+      background: var(--component-background);
+      margin: 0 -24px -24px -24px;
+      
+      .ant-btn {
+        color: var(--text-secondary);
+        
+        &:hover {
+          color: #1890ff;
+        }
+      }
+    }
+  }
+}
+
+/* 聊天面板组件 */
+.chat-panel-drawer {
+  .ant-drawer-content {
+    .drawer-content-base();
+  }
+  
+  .ant-drawer-header {
+    .drawer-gradient-header();
+  }
+  
+  .chat-container {
+    .contact-list {
+      .contact-item {
+        border-radius: 8px;
+        margin: 4px 0;
+        transition: all 0.3s ease;
+        background-color: var(--component-background);
+        color: var(--text-primary);
+        
+        &:hover {
+          transform: translateX(4px);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+    
+    .chat-interface {
+      .chat-header {
+        background: var(--component-background);
+        border-radius: 8px;
+        padding: 12px;
+        color: var(--text-primary);
+      }
+      
+      .message-list {
+        .message-item {
+          .message-content {
+            .message-bubble {
+              box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+              transition: all 0.3s ease;
+              background-color: var(--component-background);
+              color: var(--text-primary);
+              
+              &:hover {
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+              }
+            }
+          }
+          
+          &.own-message .message-content .message-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+          }
+        }
+      }
+      
+      .message-input {
+        background: var(--component-background);
+        border-radius: 8px;
+        padding: 12px;
+        
+        .input-area {
+          .ant-input {
+            border-radius: 8px;
+            resize: none;
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+            border-color: var(--border-color-base);
+          }
+          
+          .ant-btn {
+            border-radius: 8px;
+            height: auto;
+            min-height: 64px;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* 头部按钮样式增强 */
+.header-icon-btn {
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: #f0f9ff !important;
+  }
+  
+  .anticon {
+    transition: all 0.3s ease;
+  }
+  
+  &:hover .anticon {
+    transform: scale(1.1);
+  }
+}
+
+/* 暗色主题适配 */
+.dark-theme {
+  .global-search-modal {
+    .ant-modal-content {
+      background: #1f1f1f;
+      
+      .ant-modal-header {
+        background: #1f1f1f;
+        border-bottom-color: #434343;
+        
+        .ant-modal-title {
+          color: rgba(255, 255, 255, 0.85);
+        }
+      }
+    }
+    
+    .search-container {
+      .search-input {
+        .ant-input {
+          background: #141414;
+          border-color: #434343;
+          color: rgba(255, 255, 255, 0.85);
+        }
+      }
+      
+      .quick-actions {
+        .action-item {
+          background: #141414;
+          border-color: #434343;
+          color: rgba(255, 255, 255, 0.85);
+          
+          &:hover {
+            border-color: #1890ff;
+            background: #111b26;
+          }
+        }
+      }
+    }
+  }
+  
+  .message-center-drawer,
+  .chat-panel-drawer {
+    .ant-drawer-body {
+      background: #1f1f1f;
+      color: rgba(255, 255, 255, 0.85);
+    }
+    
+    .message-item,
+    .contact-item {
+      &:hover {
+        background: #262626;
+      }
+    }
+  }
+  
+  .header-icon-btn {
+    &:hover {
+      background: rgba(255, 255, 255, 0.04) !important;
+    }
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .global-search-modal {
+    .ant-modal {
+      width: 95% !important;
+      margin: 10px auto;
+    }
+  }
+  
+  .message-center-drawer,
+  .chat-panel-drawer {
+    .ant-drawer {
+      width: 100% !important;
+    }
+  }
+  
+  .header-icon-btn {
+    padding: 4px 8px !important;
+    
+    .anticon {
+      font-size: 14px;
+    }
+  }
+}

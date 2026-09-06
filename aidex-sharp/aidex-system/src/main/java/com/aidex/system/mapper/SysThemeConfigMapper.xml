@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aidex.system.mapper.SysThemeConfigMapper">
+
+    <sql id="sysThemeConfigColumns">
+        user_id as "userId",
+        theme_obj as "themeObj",
+        sort as "sort",
+        status as "status",
+        remark as "remark",
+        id as "id",
+        create_by as "createBy",
+        create_dept as "createDept",
+        create_time as "createTime",
+        update_by as "updateBy",
+        update_time as "updateTime",
+        update_ip as "updateIp",
+        version as "version",
+        del_flag as "delFlag"
+    </sql>
+
+    <sql id="sysThemeConfigJoins">
+    </sql>
+
+    <select id="get" resultType="SysThemeConfig">
+        SELECT
+            <include refid="sysThemeConfigColumns"/>
+        FROM sys_theme_config a
+        <include refid="sysThemeConfigJoins"/>
+        WHERE a.id = #{id}
+    </select>
+
+    <select id="findList" resultType="SysThemeConfig">
+        SELECT
+            <include refid="sysThemeConfigColumns"/>
+        FROM sys_theme_config a
+        <include refid="sysThemeConfigJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="userId != null and userId != ''">
+                AND a.user_id = #{userId}
+            </if>
+            <if test="themeObj != null and themeObj != ''">
+                and a.theme_obj like concat('%', #{themeObj}, '%')
+            </if>
+            <if test="sort != null ">
+                AND a.sort = #{sort}
+            </if>
+            <if test="status != null and status != ''">
+                AND a.status = #{status}
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderByColumn != null and page.orderByColumn != ''">
+                ORDER BY ${page.orderByColumn}
+            </when>
+            <otherwise>
+                ORDER BY a.sort
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findListWithUnique" resultType="SysThemeConfig">
+        SELECT
+            a.id
+        FROM sys_theme_config a
+        <include refid="sysThemeConfigJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="notEqualId != null and notEqualId != ''">
+                AND id != #{notEqualId}
+            </if>
+        </where>
+    </select>
+
+    <select id="findMaxSort" resultType="integer">
+        SELECT
+            max(a.sort)
+        FROM sys_theme_config a
+        WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+    </select>
+
+    <insert id="insert">
+        INSERT INTO sys_theme_config(
+            user_id,
+            theme_obj,
+            sort,
+            status,
+            remark,
+            id,
+            create_by,
+            create_dept,
+            create_time,
+            update_by,
+            update_time,
+            update_ip,
+            version,
+            del_flag
+        ) VALUES (
+            #{userId},
+            #{themeObj},
+            #{sort},
+            #{status},
+            #{remark},
+            #{id},
+            #{createBy},
+            #{createDept},
+            #{createTime},
+            #{updateBy},
+            #{updateTime},
+            #{updateIp},
+            #{version},
+            #{delFlag}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE sys_theme_config SET
+            user_id = #{userId},
+            theme_obj = #{themeObj},
+            sort = #{sort},
+            status = #{status},
+            remark = #{remark},
+            update_by = #{updateBy},
+            update_time = #{updateTime},
+            update_ip = #{updateIp},
+            version = version + 1
+        WHERE id = #{id} and version = #{version}
+    </update>
+
+    <update id="delete">
+        UPDATE sys_theme_config SET
+            del_flag = #{DEL_FLAG_DELETE}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteSysThemeConfigByIds">
+        UPDATE sys_theme_config SET
+            del_flag = '1'
+        WHERE id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

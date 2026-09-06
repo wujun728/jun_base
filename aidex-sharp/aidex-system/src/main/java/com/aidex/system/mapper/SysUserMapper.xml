@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aidex.system.mapper.SysUserMapper">
+
+	<sql id="userColumns">
+		t.id as "id",
+		t.dept_id AS "deptId",
+		t.name AS "name",
+		t.name_en AS "nameEn",
+		t.no  AS "no",
+		t.user_name  AS "userName",
+		t.nick_name  AS "nickName",
+		t.user_type  AS "userType",
+		t.email AS "email",
+		t.phonenumber  AS "phonenumber",
+		t.sex  AS "sex",
+		t.avatar AS "avatar",
+		t.password AS "password",
+		t.birthday AS "birthday",
+		t.nation AS "nation",
+		t.birth_address AS "birthAddress",
+		t.polity AS "polity",
+		t.title AS "title",
+		t.office_tel AS "officeTel",
+		t.fax AS "fax",
+		t.work_space AS "workSpace",
+		t.sort AS "sort",
+		t.user_pinyin AS "userPinyin",
+		t.login_ip AS "loginIp",
+		t.login_date AS "loginDate",
+		t.status AS "status",
+		t.create_by AS "createBy",
+		t.create_dept AS "createDept",
+		t.create_time AS "createTime",
+		t.update_by AS "updateBy",
+		t.update_time AS "updateTime",
+		t.update_ip AS "updateIp",
+		t.remark AS "remark",
+		t.version AS "version",
+		t.del_flag AS "delFlag"
+	</sql>
+
+	<!--用户返回对象集合时使用-->
+	<resultMap type="SysUser" id="SysUserResult">
+		<id     property="id"           column="id"      />
+		<result property="deptId"       column="dept_id"      />
+		<result property="userName"     column="user_name"    />
+		<result property="name"         column="name"    />
+		<result property="nickName"     column="nick_name"    />
+		<result property="userType"     column="user_type"    />
+		<result property="email"        column="email"        />
+		<result property="phonenumber"  column="phonenumber"  />
+		<result property="officeTel"    column="office_tel"  />
+		<result property="sex"          column="sex"          />
+		<result property="avatar"       column="avatar"       />
+		<result property="password"     column="password"     />
+		<result property="status"       column="status"       />
+		<result property="delFlag"      column="del_flag"     />
+		<result property="loginIp"      column="login_ip"     />
+		<result property="loginDate"    column="login_date"   />
+		<result property="createBy"     column="create_by"    />
+		<result property="createTime"   column="create_time"  />
+		<result property="updateBy"     column="update_by"    />
+		<result property="updateTime"   column="update_time"  />
+		<result property="remark"       column="remark"       />
+		<association property="sysDept"    column="dept_id" javaType="SysDept" resultMap="deptResult" />
+		<collection  property="sysRoles"   javaType="java.util.List"        resultMap="RoleResult" />
+	</resultMap>
+
+	<resultMap id="deptResult" type="SysDept">
+		<id     property="id"   column="dept_id"     />
+		<result property="parentId" column="parent_id"   />
+		<result property="deptName" column="dept_name"   />
+		<result property="treeSort" column="tree_sort"   />
+		<result property="leader"   column="leader"      />
+		<result property="status"   column="dept_status" />
+	</resultMap>
+
+	<resultMap id="RoleResult" type="SysRole">
+		<id     property="id"       column="id"        />
+		<result property="roleName"     column="role_name"      />
+		<result property="roleKey"      column="role_key"       />
+		<result property="sort"     column="sort"      />
+		<result property="dataScope"     column="data_scope"    />
+		<result property="status"       column="role_status"    />
+	</resultMap>
+
+	<sql id="columnWhere">
+		<if test="userName != null and userName != ''">
+			AND t.user_name like concat('%', #{userName}, '%')
+		</if>
+		<if test="name != null and name != ''">
+			AND t.name like concat('%', #{name}, '%')
+		</if>
+		<if test="status != null and status != ''">
+			AND t.status = #{status}
+		</if>
+		<if test="phonenumber != null and phonenumber != ''">
+			AND t.phonenumber like concat('%', #{phonenumber}, '%')
+		</if>
+		<if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+			AND date_format(t.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+		</if>
+		<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+			AND date_format(t.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+		</if>
+		<if test="deptId != null and deptId != ''">
+			AND t.dept_id IN (select d.id from sys_dept d where concat(d.parent_ids, '/') like concat('%', #{deptId}, '/%') )
+		</if>
+	</sql>
+
+	<select id="get" resultType="SysUser">
+		SELECT
+		<include refid="userColumns"/>,
+		d.dept_name AS "sysDept.deptName", d.leader  AS "sysDept.leader"
+		FROM sys_user t
+		left join sys_dept d on t.dept_id = d.id
+		where t.id = #{id}
+	</select>
+
+	<select id="findList" resultType="SysUser">
+		select
+		<include refid="userColumns"/>,
+		d.dept_name AS "sysDept.deptName", d.leader  AS "sysDept.leader"
+		from sys_user t
+		left join sys_dept d on t.dept_id = d.id
+		where t.del_flag = #{DEL_FLAG_NORMAL}
+		<include refid="columnWhere"/>
+		<!-- 数据范围过滤 -->
+		${params.dataScope}
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY  ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY t.update_time DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findListWithUnique" resultType="SysUser">
+		SELECT
+		1
+		FROM sys_user t
+		where t.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="userName != null and userName != ''">
+			AND t.user_name = #{userName}
+		</if>
+		<if test="name != null and name != ''">
+			AND t.name = #{name}
+		</if>
+		<if test="no != null and no != ''">
+			AND t.no = #{no}
+		</if>
+		<if test="email != null and email != ''">
+			AND t.email = #{email}
+		</if>
+		<if test="phonenumber != null and phonenumber != ''">
+			AND t.phonenumber = #{phonenumber}
+		</if>
+		<if test="notEqualId != null and notEqualId != ''">
+			AND t.id != #{notEqualId}
+		</if>
+	</select>
+
+	<insert id="insert" >
+		insert into sys_user(
+		id,
+		dept_id,
+		name,
+		name_en,
+		no,
+		user_name,
+		nick_name,
+		user_type,
+		email,
+		phonenumber,
+		sex,
+		avatar,
+		password,
+		birthday,
+		nation,
+		birth_address,
+		polity,
+		title,
+		office_tel,
+		fax,
+		work_space,
+		sort,
+		user_pinyin,
+		login_ip,
+		login_date,
+		status,
+		create_by,
+		create_dept,
+		create_time,
+		update_by,
+		update_time,
+		update_ip,
+		remark,
+		version,
+		del_flag
+		)values(
+			#{id},
+			#{deptId},
+			#{name},
+			#{nameEn},
+			#{no},
+			#{userName},
+			#{nickName},
+			#{userType},
+			#{email},
+			#{phonenumber},
+			#{sex},
+			#{avatar},
+			#{password},
+			#{birthday},
+			#{nation},
+			#{birthAddress},
+			#{polity},
+			#{title},
+			#{officeTel},
+			#{fax},
+			#{workSpace},
+			#{sort},
+			#{userPinyin},
+			#{loginIp},
+			#{loginDate},
+			#{status},
+			#{createBy},
+			#{createDept},
+			#{createTime},
+			#{updateBy},
+			#{updateTime},
+			#{updateIp},
+			#{remark},
+			1,
+			#{DEL_FLAG_NORMAL}
+		)
+	</insert>
+
+	<update id="update">
+		update sys_user
+		<set>
+			<if test="deptId != null">	dept_id = #{deptId}, </if>
+			<if test="name != null"> name = #{name}, </if>
+			<if test="nameEn != null"> name_en = #{nameEn}, </if>
+			<if test="no != null"> no = #{no}, </if>
+			<if test="userName != null"> user_name = #{userName}, </if>
+			<if test="nickName != null"> nick_name = #{nickName}, </if>
+			<if test="userType != null">user_type = #{userType}, </if>
+			<if test="email != null">email = #{email}, </if>
+			<if test="phonenumber != null">phonenumber = #{phonenumber}, </if>
+			<if test="sex != null">sex = #{sex}, </if>
+			<if test="avatar != null">avatar = #{avatar}, </if>
+			<if test="password != null">password = #{password}, </if>
+			<if test="birthday != null">birthday = #{birthday}, </if>
+			<if test="nation != null">nation = #{nation}, </if>
+			<if test="birthAddress != null">birth_address = #{birthAddress}, </if>
+			<if test="polity != null">polity = #{polity}, </if>
+			<if test="title != null">title = #{title}, </if>
+			<if test="officeTel != null">office_tel = #{officeTel}, </if>
+			<if test="fax != null">fax = #{fax}, </if>
+			<if test="workSpace != null">work_space = #{workSpace}, </if>
+			<if test="sort != null">sort = #{sort}, </if>
+			<if test="userPinyin != null">user_pinyin = #{userPinyin}, </if>
+			<if test="loginIp != null">login_ip = #{loginIp}, </if>
+			<if test="loginDate != null">login_date = #{loginDate}, </if>
+			<if test="status != null">status = #{status}, </if>
+			<if test="updateBy != null">update_by = #{updateBy}, </if>
+			<if test="updateTime != null">update_time = #{updateTime}, </if>
+			<if test="updateIp != null">update_ip = #{updateIp}, </if>
+			<if test="remark != null">remark = #{remark}, </if>
+			version = version + 1
+		</set>
+		where id = #{id}  and version = #{version}
+	</update>
+
+	<sql id="selectUserVo">
+		select
+		   t.id,
+		   t.dept_id,
+		   t.user_name,
+		   t.name,
+		   t.nick_name,
+		   t.user_type,
+		   t.email,
+		   t.avatar,
+		   t.phonenumber,
+		   t.office_tel,
+		   t.password,
+		   t.sex,
+		   t.status,
+		   t.del_flag,
+		   t.login_ip,
+		   t.login_date,
+		   t.create_by,
+		   t.create_time,
+		   t.remark,
+		   d.id as dept_id,
+		   d.parent_id,
+		   d.dept_name,
+		   d.tree_sort,
+		   d.leader,
+		   d.status as dept_status,
+		   r.id,
+		   r.role_name,
+		   r.role_key,
+		   r.sort,
+		   r.data_scope,
+		   r.status as role_status
+		from sys_user t
+		left join sys_dept d on t.dept_id = d.id
+		left join sys_user_role ur on t.id = ur.user_id
+		left join sys_role r on r.id = ur.role_id
+	</sql>
+
+	<select id="selectUserByUserName" parameterType="java.util.Map" resultMap="SysUserResult">
+		<include refid="selectUserVo"/>
+		where t.user_name = #{userName} and t.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+
+	<select id="selectUserById" parameterType="String" resultMap="SysUserResult">
+		<include refid="selectUserVo"/>
+		where t.id = #{userId}
+	</select>
+
+	<select id="checkUserNameUnique" parameterType="String" resultType="int">
+		select count(1) from sys_user where user_name = #{userName} and del_flag = '0' limit 1
+	</select>
+
+	<select id="checkPhoneUnique" parameterType="String" resultType="SysUser">
+		select id, phonenumber from sys_user where phonenumber = #{phonenumber} and del_flag = '0' limit 1
+	</select>
+
+	<select id="checkEmailUnique" parameterType="String" resultType="SysUser">
+		select id, email from sys_user where email = #{email} and  del_flag = '0' limit 1
+	</select>
+
+	<update id="updateUserStatus" parameterType="SysUser">
+ 		update sys_user set status = #{status} where id = #{id}
+	</update>
+
+	<update id="updateUserAvatar" parameterType="SysUser">
+ 		update sys_user set avatar = #{avatar} where user_name = #{userName}
+	</update>
+
+	<update id="updateUserLoginInfo" parameterType="SysUser">
+ 		update sys_user set
+			login_ip = #{loginIp},
+			login_date = #{loginDate}
+ 		where id = #{id}
+	</update>
+
+	<update id="resetUserPwd" parameterType="SysUser">
+ 		update sys_user set password = #{password} where user_name = #{userName}
+	</update>
+
+	<delete id="delete">
+		UPDATE sys_user SET
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</delete>
+
+	<delete id="deleteUserByIds" parameterType="java.util.Map">
+		UPDATE sys_user SET
+		del_flag = #{DEL_FLAG_DELETE}
+		WHERE id in
+		<foreach collection="array" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</delete>
+
+	<delete id="deleteBatch" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+			UPDATE sys_user SET
+			del_flag = #{DEL_FLAG_DELETE}
+			WHERE id = #{item.id}
+		</foreach>
+	</delete>
+
+	<select id="getUserInfoByIds" parameterType="java.util.List" resultType="java.util.HashMap">
+		SELECT
+		t.id,
+		concat(d.parent_ids,'/',t.id) as 'parentIds',
+		t.name,
+		d.dept_name as 'subtitle',
+		'user' as 'icon'
+		FROM
+		sys_user t
+		left join sys_dept d on t.dept_id = d.id
+		<where>
+			t.del_flag = 0
+			and ( 1 != 1
+			<foreach collection="ids" item="idsItem">
+				or t.id in
+				<foreach collection="idsItem" item="id" open="(" separator="," close=")">
+					#{id}
+				</foreach>
+			</foreach>
+			)
+		</where>
+	</select>
+
+	<select id="findRoleUserList" resultType="SysUser">
+		SELECT
+		<include refid="userColumns"/>
+		FROM
+		sys_user_role r
+		LEFT JOIN sys_user t ON r.user_id = t.id
+		WHERE
+		t.del_flag = #{DEL_FLAG_NORMAL}
+		AND r.role_id = #{roleId}
+		AND t.id IS NOT NULL
+		<if test="userNameOrName != null and userNameOrName != ''">
+			AND (t.user_name like concat('%', #{userNameOrName}, '%') or t.name like concat('%', #{userNameOrName}, '%'))
+		</if>
+	</select>
+
+</mapper>

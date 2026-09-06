@@ -1,0 +1,158 @@
+import request from '@/utils/request'
+
+// 查询${functionName}列表
+export function list${BusinessName} (query, id, expandLevel) {
+  if (id == null || id === '') {
+    id = '0'
+  }
+  if (expandLevel == null || expandLevel === '') {
+    expandLevel = '1'
+  }
+  return request({
+    url: '/${moduleName}/${businessName}/list/' + expandLevel + '/' + id,
+    method: 'get',
+    params: query
+  })
+}
+
+// 查询${functionName}树结构
+export function listTree (id, expandLevel) {
+	if (id == null || id === '') {
+		id = '0'
+	}
+  if (expandLevel == null || expandLevel === '') {
+    expandLevel = '1'
+  }
+  return request({
+    url: '/${moduleName}/${businessName}/listTree/' + expandLevel + '/' + id,
+    method: 'get'
+  })
+}
+
+// 查询${functionName}树结构（排除当前节点及子节点）
+export function listTreeExcludeChild (id, expandLevel) {
+  return request({
+    url: '/${moduleName}/${businessName}/listTreeExcludeChild/' + expandLevel + '/0/' + id,
+    method: 'get'
+  })
+}
+
+// 查询${functionName}详细
+export function get${BusinessName} (id) {
+  return request({
+    url: '/${moduleName}/${businessName}/' + id,
+    method: 'get'
+  })
+}
+
+// 查询${functionName}下拉结构
+export function treeGridSelect (id, expandLevel) {
+  if (id == null || id === '') {
+    id = '0'
+  }
+  if (expandLevel == null || expandLevel === '') {
+    expandLevel = '1'
+  }
+  return request({
+    url: '/system/menu/treeGridSelect/' + expandLevel + '/' + id,
+    method: 'get'
+  })
+}
+
+// 新增${functionName}
+export function add${BusinessName} (data) {
+  return request({
+    url: '/${moduleName}/${businessName}',
+    method: 'post',
+    data: data
+  })
+}
+
+// 修改${functionName}
+export function update${BusinessName} (data) {
+  return request({
+    url: '/${moduleName}/${businessName}',
+    method: 'put',
+    data: data
+  })
+}
+
+// 删除${functionName}
+export function del${BusinessName} (id) {
+  return request({
+    url: '/${moduleName}/${businessName}/' + id,
+    method: 'delete'
+  })
+}
+
+#foreach($column in $columns)
+#if($column.columnName == "status" && ${hasDisableEnable} == 'true')
+// 状态修改
+export function updateStatus (id, status) {
+  const data = {
+    id,
+    status
+  }
+  return request({
+    url: '/${moduleName}/${businessName}/updateStatus',
+    method: 'put',
+    data: data
+  })
+}
+
+#break
+#end
+#end
+// 查询最大编号
+export function findMaxSort (parentId) {
+  return request({
+    url: '/${moduleName}/${businessName}/findMaxSort/' + parentId,
+    method: 'get'
+  })
+}
+#foreach($column in $uniqueColumns)
+#set($attrName = $column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+##循环标志为1和上面的排序号不存在，则预留空行
+#if($velocityCount == 1)
+
+#end
+// 校验${column.columnComment}是否存在
+export function check${attrName}Unique (id, ${column.javaField}) {
+  if (id === undefined) {
+    id = ''
+  }
+  return request({
+    url: '/${moduleName}/${businessName}/check${attrName}Unique/' + ${column.javaField} + '/' + id,
+    method: 'get'
+  })
+}
+#if($foreach.hasNext)
+
+#end
+#end
+
+// 获取初始化数据
+export function getInitData (dictTypes) {
+  return request({
+    url: '/${moduleName}/${businessName}/getInitData/' + dictTypes,
+    method: 'get'
+  })
+}
+
+// 树表格检索
+export function search${BusinessName}List (searchInfo) {
+  return request({
+    url: '/${moduleName}/${businessName}/search${BusinessName}List',
+    method: 'get',
+    params: searchInfo
+  })
+}
+
+// 树检索
+export function search${BusinessName} (searchInfo) {
+  return request({
+    url: '/${moduleName}/${businessName}/search${BusinessName}',
+    method: 'get',
+    params: searchInfo
+  })
+}

@@ -1,0 +1,29 @@
+export default () => {
+  return {
+    formItems: [
+      {
+        label: '用户名称',
+        field: 'userName',
+        type: 'input',
+        config: {
+          allowClear: true,
+        },
+      },
+      {
+        label: '手机号码',
+        field: 'phonenumber',
+        type: 'input',
+        config: {
+          allowClear: true,
+        },
+      },
+    ],
+    colLayout: {
+      xl: 4,
+      lg: 7,
+      md: 7,
+      sm: 12,
+      xs: 24,
+    },
+  }
+}

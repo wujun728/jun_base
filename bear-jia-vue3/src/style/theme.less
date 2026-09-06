@@ -1,0 +1,201 @@
+// 主题相关的全局变量
+:root {
+  // === Ant Design 基础变量 ===
+  --ant-primary-color: #1677ff;
+  --ant-primary-color-hover: color-mix(in srgb, var(--ant-primary-color) 90%, white);
+  --ant-primary-color-active: color-mix(in srgb, var(--ant-primary-color) 110%, black);
+  --ant-primary-1: color-mix(in srgb, var(--ant-primary-color) 20%, white);
+
+  // === 主题色系统 ===
+  --primary-color: var(--ant-primary-color);
+  --primary-color-hover: var(--ant-primary-color-hover);
+  --primary-color-active: var(--ant-primary-color-active);
+  --primary-1: var(--ant-primary-1);
+
+  // === 背景色层次系统 ===
+  // Level 1: 页面主背景色（最深层）
+  --page-background: #F9FAFE;
+  --bg-color: var(--page-background);
+  // Level 2: 组件/卡片背景色（中间层）
+  --card-background: #FFFFFF;
+  --component-background: var(--card-background);
+  // Level 3: 侧边栏专用背景色（特殊用途）
+  --sidebar-background: var(--card-background);
+  // Level 4: 顶部区域背景色
+  --header-background-base: #F8FAFF;
+  --header-background: var(--page-background-gradient);
+  // 暗色页面背景必须保持纯色；渐变铺到内容区时会在页面底部形成明显色块。
+  --page-background-gradient: var(--page-background);
+
+  // === 专用组件背景色 ===
+  --drawer-bg: var(--card-background);
+  --modal-bg: var(--card-background);
+  --dropdown-bg: var(--card-background);
+  --input-bg: var(--card-background);
+  --list-bg: var(--card-background);
+  --card-bg: var(--card-background);
+  --table-header-bg: var(--sidebar-background);
+
+  // === 交互状态颜色 ===
+  --hover-bg: rgba(0, 0, 0, 0.04);
+  --active-bg: rgba(0, 0, 0, 0.06);
+  --selected-bg: var(--primary-1);
+
+  // === 文字颜色系统（统一定义，避免重复）===
+  --text-primary: rgba(0, 0, 0, 0.85);  // 主要文字
+  --text-secondary: rgba(0, 0, 0, 0.65); // 次要文字
+  --text-disabled: rgba(0, 0, 0, 0.25);  // 禁用文字
+  // 兼容性别名（保持向后兼容）
+  --text-color: var(--text-primary);
+  --text-color-secondary: var(--text-secondary);
+
+  // === 边框颜色系统 ===
+  --border-color: #f0f0f0;
+  --border-color-base: #d9d9d9;
+  --border-color-split: #f0f0f0;
+  --drawer-border: #f0f0f0;
+  --modal-border: #f0f0f0;
+  --divider-color: #f0f0f0;
+
+  // === 菜单颜色系统 ===
+  --menu-bg: var(--menu-bg-light);
+  --menu-bg-light: var(--sidebar-background);
+  --menu-bg-dark: var(--sidebar-background);
+  --menu-item-color: var(--menu-item-color-light);
+  --menu-item-color-light: var(--text-primary);
+  --menu-item-color-dark: rgba(255, 255, 255, 0.85);
+  --menu-item-hover-color: var(--menu-item-hover-color-light);
+  --menu-item-hover-color-light: var(--primary-color);
+  --menu-item-hover-color-dark: #fff;
+  --menu-item-active-color: var(--menu-item-active-color-light);
+  --menu-item-active-color-light: var(--primary-color);
+  --menu-item-active-color-dark: #fff;
+  --menu-item-active-bg: var(--menu-item-active-bg-light);
+  --menu-item-active-bg-light: var(--primary-1);
+  --menu-item-active-bg-dark: var(--primary-color);
+
+  // === 按钮颜色系统 ===
+  --btn-primary-bg: var(--primary-color);
+  --btn-primary-color: #fff;
+  --btn-hover-bg: var(--primary-color-hover);
+  --btn-active-bg: var(--primary-color-active);
+}
+
+// === 暗色主题 ===
+.dark-theme {
+  // ========== 第1步：色彩层级系统 ==========
+  // Level 0: 页面主背景 - 最深的底色（深海军蓝）
+  --page-background: #0d1117;
+  --bg-color: var(--page-background);
+  // Level 1: 组件背景 - 中间层，用于卡片、表格等
+  --card-background: #161b22;
+  --component-background: var(--card-background);
+  // Level 2: 侧边栏/弹出层背景 - 稍浅，增强区分度
+  --sidebar-background: #1f242d;
+  // Level 3: 顶部区域背景
+  --header-background-base: #161b22;
+  --header-background: var(--header-background-base);
+  --page-background-gradient: linear-gradient(180deg, var(--header-background-base) 0%, var(--page-background) 100%);
+
+  // === 专用组件背景色（层次化设计）===
+  --drawer-bg: #1f242d;        // 抽屉背景，与侧边栏同级
+  --modal-bg: #21262D;         // 模态框背景 - 提升海拔，比背景更亮
+  --modal-bg-elevated: #2D333B; // 模态框头部背景 - 最高海拔
+  --dropdown-bg: #1f242d;      // 下拉菜单背景
+  --input-bg: #1c2128;         // 输入框背景 - 比卡片稍亮，避免"黑洞"效果
+  --modal-input-bg: #161b22;   // 模态框内输入框背景 - 比弹窗背景稍深，产生内凹效果
+  --list-bg: #161b22;          // 列表背景
+  --card-bg: #161b22;          // 卡片背景
+  --table-header-bg: #1f242d;  // 表格头背景，稍浅于表格体
+
+  // === 交互状态颜色（暗色适配）===
+  --hover-bg: rgba(255, 255, 255, 0.04);
+  --active-bg: rgba(255, 255, 255, 0.08);
+  --selected-bg: var(--primary-color);
+
+  // ========== 第3步：文字颜色层级系统 ==========
+  --text-primary: rgba(255, 255, 255, 0.95);   // 标题（最亮）
+  --text-secondary: rgba(255, 255, 255, 0.65); // 正文
+  --text-tertiary: rgba(255, 255, 255, 0.45);  // 辅助文字（时间、页脚等）
+  --text-disabled: rgba(255, 255, 255, 0.25);  // 禁用文字
+  // 兼容性别名更新
+  --text-color: var(--text-primary);
+  --text-color-secondary: var(--text-secondary);
+
+  // ========== 第4步：边框颜色系统（大幅调暗）==========
+  // 使用极低透明度的白色边框，几乎不可见但能区分层级
+  --border-color: rgba(255, 255, 255, 0.06);
+  --border-color-base: rgba(255, 255, 255, 0.06);
+  --border-color-split: rgba(255, 255, 255, 0.04);
+  --border-hover: rgba(255, 255, 255, 0.10);
+  --drawer-border: rgba(255, 255, 255, 0.06);
+  --modal-border: rgba(255, 255, 255, 0.15);  // 模态框发光边框 - 提升可见度
+  --modal-glow-border: rgba(96, 165, 250, 0.25); // 模态框品牌色发光边框
+  --divider-color: rgba(255, 255, 255, 0.04);
+  // 表格专用边框（几乎不可见）
+  --table-border: rgba(255, 255, 255, 0.03);
+  --table-header-border: rgba(255, 255, 255, 0.05);
+
+  // ========== 输入框专用边框（更明显）==========
+  --input-border: rgba(255, 255, 255, 0.15);
+  --input-border-hover: rgba(255, 255, 255, 0.25);
+  --input-border-focus: var(--primary-color);
+
+  // ========== 菜单系统（精致线条设计）==========
+  --menu-bg: var(--sidebar-background);
+  --menu-item-color: var(--text-secondary);
+  --menu-item-hover-color: var(--primary-color);
+  --menu-item-active-color: var(--primary-color);
+  // 移除渐变背景，改用透明背景+左侧线条
+  --menu-item-active-bg: rgba(96, 165, 250, 0.1);
+  // 左侧活跃线条颜色
+  --menu-active-border: #60A5FA;
+
+  // ========== 第5步：品牌色系统（柔和蓝）==========
+  --primary-color: #60A5FA;
+  --primary-color-hover: #93C5FD;
+  --primary-color-active: #3B82F6;
+  --primary-alpha-10: rgba(96, 165, 250, 0.1);
+  --primary-alpha-20: rgba(96, 165, 250, 0.2);
+
+  // ========== 按钮系统 ==========
+  --btn-primary-bg: var(--primary-color);
+  --btn-primary-color: #fff;
+  --btn-hover-bg: var(--primary-color-hover);
+  --btn-active-bg: var(--primary-color-active);
+
+  // ========== 模态框专用样式 ==========
+  // 模态框阴影 - 扩散式深邃感
+  --modal-shadow: 0 20px 50px rgba(0, 0, 0, 0.5),
+                  0 10px 25px rgba(0, 0, 0, 0.3),
+                  0 0 1px rgba(0, 0, 0, 0.5);
+  // 模态框遮罩
+  --modal-mask-bg: rgba(0, 0, 0, 0.45);
+  --modal-mask-blur: 8px;
+  // 关闭按钮
+  --modal-close-color: rgba(255, 255, 255, 0.65);
+  --modal-close-hover-color: rgba(255, 255, 255, 0.95);
+}
+
+// 主题切换动画
+.theme-transition {
+  transition: all 0.3s ease-in-out;
+}
+
+/* 色弱模式样式 */
+.color-weak {
+  filter: invert(80%);
+
+  .ant-layout-header,
+  .ant-layout-footer,
+  .ant-layout-sider {
+    filter: invert(100%);
+  }
+
+  // 确保图片和图标不被过度处理
+  img,
+  .anticon,
+  .ant-avatar {
+    filter: invert(100%);
+  }
+}

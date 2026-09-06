@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aidex.generator.mapper.GenConfigTemplateMapper">
+    <sql id="genConfigTemplateColumns">
+		a.id as "id",
+		a.template_name AS "templateName",
+		a.function_author AS "functionAuthor",
+        a.function_author_email AS "functionAuthorEmail",
+        a.workspace_path AS "workspacePath",
+        a.module_name AS "moduleName",
+        a.package_name AS "packageName",
+        a.web_workspace_path AS "webWorkspacePath",
+        a.template_default AS "templateDefault",
+		a.sort,
+		a.status,
+		a.create_by AS "createBy",
+		a.create_dept AS "createDept",
+		a.create_time AS "createTime",
+		a.update_by AS "updateBy",
+		a.update_time AS "updateTime",
+		a.update_ip AS "updateIp",
+		a.remark AS "remark",
+		a.version AS "version"
+	</sql>
+
+    <sql id="genConfigTemplateJoins">
+
+    </sql>
+
+    <sql id="genConfigTemplateOrderBy">
+		order by a.sort
+	</sql>
+
+    <select id="get" resultType="GenConfigTemplate">
+        SELECT
+        <include refid="genConfigTemplateColumns"/>
+        FROM gen_config_template a
+        <include refid="genConfigTemplateJoins"/>
+        WHERE id =  #{id}
+    </select>
+
+    <select id="findList"  resultType="GenConfigTemplate">
+        SELECT
+            <include refid="genConfigTemplateColumns"/>
+        FROM gen_config_template a
+        <include refid="genConfigTemplateJoins"/>
+        WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+        <if test="templateName != null  and templateName != ''">
+            and template_name like concat('%', #{templateName}, '%')
+        </if>
+        <if test="functionAuthor != null  and functionAuthor != ''">
+            and function_author like concat('%', #{functionAuthor}, '%')
+        </if>
+        <if test="status != null  and status != ''">
+            and status = #{status}
+        </if>
+        <include refid="genConfigTemplateOrderBy"/>
+    </select>
+
+    <select id="findListWithUnique" resultType="GenConfigTemplate">
+        SELECT
+            a.id
+        FROM gen_config_template a
+        <include refid="genConfigTemplateJoins"/>
+        WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+        <if test="templateName != null  and templateName != ''">
+            and template_name = #{templateName}
+        </if>
+        <if test="notEqualId != null and notEqualId != ''">
+            AND id != #{notEqualId}
+        </if>
+    </select>
+
+    <select id="findMaxSort" resultType="integer">
+        SELECT max(a.sort)
+        FROM gen_config_template a
+        WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+    </select>
+
+    <insert id="insert">
+        insert into gen_config_template(
+            id,
+            template_name,
+            function_author,
+            function_author_email,
+            workspace_path,
+            module_name,
+            package_name,
+            web_workspace_path,
+            template_default,
+            sort,
+            status,
+            create_by,
+            create_dept,
+            create_time,
+            update_by,
+            update_time,
+            update_ip,
+            remark,
+            version
+        )values(
+            #{id},
+            #{templateName},
+            #{functionAuthor},
+            #{functionAuthorEmail},
+            #{workspacePath},
+            #{moduleName},
+            #{packageName},
+            #{webWorkspacePath},
+            #{templateDefault},
+            #{sort},
+            #{status},
+            #{createBy},
+            #{createDept},
+            #{createTime},
+            #{updateBy},
+            #{updateTime},
+            #{updateIp},
+            #{remark},
+            1
+        )
+    </insert>
+
+    <update id="update" parameterType="GenConfigTemplate">
+        update gen_config_template
+            <set>
+                <if test="templateName != null and templateName != ''">template_name = #{templateName},</if>
+                <if test="functionAuthor != null and functionAuthor != ''">function_author = #{functionAuthor},</if>
+                <if test="functionAuthorEmail != null and functionAuthorEmail != ''">function_author_email = #{functionAuthorEmail},</if>
+                <if test="workspacePath != null">workspace_path = #{workspacePath},</if>
+                <if test="moduleName != null and moduleName != ''">module_name = #{moduleName},</if>
+                <if test="packageName != null and packageName != ''">package_name = #{packageName},</if>
+                <if test="webWorkspacePath != null  and webWorkspacePath != ''">web_workspace_path = #{webWorkspacePath},</if>
+                <if test="templateDefault != null and templateDefault != ''">template_default = #{templateDefault},</if>
+                <if test="sort != null">sort = #{sort},</if>
+                <if test="status != null and status != ''">status = #{status},</if>
+                <if test="updateBy != null">update_by = #{updateBy},</if>
+                <if test="updateTime != null">update_time = #{updateTime},</if>
+                <if test="updateIp != null">update_ip = #{updateIp},</if>
+                <if test="remark != null">remark = #{remark},</if>
+                <if test="delFlag != null">del_flag = #{delFlag},</if>
+                version = version + 1
+            </set>
+        where id = #{id} and version = #{version}
+    </update>
+
+    <delete id="delete">
+        UPDATE gen_config_template SET
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteGenConfigTemplateByIds">
+        UPDATE gen_config_template SET
+        del_flag = '1'
+        WHERE id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

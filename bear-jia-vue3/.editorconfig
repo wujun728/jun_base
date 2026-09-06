@@ -1,0 +1,52 @@
+# EditorConfig 用于维护多个开发者之间的代码风格一致性
+# editorconfig.org
+
+# 表示这是最顶层的 EditorConfig 配置文件
+root = true
+
+# 所有文件的通用配置
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+# JavaScript 和 Vue 文件
+[*.{js,jsx,vue}]
+indent_size = 2
+max_line_length = 100
+
+# JSON 文件
+[*.json]
+indent_size = 2
+
+# YAML 文件
+[*.{yml,yaml}]
+indent_size = 2
+
+# HTML 文件
+[*.html]
+indent_size = 2
+
+# CSS、LESS、SCSS 文件
+[*.{css,less,scss}]
+indent_size = 2
+
+# Markdown 文件
+[*.md]
+trim_trailing_whitespace = false
+max_line_length = off
+
+# package.json 特殊处理
+[package.json]
+indent_size = 2
+
+# Makefile 必须使用 tab
+[Makefile]
+indent_style = tab
+
+# Windows 批处理文件
+[*.{cmd,bat}]
+end_of_line = crlf

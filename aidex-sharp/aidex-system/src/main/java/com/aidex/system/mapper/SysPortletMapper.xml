@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aidex.system.mapper.SysPortletMapper">
+
+    <sql id="sysPortletColumns">
+        name as "name",
+        code as "code",
+        url as "url",
+        refresh_rate as "refreshRate",
+        show_title as "showTitle",
+        is_allow_drag as "isAllowDrag",
+        x_grid_number as "xGridNumber",
+        y_grid_number as "yGridNumber",
+        sort as "sort",
+        status as "status",
+        remark as "remark",
+        id as "id",
+        create_by as "createBy",
+        create_dept as "createDept",
+        create_time as "createTime",
+        update_by as "updateBy",
+        update_time as "updateTime",
+        update_ip as "updateIp",
+        version as "version",
+        del_flag as "delFlag"
+    </sql>
+
+    <sql id="sysPortletJoins">
+    </sql>
+
+    <select id="get" resultType="SysPortlet">
+        SELECT
+            <include refid="sysPortletColumns"/>
+        FROM sys_portlet a
+        <include refid="sysPortletJoins"/>
+        WHERE a.id = #{id}
+    </select>
+
+    <select id="findList" resultType="SysPortlet">
+        SELECT
+            <include refid="sysPortletColumns"/>
+        FROM sys_portlet a
+        <include refid="sysPortletJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="name != null and name != ''">
+                and a.name like concat('%', #{name}, '%')
+            </if>
+            <if test="code != null and code != ''">
+                and a.code like concat('%', #{code}, '%')
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderByColumn != null and page.orderByColumn != ''">
+                ORDER BY ${page.orderByColumn}
+            </when>
+            <otherwise>
+                ORDER BY a.sort
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findListWithUnique" resultType="SysPortlet">
+        SELECT
+            a.id
+        FROM sys_portlet a
+        <include refid="sysPortletJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="notEqualId != null and notEqualId != ''">
+                AND id != #{notEqualId}
+            </if>
+            <if test="code != null and code != ''">
+                and code = #{code}
+            </if>
+        </where>
+    </select>
+
+    <select id="findMaxSort" resultType="integer">
+        SELECT
+            max(a.sort)
+        FROM sys_portlet a
+        WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+    </select>
+
+    <insert id="insert">
+        INSERT INTO sys_portlet(
+            name,
+            code,
+            url,
+            refresh_rate,
+            show_title,
+            is_allow_drag,
+            x_grid_number,
+            y_grid_number,
+            sort,
+            status,
+            remark,
+            id,
+            create_by,
+            create_dept,
+            create_time,
+            update_by,
+            update_time,
+            update_ip,
+            version,
+            del_flag
+        ) VALUES (
+            #{name},
+            #{code},
+            #{url},
+            #{refreshRate},
+            #{showTitle},
+            #{isAllowDrag},
+            #{xGridNumber},
+            #{yGridNumber},
+            #{sort},
+            #{status},
+            #{remark},
+            #{id},
+            #{createBy},
+            #{createDept},
+            #{createTime},
+            #{updateBy},
+            #{updateTime},
+            #{updateIp},
+            #{version},
+            #{delFlag}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE sys_portlet SET
+            name = #{name},
+            code = #{code},
+            url = #{url},
+            refresh_rate = #{refreshRate},
+            show_title = #{showTitle},
+            is_allow_drag = #{isAllowDrag},
+            x_grid_number = #{xGridNumber},
+            y_grid_number = #{yGridNumber},
+            sort = #{sort},
+            status = #{status},
+            remark = #{remark},
+            update_by = #{updateBy},
+            update_time = #{updateTime},
+            update_ip = #{updateIp},
+            version = version + 1
+        WHERE id = #{id} and version = #{version}
+    </update>
+
+    <update id="delete">
+        UPDATE sys_portlet SET
+            del_flag = #{DEL_FLAG_DELETE}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteSysPortletByIds">
+        UPDATE sys_portlet SET
+            del_flag = '1'
+        WHERE id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="findListByRoleId" resultType="SysPortlet">
+        SELECT
+        name as "name",
+        code as "code",
+        id as "id",
+        version as "version",
+        m.role_id as "roleId",
+        m.menu_id as "menuId"
+        from sys_portlet a
+        LEFT JOIN sys_role_menu m ON a.id = m.menu_id
+        AND role_id = #{roleId}
+        WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+        <choose>
+            <when test="page !=null and page.orderByColumn != null and page.orderByColumn != ''">
+                ORDER BY ${page.orderByColumn}
+            </when>
+            <otherwise>
+                ORDER BY a.sort
+            </otherwise>
+        </choose>
+    </select>
+    <select id="getPortletListByRoleId" resultType="SysPortlet">
+        SELECT
+        <include refid="sysPortletColumns"/>
+        from sys_portlet a
+        LEFT JOIN sys_role_menu m ON a.id = m.menu_id
+        WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+        AND role_id = #{roleId}
+        <choose>
+            <when test="page !=null and page.orderByColumn != null and page.orderByColumn != ''">
+                ORDER BY ${page.orderByColumn}
+            </when>
+            <otherwise>
+                ORDER BY a.sort
+            </otherwise>
+        </choose>
+    </select>
+    <select id="getPortletListByUserId" resultType="SysPortlet">
+        SELECT
+        DISTINCT
+        <include refid="sysPortletColumns"/>
+        FROM
+        sys_role_menu m
+        LEFT JOIN sys_portlet a ON m.menu_id = a.id
+        WHERE
+        a.del_flag = #{DEL_FLAG_NORMAL}
+        AND EXISTS (
+        SELECT
+        1
+        FROM
+        sys_user_role r
+        WHERE
+        r.user_id = #{userId}
+        )
+        <choose>
+            <when test="page !=null and page.orderByColumn != null and page.orderByColumn != ''">
+                ORDER BY ${page.orderByColumn}
+            </when>
+            <otherwise>
+                ORDER BY a.sort
+            </otherwise>
+        </choose>
+    </select>
+</mapper>

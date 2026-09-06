@@ -1,0 +1,81 @@
+package ${packageName}.mapper;
+
+import ${packageName}.domain.${ClassName};
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import java.util.List;
+/**
+ * ${functionName}Mapper接口
+ * @author ${functionAuthor}
+ * @email ${functionAuthorEmail}
+ * @date ${datetime}
+ */
+public interface ${ClassName}Mapper extends BaseMapper<${ClassName}>
+{
+
+
+    /**
+     * 查询数据列表，如果需要分页，请设置分页对象
+     * @param entity
+     * @return
+     */
+    public List<${ClassName}> findArr(${ClassName} entity);
+
+    /**
+     * 查询数据列表，如果需要分页，请设置分页对象
+     * @param entity
+     * @return
+     */
+    public List<${ClassName}> findListWithUnique(${ClassName} entity);
+
+
+    /**
+     * 插入数据
+     * @param entity
+     * @return
+     */
+    public int add(${ClassName} entity);
+
+    /**
+     * 更新数据
+     * @param entity
+     * @return
+     */
+    public int edit(${ClassName} entity);
+
+    /**
+     * 删除数据（一般为逻辑删除，更新del_flag字段为1）
+     * @param entity
+     * @return
+     */
+    public int rem(${ClassName} entity);
+
+
+#if($hasDisableEnable)
+    /**
+     * 更新${functionName}状态
+     * @param ${className} ${functionName}
+     * @return 结果
+     */
+    public int updateStatus(${ClassName} ${className});
+#end
+
+    /**
+     * 批量删除${functionName}
+     * @param ids 需要删除的${functionName}ID集合
+     * @return
+     */
+    public int delete${ClassName}ByIds(String[] ids);
+
+#foreach($column in $columns)
+#if($column.columnName == "sort")
+    /**
+     * 获取最大编号
+     * @param ${className} ${functionName}
+     * @return 结果
+     */
+    public Integer findMaxSort(${ClassName} ${className});
+#break
+#end
+#end
+
+}

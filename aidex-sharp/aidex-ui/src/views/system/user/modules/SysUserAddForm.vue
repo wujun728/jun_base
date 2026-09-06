@@ -1,0 +1,140 @@
+<template>
+  <!-- 增加修改 -->
+  <ant-modal
+    :visible="open"
+    :modal-title="formTitle"
+    :adjust-size="true"
+    modalHeight="480"
+    modalWidth="640"
+    @cancel="cancel"
+  >
+    <a-form-model ref="form" :model="form" :rules="rules" slot="content" layout="vertical">
+      <a-row class="form-row" :gutter="32">
+        <a-col :lg="12" :md="12" :sm="24">
+          <a-form-model-item label="姓名" prop="name">
+            <a-input v-model="form.name" placeholder="请输入" />
+          </a-form-model-item>
+        </a-col>
+        <a-col :lg="12" :md="12" :sm="24">
+          <a-form-model-item label="用户编号" prop="no">
+            <a-input v-model="form.no" placeholder="请输入" />
+          </a-form-model-item>
+        </a-col>
+
+        <a-col :lg="12" :md="12" :sm="24">
+          <a-form-model-item label="登录名" prop="userName" v-if="form.id == undefined">
+            <a-input v-model="form.userName" placeholder="请输入" />
+          </a-form-model-item>
+        </a-col>
+        <a-col :lg="12" :md="12" :sm="24">
+          <a-form-model-item label="所属部门" prop="deptId">
+            <select-dept
+              v-model="form.deptId"
+              select-model="single"
+            />
+          </a-form-model-item>
+        </a-col>
+        <a-col :lg="12" :md="12" :sm="24">
+          <a-form-model-item label="岗位" prop="postIds">
+            <a-select
+              mode="multiple"
+              v-model="form.postIds"
+              placeholder="请选择"
+              option-filter-prop="children">
+              <a-select-option v-for="(d, index) in postOptions" :key="index" :value="d.id">
+                {{ d.postName }}
+              </a-select-option>
+            </a-select>
+          </a-form-model-item>
+        </a-col>
+        <a-col :lg="12" :md="12" :sm="24">
+          <a-form-model-item label="前后台" prop="userType">
+            <a-radio-group v-model="form.userType" button-style="solid">
+              <a-radio-button v-for="(d, index) in userTypeOptions" :key="index" :value="d.dictValue">{{
+                d.dictLabel
+              }}</a-radio-button>
+            </a-radio-group>
+          </a-form-model-item>
+        </a-col>
+        <a-col :lg="12" :md="12" :sm="24">
+          <a-form-model-item label="角色" prop="roleIds">
+            <a-select mode="multiple" v-model="form.roleIds" placeholder="请选择" option-filter-prop="children">
+              <a-select-option v-for="(d, index) in roleOptions" :key="index" :value="d.id">
+                {{ d.roleName }}
+              </a-select-option>
+            </a-select>
+          </a-form-model-item>
+        </a-col>
+      </a-row>
+      <a-collapse :bordered="false" expandIconPosition="left">
+        <template #expandIcon="props">
+          <a-icon type="caret-right" :rotate="props.isActive ? 90 : 0" />
+        </template>
+        <a-collapse-panel key="1" header="填写更多信息（可选)" :style="customStyle">
+          <a-row gutter="32">
+            <a-col :lg="12" :md="12" :sm="24">
+              <a-form-model-item label="手机号" prop="phonenumber">
+                <a-input v-model="form.phonenumber" placeholder="请输入" />
+              </a-form-model-item>
+            </a-col>
+            <a-col :lg="12" :md="12" :sm="24">
+              <a-form-model-item label="排序号" prop="sort">
+                <a-input v-model="form.sort" placeholder="请输入" />
+              </a-form-model-item>
+            </a-col>
+
+            <a-col :lg="12" :md="12" :sm="24">
+              <a-form-model-item label="邮箱地址" prop="email">
+                <a-input v-model="form.email" placeholder="请输入" />
+              </a-form-model-item>
+            </a-col>
+            <a-col :lg="12" :md="12" :sm="24">
+              <a-form-model-item label="状态" prop="status">
+                <a-radio-group v-model="form.status" button-style="solid">
+                  <a-radio-button v-for="(d, index) in statusOptions" :key="index" :value="d.dictValue">{{
+                    d.dictLabel
+                  }}</a-radio-button>
+                </a-radio-group>
+              </a-form-model-item>
+            </a-col>
+
+            <a-col :lg="12" :md="12" :sm="24">
+              <a-form-model-item label="性别" prop="sex">
+                <a-radio-group v-model="form.sex" button-style="solid">
+                  <a-radio-button v-for="(d, index) in sexOptions" :key="index" :value="d.dictValue">{{
+                    d.dictLabel
+                  }}</a-radio-button>
+                </a-radio-group>
+              </a-form-model-item>
+            </a-col>
+            <a-col :lg="12" :md="12" :sm="24">
+              <a-form-model-item label="密码" prop="password">
+                <a-input-password v-model="form.password" placeholder="请输入" />
+              </a-form-model-item>
+            </a-col>
+            <a-col :lg="24" :md="24" :sm="24" :span="24">
+              <a-form-model-item label="备注" prop="remark">
+                <a-input v-model="form.remark" placeholder="请输入" type="textarea" allow-clear />
+              </a-form-model-item>
+            </a-col>
+          </a-row>
+        </a-collapse-panel>
+      </a-collapse>
+    </a-form-model>
+    <template slot="footer">
+      <a-button type="primary" @click="submitForm">
+        保存
+      </a-button>
+      <a-button @click="cancel">
+        取消
+      </a-button>
+    </template>
+  </ant-modal>
+</template>
+<script>
+import sysUserForm from './SysUserForm'
+export default {
+        ...sysUserForm
+    }
+</script>
+<style></style>

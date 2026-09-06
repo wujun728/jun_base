@@ -1,0 +1,36 @@
+@use 'sass:map';
+@use 'mixins.scss' as *;
+
+// Background
+$bg-color: () !default;
+$bg-color: map.merge(
+  (
+    '': #2d2d2d,
+    'overlay': #1a1a1a,
+  ),
+  $bg-color
+);
+
+// Border
+$border-color: () !default;
+$border-color: map.merge(
+  (
+    '': #2d2d2d,
+  ),
+  $border-color
+);
+
+$a: () !default;
+$a: map.merge(
+  (
+    'checkbox-icon': '#1a1a1a',
+    'button-text-hover': '#ffffff',
+  ),
+  $a
+);
+
+html.dark {
+  @include set-component-css-var('bg-color', $bg-color);
+  @include set-component-css-var('border-color', $border-color);
+  @include set-component-css-var('a', $a);
+}

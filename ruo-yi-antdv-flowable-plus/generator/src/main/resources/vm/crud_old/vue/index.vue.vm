@@ -1,0 +1,601 @@
+#set( $querySize = $!{queryColumns.size()})
+<template>
+  <div>
+#if($querySize > 0)
+    <a-card :bordered="false" style="margin-bottom: 10px;">
+      <!-- 条件搜索 -->
+      <div class="table-page-search-wrapper">
+        <a-form :labelCol="labelCol" :wrapperCol="wrapperCol" ref="queryForm">
+          <a-row :gutter="32">
+#foreach($column in $queryColumns)
+#set($dictType=$column.dictType)
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#if($column.htmlType == "input")
+            <a-col :span="6" #if($velocityCount > 3 )v-if="advanced"#end>
+              <a-form-item label="${comment}">
+                <a-input v-model="queryParam.${column.javaField}" placeholder="请输入${comment}" allow-clear @keyup.enter.native="handleQuery"/>
+              </a-form-item>
+            </a-col>
+#elseif(($column.htmlType == "number"))
+            <a-col :span="6" #if($velocityCount > 3 )v-if="advanced"#end>
+              <a-form-item label="${comment}">
+                <a-input-number v-model="queryParam.${column.javaField}" :min="0" style="width: 100%"/>
+              </a-form-item>
+            </a-col>
+#elseif(($column.htmlType == "datetime"))
+#if($column.queryType == 'GTE' || $column.queryType == 'GT' || $column.queryType == 'EQ')
+        <a-col :span="6" #if($velocityCount > 3 )v-if="advanced"#end>
+              <a-form-item label="${comment}#if($column.queryType != 'EQ')开始#end">
+                <a-date-picker
+                  v-model="queryParam.begin${AttrName}"
+                  valueFormat="YYYY-MM-DD"
+                  :show-today="true"
+                  placeholder="选择日期"
+                />
+              </a-form-item>
+            </a-col>
+#elseif($column.queryType == 'LTE' ||  $column.queryType == 'LT')
+            <a-col :span="6" #if($velocityCount > 3 )v-if="advanced"#end>
+              <a-form-item label="${comment}#if($column.queryType != 'EQ')结束#end">
+                <a-date-picker
+                  v-model="queryParam.end${AttrName}"
+                  valueFormat="YYYY-MM-DD"
+                  :show-today="true"
+                  placeholder="选择日期"
+                />
+              </a-form-item>
+            </a-col>
+#elseif($column.queryType == 'BETWEEN')
+            <a-col :span="6" #if($velocityCount > 3 )v-if="advanced"#end>
+              <a-form-item label="${comment}">
+                <a-range-picker style="width: 100%" v-model="dateRange${AttrName}" valueFormat="YYYY-MM-DD" format="YYYY-MM-DD" allow-clear />
+              </a-form-item>
+            </a-col>
+#end
+#elseif(($column.htmlType == "time"))
+#if($column.queryType == 'GTE' || $column.queryType == 'GT' || $column.queryType == 'EQ' )
+            <a-col :span="6" #if($velocityCount > 3 )v-if="advanced"#end>
+              <a-form-item label="${comment}#if($column.queryType != 'EQ')开始#end">
+                <a-date-picker
+                  v-model="queryParam.begin${AttrName}"
+                  valueFormat="YYYY-MM-DD"
+                  :show-today="true"
+                  placeholder="选择日期"
+                />
+              </a-form-item>
+            </a-col>
+#elseif($column.queryType == 'LTE' ||  $column.queryType == 'LT')
+            <a-col :span="6" #if($velocityCount > 3 )v-if="advanced"#end>
+              <a-form-item label="${comment}#if($column.queryType != 'EQ')结束#end">
+                <a-date-picker
+                  v-model="queryParam.end${AttrName}"
+                  valueFormat="YYYY-MM-DD"
+                  :show-today="true"
+                  :show-today="true"
+                  placeholder="选择日期"
+                />
+              </a-form-item>
+            </a-col>
+#elseif($column.queryType == 'BETWEEN')
+            <a-col :span="6" #if($velocityCount > 3 )v-if="advanced"#end>
+              <a-form-item label="${comment}">
+                <a-range-picker style="width: 100%" v-model="dateRange${AttrName}" valueFormat="YYYY-MM-DD" format="YYYY-MM-DD" allow-clear />
+              </a-form-item>
+            </a-col>
+#end
+#elseif(($column.htmlType == "select") && "" != $dictType)
+            <a-col :span="6" #if($velocityCount > 3 )v-if="advanced"#end>
+              <a-form-item label="${comment}" prop="${column.javaField}">
+                <a-select placeholder="请选择${comment}" v-model="queryParam.${column.javaField}" style="width: 100%" allow-clear>
+                  <a-select-option v-for="(d, index) in ${column.javaField}Options" :key="index" :value="d.dictValue">{{ d.dictLabel }}</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+#elseif(($column.htmlType == "selectMultiple") && "" != $dictType)
+            <a-col :span="6" #if($velocityCount > 3 )v-if="advanced"#end>
+              <a-form-item label="${comment}" prop="${column.javaField}">
+                <a-select placeholder="请选择${comment}" v-model="queryParam.${column.javaField}" style="width: 100%" mode="multiple" allow-clear>
+                  <a-select-option v-for="(dict, index) in ${column.javaField}Options" :key="index" :value="dict.dictValue">{{ dict.dictLabel }}</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+#elseif(($column.htmlType == "radio") && "" != $dictType)
+            <a-col :span="6" #if($velocityCount > 3 )v-if="advanced"#end>
+              <a-form-item label="${comment}" prop="${column.javaField}">
+                <a-radio-group v-model="queryParam.${column.javaField}" button-style="solid">
+                  <a-radio-button
+                    v-for="(dict, index) in ${column.javaField}Options"
+                    :key="index"
+                    :value="dict.dictValue"
+                  >
+                    {{ dict.dictLabel }}
+                  </a-radio-button>
+                </a-radio-group>
+              </a-form-item>
+            </a-col>
+#elseif(($column.htmlType == "checkbox") && "" != $dictType)
+    ##暂未实现
+#end
+#end
+#if($queryColumns.size() > 0)
+#if($queryColumns.size() <= 3)
+            <a-col>
+              <span class="table-page-search-submitButtons" style="float: right;">
+                <a-button type="primary" @click="handleQuery"><a-icon type="search" />查询</a-button>
+                <a-button style="margin-left: 8px" @click="resetQuery"><a-icon type="redo" />重置</a-button>
+              </span>
+            </a-col>
+#elseif($queryColumns.size() > 3)
+            <a-col>
+              <span class="table-page-search-submitButtons" style="float: right;">
+                <a-button type="primary" @click="handleQuery"><a-icon type="search" />查询</a-button>
+                <a-button style="margin-left: 8px" @click="resetQuery"><a-icon type="redo" />重置</a-button>
+                <a @click="toggleAdvanced" style="margin-left: 8px">
+                  {{ advanced ? '收起' : '展开' }}
+                  <a-icon :type="advanced ? 'up' : 'down'"/>
+                </a>
+              </span>
+            </a-col>
+#end
+#end
+          </a-row>
+        </a-form>
+      </div>
+    </a-card>
+#end
+    <a-card :bordered="false" #if(${isSub} != 'true')class="table-card"#end>
+      <!-- 增加 -->
+      <${tableNameUnderline}-add-form
+        v-if="showAddModal"
+        ref="${businessName}AddForm"
+#foreach ($column in $columns)
+#if(${column.dictType} != '')
+        :${column.javaField}Options="${column.javaField}Options"
+#end
+#end
+#if(${isSub} == 'true')
+        :${subTableFkNameUnCap}="${subTableFkNameUnCap}"
+#end
+        @ok="getList"
+        @close="showAddModal = false"
+      />
+      <!-- 编辑 -->
+      <${tableNameUnderline}-edit-form
+        v-if="showEditModal"
+        ref="${businessName}EditForm"
+#foreach ($column in $columns)
+#if(${column.dictType} != '')
+        :${column.javaField}Options="${column.javaField}Options"
+#end
+#end
+#if(${isSub} == 'true')
+        :${subTableFkNameUnCap}="${subTableFkNameUnCap}"
+#end
+        @ok="getList"
+        @close="showEditModal = false"
+      />
+#if(${isSub} == 'true')
+    <div class="table-operations">
+        <a-button type="primary" @click="handleAdd" v-hasPermi="['${moduleName}:${businessName}:add']">
+            <a-icon type="plus" />新增
+        </a-button>
+        <a-button type="" @click="handleExport" v-hasPermi="['${moduleName}:${businessName}:export']">
+            <a-icon type="download" />导出
+        </a-button>
+        <a-button type="danger" v-if="!multiple" :disabled="multiple" @click="handleDelete" v-hasPermi="['${moduleName}:${businessName}:remove']">
+            <a-icon type="delete" />删除
+        </a-button>
+        <a-tooltip title="刷新">
+            <a-icon @click="getList" class="action" :type="loading ? 'loading' : 'reload'" />
+        </a-tooltip>
+    </div>
+    <a-table
+     :pagination="false"
+#else
+      <advance-table
+        title="${functionName}"
+        :pagination="{
+          current: queryParam.pageNum,
+          pageSize: queryParam.pageSize,
+          total: total,
+          showSizeChanger: true,
+          showLessItems: true,
+          showQuickJumper: true,
+          showTotal: (total, range) => `第 ${range[0]}-${range[1]} 条，总计 ${total} 条`,
+          onChange: changeSize,
+          onShowSizeChange: onShowSizeChange
+        }"
+        tableKey="base-${businessName}-index-table"
+        rowKey="id"
+        size="middle"
+        @refresh="getList"
+        :columns="columns"
+        :data-source="${businessName}List"
+        :loading="loading"
+        :format-conditions="true"
+        :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+      >
+#end
+#if(${isSub} != 'true')
+        <div class="table-operations" slot="button">
+          <a-button type="primary" @click="handleAdd" v-hasPermi="['${moduleName}:${businessName}:add']">
+            <a-icon type="plus" />新增
+          </a-button>
+          <a-button type="" @click="handleExport" v-hasPermi="['${moduleName}:${businessName}:export']">
+            <a-icon type="download" />导出
+          </a-button>
+          <a-button type="danger" v-if="!multiple" :disabled="multiple" @click="handleDelete" v-hasPermi="['${moduleName}:${businessName}:remove']">
+            <a-icon type="delete" />删除
+          </a-button>
+        </div>
+#end
+#if(${hasSubParam} == 'true')
+    <span
+        slot="expandedRowRender"
+        slot-scope="{ record}"
+    >
+        <${subComponentName}-index
+                ref="${subTableJavaNameCap}Index"
+                title="子表"
+                :${subTableFkNameUnCap}="record.id"
+        />
+    </span>
+#end
+##页面通用代码转换
+#foreach ($column in $columns)
+#if(${column.dictType} != '' && ( ${column.javaField} != 'status' || (${column.javaField} == 'status' && ${hasDisableEnable} == 'false')))
+        <span slot="${column.javaField}" #if(${isSub} == 'true')slot-scope="record"#else slot-scope="{record}"#end>
+          {{ ${column.javaField}Format(record) }}
+        </span>
+#end
+#if(${column.javaField} == 'status' && ${hasDisableEnable} == 'true')
+        <span slot="status" slot-scope="{text, record}">
+          <a-popconfirm
+            ok-text="是"
+            cancel-text="否"
+            @confirm="confirmHandleStatus(record)"
+            @cancel="cancelHandleStatus(record)"
+          >
+            <span slot="title">确认更新${column.columnComment}为<b>{{ record.status === '1' ? '启用' : '停用' }}</b>吗?</span>
+            <a-switch checked-children="正常" un-checked-children="停用" :checked="record.status == 0" />
+          </a-popconfirm>
+        </span>
+#end
+#end
+        <span slot="operation" #if(${isSub} == 'true')slot-scope="text, record"#else slot-scope="{text, record}"#end>
+          <a @click="handleUpdate(record)" v-hasPermi="['${moduleName}:${businessName}:edit']">
+            修改
+          </a>
+          <a-divider type="vertical" v-hasPermi="['${moduleName}:${businessName}:remove']"/>
+          <a @click="handleDelete(record)" v-hasPermi="['${moduleName}:${businessName}:remove']">
+            删除
+          </a>
+        </span>
+#if(${isSub} == 'true')
+        </a-table>
+#else
+      </advance-table>
+#end
+    </a-card>
+  </div>
+</template>
+<script>
+import { list${BusinessName}, del${BusinessName}, export${BusinessName}#if(${hasDisableEnable} == 'true'), updateStatus#end } from '@/api/${moduleName}/${businessName}'
+import AdvanceTable from '@/components/pt/table/AdvanceTable'
+import ${BusinessName}AddForm from '@/views/${moduleName}/${businessNameLowerCase}/modules/${BusinessName}AddForm'
+import ${BusinessName}EditForm from '@/views/${moduleName}/${businessNameLowerCase}/modules/${BusinessName}EditForm'
+#if(${hasSubParam} == 'true')
+import ${subTableJavaNameCap}Index from '@/views/${moduleName}/${businessNameLowerCase}/${subTableJavaNameCap}Index'
+#end
+export default {
+  name: '${BusinessName}',
+#if(${isSub} == 'true')
+    props: {
+        ${subTableFkNameUnCap}: {
+            type: String,
+            required: true
+        },
+        title: {
+            type: String,
+            default: '子表'
+        }
+    },
+#end
+  components: {
+    AdvanceTable,
+#if(${hasSubParam} == 'true')
+	${subTableJavaNameCap}Index
+#end
+    ${BusinessName}AddForm,
+    ${BusinessName}EditForm
+  },
+  data () {
+    return {
+      showAddModal: false,
+      showEditModal: false,
+      // 遮罩层
+      loading: true,
+      // 选中数组
+      ids: [],
+      // 选中的主键集合
+      selectedRowKeys: [],
+      // 选中的数据集合
+      selectedRows: [],
+      // 高级搜索 展开/关闭
+      advanced: false,
+      // 非单个禁用
+      single: true,
+      // 非多个禁用
+      multiple: true,
+      // 总条数
+      total: 0,
+      // label的百分比
+      labelCol: { span: 6 },
+      // 内容区域的百分比
+      wrapperCol: { span: 18 },
+      // ${functionName}表格数据
+      ${businessName}List: [],
+#foreach ($column in $columns)
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#if(${column.dictType} != '')
+      // $comment字典
+      ${column.javaField}Options: [],
+#elseif(($column.htmlType == "datetime" || $column.htmlType == "time") && $column.queryType == "BETWEEN")
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+      // $comment时间范围
+      dateRange${AttrName}: [],
+#end
+#end
+      // 查询参数
+      queryParam: {
+        pageNum: 1,
+        pageSize: 10,
+#foreach ($column in $queryColumns)
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#if(($column.htmlType == "datetime" || $column.htmlType == "time") && ($column.queryType == 'GTE' || $column.queryType == 'GT' || $column.queryType == 'EQ'))
+        begin$AttrName: undefined#if($foreach.hasNext),#end
+#elseif(($column.htmlType == "datetime" || $column.htmlType == "time") && ($column.queryType == 'GTE' || $column.queryType == 'GT' || $column.queryType == 'EQ'))
+          end$AttrName: undefined#if($foreach.hasNext),#end
+#elseif(($column.htmlType == "datetime" || $column.htmlType == "time") && ($column.queryType == 'BETWEEN'))
+        begin$AttrName: undefined,
+        end$AttrName: undefined#if($foreach.hasNext),#end
+#else
+        $column.javaField: undefined#if($foreach.hasNext),#end
+#end
+
+#end
+      },
+      columns: [
+#foreach ($column in $columns)
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#if($column.isList == '1')
+        {
+          title: '$comment',
+          dataIndex: '$column.javaField',
+#if(${column.dictType} != '')
+          scopedSlots: { customRender: '$column.javaField' },
+#end
+#if($column.htmlType == "input" || $column.htmlType == "textarea")
+          ellipsis: true,
+#end
+#if($column.alignType != "")
+          align: '$column.alignType',
+#end
+          width: '10%'
+        },
+#end
+#end
+        {
+          title: '操作',
+          dataIndex: 'operation',
+          align: 'center',
+          width: '10%',
+          scopedSlots: { customRender: 'operation' }
+        }
+      ]
+    }
+  },
+  created () {
+    this.getList()
+#foreach ($column in $columns)
+#if(${column.dictType} != '')
+    this.getDicts('${column.dictType}').then(response => {
+      this.${column.javaField}Options = response.data
+    })
+#end
+#end
+  },
+  methods: {
+    /** 查询${functionName}列表 */
+    getList () {
+      this.loading = true
+#if(${isSub} == 'true')
+      this.queryParam.${subTableFkNameUnCap} = this.${subTableFkNameUnCap}
+#end
+#foreach ($column in $columns)
+#if(($column.htmlType == "datetime" || $column.htmlType == "time") && $column.queryType == "BETWEEN")
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+      if (this.dateRange${AttrName} !== null && this.dateRange${AttrName} !== '') {
+        this.queryParam.begin${AttrName} = this.dateRange${AttrName}[0]
+        this.queryParam.end${AttrName} = this.dateRange${AttrName}[1]
+      }
+#end
+#end
+      list${BusinessName}(this.queryParam).then(response => {
+        this.${businessName}List = response.data.list
+        this.total = response.data.total
+        this.loading = false
+      })
+    },
+#if(${hasDisableEnable} == 'true')
+    /* 状态修改 */
+    confirmHandleStatus (row) {
+      const text = row.status === '1' ? '启用' : '停用'
+      const successText = text + '成功'
+      const failText = text + '发生异常'
+      row.status = row.status === '0' ? '1' : '0'
+      updateStatus(row.id, row.status).then(() => {
+        this.$message.success(
+           successText,
+           3
+         )
+		}).catch(function () {
+           this.$message.error(
+           failText,
+           3
+        )
+      })
+    },
+    cancelHandleStatus (row) {
+    },
+#end
+#foreach ($column in $columns)
+#if(${column.dictType} != '')
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+    // $comment字典翻译
+    ${column.javaField}Format (row) {
+        if (row.${column.javaField}) {
+            return this.selectDictLabel#if($column.htmlType == "selectMultiple" || $column.htmlType == "checkbox")s#end(this.${column.javaField}Options, row.${column.javaField})
+        } else {
+            return ''
+        }
+    },
+#end
+#end
+    /** 搜索按钮操作 */
+    handleQuery () {
+      this.queryParam.pageNum = 1
+      this.getList()
+    },
+    /** 重置按钮操作 */
+    resetQuery () {
+#foreach ($column in $columns)
+#if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+      this.dateRange${AttrName} = []
+#end
+#end
+      this.queryParam = {
+        pageNum: 1,
+        pageSize: 10,
+#foreach ($column in $queryColumns)
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#if(($column.htmlType == "datetime" || $column.htmlType == "time") && ($column.queryType == 'GTE' || $column.queryType == 'GT' || $column.queryType == 'EQ'))
+        begin$AttrName: undefined#if($foreach.hasNext),#end
+#elseif(($column.htmlType == "datetime" || $column.htmlType == "time") && ($column.queryType == 'GTE' || $column.queryType == 'GT' || $column.queryType == 'EQ'))
+          end$AttrName: undefined#if($foreach.hasNext),#end
+#elseif(($column.htmlType == "datetime" || $column.htmlType == "time") && ($column.queryType == 'BETWEEN'))
+        begin$AttrName: undefined,
+        end$AttrName: undefined#if($foreach.hasNext),#end
+#else
+        $column.javaField: undefined#if($foreach.hasNext),#end
+#end
+
+#end
+      }
+      this.handleQuery()
+    },
+    /** 翻页操作 */
+    onShowSizeChange (current, pageSize) {
+      this.queryParam.pageSize = pageSize
+      this.getList()
+    },
+    /** 翻页操作 */
+    onSizeChange (current, size) {
+        this.queryParam.pageNum = 1
+        this.queryParam.pageSize = size
+        this.getList()
+    },
+    /** 翻页操作 */
+    changeSize (current, pageSize) {
+      this.queryParam.pageNum = current
+      this.queryParam.pageSize = pageSize
+      this.getList()
+    },
+    /** 翻页操作 */
+    onSelectChange (selectedRowKeys, selectedRows) {
+        this.selectedRowKeys = selectedRowKeys
+        this.selectedRows = selectedRows
+        this.ids = this.selectedRows.map(item => item.id)
+        this.single = selectedRowKeys.length !== 1
+        this.multiple = !selectedRowKeys.length
+    },
+    /** 查询折叠和展开操作 */
+    toggleAdvanced () {
+        this.advanced = !this.advanced
+    },
+    handleAdd () {
+          this.showAddModal = true
+          this.$nextTick(() => (
+                  this.$refs.${businessName}AddForm.handleAdd()
+          ))
+    },
+    handleUpdate (record, ids) {
+          this.showEditModal = true
+          this.$nextTick(() => (
+                  this.$refs.${businessName}EditForm.handleUpdate(record, ids)
+          ))
+    },
+    /** 删除按钮操作 */
+    handleDelete (row) {
+      var that = this
+      const ${businessName}Ids = row.id || this.ids
+      this.$confirm({
+        title: '确认删除所选中数据?',
+        onOk () {
+          return del${BusinessName}(${businessName}Ids)
+            .then(() => {
+              that.onSelectChange([], [])
+              that.getList()
+              that.$message.success(
+                '删除成功',
+                3
+              )
+          })
+        },
+        onCancel () {}
+      })
+    },
+    /** 导出按钮操作 */
+    handleExport () {
+      var that = this
+      this.$confirm({
+        title: '是否确认导出?',
+        content: '此操作将导出当前条件下所有数据而非选中数据',
+        onOk () {
+          return export${BusinessName}(that.queryParam)
+            .then(response => {
+              that.download(response.msg)
+              that.$message.success(
+                '导出成功',
+                3
+              )
+          })
+        },
+        onCancel () {}
+      })
+    }
+  }
+}
+</script>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aidex.system.mapper.SysPostMapper">
+
+	<sql id="postColumns">
+		a.id as "id",
+		a.post_code AS "postCode",
+		a.post_name AS "postName",
+		a.sort,
+		a.status AS "status",
+		a.create_by AS "createBy",
+		a.create_dept AS "createDept",
+		a.create_time AS "createTime",
+		a.update_by AS "updateBy",
+		a.update_time AS "updateTime",
+		a.update_ip AS "updateIp",
+		a.remark AS "remark",
+		a.version AS "version"
+	</sql>
+
+	<sql id="postJoins">
+
+    </sql>
+
+	<sql id="postOrderBy">
+		order by a.sort
+	</sql>
+
+	<select id="get" resultType="SysPost">
+		SELECT
+			<include refid="postColumns"/>
+		FROM sys_post a
+		<include refid="postJoins"/>
+		WHERE id =  #{id}
+	</select>
+
+	<select id="findList"  resultType="SysPost">
+		SELECT
+			<include refid="postColumns"/>
+		FROM sys_post a
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="postCode != null and postCode != ''">
+			AND post_code like concat(concat('%', #{postCode}),'%')
+		</if>
+		<if test="postName != null and postName != ''">
+			AND post_name like concat(concat('%', #{postName}),'%')
+		</if>
+		<if test="status != null and status != ''">
+			AND status = #{status}
+		</if>
+		<if test="notEqualId != null and notEqualId != ''">
+			AND id != #{notEqualId}
+		</if>
+		<include refid="postOrderBy"/>
+	</select>
+
+	<select id="findListWithUnique" resultType="SysPost">
+		SELECT
+			a.id
+		FROM sys_post a
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="postCode != null and postCode != ''">
+			AND post_code = #{postCode}
+		</if>
+		<if test="postName != null and postName != ''">
+			AND post_name = #{postName}
+		</if>
+		<if test="notEqualId != null and notEqualId != ''">
+			AND id != #{notEqualId}
+		</if>
+	</select>
+
+	<update id="update" >
+		update sys_post
+		<set>
+			post_code = #{postCode},
+			post_name = #{postName},
+			sort = #{sort},
+			status = #{status},
+			update_by = #{updateBy},
+			update_time = #{updateTime},
+			update_ip = #{updateIp},
+			remark = #{remark},
+			version = version + 1
+		</set>
+		where id = #{id} and version = #{version}
+	</update>
+
+	<insert id="insert">
+		insert into sys_post(
+			id,
+			post_code,
+			post_name,
+			sort,
+			status,
+			create_by,
+			create_dept,
+			create_time,
+			update_by,
+			update_time,
+			update_ip,
+			remark,
+			del_flag,
+			version
+		)values(
+			#{id},
+			#{postCode},
+			#{postName},
+			#{sort},
+			#{status},
+			#{createBy},
+			#{createDept},
+			#{createTime},
+			#{updateBy},
+			#{updateTime},
+			#{updateIp},
+			#{remark},
+			#{DEL_FLAG_NORMAL},
+			1
+		)
+	</insert>
+
+	<update id="delete" >
+		UPDATE sys_post SET
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+	<delete id="deletePostByIds">
+		UPDATE sys_post SET
+		del_flag = '1'
+		WHERE id in
+		<foreach collection="array" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</delete>
+
+	<select id="selectPostListByUserId" resultType="String">
+		select p.id
+        from sys_post p
+		left join sys_user_post up on up.post_id = p.id
+		left join sys_user u on u.id = up.user_id
+	    where u.id = #{userId}
+	</select>
+
+	<select id="selectPostsByUserName" resultType="SysPost">
+		select p.id, p.post_name as postName, p.post_code as postCode
+		from sys_post p
+		left join sys_user_post up on up.post_id = p.id
+		left join sys_user u on u.id = up.user_id
+		where u.user_name = #{userName}
+	</select>
+
+	<select id="findMaxSort" resultType="Integer">
+		SELECT max(a.sort)
+		FROM sys_post a
+		WHERE status = #{DEL_FLAG_NORMAL}
+	</select>
+
+</mapper> 

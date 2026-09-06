@@ -1,0 +1,296 @@
+/**
+ * 公共样式Mixins
+ * 用于减少代码重复，提高样式复用性
+ */
+
+// === 基础动画效果 ===
+
+// 通用hover动画效果
+.hover-lift-effect() {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// 侧滑hover效果
+.hover-slide-effect() {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateX(4px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// 通用缩放hover效果
+.hover-scale-effect(@scale: 1.02) {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: scale(@scale);
+  }
+}
+
+// === 抽屉组件公共样式 ===
+
+// 抽屉头部渐变背景
+.drawer-gradient-header() {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  
+  .ant-drawer-title {
+    color: white;
+  }
+  
+  .ant-drawer-close {
+    color: white;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+  }
+}
+
+// 抽屉内容样式
+.drawer-content-base() {
+  background-color: var(--drawer-bg);
+  color: var(--text-primary);
+}
+
+// === 卡片和列表项公共样式 ===
+
+// 基础卡片样式
+.base-card() {
+  background-color: var(--component-background);
+  border: 1px solid var(--border-color-base);
+  border-radius: 8px;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+// 列表项基础样式
+.base-list-item() {
+  .base-card();
+  margin: 8px 0;
+  padding: 12px 16px;
+  
+  .hover-slide-effect();
+}
+
+// === 按钮样式增强 ===
+
+// 操作按钮基础样式
+.action-button-base() {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  font-size: 13px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+// 操作按钮主题色（使用固定颜色值）
+.action-button-theme(@color, @bg-opacity: 10, @border-opacity: 30) {
+  color: @color !important;
+  background-color: rgba(red(@color), green(@color), blue(@color), @bg-opacity / 100) !important;
+  border-color: rgba(red(@color), green(@color), blue(@color), @border-opacity / 100) !important;
+  
+  &:hover {
+    color: #fff !important;
+    background-color: @color !important;
+    border-color: @color !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(red(@color), green(@color), blue(@color), 0.3);
+  }
+}
+
+// 主色按钮专用样式（处理CSS变量）
+.primary-button-theme() {
+  color: var(--primary-color) !important;
+  background-color: rgba(24, 144, 255, 0.1) !important;
+  border-color: rgba(24, 144, 255, 0.3) !important;
+  
+  &:hover {
+    color: #fff !important;
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
+  }
+}
+
+// 预定义按钮主题色
+.view-button-theme() {
+  .primary-button-theme();
+}
+
+.edit-button-theme() {
+  .action-button-theme(#52c41a);
+}
+
+.delete-button-theme() {
+  .action-button-theme(#ff4d4f);
+}
+
+.warning-button-theme() {
+  .action-button-theme(#faad14);
+}
+
+.info-button-theme() {
+  .action-button-theme(#13c2c2);
+}
+
+.custom-button-theme() {
+  .action-button-theme(#fa8c16);
+}
+
+// === 表单组件公共样式 ===
+
+// 输入框基础样式
+.input-base() {
+  background-color: var(--input-bg) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color-base) !important;
+  
+  &::placeholder {
+    color: var(--text-secondary) !important;
+    opacity: 0.65 !important;
+  }
+  
+  &:focus,
+  &:hover {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2) !important;
+    background-color: var(--input-bg) !important;
+  }
+}
+
+// === 菜单样式增强 ===
+
+// 菜单项基础样式
+.menu-item-base() {
+  border-radius: 8px !important;
+  margin: 2px 8px !important;
+  transition: all 0.3s ease !important;
+  
+  // 确保文字背景透明
+  span,
+  .ant-menu-title-content {
+    background: transparent !important;
+  }
+}
+
+// 菜单项hover效果
+.menu-item-hover() {
+  color: var(--primary-color) !important;
+  background: linear-gradient(135deg, rgba(24, 144, 255, 0.15), rgba(24, 144, 255, 0.1)) !important;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.2) !important;
+  transform: translateX(2px) !important;
+}
+
+// 菜单项激活效果
+.menu-item-active() {
+  background: linear-gradient(135deg, var(--primary-color), #40a9ff) !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.4) !important;
+  
+  .anticon {
+    color: #fff !important;
+  }
+  
+  &:hover {
+    background: linear-gradient(135deg, #40a9ff, var(--primary-color)) !important;
+    transform: translateX(2px) !important;
+    box-shadow: 0 6px 16px rgba(24, 144, 255, 0.5) !important;
+  }
+}
+
+// === 响应式设计辅助 ===
+
+// 响应式断点
+@screen-xs: 480px;
+@screen-sm: 768px;
+@screen-md: 992px;
+@screen-lg: 1200px;
+@screen-xl: 1600px;
+
+// 响应式媒体查询mixin
+.responsive(@screen) when (@screen = xs) {
+  @media (max-width: @screen-xs) {
+    .content();
+  }
+}
+
+.responsive(@screen) when (@screen = sm) {
+  @media (max-width: @screen-sm) {
+    .content();
+  }
+}
+
+.responsive(@screen) when (@screen = md) {
+  @media (max-width: @screen-md) {
+    .content();
+  }
+}
+
+.responsive(@screen) when (@screen = lg) {
+  @media (max-width: @screen-lg) {
+    .content();
+  }
+}
+
+.responsive(@screen) when (@screen = xl) {
+  @media (max-width: @screen-xl) {
+    .content();
+  }
+}
+
+// === 工具类 ===
+
+// 文字省略
+.text-ellipsis() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// 多行文字省略
+.text-ellipsis-multiline(@lines: 2) {
+  display: -webkit-box;
+  -webkit-line-clamp: @lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// 清除浮动
+.clearfix() {
+  &::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+// 绝对居中
+.absolute-center() {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+// Flex居中
+.flex-center() {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

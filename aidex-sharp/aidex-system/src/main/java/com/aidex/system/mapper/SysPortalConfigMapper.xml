@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aidex.system.mapper.SysPortalConfigMapper">
+
+    <sql id="sysPortalConfigColumns">
+        a.name as "name",
+        a.code as "code",
+        a.application_range as "applicationRange",
+        a.is_default as "isDefault",
+        a.resource_id as "resourceId",
+        a.system_defined_id as "systemDefinedId",
+        a.content as "content",
+        a.sort as "sort",
+        a.status as "status",
+        a.remark as "remark",
+        a.id as "id",
+        a.create_by as "createBy",
+        a.create_dept as "createDept",
+        a.create_time as "createTime",
+        a.update_by as "updateBy",
+        a.update_time as "updateTime",
+        a.update_ip as "updateIp",
+        a.version as "version",
+        a.del_flag as "delFlag"
+    </sql>
+    <sql id="sysPortalConfigBaseColumns">
+        a.name as "name",
+        a.code as "code",
+        a.application_range as "applicationRange",
+        a.is_default as "isDefault",
+        a.resource_id as "resourceId",
+        a.system_defined_id as "systemDefinedId",
+        a.sort as "sort",
+        a.status as "status",
+        a.content as "content",
+        a.id as "id"
+    </sql>
+    <sql id="sysPortalConfigJoins">
+    </sql>
+
+    <select id="get" resultType="SysPortalConfig">
+        SELECT
+        <include refid="sysPortalConfigColumns"/>
+        FROM sys_portal_config a
+        <include refid="sysPortalConfigJoins"/>
+        WHERE a.id = #{id}
+    </select>
+
+    <select id="findList" resultType="SysPortalConfig">
+        SELECT
+        <include refid="sysPortalConfigColumns"/>,
+        case when a.application_range = 'U' THEN
+        u.user_name
+        when a.application_range = 'R' THEN
+        r.role_name
+        end resourceName
+        FROM sys_portal_config a
+        <include refid="sysPortalConfigJoins"/>
+        left join sys_user u on a.resource_id = u.id
+        left join sys_role r on a.resource_id = r.id
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="name != null and name != ''">
+                and a.name like concat('%', #{name}, '%')
+            </if>
+            <if test="code != null and code != ''">
+                and a.code like concat('%', #{code}, '%')
+            </if>
+            <if test="applicationRange != null and applicationRange != ''">
+                AND a.application_range = #{applicationRange}
+            </if>
+            <if test="isDefault != null and isDefault != ''">
+                AND a.is_default = #{isDefault}
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderByColumn != null and page.orderByColumn != ''">
+                ORDER BY ${page.orderByColumn}
+            </when>
+            <otherwise>
+                ORDER BY a.sort
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findListWithUnique" resultType="SysPortalConfig">
+        SELECT
+        a.id
+        FROM sys_portal_config a
+        <include refid="sysPortalConfigJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="notEqualId != null and notEqualId != ''">
+                AND id != #{notEqualId}
+            </if>
+            <if test="code != null and code != ''">
+                and code = #{code}
+            </if>
+        </where>
+    </select>
+
+    <select id="findMaxSort" resultType="integer">
+        SELECT
+            max(a.sort)
+        FROM sys_portal_config a
+        WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+    </select>
+
+    <insert id="insert">
+        INSERT INTO sys_portal_config(
+            name,
+            code,
+            application_range,
+            is_default,
+            resource_id,
+            system_defined_id,
+            content,
+            sort,
+            status,
+            remark,
+            id,
+            create_by,
+            create_dept,
+            create_time,
+            update_by,
+            update_time,
+            update_ip,
+            version,
+            del_flag
+        ) VALUES (
+            #{name},
+            #{code},
+            #{applicationRange},
+            #{isDefault},
+            #{resourceId},
+            #{systemDefinedId},
+            #{content},
+            #{sort},
+            #{status},
+            #{remark},
+            #{id},
+            #{createBy},
+            #{createDept},
+            #{createTime},
+            #{updateBy},
+            #{updateTime},
+            #{updateIp},
+            #{version},
+            #{delFlag}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE sys_portal_config SET
+            name = #{name},
+            code = #{code},
+            application_range = #{applicationRange},
+            is_default = #{isDefault},
+            resource_id = #{resourceId},
+            system_defined_id = #{systemDefinedId},
+            content = #{content},
+            sort = #{sort},
+            status = #{status},
+            remark = #{remark},
+            update_by = #{updateBy},
+            update_time = #{updateTime},
+            update_ip = #{updateIp},
+            version = version + 1
+        WHERE id = #{id} and version = #{version}
+    </update>
+
+    <update id="delete">
+        UPDATE sys_portal_config SET
+            del_flag = #{DEL_FLAG_DELETE}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteSysPortalConfigByIds">
+        UPDATE sys_portal_config SET
+        del_flag = '1'
+        WHERE id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <select id="findUserConfigList" resultType="SysPortalConfig">
+        SELECT
+        <include refid="sysPortalConfigBaseColumns"/>
+        FROM
+        (
+        SELECT
+        *
+        FROM
+        sys_portal_config a
+        WHERE
+        a.del_flag = #{DEL_FLAG_NORMAL}
+        AND a.application_range = 'U'
+        AND a.resource_id = #{resourceId}
+        UNION ALL
+        SELECT
+        *
+        FROM
+        sys_portal_config a
+        WHERE
+        a.del_flag = #{DEL_FLAG_NORMAL}
+        AND a.application_range = 'S'
+        AND NOT EXISTS (
+        SELECT
+        1
+        FROM
+        sys_portal_config p
+        WHERE
+        p.del_flag = #{DEL_FLAG_NORMAL}
+        AND p.application_range = 'U'
+        AND p.resource_id = #{resourceId}
+        AND p. CODE = a. CODE
+        )
+        UNION ALL
+        SELECT
+        *
+        FROM
+        sys_portal_config a
+        WHERE
+        a.del_flag = #{DEL_FLAG_NORMAL}
+        AND a.application_range = 'R'
+        AND NOT EXISTS (
+        SELECT
+        1
+        FROM
+        sys_portal_config p
+        WHERE
+        p.del_flag = #{DEL_FLAG_NORMAL}
+        AND p.application_range = 'U'
+        AND p.resource_id = #{resourceId}
+        AND p. CODE = a. CODE
+        )
+        AND EXISTS (
+        SELECT
+        1
+        FROM
+        sys_user_role r
+        WHERE
+        r.role_id = a.resource_id
+        and r.user_id =  #{resourceId}
+        )
+        ) a
+        ORDER BY
+        a.create_time
+    </select>
+
+    <update id="updateNotDefaultByUser">
+        UPDATE sys_portal_config SET
+            is_default = 'N'
+        WHERE application_range = 'U' and resource_id = #{resourceId};
+         UPDATE sys_portal_config SET
+            is_default = 'Y'
+        WHERE id = #{id};
+    </update>
+
+    <select id="getPortalTemplateList" resultType="SysPortalConfig">
+        SELECT
+        <include refid="sysPortalConfigBaseColumns"/>
+        FROM
+        (
+        SELECT
+        *
+        FROM
+        sys_portal_config a
+        WHERE
+        a.del_flag = #{DEL_FLAG_NORMAL}
+        AND a.application_range = 'S'
+        union ALL
+        SELECT
+        *
+        FROM
+        sys_portal_config a
+        WHERE
+        a.del_flag = #{DEL_FLAG_NORMAL}
+        AND a.application_range = 'R'
+        AND EXISTS (
+        SELECT
+        1
+        FROM
+        sys_user_role r
+        WHERE
+        r.role_id = a.resource_id
+        AND r.user_id =#{resourceId}
+        )
+        ) a
+        ORDER BY
+        a.create_time
+    </select>
+</mapper>

@@ -1,0 +1,16 @@
+<svg width="150" height="120" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="100" height="80" rx="4" fill="#F0F2F5"/>
+  <!-- Top Bar (light version) -->
+  <rect x="0" y="0" width="100" height="20" fill="#FFFFFF" style="stroke:#E0E0E0; stroke-width:0.5;"/>
+  <!-- Top Bar Items (e.g., User avatar) -->
+  <rect x="80" y="8" width="12" height="4" rx="2" fill="#BDBDBD"/>
+  <!-- Sidebar -->
+  <rect x="0" y="20" width="30" height="60" fill="#2C3E50"/>
+  <!-- Sidebar Menu Items -->
+  <rect x="6" y="30" width="18" height="4" rx="2" fill="#FFFFFF"/>
+  <rect x="6" y="40" width="18" height="4" rx="2" fill="#FFFFFF"/>
+  <!-- Content Area -->
+  <rect x="35" y="30" width="55" height="8" rx="2" fill="#BDBDBD"/>
+  <rect x="35" y="45" width="55" height="4" rx="2" fill="#BDBDBD"/>
+  <rect x="35" y="55" width="40" height="4" rx="2" fill="#BDBDBD"/>
+</svg>

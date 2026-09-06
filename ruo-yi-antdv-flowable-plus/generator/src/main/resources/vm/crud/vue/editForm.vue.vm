@@ -1,0 +1,204 @@
+<template>
+  <a-drawer
+    width="45%"
+    :title="formTitle"
+    :label-col="4"
+    :wrapper-col="14"
+    :visible="open"
+    :body-style="{height:'calc(100vh - 100px)',overflow:'auto'}"
+    @close="cancel">
+    <a-form-model ref="form" :model="form" :rules="rules" layout="vertical">
+      <a-spin :spinning="spinning" :delay="delayTime" tip="Loading...">
+      <a-row :gutter="32">
+#foreach($column in $editColumns)
+#set( $listSize = $!{editColumns.size()})
+#set( $next = $!velocityCount - 2 )
+#set($dictType=$column.dictType)
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+##这里根据不同新行概念而定，如果需要选择新行后独占一行则开启注释部分
+###if($column.isNewRow == '1' && $velocityCount !=1 && ($next>=0 && $editColumns.get($next).isNewRow != '1'))
+##	   </a-row>
+##	   <a-row :gutter="32">
+###end
+#set($colSpan = $column.colSpan * 6 )
+#if($column.htmlType == "input")
+        <a-col :span="${colSpan}">
+          <a-form-model-item label="${comment}" prop="${column.javaField}">
+            <a-input v-model="form.${column.javaField}" placeholder="请输入${comment}"/>
+          </a-form-model-item>
+        </a-col>
+#elseif($column.htmlType == "textarea")
+        <a-col :span="${colSpan}">
+          <a-form-model-item label="${comment}" prop="${column.javaField}">
+            <a-textarea v-model="form.${column.javaField}" placeholder="请输入${comment}" :rows="4"/>
+          </a-form-model-item>
+        </a-col>
+#elseif(($column.htmlType == "number"))
+        <a-col :span="${colSpan}">
+          <a-form-model-item label="${comment}" prop="${column.javaField}">
+            <a-input-number v-model="form.${column.javaField}" :min="0" style="width: 100%"/>
+          </a-form-model-item>
+        </a-col>
+#elseif(($column.htmlType == "datetime"))
+        <a-col :span="${colSpan}">
+          <a-form-model-item label="${comment}" prop="${column.javaField}">
+            <a-date-picker
+              v-model="form.${column.javaField}"
+              valueFormat="YYYY-MM-DD"
+              :show-today="true"
+              placeholder="选择日期"
+            />
+          </a-form-model-item>
+        </a-col>
+#elseif(($column.htmlType == "time"))
+        <a-col :span="${colSpan}" >
+          <a-form-model-item label="${comment}" prop="${column.javaField}">
+            <a-date-picker
+              v-model="form.${column.javaField}"
+              valueFormat="YYYY-MM-DD"
+              :show-today="true"
+              placeholder="选择日期"
+            />
+          </a-form-model-item>
+        </a-col>
+#elseif(($column.htmlType == "select") && "" != $dictType)
+        <a-col :span="${colSpan}" >
+          <a-form-model-item label="${comment}" prop="${column.javaField}">
+            <a-select
+              placeholder="请选择${comment}"
+              v-model="form.${column.javaField}"
+              :getPopupContainer="
+                triggerNode => {
+                  return triggerNode.parentNode || document.body
+                }
+              "
+              style="width: 100%"
+              allow-clear>
+              <a-select-option v-for="(d, index) in ${column.javaField}Options" :key="index" :value="d.dictValue">{{ d.dictLabel }}</a-select-option>
+            </a-select>
+          </a-form-model-item>
+        </a-col>
+#elseif(($column.htmlType == "selectMultiple") && "" != $dictType)
+        <a-col :span="${colSpan}" >
+          <a-form-model-item label="${comment}" prop="${column.javaField}">
+            <a-select
+              placeholder="请选择${comment}"
+              v-model="form.${column.javaField}"
+              :getPopupContainer="
+                triggerNode => {
+                  return triggerNode.parentNode || document.body
+                }
+              "
+              style="width: 100%"
+              mode="multiple"
+              allow-clear>
+              <a-select-option v-for="(dict, index) in ${column.javaField}Options" :key="index" :value="dict.dictValue">{{ dict.dictLabel }}</a-select-option>
+            </a-select>
+          </a-form-model-item>
+        </a-col>
+#elseif(($column.htmlType == "radio") && "" != $dictType)
+        <a-col :span="${colSpan}" >
+          <a-form-model-item label="${comment}" prop="${column.javaField}">
+            <a-radio-group v-model="form.${column.javaField}" button-style="solid">
+              <a-radio-button
+                v-for="(dict, index) in ${column.javaField}Options"
+                :key="index"
+                :value="dict.dictValue"
+              >
+                {{ dict.dictLabel }}
+              </a-radio-button>
+            </a-radio-group>
+          </a-form-model-item>
+        </a-col>
+#elseif(($column.htmlType == "checkbox") && "" != $dictType)
+        <a-col :span="${colSpan}" >
+          <a-form-model-item label="${comment}" prop="${column.javaField}">
+            <a-checkbox-group v-model="form.${column.javaField}" button-style="solid">
+              <a-checkbox
+                v-for="(dict, index) in ${column.javaField}Options"
+                :key="index"
+                :value="dict.dictValue"
+                >
+                  {{ dict.dictLabel }}
+              </a-checkbox >
+            </a-checkbox-group>
+          </a-form-model-item>
+        </a-col>
+#elseif(($column.htmlType == "user"))
+    <a-col :span="${colSpan}" >
+        <a-form-model-item label="${comment}" prop="${column.javaField}">
+            <select-user
+              v-model="form.${column.javaField}"
+              select-model="single"
+            />
+        </a-form-model-item>
+    </a-col>
+#elseif(($column.htmlType == "dept"))
+    <a-col :span="${colSpan}" >
+        <a-form-model-item label="${comment}" prop="${column.javaField}">
+            <select-dept
+              v-model="form.${column.javaField}"
+              select-model="single"
+              select-scope="all"
+            />
+        </a-form-model-item>
+    </a-col>
+#end
+#if($column.isNewRow == '1' && $listSize != $!velocityCount)
+    </a-row>
+    <a-row :gutter="32">
+#end
+#end
+#if($hasAttach)
+  <a-col :lg="24" :md="24" :sm="24">
+      <a-form-model-item label="附件">
+          <sys-upload
+                  key="1"
+                  element-id="1"
+                  form-type="edit"
+                  :drag-uploader="true"
+                  :multiple="true"
+                  :file-size-limit="40"
+                  :ref="attachmentRefName"
+                  :allow-encry="false"
+                  :allow-same-name="false"
+                  :allow-preview="true"
+                  :allow-download="true"
+                  :allow-delete="true"
+                  :chunk-enabled="true"
+                  :colspan="2"
+                  :form-id="formId"
+                  :file-num-limit="10"
+                  table-name="${tableName}"
+                  @afterUpload="uploadCompleteFile"
+          />
+      </a-form-model-item>
+  </a-col>
+#end
+      </a-row>
+      </a-spin>
+       <div class="bottom-control">
+              <a-space>
+              <a-button @click="cancel">
+                  取消
+              </a-button>
+              <a-button type="primary" @click="submitForm">
+                  保存
+              </a-button>
+              </a-space>
+       </div>
+    </a-form-model>
+  </a-drawer>
+</template>
+<script>
+import ${BusinessName}EditForm from './${BusinessName}Form'
+export default {
+  ...${BusinessName}EditForm
+}
+</script>

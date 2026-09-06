@@ -1,0 +1,209 @@
+<template>
+	<div>
+		<a-modal v-model:visible="pageDataObj.visible" width="60%" :title="pageDataObj.title" :destroyOnClose="true" @ok="clickModalOk" @cancel="handleModalCancel">
+			<a-form ref="addUpdateFormRef" name="addUpdateFormObj" :model="addUpdateFormObj.data" :labelCol="{ span: 8 }" :wrapperCol="{ span: 14 }">
+				<a-row :gutter="24">
+                #foreach($column in $columns)
+                #set($field=$column.javaField)
+                #if($column.columnType.indexOf('(')!=-1 && $column.columnType.indexOf(')')!=-1)
+                #set($arr1=$column.columnType.split('[(]'))
+                #set($arr2=$arr1[1].split('[)]'))
+                #set($maxlength=$arr2[0])
+                #else
+                #set($maxlength=999)
+                #end
+                #if($column.insert && !$column.pk)
+                #set($parentheseIndex=$column.columnComment.indexOf("（"))
+                #if($parentheseIndex != -1)
+                #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+                #else
+                #set($comment=$column.columnComment)
+                #end
+                #set($dictType=$column.dictType)
+					<a-col span="12">
+                    #if($column.required)
+                        <a-form-item name="${field}" label="${comment}" :rules="[{ required: true, message: '${comment}不能为空！' }]">
+                    #else
+                        <a-form-item name="${field}" label="${comment}" :rules="[{required: false}]">
+                    #end
+                    #if($column.htmlType == "input")
+						    <a-input v-model:value="addUpdateFormObj.data.${field}" :maxlength="${maxlength}" placeholder="请填写${comment}"></a-input>
+                    #elseif($column.htmlType == "inputNumber")
+                    #if($maxlength==999)
+						    <a-input-number v-model:value="addUpdateFormObj.data.${field}" :min="1" :max="${maxlength}"/>
+                    #else
+                    #set($maxNum="")
+                    #foreach($hour in [1..${maxlength}])
+                    #set($maxNum=$maxNum+9)
+                    #end
+						    <a-input-number v-model:value="addUpdateFormObj.data.${field}" :min="1" :max="${maxNum}"/>
+                    #end
+                    #elseif($column.htmlType == "imageUpload")
+                    #elseif($column.htmlType == "fileUpload")
+                    #elseif($column.htmlType == "editor")
+                    #elseif($column.htmlType == "select" && "" != $dictType)
+                    #set($wordarr=$column.dictType.split('_'))
+                    #set($newWord="")
+                    #foreach($word in $wordarr)
+                    #if($foreach.count==1)
+                    #set($AttrName=$word)
+                    #else
+                    #set($AttrName=$word.substring(0,1).toUpperCase() + ${word.substring(1)})
+                    #end
+                    #set($newWord=$newWord+$AttrName)
+                    #end
+						    <a-select v-model:value="addUpdateFormObj.data.${field}" :options="fatherPageDataObj.${newWord}Dict" placeholder="请选择${comment}"></a-select>
+                    #elseif($column.htmlType == "select" )
+						    <a-select v-model:value="addUpdateFormObj.data.${field}" :options="fatherPageDataObj.${field}Dict" placeholder="请选择${comment}"></a-select>
+                    #elseif($column.htmlType == "treeSelect")
+						    <a-tree-select v-model:value="addUpdateFormObj.data.${field}" :tree-data="fatherPageDataObj.${field}Dict"
+						               :fieldNames="{ children: 'children', label: 'label', key: 'id', value: 'id' }"></a-tree-select>
+                    #elseif($column.htmlType == "tree")
+						    <a-tree v-model:checkedKeys="addUpdateFormObj.data.${field}" checkable :tree-data="fatherPageDataObj.${field}Dict"
+						        :fieldNames="{ children: 'children', title: 'menuName', key: 'menuId' }"></a-tree>
+                    #elseif($column.htmlType == "checkbox" && "" != $dictType)
+						    <a-checkbox v-model:checked="addUpdateFormObj.data.${field}"></a-checkbox>
+                    #elseif($column.htmlType == "checkbox" )
+						    <a-checkbox v-model:checked="addUpdateFormObj.data.${field}"></a-checkbox>
+                    #elseif($column.htmlType == "radio" && "" != $dictType  )
+                    #set($wordarr=$column.dictType.split('_'))
+                    #set($newWord="")
+                    #foreach($word in $wordarr)
+                    #if($foreach.count==1)
+                    #set($AttrName=$word)
+                    #else
+                    #set($AttrName=$word.substring(0,1).toUpperCase() + ${word.substring(1)})
+                    #end
+                    #set($newWord=$newWord+$AttrName)
+                    #end
+						    <a-radio-group v-model:value="addUpdateFormObj.data.${field}" :options="fatherPageDataObj.${newWord}Dict" optionType="button" button-style="solid"></a-radio-group>
+                    #elseif($column.htmlType == "radio" &&  "" == $dictType    )
+						    <a-radio-group v-model:value="addUpdateFormObj.data.${field}" :options="fatherPageDataObj.${field}Dict" optionType="button" button-style="solid"></a-radio-group>
+                    #elseif($column.htmlType == "datetime")
+						    <a-date-picker v-model:value="addUpdateFormObj.data.${field}" format="YYYY-MM-DD HH:mm:ss" valueFormat="YYYY-MM-DD HH:mm:ss"/>
+                    #elseif($column.htmlType == "textarea")
+						    <a-textarea v-model:value="addUpdateFormObj.data.${field}" :maxlength="${maxlength}" :rows="3" placeholder="请填写${comment}"/>
+                    #end
+					    </a-form-item>
+					</a-col>
+                #end
+                #end
+				</a-row>
+			</a-form>
+		</a-modal>
+	</div>
+</template>
+<script setup>
+	import {reactive, ref} from 'vue';
+	import AutoeeUtil from '@/utils/AutoeeUtil.js';
+	import {get${BusinessName}, add${BusinessName}, update${BusinessName}} from "@/api/${moduleName}/${businessName}";
+	import {message} from 'ant-design-vue';
+
+	// 父页面公用数据
+	const fatherPageDataObj = defineProps({
+    #set($dictAtr="")
+    #foreach($column in $columns)
+    #set($javaField=$column.javaField)
+    #if($column.dictType && "" != $column.dictType)
+    #if(${dictAtr.indexOf($column.dictType)}==-1)
+    #set($dictAtr=$dictAtr+$column.dictType+",")
+    #set($wordarr=$column.dictType.split('_'))
+    #set($newWord="")
+    #foreach($word in $wordarr)
+    #if($foreach.count==1)
+    #set($AttrName=$word)
+    #else
+    #set($AttrName=$word.substring(0,1).toUpperCase() + ${word.substring(1)})
+    #end
+    #set($newWord=$newWord+$AttrName)
+    #end
+        ${newWord}Dict: Array,
+    #end
+    #elseif(($column.htmlType == "select" || $column.htmlType == "radio") )
+        ${javaField}Dict: Array,
+    #elseif($column.htmlType == "treeSelect" || $column.htmlType == "tree")
+        ${javaField}Dict: Array,
+    #end
+    #end
+	});
+
+	// 引入父页面方法
+	const pageEmit = defineEmits(["refreshFatherPageTable"]);
+
+	// 当前页面使用的数据
+	const pageDataObj = reactive({
+		title: '新增页面',
+		visible: false,
+		operateType: '',
+	});
+
+	// 新增修改Form
+	const addUpdateFormRef = ref();
+	const addUpdateFormObj = reactive({data: {}});
+	// 重置Form
+	const resetAddUpdateForm = () => {
+		AutoeeUtil.resetFormFieldsToEmpty(addUpdateFormObj.data);
+	};
+
+	// 打开新增窗口
+	const openAddModal = () => {
+		pageDataObj.operateType = 'add';
+		pageDataObj.title = '新增';
+		pageDataObj.visible = true;
+	};
+
+	// 打开修改窗口
+	const openUpdateModal = (record, tablePage) => {
+		pageDataObj.operateType = 'update';
+		pageDataObj.title = '修改';
+    #foreach($column in $columns)
+    #if($column.pk)
+    #set($javaField=$column.javaField)
+	    get${BusinessName}(record.${javaField}).then((response) => {
+    #end
+    #end
+             addUpdateFormObj.data = response.data;
+             pageDataObj.visible = true;
+        });
+	};
+
+	// 点击窗口确认
+	const clickModalOk = (e) => {
+		addUpdateFormRef.value
+			.validateFields()
+			.then((values) => {
+				if (pageDataObj.operateType === 'add') {
+					add${BusinessName}(addUpdateFormObj.data).then((res) => {
+						pageDataObj.visible = false;
+						resetAddUpdateForm();
+						// 调用父页面刷新方法
+						pageEmit("refreshFatherPageTable");
+						AutoeeUtil.messageSuccess('新增操作成功。');
+					});
+				} else if (pageDataObj.operateType === 'update') {
+					update${BusinessName}(addUpdateFormObj.data).then((res) => {
+						pageDataObj.visible = false;
+						resetAddUpdateForm();
+						// 调用父页面刷新方法
+						pageEmit("refreshFatherPageTable");
+						AutoeeUtil.messageSuccess('修改操作成功。');
+					});
+				}
+			}).catch((info) => {
+			// console.log('Validate Failed:', info);
+		});
+	};
+
+	// 点击窗口取消
+	const handleModalCancel = () => {
+		resetAddUpdateForm();
+	};
+
+	// 对外暴露出去
+	defineExpose({
+		openAddModal,
+		openUpdateModal,
+	});
+</script>
+
+<style lang="less"></style>

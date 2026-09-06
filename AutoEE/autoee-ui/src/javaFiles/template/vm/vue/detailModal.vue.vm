@@ -1,0 +1,137 @@
+<template>
+	<div>
+		<a-modal v-model:visible="pageDataObj.visible" width="60%" :title="pageDataObj.title">
+			<template #footer>
+				<a-button @click="pageDataObj.visible = false">关闭</a-button>
+			</template>
+			<a-form class="autoee-detail-page" ref="detailFormRef" name="detailFormObj" :model="detailFormObj.data" :labelCol="{ span: 8 }" :wrapperCol="{ span: 14 }">
+				<a-row :gutter="24">
+                #foreach($column in $columns)
+                #set($field=$column.javaField)
+                #if($column.insert && !$column.pk)
+                #set($parentheseIndex=$column.columnComment.indexOf("（"))
+                #if($parentheseIndex != -1)
+                #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+                #else
+                #set($comment=$column.columnComment)
+                #end
+                #set($dictType=$column.dictType)
+					<a-col span="12">
+						<a-form-item name="${field}" label="${comment}">
+                        #if($column.htmlType == "input")
+							<span>{{ detailFormObj.data.${field} }}</span>
+                        #elseif($column.htmlType == "imageUpload")
+                        #elseif($column.htmlType == "fileUpload")
+                        #elseif($column.htmlType == "editor")
+                        #elseif($column.htmlType == "select" && "" != $dictType )
+                        #set($wordarr=$column.dictType.split('_'))
+                        #set($newWord="")
+                        #foreach($word in $wordarr)
+                        #if($foreach.count==1)
+                        #set($AttrName=$word)
+                        #else
+                        #set($AttrName=$word.substring(0,1).toUpperCase() + ${word.substring(1)})
+                        #end
+                        #set($newWord=$newWord+$AttrName)
+                        #end
+							<span>{{ AutoeeUtil.getDictLabelByKey(detailFormObj.data.${field}, fatherPageDataObj.${newWord}Dict) }}</span>
+                        #elseif($column.htmlType == "select"  )
+							<span>{{ AutoeeUtil.getDictLabelByKey(detailFormObj.data.${field}, fatherPageDataObj.${field}Dict) }}</span>
+                        #elseif($column.htmlType == "checkbox" && "" != $dictType)
+							<a-checkbox v-model:checked="detailFormObj.data.${field}" :disabled='true'></a-checkbox>
+                        #elseif($column.htmlType == "checkbox" )
+							<a-checkbox v-model:checked="detailFormObj.data.${field}" :disabled='true'></a-checkbox>
+                        #elseif($column.htmlType == "radio"  && "" != $dictType)
+                        #set($wordarr=$column.dictType.split('_'))
+                        #set($newWord="")
+                        #foreach($word in $wordarr)
+                        #if($foreach.count==1)
+                        #set($AttrName=$word)
+                        #else
+                        #set($AttrName=$word.substring(0,1).toUpperCase() + ${word.substring(1)})
+                        #end
+                        #set($newWord=$newWord+$AttrName)
+                        #end
+							<span>{{ AutoeeUtil.getDictLabelByKey(detailFormObj.data.${field}, fatherPageDataObj.${newWord}Dict) }}</span>
+                        #elseif($column.htmlType == "treeSelect" || $column.htmlType == "tree")
+							<span>{{ AutoeeUtil.getDictLabelByKey(detailFormObj.data.${field}, fatherPageDataObj.${field}Dict) }}</span>
+                        #elseif($column.htmlType == "radio"  &&  "" == $dictType)
+							<span>{{ AutoeeUtil.getDictLabelByKey(detailFormObj.data.${field}, fatherPageDataObj.${field}Dict) }}</span>
+                        #elseif($column.htmlType == "datetime")
+							<span>{{ detailFormObj.data.${field} }}</span>
+                        #elseif($column.htmlType == "textarea")
+							<span>{{ detailFormObj.data.${field} }}</span>
+                        #end
+						</a-form-item>
+					</a-col>
+                #end
+                #end
+				</a-row>
+			</a-form>
+		</a-modal>
+	</div>
+</template>
+
+<script setup>
+	import {get${BusinessName}} from "@/api/${moduleName}/${businessName}";
+	import {reactive, ref} from 'vue';
+	import AutoeeUtil from '@/utils/AutoeeUtil.js';
+
+	// 父页面公用数据
+	const fatherPageDataObj = defineProps({
+    #set($dictAtr="")
+    #foreach($column in $columns)
+    #set($javaField=$column.javaField)
+    #if($column.dictType && "" != $column.dictType)
+    #if(${dictAtr.indexOf($column.dictType)}==-1)
+    #set($dictAtr=$dictAtr+$column.dictType+",")
+    #set($wordarr=$column.dictType.split('_'))
+    #set($newWord="")
+    #foreach($word in $wordarr)
+    #if($foreach.count==1)
+    #set($AttrName=$word)
+    #else
+    #set($AttrName=$word.substring(0,1).toUpperCase() + ${word.substring(1)})
+    #end
+    #set($newWord=$newWord+$AttrName)
+    #end
+    ${newWord}Dict: Array,
+    #end
+    #elseif(($column.htmlType == "select" || $column.htmlType == "radio") )
+    ${javaField}Dict: Array,
+    #elseif($column.htmlType == "treeSelect" || $column.htmlType == "tree")
+    ${javaField}Dict: Array,
+    #end
+    #end
+	});
+
+	// 当前页面使用的数据
+	const pageDataObj = reactive({
+		title: '详细页面',
+		visible: false,
+		operateType: '',
+	});
+
+	//详细Form
+	const detailFormRef = ref();
+	const detailFormObj = reactive({data: {}});
+	// 打开详细窗口
+	const openModal = (record) => {
+    #foreach($column in $columns)
+    #if($column.pk)
+    #set($javaField=$column.javaField)
+	    get${BusinessName}(record.${javaField}).then((response) => {
+    #end
+    #end
+		    detailFormObj.data = response.data;
+		    pageDataObj.visible = true;
+	    });
+	};
+
+	// 对外暴露出去
+	defineExpose({
+		openModal,
+	});
+</script>
+
+<style lang="less"></style>

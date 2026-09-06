@@ -1,0 +1,36 @@
+/**
+ * WangEditor 富文本编辑器暗黑模式
+ */
+.dark-theme {
+  .wangeditor-wrapper, .editor {
+    border-color: var(--border-color-base) !important;
+    background-color: var(--component-background) !important;
+  }
+
+  .w-e-toolbar, .w-e-bar {
+    background-color: var(--table-header-bg) !important;
+    border-color: var(--border-color-split) !important;
+  }
+
+  .w-e-text-container {
+    background-color: var(--component-background) !important;
+    [data-slate-editor="true"] {
+      color: var(--text-color) !important;
+    }
+  }
+
+  // 统一处理所有白色背景覆盖
+  [style*="background-color: rgb(255, 255, 255)"],
+  [style*="background:#fff"],
+  [style*="background-color:#fff"] {
+    background-color: var(--component-background) !important;
+  }
+
+  .w-e-bar-item svg {
+    fill: var(--text-color) !important;
+  }
+
+  .w-e-bar-item.w-e-bar-item-active svg {
+    fill: var(--primary-color) !important;
+  }
+}

@@ -1,0 +1,788 @@
+/**
+ * 表格组件专用样式
+ * 包含表格、分页、操作列等相关样式
+ *
+ * 进阶优化：
+ * 1. 消除表格内深色背景块 - 让表格通透
+ * 2. 弱化操作按钮 - 使用文字链接样式
+ * 3. 统一边框颜色 - 极低透明度
+ * 4. 去掉垂直分割线 - 只保留水平行线
+ */
+
+@import '../mixins.less';
+
+// === 表格基础样式 ===
+
+// 修复 ant-table-measure-row 占用高度的问题
+.ant-table-measure-row,
+.ant-table-measure-row td {
+  height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  visibility: hidden !important;
+}
+
+.dark-theme {
+  // 彻底消除表格外层所有可能的边框和阴影
+  .ant-table-wrapper,
+  .ant-table,
+  .ant-table-container,
+  .ant-table-content,
+  .ant-table-header,
+  .ant-table-body,
+  .ant-table-summary,
+  .ant-spin-nested-loading,
+  .ant-spin-container {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+    &::before, &::after {
+      display: none !important;
+    }
+  }
+
+  // 针对表格顶部可能出现的白色边框线 (Ant Design 默认样式)
+  .ant-table-container {
+    border: none !important;
+    border-top: none !important;
+    &::before, &::after {
+      display: none !important;
+      content: none !important;
+      height: 0 !important;
+    }
+  }
+
+  // 表头单元格 - 统一边框设置（避免重复）
+  .ant-table-thead > tr > th {
+    border-top: none !important;
+    border-right: none !important;
+    border-left: none !important;
+    border-bottom: none !important;
+    background-clip: padding-box !important;
+    position: relative;
+  }
+
+  // 针对 a-table 内部可能存在的边框
+  .ant-table {
+    border: none !important;
+    border-top: none !important;
+    border-bottom: none !important;
+  }
+
+  // 针对树形表格展开图标的白色背景问题
+  .ant-table-row-expand-icon {
+    background-color: var(--component-background) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 2px !important;
+    color: var(--text-secondary) !important;
+    width: 17px !important;
+    height: 17px !important;
+    line-height: 14px !important;
+
+    &:focus, &:hover {
+      background-color: rgba(255, 255, 255, 0.05) !important;
+      border-color: var(--primary-color) !important;
+      color: var(--primary-color) !important;
+    }
+
+    &:active {
+      background-color: rgba(255, 255, 255, 0.08) !important;
+    }
+  }
+
+  .ant-table {
+    background: transparent !important;
+    border-radius: 0 !important;
+
+    // ===== 确保容器没有任何边框，特别是顶部 =====
+    .ant-table-container {
+      border: none !important;
+      border-top: none !important;
+      border-radius: 0 !important;
+
+      // 消除内部可能的伪元素边框
+      &::before, &::after {
+        display: none !important;
+      }
+    }
+
+    .ant-table-thead > tr > th {
+      background: var(--table-header-bg) !important;
+      color: var(--text-primary) !important;
+      // 彻底去掉所有方向的边框
+      border: none !important;
+      border-bottom: none !important;
+      border-right: none !important;
+      border-left: none !important;
+      border-top: 0 !important;
+      font-weight: 500;
+      padding: 14px 16px !important;
+
+      // 去掉表头单元格之间的分隔线
+      &::before {
+        display: none !important;
+      }
+    }
+
+    // 去掉表头第一个单元格的左边框
+    .ant-table-thead > tr > th:first-child {
+      border-left: none !important;
+    }
+
+    // 去掉表头最后一个单元格的右边框
+    .ant-table-thead > tr > th:last-child {
+      border-right: none !important;
+    }
+
+    // 排除 measure-row，避免影响其测量功能
+    .ant-table-tbody > tr:not(.ant-table-measure-row) > td {
+      // 底部边框极淡
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+      // 彻底去掉垂直分割线
+      border-right: none !important;
+      border-left: none !important;
+      color: var(--text-secondary) !important;
+      padding: 12px 16px !important;
+      // 重要：单元格背景透明
+      background-color: transparent !important;
+    }
+
+    // 修复 ant-table-measure-row 占用高度的问题（高优先级选择器）
+    .ant-table-tbody > tr.ant-table-measure-row,
+    .ant-table-tbody > tr.ant-table-measure-row > td {
+      height: 0 !important;
+      max-height: 0 !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      border: none !important;
+      font-size: 0 !important;
+      line-height: 0 !important;
+      overflow: hidden !important;
+    }
+
+    // 表格容器和内容区域 - 透明背景
+    .ant-table-container,
+    .ant-table-content,
+    .ant-table-body,
+    .ant-table-scroll,
+    .ant-table-header {
+      background-color: transparent !important;
+      background: transparent !important;
+      border: none !important;
+    }
+
+    // 表格行样式 - 透明背景 (但固定列需要背景遮罩)
+    // 注意：只对表体单元格设置透明，表头单元格保持 var(--table-header-bg) 背景色
+    .ant-table-tbody .ant-table-cell {
+      background-color: transparent !important;
+      background: transparent !important;
+    }
+
+    // ===== 固定列特殊处理 - 彻底消除“两层”感 (阴影与背景断层) =====
+    .ant-table-cell-fix-left,
+    .ant-table-cell-fix-right {
+      position: sticky !important;
+      z-index: 10 !important;
+      box-shadow: none !important;
+      border-left: none !important;
+      border-right: none !important;
+
+      // 彻底禁用 Ant Design 用于生成阴影的伪元素
+      &::before,
+      &::after {
+        display: none !important;
+        content: none !important;
+        box-shadow: none !important;
+        width: 0 !important;
+      }
+    }
+
+    // 针对滚动状态下的阴影类名进行全量覆盖
+    .ant-table-ping-left .ant-table-cell-fix-left-last::after,
+    .ant-table-ping-right .ant-table-cell-fix-right-first::after,
+    .ant-table-cell-fix-left-last::after,
+    .ant-table-cell-fix-right-first::after {
+      display: none !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+
+    // 消除固定列可能存在的默认边框
+    .ant-table-thead > tr > th.ant-table-cell-fix-left,
+    .ant-table-thead > tr > th.ant-table-cell-fix-right,
+    .ant-table-tbody > tr > td.ant-table-cell-fix-left,
+    .ant-table-tbody > tr > td.ant-table-cell-fix-right {
+      border-left: none !important;
+      border-right: none !important;
+    }
+
+    // 统一固定列背景色，使其与行背景融合，消除视觉断层
+    // 表头固定列
+    .ant-table-thead > tr > th.ant-table-cell-fix-left,
+    .ant-table-thead > tr > th.ant-table-cell-fix-right {
+      background-color: var(--table-header-bg) !important;
+      background: var(--table-header-bg) !important;
+      border-bottom: none !important;
+    }
+
+    // 表体固定列 - 必须有背景色以遮挡滚动内容，但需与整体背景一致
+    .ant-table-tbody > tr > td.ant-table-cell-fix-left,
+    .ant-table-tbody > tr > td.ant-table-cell-fix-right {
+      background-color: var(--component-background) !important;
+      background: var(--component-background) !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    }
+
+    // 悬停时同步变色，确保整行颜色一致
+    .ant-table-tbody > tr:hover > td.ant-table-cell-fix-left,
+    .ant-table-tbody > tr:hover > td.ant-table-cell-fix-right {
+      background-color: rgba(255, 255, 255, 0.03) !important;
+      background: rgba(255, 255, 255, 0.03) !important;
+    }
+
+    // 确保固定列在滚动容器之上
+    .ant-table-body {
+      overflow-x: auto !important;
+      overflow-y: hidden !important;
+    }
+
+
+    // 取消斑马纹，保持表格通透
+    .ant-table-tbody > tr > td {
+      background-color: transparent !important;
+    }
+
+    // 行悬停效果 - 极淡的高亮
+    .ant-table-tbody > tr:hover > td {
+      background-color: rgba(255, 255, 255, 0.03) !important;
+    }
+
+    // ========== 消除表格内输入框/标签的深色背景 ==========
+    // 表格内的所有输入框和标签背景透明
+    .ant-table-cell {
+      .ant-input,
+      .ant-input-number,
+      .ant-select-selector,
+      .ant-picker,
+      .ant-tag,
+      .ant-badge,
+      span[class*="tag"],
+      div[class*="cell"] {
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+
+      // 表格内的 Tag 组件透明化
+      .ant-tag {
+        background-color: transparent !important;
+        border: 1px solid var(--border-color) !important;
+        color: var(--text-secondary) !important;
+
+        &.ant-tag-success,
+        &.ant-tag-green {
+          color: #52c41a !important;
+          border-color: rgba(82, 196, 26, 0.3) !important;
+        }
+
+        &.ant-tag-error,
+        &.ant-tag-red {
+          color: #ff4d4f !important;
+          border-color: rgba(255, 77, 79, 0.3) !important;
+        }
+
+        &.ant-tag-warning,
+        &.ant-tag-orange {
+          color: #faad14 !important;
+          border-color: rgba(250, 173, 20, 0.3) !important;
+        }
+
+        &.ant-tag-processing,
+        &.ant-tag-blue {
+          color: var(--primary-color) !important;
+          border-color: var(--primary-alpha-20) !important;
+        }
+      }
+    }
+  }
+
+  // ========== 操作按钮样式 - 改为纯文字链接（无背景）==========
+  // 这是解决操作列按钮"高亮刺眼"问题的关键样式
+
+  // 通用操作区域透明化
+  .ant-table .ant-table-cell,
+  .table-action-bar,
+  .action-buttons,
+  .table-actions {
+    background-color: transparent !important;
+  }
+
+  // ===== 核心：覆盖所有 Ant Design 按钮类型的默认样式 =====
+  .ant-table {
+    .ant-table-cell {
+      // 针对所有按钮类型强制透明
+      .ant-btn,
+      .ant-btn-default,
+      .ant-btn-primary,
+      .ant-btn-link,
+      .ant-btn-text,
+      .ant-btn-ghost,
+      .ant-btn-dashed,
+      button[class*="ant-btn"],
+      .action-btn,
+      .view-btn,
+      .edit-btn,
+      .delete-btn {
+        background-color: transparent !important;
+        background: transparent !important;
+        background-image: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 4px 8px !important;
+        height: auto !important;
+        line-height: 1.5 !important;
+        font-size: 13px !important;
+        transition: all 0.2s ease !important;
+
+        // 悬停时保持透明
+        &:hover,
+        &:focus,
+        &:active {
+          background-color: rgba(255, 255, 255, 0.05) !important;
+          background: rgba(255, 255, 255, 0.05) !important;
+          border: none !important;
+          box-shadow: none !important;
+        }
+
+        // 禁用 Ant Design 的波纹效果背景
+        &::before,
+        &::after {
+          display: none !important;
+        }
+
+        // Ant Design 4.x 的 span 包裹
+        > span {
+          background: transparent !important;
+        }
+      }
+
+      // ===== 查看/详情按钮 - 主题蓝色文字 =====
+      .ant-btn:first-child,
+      .view-btn,
+      .detail-btn,
+      .ant-btn[class*="view"],
+      .ant-btn[class*="detail"],
+      a[class*="view"],
+      a[class*="detail"] {
+        color: var(--primary-color) !important;
+
+        &:hover {
+          color: var(--primary-color-hover) !important;
+          text-decoration: underline !important;
+        }
+      }
+
+      // ===== 编辑/修改按钮 - 橙黄色文字 =====
+      .edit-btn,
+      .modify-btn,
+      .update-btn,
+      .ant-btn[class*="edit"],
+      .ant-btn[class*="modify"],
+      .ant-btn[class*="update"],
+      a[class*="edit"],
+      a[class*="modify"] {
+        color: #faad14 !important;
+
+        &:hover {
+          color: #ffc53d !important;
+          text-decoration: underline !important;
+        }
+      }
+
+      // ===== 删除按钮 - 红色文字 =====
+      .delete-btn,
+      .remove-btn,
+      .ant-btn[class*="delete"],
+      .ant-btn[class*="remove"],
+      .ant-btn-dangerous,
+      a[class*="delete"],
+      a[class*="remove"] {
+        color: #ff4d4f !important;
+
+        &:hover {
+          color: #ff7875 !important;
+          text-decoration: underline !important;
+        }
+      }
+
+      // ===== 其他功能按钮 =====
+      .warning-btn,
+      .ant-btn[class*="warning"] {
+        color: #fa8c16 !important;
+
+        &:hover {
+          color: #ffa940 !important;
+        }
+      }
+
+      .info-btn,
+      .ant-btn[class*="info"] {
+        color: #13c2c2 !important;
+
+        &:hover {
+          color: #36cfc9 !important;
+        }
+      }
+
+      .success-btn,
+      .ant-btn[class*="success"] {
+        color: #52c41a !important;
+
+        &:hover {
+          color: #73d13d !important;
+        }
+      }
+    }
+
+    // 按钮组透明
+    .ant-btn-group {
+      background-color: transparent !important;
+      background: transparent !important;
+    }
+  }
+
+  // ===== 全局：表格外的操作按钮也应用相同样式 =====
+  .table-action-bar,
+  .action-buttons,
+  .table-actions {
+    .ant-btn,
+    .ant-btn-default,
+    .ant-btn-link,
+    .ant-btn-text {
+      background-color: transparent !important;
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+
+      &:hover,
+      &:focus {
+        background-color: transparent !important;
+        background: transparent !important;
+      }
+    }
+  }
+
+  // ===== 极端情况：使用 a 标签模拟的按钮 =====
+  .ant-table-cell {
+    a.ant-btn,
+    a[role="button"] {
+      background: transparent !important;
+      border: none !important;
+
+      &:hover {
+        background: transparent !important;
+      }
+    }
+  }
+
+  // ========== 分页组件样式 ==========
+  .ant-pagination {
+    background-color: transparent !important;
+
+    .ant-pagination-item {
+      background-color: transparent !important;
+      border-color: var(--border-color-base) !important;
+
+      a {
+        color: var(--text-secondary) !important;
+      }
+
+      &:hover {
+        border-color: var(--primary-color) !important;
+
+        a {
+          color: var(--primary-color) !important;
+        }
+      }
+
+      &-active {
+        background-color: transparent !important;
+        border-color: var(--primary-color) !important;
+
+        a {
+          color: var(--primary-color) !important;
+        }
+      }
+    }
+
+    .ant-pagination-prev,
+    .ant-pagination-next {
+      background-color: transparent !important;
+      border-color: var(--border-color-base) !important;
+
+      .ant-pagination-item-link {
+        color: var(--text-secondary) !important;
+        background-color: transparent !important;
+        border: none !important;
+      }
+
+      &:hover .ant-pagination-item-link {
+        color: var(--primary-color) !important;
+      }
+    }
+
+    .ant-pagination-total-text {
+      color: var(--text-tertiary) !important;
+    }
+
+    .ant-pagination-options {
+      .ant-select-selector {
+        background-color: transparent !important;
+        border-color: var(--border-color-base) !important;
+      }
+    }
+
+    // 跳转页码输入框样式
+    .ant-pagination-options-quick-jumper {
+      color: var(--text-secondary) !important;
+
+      input {
+        background-color: var(--component-background) !important;
+        border-color: var(--border-color-base) !important;
+        color: var(--text-primary) !important;
+
+        &:hover {
+          border-color: var(--primary-color) !important;
+        }
+
+        &:focus {
+          border-color: var(--primary-color) !important;
+          box-shadow: 0 0 0 2px var(--primary-alpha-20) !important;
+        }
+      }
+    }
+  }
+
+  // 表格分页相关
+  .ant-table-pagination,
+  .ant-table-pagination-left,
+  .ant-table-pagination-right {
+    background-color: transparent !important;
+  }
+
+  // 表格外的区域
+  .ant-table-wrapper {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    // 消除 Ant Design 默认的顶部分割线
+    &::before, &::after {
+      display: none !important;
+    }
+
+    .ant-table {
+      border: none !important;
+    }
+  }
+
+  // ========== 表格边框样式（bordered 模式）- 弱化处理 ==========
+  .ant-table-bordered {
+    .ant-table-container {
+      // 使用极淡的边框，或者干脆去掉
+      border-left: 1px solid rgba(255, 255, 255, 0.05) !important;
+      border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+      border-top: 0 !important;
+      border-radius: 12px !important;
+
+      // 彻底消除顶部可能残留的白色线条
+      &::before {
+        display: none !important;
+      }
+    }
+
+    // 即使是 bordered 模式也去掉垂直线，保持通透
+    .ant-table-cell {
+      border-right: none !important;
+      border-left: none !important;
+    }
+
+    // 消除顶部边框
+    .ant-table-thead > tr:first-child > th {
+      border-top: none !important;
+    }
+  }
+
+  // 终极方案：消除所有表格相关的顶部边框和阴影
+  .ant-table-wrapper,
+  .ant-table-container,
+  .ant-table-header,
+  .ant-table-content,
+  .ant-table,
+  .ant-table-thead,
+  .ant-table-thead > tr > th {
+    border-top: 0 !important;
+    box-shadow: none !important;
+  }
+
+  // 针对表格顶部圆角处的白色线条残留
+  .ant-table {
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+  }
+
+  // 彻底消除表格上方可能出现的水平分割线 (a-card 内部或 slot 产生的)
+  .ant-card-body {
+    // 针对所有可能的容器组合，消除底部边框
+    div:has(> .ant-table-wrapper),
+    div:has(> .ant-spin-nested-loading),
+    div:has(> .ant-table),
+    .table-operator,
+    .ant-pro-table-search,
+    .ant-pro-table-toolbar {
+      border-bottom: none !important;
+      border-color: transparent !important;
+    }
+
+    > div:has(+ .ant-table-wrapper),
+    > div:has(+ .ant-spin-nested-loading),
+    > div:has(+ .ant-table),
+    > div:has(+ .ant-table-container) {
+      border-bottom: none !important;
+      margin-bottom: 0 !important;
+      padding-bottom: 0 !important;
+    }
+
+    // 针对 a-card 内部所有可能的分割线
+    .ant-divider-horizontal {
+      display: none !important;
+    }
+  }
+
+  // ========== 彻底消除表格底部的白色线条 ==========
+  // 消除表格最后一行的底部边框
+  .ant-table-tbody > tr:last-child > td {
+    border-bottom: none !important;
+  }
+
+  // 消除表格容器的底部边框
+  .ant-table-container {
+    border-bottom: none !important;
+  }
+
+  // 消除 a-card 内表格的底部边框
+  .ant-card .ant-table-wrapper {
+    border-bottom: none !important;
+
+    .ant-table {
+      border-bottom: none !important;
+    }
+
+    .ant-table-container {
+      border-bottom: none !important;
+    }
+  }
+
+  // 消除分页器上方可能的分割线
+  .ant-table-wrapper .ant-spin-container::after {
+    display: none !important;
+  }
+
+  // 消除表格内容区域的底部边框
+  .ant-table-content {
+    border-bottom: none !important;
+  }
+
+  // 消除表格滚动容器的底部边框
+  .ant-table-scroll {
+    border-bottom: none !important;
+  }
+
+  // 针对 ProTable 内部结构的特殊处理
+  .table-actions-wrapper {
+    border-bottom: none !important;
+    margin-bottom: 8px !important;
+    padding-bottom: 0 !important;
+  }
+
+  // 针对 a-card 默认边框的进一步弱化
+  .ant-card {
+    border-color: rgba(255, 255, 255, 0.05) !important;
+  }
+
+  // ========== 复选框样式增强 - 解决"看不清"问题 ==========
+  .ant-table {
+    .ant-checkbox {
+      // 复选框容器
+      .ant-checkbox-inner {
+        background-color: rgba(255, 255, 255, 0.08) !important;
+        border: 1px solid rgba(255, 255, 255, 0.25) !important;
+        border-radius: 4px !important;
+        transition: all 0.2s ease !important;
+      }
+
+      // 悬停状态
+      &:hover .ant-checkbox-inner {
+        border-color: var(--primary-color) !important;
+      }
+
+      // 选中状态
+      &.ant-checkbox-checked {
+        .ant-checkbox-inner {
+          background-color: var(--primary-color) !important;
+          border-color: var(--primary-color) !important;
+
+          // 选中勾号
+          &::after {
+            border-color: #fff !important;
+          }
+        }
+      }
+
+      // 半选状态（表头全选框部分选中时）
+      &.ant-checkbox-indeterminate {
+        .ant-checkbox-inner {
+          background-color: transparent !important;
+          border-color: var(--primary-color) !important;
+
+          &::after {
+            background-color: var(--primary-color) !important;
+          }
+        }
+      }
+    }
+
+    // 禁用状态
+    .ant-checkbox-disabled {
+      .ant-checkbox-inner {
+        background-color: rgba(255, 255, 255, 0.04) !important;
+        border-color: rgba(255, 255, 255, 0.12) !important;
+      }
+    }
+  }
+
+
+  // 全局复选框样式（非表格内）
+  .ant-checkbox {
+    .ant-checkbox-inner {
+      background-color: rgba(255, 255, 255, 0.08) !important;
+      border: 1px solid rgba(255, 255, 255, 0.25) !important;
+      border-radius: 4px !important;
+    }
+
+    &:hover .ant-checkbox-inner {
+      border-color: var(--primary-color) !important;
+    }
+
+    &.ant-checkbox-checked .ant-checkbox-inner {
+      background-color: var(--primary-color) !important;
+      border-color: var(--primary-color) !important;
+    }
+  }
+}

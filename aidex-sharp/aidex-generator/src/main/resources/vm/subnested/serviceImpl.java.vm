@@ -1,0 +1,308 @@
+package ${packageName}.service.impl;
+##判断是否包含用户选择框的标志位
+#set( $hasUser = 0)
+##判断是否包含用户选择框的标志位
+#set( $hasDept = 0)
+##判断是否需要引入collectionUtil
+#set( $hasCollectionUtil = 0)
+#foreach($column in $columns)
+#if($column.htmlType == "user")
+#set( $hasUser = $hasUser + 1)
+#set( $hasCollectionUtil = $hasCollectionUtil + 1)
+#elseif($column.htmlType == "dept")
+#set( $hasDept = $hasDept + 1)
+#set( $hasCollectionUtil = $hasCollectionUtil + 1)
+#end   
+#end
+
+import java.util.List;
+import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import com.github.pagehelper.PageInfo;
+import com.aidex.common.core.domain.BaseEntity;
+import com.aidex.common.core.service.BaseServiceImpl;
+##引入用户工具类和用户对象
+#if($hasUser >0 )
+import com.aidex.framework.cache.UserUtils;
+import com.aidex.common.core.domain.entity.SysUser;
+#end
+##引入部门工具类和部门对象
+#if($hasDept >0 )
+import com.aidex.framework.cache.DeptUtils;
+import com.aidex.common.core.domain.entity.SysDept;
+#end
+#if($hasUser >0 || $hasDept >0 )
+import com.aidex.common.utils.StringUtils;
+#end
+import ${packageName}.mapper.${ClassName}Mapper;
+import ${packageName}.domain.${ClassName};
+import ${packageName}.service.${ClassName}Service;
+import org.springframework.transaction.annotation.Transactional;
+#if(${hasSubParam} == 'true')
+import ${packageName}.mapper.${subTableJavaNameCap}Mapper;
+import ${packageName}.domain.${subTableJavaNameCap};
+import org.springframework.beans.factory.annotation.Autowired;
+import com.aidex.common.exception.CustomException;
+#end
+##是否有排序字段
+#foreach($column in $columns)
+#if($column.columnName == "sort")
+import com.aidex.common.utils.NumberUtils;
+#break;
+#end
+#end
+##唯一性校验
+#foreach($column in $columns)
+#if($column.isUnique == "1")
+import com.aidex.common.exception.BizException;
+#set( $hasCollectionUtil = $hasCollectionUtil + 1)
+#break;
+#end
+#end
+##判断是否需要引入collectionUtil
+#if($hasCollectionUtil >0 )
+import org.springframework.util.CollectionUtils;
+#end
+
+/**
+ * ${functionName}Service业务层处理
+ * @author ${functionAuthor}
+ * @email ${functionAuthorEmail}
+ * @date ${datetime}
+ */
+@Service
+@Transactional(readOnly = true)
+public class ${ClassName}ServiceImpl extends BaseServiceImpl<${ClassName}Mapper, ${ClassName}> implements ${ClassName}Service {
+
+    private static final Logger log = LoggerFactory.getLogger(${ClassName}ServiceImpl.class);
+#if(${hasSubParam} == 'true')
+
+    @Autowired(required = false)
+    private ${subTableJavaNameCap}Mapper ${subTableJavaNameUnCap}Mapper;
+#end
+
+    /**
+     * 获取单条数据
+     * @param ${className} ${functionName}
+     * @return ${functionName}
+     */
+    @Override
+    public ${ClassName} get(${ClassName} ${className}) {
+        ${ClassName} dto = super.get(${className});
+#foreach($column in $columns)
+#set($javaField=$column.javaField)
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#if($column.htmlType == "user")
+        if (StringUtils.isNotEmpty(dto.get${AttrName}())){
+            SysUser sysUser = UserUtils.getSysUser(dto.get${AttrName}());
+			if (null != sysUser){
+				dto.set${AttrName}Name(sysUser.getName());
+			}
+        }
+#elseif($column.htmlType == "dept")
+        if (StringUtils.isNotEmpty(dto.get${AttrName}())){
+			SysDept sysDept = DeptUtils.getSysDept(dto.get${AttrName}());
+			if (null != sysDept){
+				dto.set${AttrName}Name(sysDept.getDeptName());
+			}
+        }
+#end
+#end
+        return dto;
+    }
+
+    /**
+     * 获取单条数据
+     * @param id ${functionName}id
+     * @return ${functionName}
+     */
+    @Override
+    public ${ClassName} get(String id) {
+        ${ClassName} dto = super.get(id);
+#foreach($column in $columns)
+#set($javaField=$column.javaField)
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#if($column.htmlType == "user")
+        if (StringUtils.isNotEmpty(dto.get${AttrName}())){
+			SysUser sysUser = UserUtils.getSysUser(dto.get${AttrName}());
+			if (null != sysUser){
+				dto.set${AttrName}Name(sysUser.getName());
+			}
+		}
+#elseif($column.htmlType == "dept")
+		if (StringUtils.isNotEmpty(dto.get${AttrName}())){
+			SysDept sysDept = DeptUtils.getSysDept(dto.get${AttrName}());
+			if (null != sysDept){
+				dto.set${AttrName}Name(sysDept.getDeptName());
+			}
+        }      
+#end
+#end
+        return dto;
+    }
+
+    /**
+     * 查询${functionName}列表
+     * @param ${className} ${functionName}
+     * @return ${functionName}
+     */
+    @Override
+    public List<${ClassName}> findList(${ClassName} ${className}) {
+		List<${ClassName}> ${className}List = super.findList(${className});
+		if (!CollectionUtils.isEmpty(${className}List)) {
+			${className}List.stream().forEach(dto -> {
+#foreach($column in $columns)
+#set($javaField=$column.javaField)
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#if($column.htmlType == "user")
+				if (StringUtils.isNotEmpty(dto.get${AttrName}())){
+					SysUser sysUser = UserUtils.getSysUser(dto.get${AttrName}());
+					if (null != sysUser){
+						dto.set${AttrName}Name(sysUser.getName());
+					}
+				}
+#elseif($column.htmlType == "dept")
+				if (StringUtils.isNotEmpty(dto.get${AttrName}())){
+					SysDept sysDept = DeptUtils.getSysDept(dto.get${AttrName}());
+					if (null != sysDept){
+						dto.set${AttrName}Name(sysDept.getDeptName());
+					}
+				}      
+#end
+#end
+			});
+		}
+        return super.findList(${className});
+    }
+
+    /**
+     * 分页查询${functionName}列表
+     * @param ${className} ${functionName}
+     * @return ${functionName}
+     */
+    @Override
+    public PageInfo<${ClassName}> findPage(${ClassName} ${className}) {
+		PageInfo<${ClassName}> page = super.findPage(${className});
+		if (!CollectionUtils.isEmpty(page.getList())) {
+            page.getList().stream().forEach(dto -> {
+#foreach($column in $columns)
+#set($javaField=$column.javaField)
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#if($column.htmlType == "user")
+				if (StringUtils.isNotEmpty(dto.get${AttrName}())){
+					SysUser sysUser = UserUtils.getSysUser(dto.get${AttrName}());
+					if (null != sysUser){
+						dto.set${AttrName}Name(sysUser.getName());
+					}
+				}
+#elseif($column.htmlType == "dept")
+				if (StringUtils.isNotEmpty(dto.get${AttrName}())){
+					SysDept sysDept = DeptUtils.getSysDept(dto.get${AttrName}());
+					if (null != sysDept){
+						dto.set${AttrName}Name(sysDept.getDeptName());
+					}
+				}      
+#end
+#end
+            });
+        }
+        return super.findPage(${className});
+    }
+
+    /**
+     * 保存${functionName}
+     * @param ${className}
+     * @return 结果
+     */
+    @Override
+    public boolean save(${ClassName} ${className}) {
+#foreach($column in $columns)
+#if($column.isUnique == "1")
+#set($attrName = $column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+        check${attrName}Unique(${className});
+#end
+#end
+        return super.save(${className});
+    }
+
+#foreach($column in $columns)
+#if($column.isUnique == "1")
+#set($attrName = $column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+    /**
+     * 校验${column.columnComment}的唯一性
+     * @param ${className}
+     */
+    @Override
+    public void check${attrName}Unique(${ClassName} ${className}) {
+        ${ClassName} ${className}Unique = new ${ClassName}();
+        ${className}Unique.setNotEqualId(${className}.getId());
+        ${className}Unique.set${attrName}(${className}.get${attrName}());
+        if (!CollectionUtils.isEmpty(mapper.findListWithUnique(${className}Unique))) {
+            throw new BizException("${column.columnComment}已存在，请重新输入！");
+        }
+    }
+
+#end
+#end
+#if($hasDisableEnable)
+    /**
+     * 更新${functionName}状态
+     * @param ${className}
+     * @return 结果
+     */
+    @Transactional(readOnly = false)
+    @Override
+    public int updateStatus(${ClassName} ${className}) {
+        return mapper.updateStatus(${className});
+    }
+
+#end
+    /**
+     * 删除${functionName}信息
+     * @param ${className}
+     * @return 结果
+     */
+    @Override
+    public boolean remove(${ClassName} ${className}) {
+        return super.remove(${className});
+    }
+
+    /**
+     * 批量删除${functionName}
+     * @param ids 需要删除的${functionName}ID
+     * @return 结果
+     */
+    @Transactional(readOnly = false)
+    @Override
+    public int delete${ClassName}ByIds(String[] ids) {
+#if(${hasSubParam} == 'true')
+        for (String id : ids)
+        {
+            ${subTableJavaNameCap} ${subTableJavaNameUnCap} = new ${subTableJavaNameCap}();
+            ${subTableJavaNameUnCap}.set${subTableFkNameCap}(id);
+            List<${subTableJavaNameCap}> ${subTableJavaNameUnCap}List = ${subTableJavaNameUnCap}Mapper.findList(${subTableJavaNameUnCap});
+            if (${subTableJavaNameUnCap}List.size() > 0)
+            {
+                throw new CustomException("子表存在数据,不能删除");
+            }
+        }
+#end
+        return mapper.delete${ClassName}ByIds(ids, BaseEntity.DEL_FLAG_DELETE);
+    }
+
+#foreach($column in $columns)
+#if($column.columnName == "sort")
+    /**
+     * 获取最大编号
+     * @param ${className} ${functionName}
+     * @return 结果
+     */
+    @Override
+    public int findMaxSort(${ClassName} ${className}) {
+        return NumberUtils.nextOrder(mapper.findMaxSort(${className}));
+    }
+#break
+#end
+#end
+}

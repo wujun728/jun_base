@@ -1,0 +1,32 @@
+// .ant-checkbox .ant-checkbox-inner:after {
+//   border-color: var(--ba-a-checkbox-icon);
+// }
+.ant-table-wrapper .ant-table-thead > tr > th,
+.ant-table-wrapper .ant-table-tbody > tr > td,
+.ant-table-wrapper tfoot > tr > th,
+.ant-table-wrapper tfoot > tr > td {
+  padding: 10px;
+}
+.ant-table-wrapper .ant-table-thead > tr > th,
+.ant-table-wrapper .ant-table-thead > tr > td {
+  background: var(--ba-bg-color-overlay);
+}
+
+.ant-table-cell {
+  background: var(--ba-bg-color-overlay);
+}
+
+// .ant-table-wrapper .ant-table-cell-fix-left,
+// .ant-table-wrapper .ant-table-cell-fix-right {
+//   background: var(--ba-bg-color-overlay);
+// }
+
+// .ant-btn-default:not(:disabled):hover {
+//   color: var(--ba-a-button-text-hover);
+//   // background-color: #313131;
+// }
+
+// .ant-btn-dashed:not(:disabled):hover {
+//   color: var(--ba-a-button-text-hover);
+//   // background-color: #313131;
+// }

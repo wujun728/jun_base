@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aidex.system.mapper.SysConfigMapper">
+    <sql id="configColumns">
+        a.id as "id",
+		a.config_name AS "configName",
+		a.config_key AS "configKey",
+		a.config_value AS "configValue",
+		a.config_type AS "configType",
+		a.create_by AS "createBy",
+		a.create_dept AS "createDept",
+		a.create_time AS "createTime",
+		a.update_by AS "updateBy",
+		a.update_time AS "updateTime",
+		a.update_ip AS "updateIp",
+		a.remark AS "remark",
+		a.version AS "version"
+	</sql>
+
+    <sql id="configJoins">
+
+    </sql>
+
+    <sql id="configOrderBy">
+		order by a.create_time desc
+	</sql>
+
+	<select id="get" resultType="SysConfig">
+		SELECT
+		<include refid="configColumns"/>
+		FROM sys_config a
+		<include refid="configJoins"/>
+		WHERE id =  #{id}
+	</select>
+
+	<select id="findList"  resultType="SysConfig">
+		SELECT
+		<include refid="configColumns"/>
+		FROM sys_config a
+		where a.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="configName != null and configName != ''">
+			AND config_name like concat('%', #{configName}, '%')
+		</if>
+		<if test="configType != null and configType != ''">
+			AND config_type = #{configType}
+		</if>
+		<if test="configKey != null and configKey != ''">
+			AND config_key like concat('%', #{configKey}, '%')
+		</if>
+		<if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+			and date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+		</if>
+		<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+			and date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+		</if>
+		<if test="notEqualId != null and notEqualId != ''">
+			AND id != #{notEqualId}
+		</if>
+		<include refid="configOrderBy"/>
+	</select>
+
+	<select id="findListWithUnique" resultType="SysConfig">
+		SELECT
+		<include refid="configColumns"/>
+		FROM sys_config a
+		where a.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="configName != null and configName != ''">
+			AND config_name = #{configName}
+		</if>
+		<if test="configKey != null and configKey != ''">
+			AND config_key = #{configKey}
+		</if>
+		<if test="notEqualId != null and notEqualId != ''">
+			AND id != #{notEqualId}
+		</if>
+	</select>
+
+	<update id="update" parameterType="SysConfig">
+		update sys_config
+		<set>
+			<if test="configName != null and configName != ''">
+				config_name = #{configName},
+			</if>
+			<if test="configKey != null and configKey != ''">
+				config_key = #{configKey},
+			</if>
+			<if test="configValue != null and configValue != ''">
+				config_value = #{configValue},
+			</if>
+			<if test="configType != null and configType != ''">
+				config_type = #{configType},
+			</if>
+			<if test="updateBy != null and updateBy != ''">
+				update_by = #{updateBy},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime},
+			</if>
+			<if test="updateIp != null and updateIp != ''">
+				update_ip = #{updateIp},
+			</if>
+			<if test="remark != null and remark != ''">
+				remark = #{remark},
+			</if>
+			version = version + 1
+		</set>
+		where id = #{id}
+	</update>
+
+    <insert id="insert" parameterType="SysConfig">
+        insert into sys_config (
+			id,
+			config_name,
+			config_key,
+			config_value,
+			config_type,
+			create_by,
+			create_dept,
+			create_time,
+			update_by,
+			update_time,
+			update_ip,
+			remark,
+			del_flag,
+			version
+        )values(
+			#{id},
+			#{configName},
+			#{configKey},
+			#{configValue},
+			#{configType},
+			#{createBy},
+			#{createDept},
+			#{createTime},
+			#{updateBy},
+			#{updateTime},
+			#{updateIp},
+			#{remark},
+			#{DEL_FLAG_NORMAL},
+			1
+		)
+    </insert>
+
+	<update id="delete" >
+		UPDATE sys_config SET
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+	<update id="deleteConfigByIds" parameterType="java.util.Map">
+		UPDATE sys_config SET
+		del_flag = #{DEL_FLAG_DELETE}
+		WHERE id in
+		<foreach collection="configIds" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</update>
+    
+</mapper>

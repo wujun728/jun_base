@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aidex.system.mapper.SysLoginLogMapper">
+	<sql id="sysLoginLogColumns">
+        a.id as "id",
+        a.user_name as "userName",
+        a.status as "status",
+        a.ipaddr as "ipaddr",
+        a.login_location as "loginLocation",
+        a.browser as "browser",
+        a.os as "os",
+        a.msg as "msg",
+        a.login_time as "loginTime"
+	</sql>
+
+	<sql id="sysLoginLogJoins">
+
+	</sql>
+
+	<sql id="sysLoginLogOrderBy">
+		order by a.login_time desc
+	</sql>
+
+	<select id="get" resultType="SysLoginLog">
+		SELECT
+		<include refid="sysLoginLogColumns"/>
+		FROM sys_login_log a
+		where id = #{id}
+	</select>
+
+	<select id="findList" resultType="SysLoginLog">
+		SELECT
+		<include refid="sysLoginLogColumns"/>
+		FROM sys_login_log a
+		<include refid="sysLoginLogJoins"/>
+		where a.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="ipaddr != null and ipaddr != ''">
+			AND ipaddr like concat('%', #{ipaddr}, '%')
+		</if>
+		<if test="msg != null and msg != ''">
+			AND msg like concat('%', #{msg}, '%')
+		</if>
+		<if test="status != null and status != ''">
+			AND status = #{status}
+		</if>
+		<if test="userName != null and userName != ''">
+			AND user_name like concat('%', #{userName}, '%')
+		</if>
+		<if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+			and date_format(login_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+		</if>
+		<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+			and date_format(login_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+		</if>
+		<include refid="sysLoginLogOrderBy"/>
+	</select>
+
+	<insert id="insert" parameterType="SysLoginLog">
+		insert into sys_login_log
+		(
+		id,
+		user_name,
+		status,
+		ipaddr,
+		login_location,
+		browser,
+		os,
+		msg,
+		login_time)
+		values
+		(
+		#{id},
+		#{userName},
+		#{status},
+		#{ipaddr},
+		#{loginLocation},
+		#{browser},
+		#{os},
+		#{msg},
+		sysdate(),
+		#{createBy})
+	</insert>
+
+	<insert id="addLoginLog" parameterType="SysLoginLog">
+		insert into sys_login_log
+		(
+		id,
+		user_name,
+		status,
+		ipaddr,
+		login_location,
+		browser,
+		os,
+		msg,
+		login_time)
+		values
+		(
+		#{id},
+		#{userName},
+		#{status},
+		#{ipaddr},
+		#{loginLocation},
+		#{browser},
+		#{os},
+		#{msg},
+		sysdate()
+		)
+	</insert>
+
+	<update id="deleteLoginLogByIds" parameterType="java.util.Map">
+		UPDATE sys_login_log SET
+		del_flag = #{DEL_FLAG_DELETE}
+		WHERE id in
+		<foreach collection="infoIds" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</update>
+
+    <update id="cleanLoginLog">
+        truncate table sys_login_log
+    </update>
+
+	<update id="deleteLoginLogBySaveDay" parameterType="java.lang.String">
+		delete from  sys_login_log where  datediff(SYSDATE(),login_time) >= #{saveDay}
+	</update>
+</mapper> 

@@ -1,0 +1,45 @@
+{
+  "name": "ruoyi-pritter-antd",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@ant-design/icons-vue": "^7.0.1",
+    "@vueup/vue-quill": "^1.5.3",
+    "@vueuse/core": "^14.3.0",
+    "ant-design-vue": "~4.2.6",
+    "axios": "0.27.2",
+    "dayjs": "^1.11.10",
+    "echarts": "^5.6.0",
+    "fast-glob": "^3.3.3",
+    "file-saver": "^2.0.5",
+    "js-cookie": "^3.0.8",
+    "jsencrypt": "^3.5.4",
+    "mitt": "^3.0.1",
+    "normalize.css": "^8.0.1",
+    "nprogress": "^0.2.0",
+    "pinia": "^3.0.4",
+    "pinia-plugin-persistedstate": "^4.1.3",
+    "prettier": "^3.8.4",
+    "screenfull": "^6.0.2",
+    "vue": "^3.5.34",
+    "vue-cropper": "^1.1.4",
+    "vue-draggable-plus": "^0.6.1",
+    "vue-router": "^5.1.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.6",
+    "sass": "1.70.0",
+    "unplugin-auto-import": "^21.0.0",
+    "unplugin-vue-components": "^32.1.0",
+    "unplugin-vue-setup-extend-plus": "^1.0.1",
+    "vite": "^8.0.12",
+    "vite-plugin-compression2": "^2.5.3",
+    "vite-plugin-svg-icons": "^2.0.1"
+  }
+}

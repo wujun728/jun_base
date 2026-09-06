@@ -1,0 +1,27 @@
+{
+  "name": "Aidex",
+  "version": "2.3.0",
+  "description": "Aidex 移动端快速开发框架",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitee.com/aidex/aidex-uniapp.git"
+  },
+  "keywords": [
+    "Aidex",
+    "快速开发平台"
+  ],
+  "author": "aidex",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aidex/aidex-uniapp/issues"
+  },
+  "homepage": "https://github.com/aidex/aidex-uniapp#readme",
+  "dependencies": {
+    "@icon-park/vue": "^1.3.5",
+    "vue-i18n": "^8.20.0"
+  }
+}

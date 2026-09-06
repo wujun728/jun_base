@@ -1,0 +1,43 @@
+package ${packageName}.mapper;
+
+import com.aidex.common.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+import ${packageName}.domain.${ClassName};
+
+/**
+ * ${functionName}Mapper接口
+ * @author ${functionAuthor}
+ * @email ${functionAuthorEmail}
+ * @date ${datetime}
+ */
+public interface ${ClassName}Mapper extends BaseMapper<${ClassName}>
+{
+#if($hasDisableEnable)
+    /**
+     * 更新${functionName}状态
+     * @param ${className} ${functionName}
+     * @return 结果
+     */
+    public int updateStatus(${ClassName} ${className});
+#end
+
+    /**
+     * 批量删除${functionName}
+     * @param ids 需要删除的${functionName}ID集合
+     * @return
+     */
+    public int delete${ClassName}ByIds(@Param("ids") String[] ids, @Param("DEL_FLAG_DELETE") String DEL_FLAG_DELETE);
+
+#foreach($column in $columns)
+#if($column.columnName == "sort")
+    /**
+     * 获取最大编号
+     * @param ${className} ${functionName}
+     * @return 结果
+     */
+    public Integer findMaxSort(${ClassName} ${className});
+#break
+#end
+#end
+
+}

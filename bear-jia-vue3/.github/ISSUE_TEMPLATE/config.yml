@@ -1,0 +1,9 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://github.com/javaxiaobear/BearJia
+    about: Check the README and docs first.
+  - name: Security issues
+    url: https://github.com/javaxiaobear/BearJia/security/policy
+    about: Please report security vulnerabilities privately.
+

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aidex.system.mapper.SysDictDataMapper">
+	<sql id="dictDataColumns">
+        a.id as "id",
+        a.dict_code as "dictCode",
+        a.dict_sort as "dictSort",
+        a.dict_label as "dictLabel",
+        a.dict_value as "dictValue",
+        a.dict_type as "dictType",
+        a.css_class as "cssClass",
+        a.list_class as "listClass",
+        a.is_default as "isDefault",
+        a.status as "status",
+		a.create_by AS "createBy",
+		a.create_dept AS "createDept",
+		a.create_time AS "createTime",
+		a.update_by AS "updateBy",
+		a.update_time AS "updateTime",
+		a.update_ip AS "updateIp",
+		a.remark AS "remark",
+		a.version AS "version"
+	</sql>
+
+	<sql id="dictDataJoins">
+
+	</sql>
+
+	<sql id="dictDataOrderBy">
+		order by a.dict_sort
+	</sql>
+
+	<select id="get" resultType="SysDictData">
+		SELECT
+		<include refid="dictDataColumns"/>
+		FROM sys_dict_data a
+		where id = #{id}
+	</select>
+
+	<select id="findList" resultType="SysDictData">
+		SELECT
+		<include refid="dictDataColumns"/>
+		FROM sys_dict_data a
+		<include refid="dictDataJoins"/>
+		where a.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="dictType != null and dictType != ''">
+			AND dict_type = #{dictType}
+		</if>
+		<if test="dictLabel != null and dictLabel != ''">
+			AND dict_label like concat('%', #{dictLabel}, '%')
+		</if>
+		<if test="dictValue != null and dictValue != ''">
+			AND dict_value =  #{dictValue}
+		</if>
+		<if test="status != null and status != ''">
+			AND status = #{status}
+		</if>
+		<include refid="dictDataOrderBy"/>
+	</select>
+
+	<select id="findListWithUnique" resultType="SysDictData">
+		SELECT
+		<include refid="dictDataColumns"/>
+		FROM sys_dict_data a
+		where a.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="dictType != null and dictType != ''">
+			AND dict_type = #{dictType}
+		</if>
+		<if test="dictValue != null and dictValue != ''">
+			AND dict_value = #{dictValue}
+		</if>
+		<if test="notEqualId != null and notEqualId != ''">
+			AND id != #{notEqualId}
+		</if>
+	</select>
+
+ 	<update id="deleteDictDataByIds" parameterType="java.util.Map">
+		UPDATE sys_dict_data SET
+		del_flag = #{DEL_FLAG_DELETE}
+		WHERE id in
+		<foreach collection="dictDataIds" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+ 	</update>
+	
+	<update id="update" parameterType="SysDictData">
+ 		update sys_dict_data
+ 		<set>
+ 			<if test="dictSort != null">
+ 				dict_sort = #{dictSort},
+			</if>
+ 			<if test="dictLabel != null and dictLabel != ''">
+ 				dict_label = #{dictLabel},
+			</if>
+ 			<if test="dictValue != null and dictValue != ''">
+ 				dict_value = #{dictValue},
+			</if>
+ 			<if test="dictType != null and dictType != ''">
+ 				dict_type = #{dictType},
+			</if>
+ 			<if test="cssClass != null">
+ 				css_class = #{cssClass},
+			</if>
+ 			<if test="listClass != null">
+ 				list_class = #{listClass},
+			</if>
+ 			<if test="isDefault != null and isDefault != ''">
+ 				is_default = #{isDefault},
+			</if>
+ 			<if test="status != null">
+ 				status = #{status},
+			</if>
+ 			<if test="remark != null">
+ 				remark = #{remark},
+			</if>
+ 			<if test="updateBy != null and updateBy != ''">
+ 				update_by = #{updateBy},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime},
+			</if>
+			<if test="updateIp != null and updateIp != ''">
+				update_ip = #{updateIp},
+			</if>
+			version = version + 1
+ 		</set>
+ 		where id = #{id}
+	</update>
+	
+	<update id="updateDictDataType" parameterType="String">
+ 		update sys_dict_data set dict_type = #{newDictType} where dict_type = #{oldDictType}
+	</update>
+ 	
+ 	<insert id="insert" parameterType="SysDictData">
+ 		insert into sys_dict_data(
+ 			id,
+ 			dict_sort,
+ 			dict_label,
+ 			dict_value,
+ 			dict_type,
+ 			css_class,
+ 			list_class,
+ 			is_default,
+ 			status,
+ 			create_by,
+			create_dept,
+			create_time,
+			update_by,
+			update_time,
+			update_ip,
+			remark,
+			del_flag,
+			version
+ 		)values(
+ 			#{id},
+ 		    #{dictSort},
+ 		    #{dictLabel},
+ 			#{dictValue},
+ 			#{dictType},
+ 			#{cssClass},
+ 			#{listClass},
+ 			#{isDefault},
+ 			#{status},
+ 			#{createBy},
+			#{createDept},
+			#{createTime},
+			#{updateBy},
+			#{updateTime},
+			#{updateIp},
+			#{remark},
+			#{DEL_FLAG_NORMAL},
+			1
+ 		)
+	</insert>
+
+	<delete id="delete">
+		UPDATE sys_dict_data SET
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</delete>
+
+	<select id="findMaxSort" resultType="Integer">
+		SELECT max(a.dict_sort)
+		FROM sys_dict_data a
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		and a.dict_type = #{dictType}
+	</select>
+</mapper> 

@@ -1,0 +1,216 @@
+@import '../theme.less';
+
+// 按钮基础样式
+.ant-btn {
+  transition: all 0.2s ease;
+  margin-right: 8px;
+  border-radius: 6px;
+}
+
+// 主要按钮样式
+.ant-btn-primary {
+  color: var(--btn-primary-color);
+  background-color: var(--btn-primary-bg);
+
+  &:active {
+    color: var(--btn-primary-color);
+    background-color: var(--btn-active-bg);
+    border-color: var(--btn-active-bg);
+  }
+}
+
+// 暗色主题下的按钮样式
+.dark-theme {
+  // 普通按钮 - 使用透明背景和极淡边框
+  .ant-btn:not(.ant-btn-primary):not(.ant-btn-link):not(.ant-btn-text) {
+    background-color: transparent !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: var(--text-secondary) !important;
+    box-shadow: none !important;
+
+    &:hover {
+      border-color: var(--primary-color) !important;
+      color: var(--primary-color) !important;
+      background-color: rgba(255, 255, 255, 0.05) !important;
+    }
+
+    // 针对危险类型的普通按钮（如操作栏的删除）
+    &.ant-btn-dangerous {
+      border-color: rgba(255, 77, 79, 0.3) !important;
+      color: #ff4d4f !important;
+
+      &:hover {
+        background-color: rgba(255, 77, 79, 0.1) !important;
+        border-color: #ff4d4f !important;
+      }
+    }
+  }
+
+  // 主按钮
+  .ant-btn-primary {
+    color: #fff !important;
+    background-color: var(--primary-color) !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(24, 144, 255, 0.2) !important;
+
+    &:hover {
+      background-color: var(--primary-color-hover) !important;
+      box-shadow: 0 6px 16px rgba(24, 144, 255, 0.3) !important;
+    }
+
+    // 针对危险类型的主按钮
+    &.ant-btn-dangerous {
+      background-color: #ff4d4f !important;
+      color: #fff !important;
+
+      &:hover {
+        background-color: #ff7875 !important;
+      }
+    }
+  }
+
+  // 文字按钮和链接按钮 - 无背景无边框
+  .ant-btn-link,
+  .ant-btn-text {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: var(--primary-color);
+
+    &:hover {
+      color: var(--primary-color-hover);
+      background-color: transparent !important;
+    }
+  }
+}
+
+// ========== 表格操作按钮 - 文字链接样式 ==========
+// 查看按钮
+.view-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  font-size: 13px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  background-color: transparent;
+  border: none;
+  color: #1677ff;
+
+  &:hover {
+    color: #40a9ff;
+    text-decoration: underline;
+  }
+}
+
+// 编辑按钮
+.edit-btn {
+  background-color: transparent;
+  border: none;
+  color: #faad14;
+
+  &:hover {
+    color: #ffc53d;
+    text-decoration: underline;
+  }
+}
+
+// 删除按钮
+.delete-btn {
+  background-color: transparent;
+  border: none;
+  color: #ff4d4f;
+
+  &:hover {
+    color: #ff7875;
+    text-decoration: underline;
+  }
+}
+
+// 新增按钮样式
+.add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+}
+
+// 暗色主题下的操作按钮
+.dark-theme {
+  .view-btn {
+    color: var(--primary-color);
+
+    &:hover {
+      color: var(--primary-color-hover);
+    }
+  }
+
+  .edit-btn {
+    color: #faad14;
+
+    &:hover {
+      color: #ffc53d;
+    }
+  }
+
+  .delete-btn {
+    color: #ff4d4f;
+
+    &:hover {
+      color: #ff7875;
+    }
+  }
+}
+
+// ========== 搜索表单按钮样式优化 ==========
+.search-form,
+.search-actions {
+  // 减少按钮间距
+  .ant-space {
+    gap: 8px !important;
+  }
+
+  .ant-space-item {
+    margin-right: 0 !important;
+  }
+
+  // 按钮通用调整
+  .ant-btn {
+    margin-right: 0 !important;
+    padding: 4px 16px !important;
+    height: 32px !important;
+    border-radius: 6px !important;
+  }
+}
+
+.dark-theme {
+  .search-form,
+  .search-actions {
+    // 查询按钮 - 主色调实心按钮
+    .ant-btn-primary {
+      background-color: var(--primary-color) !important;
+      border-color: var(--primary-color) !important;
+      color: #fff !important;
+
+      &:hover {
+        background-color: var(--primary-color-hover) !important;
+        border-color: var(--primary-color-hover) !important;
+      }
+    }
+
+    // 重置按钮 - 幽灵按钮样式（透明背景+边框）
+    .ant-btn:not(.ant-btn-primary) {
+      background-color: transparent !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      color: var(--text-secondary) !important;
+
+      &:hover {
+        border-color: var(--primary-color) !important;
+        color: var(--primary-color) !important;
+        background-color: rgba(96, 165, 250, 0.08) !important;
+      }
+    }
+  }
+}

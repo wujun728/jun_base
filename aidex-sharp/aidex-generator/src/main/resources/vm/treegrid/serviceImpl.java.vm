@@ -1,0 +1,559 @@
+package ${packageName}.service.impl;
+
+##判断是否包含用户选择框的标志位
+#set( $hasUser = 0)
+##判断是否包含用户选择框的标志位
+#set( $hasDept = 0)
+#foreach($column in $columns)
+#if($column.htmlType == "user")
+#set( $hasUser = $hasUser + 1)
+#elseif($column.htmlType == "dept")
+#set( $hasDept = $hasDept + 1)
+#end   
+#end
+import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import com.alibaba.fastjson2.JSONObject;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.apache.commons.collections.CollectionUtils;
+import com.aidex.common.constant.Constants;
+import com.aidex.common.utils.StringUtils;
+import com.aidex.common.core.domain.BaseEntity;
+import com.aidex.common.exception.BizException;
+import com.aidex.common.core.domain.TreeNode;
+import com.aidex.common.utils.uuid.IdUtils;
+import com.aidex.common.core.domain.entity.SysUser;
+import com.aidex.common.core.domain.entity.SysDept;
+import com.aidex.common.core.service.BaseTreeServiceImpl;
+import com.aidex.framework.cache.DeptUtils;
+import com.aidex.framework.cache.UserUtils;
+import ${packageName}.mapper.${ClassName}Mapper;
+import ${packageName}.domain.${ClassName};
+import ${packageName}.service.${ClassName}Service;
+##是否有排序字段
+#foreach($column in $columns)
+#if($column.columnName == "tree_sort")
+import com.aidex.common.utils.NumberUtils;
+#break;
+#end
+#end
+##唯一性校验
+#foreach($column in $columns)
+#if($column.isUnique == "1")
+import com.aidex.common.exception.BizException;
+#break;
+#end
+#end
+
+/**
+ * ${functionName}Service业务层处理
+ * @author ${functionAuthor}
+ * @email ${functionAuthorEmail}
+ * @date ${datetime}
+ */
+@Service
+@Transactional(readOnly = true)
+public class ${ClassName}ServiceImpl extends BaseTreeServiceImpl<${ClassName}Mapper, ${ClassName}> implements ${ClassName}Service
+{
+    private static final Logger log = LoggerFactory.getLogger(${ClassName}ServiceImpl.class);
+
+    private static final int ID_LIMIT = 500;
+	
+	/**
+     * 获取单条数据
+     * @param ${className} ${functionName}
+     * @return ${functionName}
+     */
+    @Override
+    public ${ClassName} get(${ClassName} ${className}) {
+        ${ClassName} dto = super.get(${className});
+#foreach($column in $columns)
+#set($javaField=$column.javaField)
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#if($column.htmlType == "user")
+        if (StringUtils.isNotEmpty(dto.get${AttrName}())){
+            SysUser sysUser = UserUtils.getSysUser(dto.get${AttrName}());
+			if (null != sysUser){
+				dto.set${AttrName}Name(sysUser.getName());
+			}
+        }
+#elseif($column.htmlType == "dept")
+        if (StringUtils.isNotEmpty(dto.get${AttrName}())){
+			SysDept sysDept = DeptUtils.getSysDept(dto.get${AttrName}());
+			if (null != sysDept){
+				dto.set${AttrName}Name(sysDept.getDeptName());
+			}
+        }
+#end
+#end
+        return dto;
+    }
+	
+	/**
+     * 获取单条数据
+     * @param id ${functionName}id
+     * @return ${functionName}
+     */
+    @Override
+    public ${ClassName} get(String id) {
+        ${ClassName} dto = super.get(id);
+#foreach($column in $columns)
+#set($javaField=$column.javaField)
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#if($column.htmlType == "user")
+        if (StringUtils.isNotEmpty(dto.get${AttrName}())){
+			SysUser sysUser = UserUtils.getSysUser(dto.get${AttrName}());
+			if (null != sysUser){
+				dto.set${AttrName}Name(sysUser.getName());
+			}
+		}
+#elseif($column.htmlType == "dept")
+		if (StringUtils.isNotEmpty(dto.get${AttrName}())){
+			SysDept sysDept = DeptUtils.getSysDept(dto.get${AttrName}());
+			if (null != sysDept){
+				dto.set${AttrName}Name(sysDept.getDeptName());
+			}
+        }      
+#end
+#end
+        return dto;
+    }
+
+    /**
+     * 根据展开层级和父节点递归获取展示的数据
+     * @param level 展开层级
+     * @param id 父节点ID
+     * @return
+     */
+    @Override
+    public List<${ClassName}> listDataByLevel(int level, String id) {
+        List<${ClassName}> listData = new ArrayList<${ClassName}>();
+        level--;
+        List<${ClassName}> childrenList = findChildListByParentId(id);
+        for (${ClassName} dto : childrenList) {
+            if ("n".equals(dto.getTreeLeaf()) && level != 0) {
+                dto.setChildren(this.listDataByLevel(level, dto.getId()));
+            } else {
+                dto.setChildren(new ArrayList<>());
+            }
+            listData.add(dto);
+        }
+        return listData;
+    }
+
+    /**
+     * 根据父ID查询当前子节点集合
+     * @param parentId 父节点ID
+     * @return
+     */
+    @Override
+    public List<${ClassName}> findChildListByParentId(String parentId) {
+        ${ClassName} ${className} = new ${ClassName}();
+        ${className}.setParentId(parentId);
+		List<${ClassName}> ${className}List = super.findList(${className});
+#if($hasUser >0 || $hasDept >0)
+		if (!CollectionUtils.isEmpty(${className}List)) {
+			${className}List.stream().forEach(dto -> {
+#foreach($column in $columns)
+#set($javaField=$column.javaField)
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#if($column.htmlType == "user")
+				if (StringUtils.isNotEmpty(dto.get${AttrName}())){
+					SysUser sysUser = UserUtils.getSysUser(dto.get${AttrName}());
+					if (null != sysUser){
+						dto.set${AttrName}Name(sysUser.getName());
+					}
+				}
+#elseif($column.htmlType == "dept")
+				if (StringUtils.isNotEmpty(dto.get${AttrName}())){
+					SysDept sysDept = DeptUtils.getSysDept(dto.get${AttrName}());
+					if (null != sysDept){
+						dto.set${AttrName}Name(sysDept.getDeptName());
+					}
+				}      
+#end
+#end
+			});
+		}
+#end
+        return ${className}List;
+    }
+
+    /**
+     * 构建前端所需要树结构
+     * @param level    展开层级
+     * @param parentId 父节点ID
+     * @return
+     */
+    @Override
+    public List<TreeNode> buildTree(int level, String parentId){
+        ${ClassName} ${className} = new ${ClassName}();
+		${className}.setId(StringUtils.EMPTY);
+        return this.buildTreeDataExcludeChild(level, parentId, ${className});
+    }
+
+    /**
+     * 递归构建前端所需要树结构
+     * @param level     展开层级
+     * @param parentId  父节点ID
+     * @param exclude${ClassName} 排除节点信息
+     * @return
+     */
+	@Override
+    public List<TreeNode> buildTreeDataExcludeChild(int level, String parentId, ${ClassName} exclude${ClassName}) {
+        List<TreeNode> listData = new ArrayList<TreeNode>();
+        level--;
+        ${ClassName} ${className}Query = new ${ClassName}();
+        ${className}Query.setParentId(parentId);
+        ${className}Query.setStatus(BaseEntity.STATUS_NORMAL);
+        List<${ClassName}> ${className}List = super.findList(${className}Query);
+        for (${ClassName} ${className} : ${className}List) {
+            if (!${className}.getId().equals(exclude${ClassName}.getId())) {
+                TreeNode treeNode = this.convertTreeNodeData(${className});
+                if ("n".equals(${className}.getTreeLeaf()) && level != 0) {
+                    treeNode.setChildren(this.buildTreeDataExcludeChild(level, ${className}.getId(), exclude${ClassName}));
+                } else {
+                    treeNode.setChildren(null);
+                }
+				
+                //判断父节点的加好是否需要展开：如果没有兄弟节点，则该父节点收起来
+                if(${className}.getId().equals(exclude${ClassName}.getParentId())){
+                    if (CollectionUtils.isEmpty(treeNode.getChildren())) {
+                        treeNode.setIsLeaf(true);
+                    }
+                }
+				
+                //不展开节点的父节点数据处理
+                if (CollectionUtils.isEmpty(treeNode.getChildren())) {
+                    treeNode.setChildren(null);
+                }
+                listData.add(treeNode);
+            }
+        }
+        return listData;
+    }
+
+    /**
+     * 保存${functionName}
+     * @param ${className}
+     * @return
+     */
+    @Override
+    public boolean save(${ClassName} ${className})
+    {
+#foreach($column in $columns)
+#if($column.isUnique == "1")
+#set($attrName = $column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+        check${attrName}Unique(${className});
+#end
+#end
+        ${ClassName} parent${ClassName} = mapper.get(${className}.getParentId());
+        if (StringUtils.isEmpty(${className}.getId())) {
+            if (null != parent${ClassName}) {
+                setTreeProperties(${className}, null, Constants.OpType.insert);
+                super.save(${className});
+            } else {
+                //新增根节点
+                ${className}.setId(IdUtils.randomUUID());
+                ${className}.setNewRecord(true);
+                ${className}.setParentIds(${className}.getId());
+                // 设置当前树全路径排序
+                Integer treeSort = ${className}.getTreeSort();
+                String treeSorts = String.format("%06d", treeSort);
+                ${className}.setTreeSorts(treeSorts);
+                ${className}.setTreeLeaf(Constants.TREE_LEAF_Y);
+                // 设置当前节点级别.
+                ${className}.setTreeLevel(1);
+                super.save(${className});
+            }
+        } else {
+            ${ClassName} old${ClassName} = mapper.get(${className});
+            List<${ClassName}> updateChildList = new ArrayList<${ClassName}>();
+            if (isUpdateTreeProperties(${className}, old${ClassName})) {
+                setTreeProperties(${className}, old${ClassName}, Constants.OpType.update);
+                updateChildList = updateChildTreeProperties(${className}, old${ClassName});
+                if (!CollectionUtils.isEmpty(updateChildList)) {
+                    mapper.update${ClassName}Children(updateChildList);
+                }
+            }
+            parent${ClassName} = mapper.get(${className}.getParentId());
+            // 新的父节点变更为非叶子节点
+            if (!Constants.TREE_ROOT.equals(${className}.getParentId())
+                    && parent${ClassName}.getTreeLeaf().equals(Constants.TREE_LEAF_Y)) {
+                parent${ClassName}.setTreeLeaf(Constants.TREE_LEAF_N);
+                super.save(parent${ClassName});
+            }
+
+            String oldParentId = old${ClassName}.getParentId();
+            super.save(${className});
+            // 判断原节点是否还有子节点，否则改为叶子节点
+            if (!hasChildByParentId(oldParentId)) {
+                ${ClassName} oldParent${ClassName} = mapper.get(oldParentId);
+                oldParent${ClassName}.setTreeLeaf(Constants.TREE_LEAF_Y);
+                super.save(oldParent${ClassName});
+            }
+        }
+        return Boolean.TRUE;
+    }
+	
+#if($hasDisableEnable)
+    /**
+     * 更新${functionName}状态
+     * @param ${className}
+     * @return 结果
+     */
+    @Transactional(readOnly = false)
+    @Override
+    public int updateStatus(${ClassName} ${className}) {
+        return mapper.updateStatus(${className});
+    }
+#end
+
+    /**
+     * 删除${functionName}信息
+     * @param ${className}
+     * @return
+     */
+    @Override
+    public boolean remove(${ClassName} ${className})
+    {
+        ${className} = get(${className});
+        if (hasChildByParentId(${className}.getId()))
+        {
+            throw new BizException("存在子节点数据,不允许删除");
+        }
+        super.remove(${className});
+        //判断当前父节点下还是否有子节点，如果没有，则需要把父节点置为叶子节点
+        ${ClassName} parent${ClassName} = mapper.get(${className}.getParentId());
+        if (findChildCountById(${className}.getParentId()) == 0) {
+            parent${ClassName}.setTreeLeaf(Constants.TREE_LEAF_Y);
+            super.save(parent${ClassName});
+        }
+        return Boolean.TRUE;
+    }
+
+    /**
+     * 是否存在子节点
+     * @param parentId 部门ID
+     * @return 结果
+     */
+    @Override
+    public boolean hasChildByParentId(String parentId) {
+        int result = findChildCountById(parentId);
+        return result > 0;
+    }
+
+    /**
+    * 查询子节点数量
+    * @param parentId
+    * @return
+    */
+    private Integer findChildCountById(String parentId) {
+        ${ClassName} ${className} = new ${ClassName}();
+        ${className}.setParentId(parentId);
+        return mapper.findCount(${className});
+    }
+
+
+    /**
+     * 树表格检索
+     * @param queryParams 检索对象
+     * @return
+     */
+    @Override
+    public List<${ClassName}> search${ClassName}List(${ClassName} queryParams){
+        List<${ClassName}> ${className}List = new ArrayList<${ClassName}>();
+        List<${ClassName}> searchNodes = mapper.search${ClassName}Tree(queryParams);
+        if (!CollectionUtils.isEmpty(searchNodes)){
+            Set<String> treeIdSet = getTreeIdByTreePath(searchNodes);
+            int i = 0;
+            //考虑mybatis foreach的限制，所以定义参数格式为list内还是list
+            List<List<String>> idsList = new ArrayList<List<String>>();
+            List<String> idList = new ArrayList<String>();
+            for (String treeId : treeIdSet) {
+                //当id个数超出限制后，则新new一个list来存放
+                if(i % ID_LIMIT == 0 && i > 0){
+                    idsList.add(idList);
+                    idList = new ArrayList<String>();
+                }
+                idList.add(treeId);
+                i++;
+            }
+            idsList.add(idList);
+            List<${ClassName}> allNodes = mapper.search${ClassName}TreeByIds(idsList);
+            ${className}List = createTreeGridData(allNodes);
+        }
+        return ${className}List;
+    }
+	
+	/**
+     * 树检索
+     * @param queryParams 检索对象
+     * @return
+     */
+    @Override
+    public List<TreeNode> search${ClassName}(${ClassName} queryParams){
+        List<TreeNode> ${className}List = new ArrayList<TreeNode>();
+        List<${ClassName}> searchNodes = mapper.search${ClassName}Tree(queryParams);
+        if (!CollectionUtils.isEmpty(searchNodes)){
+            Set<String> treeIdSet = getTreeIdByTreePath(searchNodes);
+            int i = 0;
+            //考虑mybatis foreach的限制，所以定义参数格式为list内还是list
+            List<List<String>> idsList = new ArrayList<List<String>>();
+            List<String> idList = new ArrayList<String>();
+            for (String treeId : treeIdSet) {
+                //当id个数超出限制后，则新new一个list来存放
+                if(i % ID_LIMIT == 0 && i > 0){
+                    idsList.add(idList);
+                    idList = new ArrayList<String>();
+                }
+                idList.add(treeId);
+                i++;
+            }
+            idsList.add(idList);
+            List<${ClassName}> allNodes = mapper.search${ClassName}TreeByIds(idsList);
+            ${className}List = createTreeData(allNodes);
+        }
+        return ${className}List;
+    }
+
+    /**
+     * 根据parentIds去重
+     * @param entityNodes entityNodes
+     */
+    private Set<String> getTreeIdByTreePath(List<${ClassName}> entityNodes) {
+        Set<String> treeIdSet = new HashSet<String>();
+        for (${ClassName} dto : entityNodes) {
+            String treePath = dto.getParentIds();
+            treeIdSet.addAll(Arrays.asList(treePath.split("/")));
+        }
+        return treeIdSet;
+    }
+
+    /**
+     *  构建树形结构
+     * @param entityNodes 节点集合
+     * @return List<${ClassName}>
+     */
+    private List<${ClassName}> createTreeGridData(List<${ClassName}> entityNodes) {
+        List<${ClassName}> treeList = new ArrayList<${ClassName}>();
+        for (${ClassName} ${className} : entityNodes) {
+            //找到根节点
+            if (Constants.TREE_ROOT.equals(${className}.getParentId())) {
+                treeList.add(${className});
+            }
+            List<${ClassName}> children = new ArrayList<${ClassName}>();
+            //再次遍历list，找到子节点
+            for (${ClassName} node : entityNodes) {
+                if (node.getParentId().equals(${className}.getId())) {
+                    children.add(node);
+                }
+            }
+            ${className}.setChildren(children);
+        }
+        return treeList;
+    }
+	
+	/**
+     *  构建树形结构
+     * @param entityNodes 节点集合
+     * @return List<VueNode>
+     */
+    private List<TreeNode> createTreeData(List<${ClassName}> entityNodes) {
+        List<TreeNode> list = convertTreeNodeDatas(entityNodes);
+        List<TreeNode> treeList = new ArrayList<TreeNode>();
+        for (TreeNode treeNode : list) {
+            //找到根节点
+            if (Constants.TREE_ROOT.equals(treeNode.getParentId())) {
+                treeList.add(treeNode);
+            }
+            List<TreeNode> children = new ArrayList<TreeNode>();
+            //再次遍历list，找到子节点
+            for (TreeNode node : list) {
+                if (node.getParentId().equals(treeNode.getId())) {
+                    children.add(node);
+                }
+            }
+            treeNode.setChildren(children);
+        }
+        return treeList;
+    }
+	
+	/**
+     * 转换前端树节点
+     * @param listData 树表格数据
+     * @return 
+     */
+    private List<TreeNode> convertTreeNodeDatas(List<${ClassName}> listData) {
+        List<TreeNode> treeNodes = new ArrayList<TreeNode>();
+        for (${ClassName} node : listData) {
+            TreeNode treeNode = convertTreeNodeData(node);
+            treeNodes.add(treeNode);
+        }
+        return treeNodes;
+    }
+
+    /**
+     * 将实体类转化成前端对象格式
+     * @param node 树表格对象
+     * @return 
+     */
+    private TreeNode convertTreeNodeData(${ClassName} node) {
+        TreeNode treeNode = new TreeNode();
+        treeNode.setId(node.getId());
+        treeNode.setKey(node.getId());
+        treeNode.setTitle(node.get${TreeName}());
+        treeNode.setLabel(node.get${TreeName}());
+        treeNode.setSelectable(true);
+        treeNode.setDisabled(false);
+        treeNode.setDisableCheckbox(false);
+        treeNode.setParentId(node.getParentId());
+        treeNode.setParentIds(node.getParentIds());
+        HashMap<String,Object> attr = new HashMap<>();
+        attr.put("treeLeaf", node.getTreeLeaf());
+        attr.put("treeLevel", node.getTreeLevel());
+        attr.put("treePath", node.getParentIds());
+        treeNode.setAttributes(attr);
+        treeNode.setIsLeaf(Constants.TREE_LEAF_Y.equals(node.getTreeLeaf()) ? true : false);
+        JSONObject slotsValue = new JSONObject();
+        treeNode.setSlots(slotsValue);
+        JSONObject scopedSlotsValue = new JSONObject();
+		scopedSlotsValue.put("title","title");
+        treeNode.setScopedSlots(scopedSlotsValue);
+        return treeNode;
+    }
+
+#foreach($column in $columns)
+#if($column.isUnique == "1")
+#set($attrName = $column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+    /**
+     * 校验${column.columnComment}的唯一性
+     * @param ${className}
+     * @return
+     */
+    @Override
+    public void check${attrName}Unique(${ClassName} ${className}){
+        ${ClassName} ${className}Unique = new ${ClassName}();
+        ${className}Unique.setNotEqualId(${className}.getId());
+        ${className}Unique.set${attrName}(${className}.get${attrName}());
+        if (!CollectionUtils.isEmpty(mapper.findListWithUnique(${className}Unique))) {
+            throw new BizException("${column.columnComment}已存在，请重新输入！");
+        }
+    }
+
+#end
+#end
+
+    /**
+     * 获取最大编号
+     * @param ${className}
+     * @return
+     */
+    @Override
+    public Integer findMaxSort(${ClassName} ${className})
+    {
+        return NumberUtils.nextOrder(super.findMaxSort(${className}));
+    }
+}

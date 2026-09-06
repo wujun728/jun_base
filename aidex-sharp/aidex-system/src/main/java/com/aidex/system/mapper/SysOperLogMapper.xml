@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aidex.system.mapper.SysOperLogMapper">
+
+	<sql id="sysOperLogColumns">
+        a.id as "id",
+        a.title as "title",
+        a.oper_id as "operId",
+        a.business_type as "businessType",
+        a.method as "method",
+        a.request_method as "requestMethod",
+        a.operator_type as "operatorType",
+        a.oper_name as "operName",
+        a.dept_name as "deptName",
+        a.oper_url as "operUrl",
+        a.oper_ip as "operIp",
+        a.oper_location as "operLocation",
+        a.oper_param as "operParam",
+        a.json_result as "jsonResult",
+        a.log_content as "logContent",
+        a.form_id as "formId",
+        a.take_up_time as "takeUpTime",
+        a.status as "status",
+        a.error_msg as "errorMsg",
+        a.oper_time as "operTime"
+	</sql>
+
+	<sql id="sysOperLogJoins">
+
+	</sql>
+
+	<sql id="sysOperLogOrderBy">
+		order by a.oper_time desc
+	</sql>
+
+	<select id="get" resultType="SysOperLog">
+		SELECT
+		<include refid="sysOperLogColumns"/>
+		FROM sys_oper_log a
+		where id = #{id}
+	</select>
+
+	<select id="findList" resultType="SysOperLog">
+		SELECT
+		<include refid="sysOperLogColumns"/>
+		FROM sys_oper_log a
+		<include refid="sysOperLogJoins"/>
+		where a.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="title != null and title != ''">
+			AND title like concat('%', #{title}, '%')
+		</if>
+		<if test="businessType != null and businessType != ''">
+			AND business_type = #{businessType}
+		</if>
+		<if test="businessTypes != null and businessTypes.length > 0">
+			AND business_type in
+			<foreach collection="businessTypes" item="businessType" open="(" separator="," close=")">
+				#{businessType}
+			</foreach>
+		</if>
+		<if test="status != null">
+			AND status = #{status}
+		</if>
+		<if test="operName != null and operName != ''">
+			AND oper_name like concat('%', #{operName}, '%')
+		</if>
+		<if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+			and date_format(oper_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+		</if>
+		<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+			and date_format(oper_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+		</if>
+		<include refid="sysOperLogOrderBy"/>
+	</select>
+
+
+	<insert id="insert" parameterType="SysOperLog">
+		insert into sys_oper_log
+		(id,
+		title,
+		business_type,
+		method,
+		request_method,
+		operator_type,
+		oper_name,
+		dept_name,
+		oper_url,
+		oper_ip,
+		oper_location,
+		oper_param,
+		json_result,
+		log_content,
+		form_id,
+		take_up_time,
+		status,
+		error_msg,
+		oper_time)
+        values
+        (#{id},
+        #{title},
+        #{businessType},
+        #{method},
+        #{requestMethod},
+        #{operatorType},
+        #{operName},
+        #{deptName},
+        #{operUrl},
+        #{operIp},
+        #{operLocation},
+        #{operParam},
+        #{jsonResult},
+        #{logContent},
+        #{formId},
+        #{takeUpTime},
+        #{status},
+        #{errorMsg},
+        sysdate())
+	</insert>
+
+	<insert id="addOperlog" parameterType="SysOperLog">
+		insert into sys_oper_log
+		(id,
+		title,
+		business_type,
+		method,
+		request_method,
+		operator_type,
+		oper_name,
+		dept_name,
+		oper_url,
+		oper_ip,
+		oper_location,
+		oper_param,
+		json_result,
+		log_content,
+		form_id,
+		take_up_time,
+		status,
+		error_msg,
+		oper_time)
+        values
+        (#{id},
+        #{title},
+        #{businessType},
+        #{method},
+        #{requestMethod},
+        #{operatorType},
+        #{operName},
+        #{deptName},
+        #{operUrl},
+        #{operIp},
+        #{operLocation},
+        #{operParam},
+        #{jsonResult},
+        #{logContent},
+        #{formId},
+        #{takeUpTime},
+        #{status},
+        #{errorMsg},
+        sysdate())
+	</insert>
+
+	<update id="deleteOperLogByIds" parameterType="java.util.Map">
+		UPDATE sys_oper_log SET
+		del_flag = #{DEL_FLAG_DELETE}
+		WHERE id in
+		<foreach collection="operIds" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</update>
+	
+	<update id="cleanOperLog">
+        truncate table sys_oper_log
+    </update>
+	<update id="deleteOperLogBySaveDay" parameterType="java.lang.String">
+		delete from  sys_oper_log where  datediff(SYSDATE(),oper_time) >= #{saveDay}
+	</update>
+</mapper> 

@@ -1,0 +1,806 @@
+##计算查询条件的折叠按钮
+#set( $queryCount = 0)
+##计算列宽度
+#set( $listColumnCount = 0)
+#set( $columnWidth = 0)
+#set( $operationColumnWidth = 0)
+#foreach ($column in $columns)
+#if($column.isList == '1')
+#set( $listColumnCount = $listColumnCount + 1)
+#end
+#end
+##计算是否可以整除
+#if($listColumnCount == 1)
+#set( $columnWidth = 80)
+#set( $operationColumnWidth = 20)
+#elseif ($listColumnCount == 2)
+#set( $columnWidth = 40)
+#set( $operationColumnWidth = 20)
+#elseif ($listColumnCount == 3)
+#set( $columnWidth = 25)
+#set( $operationColumnWidth = 25)
+#elseif ($listColumnCount == 4)
+#set( $columnWidth = 20)
+#set( $operationColumnWidth = 20)
+#elseif ($listColumnCount == 5)
+#set( $columnWidth = 16)
+#set( $operationColumnWidth = 20)
+#elseif ($listColumnCount == 6)
+#set( $columnWidth = 13)
+#set( $operationColumnWidth = 22)
+#elseif ($listColumnCount == 7)
+#set( $columnWidth = 12)
+#set( $operationColumnWidth = 16)
+#elseif ($listColumnCount == 8)
+#set( $columnWidth = 10)
+#set( $operationColumnWidth = 20)
+#elseif ($listColumnCount == 9)
+#set( $columnWidth = 10)
+#set( $operationColumnWidth = 10)
+#elseif ($listColumnCount == 10)
+#set( $columnWidth = 9)
+#set( $operationColumnWidth = 10)
+#elseif ($listColumnCount == 11)
+#set( $columnWidth = 8)
+#set( $operationColumnWidth = 12)
+#elseif ($listColumnCount == 12)
+#set( $columnWidth = 8)
+#set( $operationColumnWidth = 12)
+#elseif ($listColumnCount == 13)
+#set( $columnWidth = 7)
+#set( $operationColumnWidth = 9)
+#elseif ($listColumnCount == 14)
+#set( $columnWidth = 6)
+#set( $operationColumnWidth = 16)
+#elseif ($listColumnCount == 15)
+#set( $columnWidth = 6)
+#set( $operationColumnWidth = 10)
+#else
+#set( $columnWidth = 5)
+#set( $operationColumnWidth = 10)
+#end
+#set( $querySize = $!{queryColumns.size()})
+##判断是否包含用户选择框的标志位
+#set( $hasUser = 0)
+##判断是否包含用户选择框的标志位
+#set( $hasDept = 0)
+#foreach($column in $columns)
+#if($column.htmlType == "user")
+#set( $hasUser = $hasUser + 1)
+#elseif($column.htmlType == "dept")
+#set( $hasDept = $hasDept + 1)
+#end   
+#end
+<template>
+  <div>
+#if($querySize > 0)
+    <a-card :bordered="false" style="margin-bottom: 10px;">
+      <!-- 条件搜索 -->
+      <div class="table-page-search-wrapper">
+        <a-form :labelCol="labelCol" :wrapperCol="wrapperCol" ref="queryForm">
+          <a-row :gutter="32">
+#foreach($column in $queryColumns)
+#set($dictType=$column.dictType)
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#if($column.htmlType == "input" || $column.htmlType == "textarea")
+#set( $queryCount = $queryCount + 1)
+            <a-col :span="6" #if($queryCount > 3 )v-if="advanced"#end>
+              <a-form-item label="${comment}">
+                <a-input v-model="queryParam.${column.javaField}" placeholder="请输入${comment}" allow-clear @keyup.enter.native="handleQuery"/>
+              </a-form-item>
+            </a-col>
+#elseif(($column.htmlType == "number"))
+#set( $queryCount = $queryCount + 1)
+            <a-col :span="6" #if($queryCount > 3 )v-if="advanced"#end>
+              <a-form-item label="${comment}">
+                <a-input-number v-model="queryParam.${column.javaField}" :min="0" style="width: 100%"/>
+              </a-form-item>
+            </a-col>
+#elseif(($column.htmlType == "datetime"))
+#if($column.queryType == 'GTE' || $column.queryType == 'GT' || $column.queryType == 'EQ')
+#set( $queryCount = $queryCount + 1)
+            <a-col :span="6" #if($queryCount > 3 )v-if="advanced"#end>
+              <a-form-item label="${comment}#if($column.queryType != 'EQ')开始#end">
+                <a-date-picker
+                  v-model="queryParam.begin${AttrName}"
+                  valueFormat="YYYY-MM-DD"
+                  :show-today="true"
+                  placeholder="选择日期"
+                  style="width: 100%"
+                />
+              </a-form-item>
+            </a-col>
+#elseif($column.queryType == 'LTE' ||  $column.queryType == 'LT')
+#set( $queryCount = $queryCount + 1)
+            <a-col :span="6" #if($queryCount > 3 )v-if="advanced"#end>
+              <a-form-item label="${comment}#if($column.queryType != 'EQ')结束#end">
+                <a-date-picker
+                  v-model="queryParam.end${AttrName}"
+                  valueFormat="YYYY-MM-DD"
+                  :show-today="true"
+                  placeholder="选择日期"
+                  style="width: 100%"
+                />
+              </a-form-item>
+            </a-col>
+#elseif($column.queryType == 'BETWEEN')
+#set( $queryCount = $queryCount + 1)
+            <a-col :span="6" #if($queryCount > 3 )v-if="advanced"#end>
+              <a-form-item label="${comment}">
+                <a-range-picker style="width: 100%" v-model="dateRange${AttrName}" valueFormat="YYYY-MM-DD" format="YYYY-MM-DD" allow-clear />
+              </a-form-item>
+            </a-col>
+#end
+#elseif(($column.htmlType == "time"))
+#if($column.queryType == 'GTE' || $column.queryType == 'GT' || $column.queryType == 'EQ' )
+#set( $queryCount = $queryCount + 1)
+            <a-col :span="6" #if($queryCount > 3 )v-if="advanced"#end>
+              <a-form-item label="${comment}#if($column.queryType != 'EQ')开始#end">
+                <a-date-picker
+                  v-model="queryParam.begin${AttrName}"
+                  valueFormat="YYYY-MM-DD"
+                  :show-today="true"
+                  placeholder="选择日期"
+                  style="width: 100%"
+                />
+              </a-form-item>
+            </a-col>
+#elseif($column.queryType == 'LTE' ||  $column.queryType == 'LT')
+#set( $queryCount = $queryCount + 1)
+            <a-col :span="6" #if($queryCount > 3 )v-if="advanced"#end>
+              <a-form-item label="${comment}#if($column.queryType != 'EQ')结束#end">
+                <a-date-picker
+                  v-model="queryParam.end${AttrName}"
+                  valueFormat="YYYY-MM-DD"
+                  :show-today="true"
+                  :show-today="true"
+                  placeholder="选择日期"
+                  style="width: 100%"
+                />
+              </a-form-item>
+            </a-col>
+#elseif($column.queryType == 'BETWEEN')
+#set( $queryCount = $queryCount + 1)
+            <a-col :span="6" #if($queryCount > 3 )v-if="advanced"#end>
+              <a-form-item label="${comment}">
+                <a-range-picker style="width: 100%" v-model="dateRange${AttrName}" valueFormat="YYYY-MM-DD" format="YYYY-MM-DD" allow-clear />
+              </a-form-item>
+            </a-col>
+#end
+#elseif(($column.htmlType == "select") && "" != $dictType)
+#set( $queryCount = $queryCount + 1)
+            <a-col :span="6" #if($queryCount > 3 )v-if="advanced"#end>
+              <a-form-item label="${comment}" prop="${column.javaField}">
+                <a-select placeholder="请选择${comment}" v-model="queryParam.${column.javaField}" style="width: 100%" allow-clear>
+                  <a-select-option v-for="(d, index) in ${column.javaField}Options" :key="index" :value="d.dictValue">{{ d.dictLabel }}</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+#elseif(($column.htmlType == "selectMultiple") && "" != $dictType)
+#set( $queryCount = $queryCount + 1)
+            <a-col :span="6" #if($queryCount > 3 )v-if="advanced"#end>
+              <a-form-item label="${comment}" prop="${column.javaField}">
+                <a-select placeholder="请选择${comment}" v-model="queryParam.${column.javaField}" style="width: 100%" mode="multiple" allow-clear>
+                  <a-select-option v-for="(dict, index) in ${column.javaField}Options" :key="index" :value="dict.dictValue">{{ dict.dictLabel }}</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+#elseif(($column.htmlType == "user"))
+#set( $queryCount = $queryCount + 1)
+            <a-col :span="6" #if($queryCount > 3 )v-if="advanced"#end>
+              <a-form-model-item label="${comment}" prop="${column.javaField}">
+                <select-user
+                  v-model="queryParam.${column.javaField}"
+                  select-model="single"
+                />
+              </a-form-model-item>
+            </a-col>
+#elseif(($column.htmlType == "dept"))
+#set( $queryCount = $queryCount + 1)
+            <a-col :span="6" #if($queryCount > 3 )v-if="advanced"#end>
+              <a-form-model-item label="${comment}" prop="${column.javaField}">
+                <select-dept
+                  v-model="queryParam.${column.javaField}"
+                  select-model="single"
+                  select-scope="all"
+                />
+              </a-form-model-item>
+            </a-col>
+#elseif(($column.htmlType == "radioButton") && "" != $dictType)
+#set( $queryCount = $queryCount + 1)
+            <a-col :span="6" #if($queryCount > 3 )v-if="advanced"#end>
+              <a-form-item label="${comment}" prop="${column.javaField}">
+                <a-radio-group v-model="queryParam.${column.javaField}" button-style="solid">
+                  <a-radio-button
+                    v-for="(dict, index) in ${column.javaField}Options"
+                    :key="index"
+                    :value="dict.dictValue"
+                  >
+                    {{ dict.dictLabel }}
+                  </a-radio-button>
+                </a-radio-group>
+              </a-form-item>
+            </a-col>
+#elseif(($column.htmlType == "radio") && "" != $dictType)
+#set( $queryCount = $queryCount + 1)
+            <a-col :span="6" #if($queryCount > 3 )v-if="advanced"#end>
+              <a-form-item label="${comment}" prop="${column.javaField}">
+                <a-radio-group v-model="queryParam.${column.javaField}" button-style="solid">
+                  <a-radio-button
+                    v-for="(dict, index) in ${column.javaField}Options"
+                    :key="index"
+                    :value="dict.dictValue"
+                  >
+                    {{ dict.dictLabel }}
+                  </a-radio-button>
+                </a-radio-group>
+              </a-form-item>
+            </a-col>
+#end
+#end
+#if($queryColumns.size() > 0)
+#if($queryColumns.size() <= 3)
+            <a-col>
+              <span class="table-page-search-submitButtons" style="float: right;">
+                <a-button type="primary" @click="handleQuery"><a-icon type="search" />查询</a-button>
+                <a-button style="margin-left: 8px" @click="resetQuery"><a-icon type="redo" />重置</a-button>
+              </span>
+            </a-col>
+#elseif($queryColumns.size() > 3)
+            <a-col>
+              <span class="table-page-search-submitButtons" style="float: right;">
+                <a-button type="primary" @click="handleQuery"><a-icon type="search" />查询</a-button>
+                <a-button style="margin-left: 8px" @click="resetQuery"><a-icon type="redo" />重置</a-button>
+                <a @click="toggleAdvanced" style="margin-left: 8px">
+                  {{ advanced ? '收起' : '展开' }}
+                  <a-icon :type="advanced ? 'up' : 'down'"/>
+                </a>
+              </span>
+            </a-col>
+#end
+#end
+          </a-row>
+        </a-form>
+      </div>
+    </a-card>
+#end
+    <a-card :bordered="false" class="table-card">
+      <!-- 增加 -->
+      <${tableNameUnderline}-add-form
+        v-if="showAddModal"
+        ref="${businessName}AddForm"
+        :${businessName}Options="${businessName}Options"
+#foreach ($column in $columns)
+#if(${column.dictType} != '')
+        :${column.javaField}Options="${column.javaField}Options"
+#end
+#end
+        @ok="getList"
+        @select-tree="getTreeSelect"
+        @close="showAddModal = false"
+      />
+      <!-- 编辑 -->
+      <${tableNameUnderline}-edit-form
+        v-if="showEditModal"
+        ref="${businessName}EditForm"
+        :${businessName}Options="${businessName}Options"
+#foreach ($column in $columns)
+#if(${column.dictType} != '')
+        :${column.javaField}Options="${column.javaField}Options"
+#end
+#end
+        @ok="getList"
+        @select-tree="getTreeSelect"
+        @close="showEditModal = false"
+      />
+      <advance-table
+        :loading="loading"
+        title="${functionName}"
+        rowKey="id"
+        @refresh="getList"
+        :expandIconColumnIndex="1"
+        :columns="columns"
+        :data-source="${businessName}List"
+        :pagination="false"
+        size="middle"
+        tableKey="base-${businessName}-index-table_grid"
+        :defaultExpandedRowKeys="expandedRowKeys"
+        :expandedRowKeys="expandedRowKeys"
+        :expandIcon="expandIcon"
+        @expand="expandNode"
+        :indentSize="16"
+        :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }">
+        <div class="table-operations" slot="button">
+          <a-button type="primary" @click="handleAdd" v-hasPermi="['${moduleName}:${businessName}:add']">
+            <a-icon type="plus" />新增
+          </a-button>
+          <a-button type="" @click="handleExpand" v-hasPermi="['system:testTree:query']">
+            <a-icon type="caret-down" />展开
+          </a-button>
+          <a-button type="" @click="handleCollapse" v-hasPermi="['system:testTree:query']">
+            <a-icon type="caret-up" />折叠
+          </a-button>
+        </div>
+##页面通用代码转换
+#foreach ($column in $columns)
+#if(${column.dictType} != '' && ( ${column.javaField} != 'status' || (${column.javaField} == 'status' && ${hasDisableEnable} == 'false')))
+#if(${column.javaField} == 'status' && ${hasDisableEnable} == 'false')
+        <span slot="${column.javaField}"#if(${isSub} == 'true') slot-scope="record"#else slot-scope="{record}"#end>
+          <a-badge :status="record.status == '0' ? 'processing' : 'error'" :text=" statusFormat(record) " />
+        </span>
+#else
+        <span slot="${column.javaField}"#if(${isSub} == 'true') slot-scope="record"#else slot-scope="{record}"#end>
+          {{ ${column.javaField}Format(record) }}
+        </span>
+#end
+#end
+#if(${column.javaField} == 'status' && ${hasDisableEnable} == 'true')
+        <span slot="status" slot-scope="{text, record}">
+          <a-popconfirm
+            ok-text="是"
+            cancel-text="否"
+            @confirm="confirmHandleStatus(record)"
+            @cancel="cancelHandleStatus(record)"
+          >
+            <span slot="title">确认更新${column.columnComment}为<b>{{ record.status === '1' ? '启用' : '停用' }}</b>吗?</span>
+            <a-switch checked-children="正常" un-checked-children="停用" :checked="record.status == 0" />
+          </a-popconfirm>
+        </span>
+#end
+#end
+        <span slot="operation" slot-scope="{text, record}">
+          <a @click="handleUpdate(record)" v-hasPermi="['${moduleName}:${businessName}:edit']">
+            修改
+          </a>
+#if($hasCopyRecordOption)
+          <a-divider type="vertical" v-hasPermi="['${moduleName}:${businessName}:add']" />
+          <a @click="handleCopy(record)" v-hasPermi="['${moduleName}:${businessName}:add']">
+            复制
+          </a>
+#end
+          <a-divider type="vertical" v-hasPermi="['${moduleName}:${businessName}:add']" />
+          <a @click="handleAdd(record)" v-hasPermi="['${moduleName}:${businessName}:add']">
+            添加子节点
+          </a>
+          <a-divider type="vertical" v-hasPermi="['${moduleName}:${businessName}:remove']"/>
+          <a @click="handleDelete(record)" v-hasPermi="['${moduleName}:${businessName}:remove']">
+            删除
+          </a>
+        </span>
+      </advance-table>
+    </a-card>
+  </div>
+</template>
+<script>
+import { list${BusinessName}, del${BusinessName}, search${BusinessName}List#if($dictColumns.size() > 0), getInitData#end#if(${hasDisableEnable} == 'true'), updateStatus#end, listTree, listTreeExcludeChild } from '@/api/${moduleName}/${businessName}'
+import AdvanceTable from '@/components/pt/table/AdvanceTable'
+import ${BusinessName}AddForm from '@/views/${moduleName}/${businessNameLowerCase}/modules/${BusinessName}AddForm'
+import ${BusinessName}EditForm from '@/views/${moduleName}/${businessNameLowerCase}/modules/${BusinessName}EditForm'
+#if($hasUser > 0)
+import SelectUser from '@/components/pt/selectUser/SelectUser'
+#end
+#if($hasDept > 0)
+import SelectDept from '@/components/pt/selectDept/SelectDept'
+#end
+import allIcon from '@/core/icons'
+export default {
+  name: '${BusinessName}',
+  components: {
+    AdvanceTable,
+    ${BusinessName}AddForm,
+    ${BusinessName}EditForm#if($hasDept > 0 || $hasUser > 0),
+#end
+#if($hasUser > 0)
+    SelectUser#if($hasDept > 0),
+#end
+#end
+#if($hasDept > 0)
+    SelectDept
+  },
+#else
+
+  },
+#end
+  data () {
+    return {
+      showAddModal: false,
+      showEditModal: false,
+      allIcon,
+      iconVisible: false,
+      // 遮罩层
+      loading: true,
+      // 选中数组
+      ids: [],
+      // 选中的主键集合
+      selectedRowKeys: [],
+      // 选中的数据集合
+      selectedRows: [],
+      // 展开的主键集合
+      expandedRowKeys: [],
+      // label的百分比
+      labelCol: { span: 6 },
+      // 内容区域的百分比
+      wrapperCol: { span: 18 },
+      // 高级搜索 展开/关闭
+      advanced: false,
+      ${businessName}Options: [],
+      // ${functionName}表格数据
+      ${businessName}List: [],
+#foreach ($column in $columns)
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#if(${column.dictType} != '')
+      // $comment字典
+      ${column.javaField}Options: [],
+#elseif(($column.htmlType == "datetime" || $column.htmlType == "time") && $column.queryType == "BETWEEN")
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+      // $comment时间范围
+      dateRange${AttrName}: [],
+#end
+#end
+      // 查询参数
+      queryParam: {
+#foreach ($column in $queryColumns)
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#if(($column.htmlType == "datetime" || $column.htmlType == "time") && ($column.queryType == 'GTE' || $column.queryType == 'GT' || $column.queryType == 'EQ'))
+        begin$AttrName: undefined#if($foreach.hasNext),#end
+#elseif(($column.htmlType == "datetime" || $column.htmlType == "time") && ($column.queryType == 'GTE' || $column.queryType == 'GT' || $column.queryType == 'EQ'))
+          end$AttrName: undefined#if($foreach.hasNext),#end
+#elseif(($column.htmlType == "datetime" || $column.htmlType == "time") && ($column.queryType == 'BETWEEN'))
+        begin$AttrName: undefined,
+        end$AttrName: undefined#if($foreach.hasNext),#end
+#else
+        $column.javaField: undefined#if($foreach.hasNext),#end
+#end
+
+#end
+      },
+      columns: [
+#foreach ($column in $columns)
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#if($column.isList == '1')
+        {
+          title: '$comment',
+          dataIndex: '$column.javaField#if($column.htmlType == "user" || $column.htmlType == "dept")Name#end',
+#if(${column.dictType} != '')
+          scopedSlots: { customRender: '$column.javaField' },
+#end
+#if($column.htmlType == "input" || $column.htmlType == "textarea")
+          ellipsis: true,
+#end
+#if($column.alignType != "")
+          align: '$column.alignType',
+#end
+          width: '$columnWidth%'
+        },
+#end
+#end
+        {
+          title: '操作',
+          dataIndex: 'operation',
+          align: 'center',
+          width: '$operationColumnWidth%',
+          scopedSlots: { customRender: 'operation' }
+        }
+      ]
+    }
+  },
+#set( $dictTypeLoopFlag = 0 )
+  created () {
+    this.getList()
+#if($dictColumns.size() > 0)
+    getInitData('#foreach ($column in $columns)#if(${column.dictType} != '')#if($dictTypeLoopFlag == 0)${column.dictType}#else,${column.dictType}#end#set( $dictTypeLoopFlag = $dictTypeLoopFlag + 1 )#end#end').then(response => {
+#foreach ($column in $columns)
+#if(${column.dictType} != '')
+      this.${column.javaField}Options = response.data.${column.dictType}
+#end
+#end
+    })
+#end
+  },
+  methods: {
+    // 展开收缩时需要动态修改展开行集合
+    expandNode (expanded, record) {
+      if (expanded) {
+        this.expandedRowKeys.push(record.id)
+      } else {
+        this.expandedRowKeys = this.expandedRowKeys.filter(
+          function (item) { return item !== record.id }
+        )
+      }
+      if (expanded && record.children.length === 0) {
+        this.loading = true
+        list${BusinessName}(this.queryParam, record.id, 1).then(response => {
+          record.children = response.data
+          this.loading = false
+        })
+      }
+    },
+    onSelectChange (selectedRowKeys, selectedRows, expandedRowKeys) {
+      this.selectedRowKeys = selectedRowKeys
+      this.selectedRows = selectedRows
+      this.ids = this.selectedRows.map(item => item.id)
+    },
+    /** 查询${functionName}列表 */
+    getList () {
+      this.expandedRowKeys = []
+      this.loading = true
+#foreach ($column in $columns)
+#if(($column.htmlType == "datetime" || $column.htmlType == "time") && $column.queryType == "BETWEEN")
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+      if (this.dateRange${AttrName} !== null && this.dateRange${AttrName} !== '') {
+        this.queryParam.begin${AttrName} = this.dateRange${AttrName}[0]
+        this.queryParam.end${AttrName} = this.dateRange${AttrName}[1]
+      }
+#end
+#end
+      list${BusinessName}(this.queryParam).then(response => {
+        this.expandTree(response.data, 1, this.expandedRowKeys)
+        this.${businessName}List = response.data
+        this.loading = false
+      })
+    },
+#if(${hasDisableEnable} == 'true')
+    /* 状态修改 */
+    confirmHandleStatus (row) {
+      const text = row.status === '1' ? '启用' : '停用'
+      const successText = text + '成功'
+      const failText = text + '发生异常'
+      row.status = row.status === '0' ? '1' : '0'
+      updateStatus(row.id, row.status).then(() => {
+        this.$message.success(
+          successText,
+          3
+         )
+      }).catch(function () {
+        this.$message.error(
+          failText,
+          3
+        )
+      })
+    },
+    cancelHandleStatus (row) {
+    },
+#end
+#foreach ($column in $columns)
+#if(${column.dictType} != '')
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+    // $comment字典翻译
+    ${column.javaField}Format (row) {
+      if (row.${column.javaField}) {
+        return this.selectDictLabel#if($column.htmlType == "selectMultiple" || $column.htmlType == "checkbox")s#end(this.${column.javaField}Options, row.${column.javaField})
+      } else {
+        return ''
+      }
+    },
+#end
+#end
+    /** 搜索按钮操作 */
+    handleQuery () {
+##设置了查询条件
+#if($queryColumns.size() > 0)
+#foreach($column in $queryColumns)
+#if($velocityCount == 1)
+       if ((this.queryParam.${column.javaField} === undefined || this.queryParam.${column.javaField} === '')#if($foreach.hasNext) &&
+#end
+#elseif($foreach.hasNext)
+        (this.queryParam.${column.javaField} === undefined || this.queryParam.${column.javaField} === '')#if($foreach.hasNext) &&
+#end
+#else
+        (this.queryParam.${column.javaField} === undefined || this.queryParam.${column.javaField} === '')) {
+#end
+#end
+        this.expandedRowKeys = []
+        this.getList()
+      } else {
+        this.loading = true
+        search${BusinessName}List(this.queryParam).then(response => {
+            this.expandedRowKeys = []
+            if (response.data.length !== 0) {
+              this.getAll${BusinessName}Node(response.data)
+              this.${businessName}List = response.data
+            } else {
+              this.${businessName}List = []
+            }
+            this.loading = false
+          }
+        )
+      }
+##未设置任何查询条件
+#else
+      this.loading = true
+      search${BusinessName}List(this.queryParam).then(response => {
+        this.expandedRowKeys = []
+          if (response.data.length !== 0) {
+            this.getAll${BusinessName}Node(response.data)
+            this.${businessName}List = response.data
+          } else {
+            this.${businessName}List = []
+          }
+          this.loading = false
+        }
+      )
+#end
+    },
+    /** 重置按钮操作 */
+    resetQuery () {
+#foreach ($column in $columns)
+#if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+      this.dateRange${AttrName} = []
+#end
+#end
+      this.queryParam = {
+        pageNum: 1,
+#if($queryColumns.size() > 0)
+        pageSize: 10,
+#foreach ($column in $queryColumns)
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#if(($column.htmlType == "datetime" || $column.htmlType == "time") && ($column.queryType == 'GTE' || $column.queryType == 'GT' || $column.queryType == 'EQ'))
+        begin$AttrName: undefined#if($foreach.hasNext),#end
+#elseif(($column.htmlType == "datetime" || $column.htmlType == "time") && ($column.queryType == 'GTE' || $column.queryType == 'GT' || $column.queryType == 'EQ'))
+          end$AttrName: undefined#if($foreach.hasNext),#end
+#elseif(($column.htmlType == "datetime" || $column.htmlType == "time") && ($column.queryType == 'BETWEEN'))
+        begin$AttrName: undefined,
+        end$AttrName: undefined#if($foreach.hasNext),#end
+#else
+        $column.javaField: undefined#if($foreach.hasNext),#end
+#end
+
+#end
+#else
+        pageSize: 10
+#end
+      }
+      this.handleQuery()
+    },
+    getAll${BusinessName}Node (nodes) {
+      if (!nodes || nodes.length === 0) {
+        return []
+      }
+      nodes.forEach(node => {
+        if (node.children.length !== 0) {
+          this.expandedRowKeys.push(node.id)
+        }
+        return this.getAll${BusinessName}Node(node.children)
+      })
+    },
+    toggleAdvanced () {
+      this.advanced = !this.advanced
+    },
+    handleAdd (record) {
+      this.showAddModal = true
+      this.$nextTick(() => (
+        this.$refs.${businessName}AddForm.handleAdd(record)
+      ))
+    },
+    handleExpand (record) {
+      this.expandedRowKeys = []
+      this.loading = true
+      search${BusinessName}List(this.queryParam).then(response => {
+        this.expandedRowKeys = []
+        if (response.data.length !== 0) {
+          this.getAll${BusinessName}Node(response.data)
+          this.${businessName}List = response.data
+        } else {
+          this.${businessName}List = []
+        }
+        this.loading = false
+      })
+    },
+    handleCollapse (record) {
+      this.expandedRowKeys = []
+      this.loading = true
+      list${BusinessName}(this.queryParam).then(response => {
+        this.expandTree(response.data, 1, this.expandedRowKeys)
+        this.${businessName}List = response.data
+        this.loading = false
+      })
+    },
+#if($hasCopyRecordOption)
+    handleCopy (record) {
+      this.showAddModal = true
+      this.$nextTick(() => (
+        this.$refs.${businessName}AddForm.handleCopy(record)
+      ))
+    },
+#end
+    handleUpdate (record, ids) {
+      this.showEditModal = true
+      this.$nextTick(() => (
+        this.$refs.${businessName}EditForm.handleUpdate(record, ids)
+      ))
+    },
+    /** 查询菜单下拉树结构 */
+    getTreeSelect (row) {
+      if (row) {
+        listTreeExcludeChild(row.id, '99').then(response => {
+          this.${businessName}Options = []
+          const ${businessName} = { id: 0, ${treeName}: '根节点', children: [] }
+          ${businessName}.children = response.data
+          this.${businessName}Options.push(${businessName})
+        })
+      } else {
+        listTree('0', '99').then(response => {
+          this.${businessName}Options = []
+          const ${businessName} = { id: 0, ${treeName}: '根节点', children: [] }
+          ${businessName}.children = response.data
+          this.${businessName}Options.push(${businessName})
+        })
+      }
+    },
+    /** 删除按钮操作 */
+    handleDelete (row) {
+      var that = this
+      const ${businessName}Ids = row.id || this.ids
+      this.$confirm({
+        title: '确认删除所选中数据?',
+        content: '当前选中的数据',
+        onOk () {
+          return del${BusinessName}(${businessName}Ids)
+            .then(() => {
+              if (row !== null) {
+                that.removeTreeNode(that.${businessName}List, row)
+              } else {
+                 that.onSelectChange([], [], [])
+                 that.getList()
+              }
+              that.$message.success(
+                '删除成功',
+                3
+              )
+          })
+        },
+        onCancel () {}
+      })
+    },
+    expandIcon (props) {
+      if (props.record.treeLeaf === 'y') {
+        return <span style="margin-right:22px"></span>
+      } else {
+        if (props.expanded) {
+          return (
+            <a style="color: 'black',margin-right:0px"
+               onClick={(e) => {
+                 props.onExpand(props.record, e)
+               }}
+            >
+              <a-icon type="caret-down" />
+            </a>
+          )
+        } else {
+          return (
+            <a style="color: 'black' ,margin-right:0px"
+               onClick={(e) => {
+                 props.onExpand(props.record, e)
+               }}
+            >
+              <a-icon type="caret-right" />
+            </a>
+          )
+        }
+      }
+    }
+  }
+}
+</script>

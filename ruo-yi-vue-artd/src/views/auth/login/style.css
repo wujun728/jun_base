@@ -1,0 +1,35 @@
+@reference '@styles/core/tailwind.css';
+
+/* 授权页右侧区域 */
+.auth-right-wrap {
+  @apply absolute inset-0 m-auto h-[650px] w-[440px] animate-[slideInRight_0.6s_cubic-bezier(0.25,0.46,0.45,0.94)_forwards] overflow-hidden py-[5px] max-md:animate-none max-sm:w-full max-sm:px-7;
+
+  .form {
+    @apply h-full py-[40px];
+  }
+
+  .title {
+    @apply text-4xl font-semibold text-g-900 max-md:text-3xl max-sm:pt-10;
+  }
+
+  .sub-title {
+    @apply mt-[10px] text-sm text-g-600;
+  }
+
+  .custom-height {
+    @apply !h-[40px];
+  }
+}
+
+/* 滑入动画 */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

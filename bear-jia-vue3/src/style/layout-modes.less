@@ -1,0 +1,738 @@
+/* 新增布局模式样式 */
+
+/* 分栏布局 */
+.layout-column {
+  // 分栏布局专用头部
+  .column-header {
+    background: var(--header-background);
+    border-bottom: 1px solid var(--border-color-split);
+    padding: 0;
+    height: 56px;
+    line-height: 56px;
+    //margin-left: 300px; // 80px (一级菜单) + 220px (二级菜单)
+    position: relative;
+    z-index: 100;
+
+    .column-header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 100%;
+      padding: 0 24px;
+    }
+
+    .column-header-left {
+      .header-logo {
+        display: flex;
+        align-items: center;
+
+        .logo-title {
+          font-size: 20px;
+          font-weight: 600;
+          margin-left: 80px;
+          color: var(--primary-color);
+        }
+      }
+    }
+
+    .column-header-right {
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        .action-icon {
+          font-size: 16px;
+          color: #666;
+          cursor: pointer;
+          padding: 8px;
+          border-radius: 4px;
+          transition: all 0.3s;
+
+          &:hover {
+            color: var(--primary-color);
+            background: var(--hover-bg);
+          }
+        }
+
+        .user-info {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          cursor: pointer;
+          padding: 4px 12px;
+          border-radius: 6px;
+          transition: background 0.3s;
+
+          &:hover {
+            background: var(--hover-bg);
+          }
+
+          .user-name {
+            font-size: 14px;
+            color: #333;
+          }
+        }
+      }
+    }
+  }
+
+  .first-level-menu {
+    border-right: 1px solid var(--border-color-split);
+    background: var(--sidebar-background);
+
+    .column-first-menu {
+      height: 100%;
+
+      .menu-logo {
+        padding: 16px;
+        text-align: center;
+        border-bottom: 1px solid var(--border-color-split);
+        background: var(--header-background);
+        height: 56px; // 与HeaderBar高度保持一致
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .logo-img {
+          width: 32px;
+          height: 32px;
+          object-fit: contain;
+        }
+      }
+
+      .ant-menu {
+        border-right: none;
+        background: transparent;
+        padding-top: 0; // 移除顶部间距，确保与HeaderBar对齐
+      }
+
+      .ant-menu-item {
+        display: grid !important;
+        place-items: center !important;
+        height: 60px;
+        padding: 0 !important;
+        margin: 8px 4px;
+        border-radius: 8px;
+        text-align: center;
+        border: 1px solid transparent;
+        width: 60px !important;
+
+        &:hover {
+          background: var(--primary-1);
+          border-color: transparent;
+          
+          .anticon {
+            color: var(--primary-color) !important;
+          }
+        }
+
+        &.ant-menu-item-selected {
+          background: var(--primary-1);
+          color: var(--primary-color);
+
+          .anticon {
+            color: var(--primary-color) !important;
+          }
+        }
+
+        .anticon {
+          font-size: 18px !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          margin: 0 !important;
+          width: 24px !important;
+          height: 24px !important;
+          line-height: 1 !important;
+          color: var(--primary-color);
+          transition: color 0.3s ease;
+        }
+
+        // 隐藏文字，只显示图标
+        span {
+          display: none !important;
+        }
+
+        // 确保 tooltip 包装器也居中
+        .ant-tooltip-open {
+          display: grid !important;
+          place-items: center !important;
+          width: 100% !important;
+          height: 100% !important;
+        }
+        
+        // 确保 BearJiaIcon 组件正常显示
+        .bear-jia-icon {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        }
+      }
+    }
+  }
+
+  // HistoryNav 宽度调整
+  .column-history {
+    //margin-left: 300px !important; // 80px (一级菜单) + 220px (二级菜单)
+  }
+
+  .second-level-menu {
+    border-right: 1px solid var(--border-color-split);
+    background: var(--sidebar-background);
+
+    .column-second-menu {
+      height: 100%;
+
+      .system-title {
+        padding: 16px;
+        text-align: center;
+        border-bottom: 1px solid var(--border-color-split);
+        background: var(--header-background);
+        height: 56px; // 与HeaderBar高度保持一致
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .title-text {
+          font-size: 16px;
+          font-weight: 600;
+          color: var(--primary-color);
+        }
+      }
+
+      .ant-menu {
+        border-right: none;
+        background: transparent;
+        padding-top: 0; // 移除顶部间距，确保与HeaderBar对齐
+      }
+
+      .ant-menu-item {
+        margin: 4px 8px;
+        border-radius: 6px;
+
+        &:hover {
+          background: var(--hover-bg);
+        }
+
+        &.ant-menu-item-selected {
+          background: var(--primary-color);
+          color: #fff;
+
+          .anticon {
+            color: #fff;
+          }
+        }
+      }
+
+      .ant-menu-submenu {
+        margin: 4px 8px;
+        border-radius: 6px;
+
+        .ant-menu-submenu-title {
+          border-radius: 6px;
+
+          &:hover {
+            background: var(--hover-bg);
+          }
+        }
+
+        .ant-menu-item {
+          margin: 2px 4px;
+        }
+      }
+
+      .no-menu-tip {
+        padding: 60px 20px;
+        text-align: center;
+        color: #999;
+
+        p {
+          margin: 0;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}
+
+/* 抽屉布局 */
+.layout-drawer {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: var(--page-background-gradient);
+  
+  .header-bar {
+    flex-shrink: 0;
+    background: var(--header-background);
+    border-bottom: 1px solid var(--border-color);
+    z-index: 10;
+    position: relative;
+
+    .header-left {
+      .trigger {
+        font-size: 18px;
+        padding: 0 24px;
+        cursor: pointer;
+        transition: color 0.3s, transform 0.2s;
+        line-height: 56px;
+        color: var(--text-secondary);
+
+        &:hover {
+          color: var(--primary-color);
+          transform: scale(1.1);
+        }
+      }
+
+      .header-title {
+        margin-left: 16px;
+        font-size: 16px;
+        color: var(--text-primary);
+      }
+    }
+  }
+
+  // HistoryNav 全宽
+  .drawer-history {
+    flex-shrink: 0;
+    margin-left: 0;
+    width: 100%;
+    background: var(--card-background);
+    z-index: 9;
+    position: relative;
+  }
+  
+  .layout-container__content,
+  .drawer-content-area {
+    flex: 1;
+    overflow: hidden;
+    background: var(--page-background-gradient);
+    position: relative;
+    z-index: 1;
+    
+    .content-wrapper {
+      height: 100%;
+      background: var(--page-background-gradient);
+      border-radius: 0;
+      min-height: calc(100vh - 104px);
+      padding: 16px 0 16px 16px;
+      overflow: hidden;
+      position: relative;
+    }
+  }
+
+  // 自定义抽屉菜单样式
+  .custom-drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    animation: fadeIn 0.3s ease-out forwards;
+    pointer-events: auto;
+    
+    .custom-drawer-menu {
+      width: 280px;
+      height: 100vh;
+      background: var(--sidebar-background);
+      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      left: 0;
+      top: 0;
+      transform: translateX(-100%);
+      animation: slideInLeft 0.3s ease-out forwards;
+      
+      .drawer-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 24px;
+        border-bottom: 1px solid var(--border-color);
+        background: var(--header-background);
+        height: 56px;
+        
+        .drawer-title {
+          font-weight: 600;
+          font-size: 16px;
+          color: var(--text-primary);
+        }
+        
+        .drawer-close {
+          background: none;
+          border: none;
+          font-size: 16px;
+          cursor: pointer;
+          padding: 8px;
+          border-radius: 4px;
+          transition: all 0.3s;
+          color: var(--text-secondary);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          
+          &:hover {
+            background: var(--hover-bg);
+            color: var(--primary-color);
+            transform: rotate(90deg);
+          }
+        }
+      }
+      
+      .drawer-content {
+        flex: 1;
+        overflow-y: auto;
+        background: var(--sidebar-background);
+        
+        .ant-layout-sider {
+          background: var(--sidebar-background) !important;
+          width: 100% !important;
+          min-width: 100% !important;
+          max-width: 100% !important;
+          margin: 0 !important;
+          border-radius: 0 !important;
+          
+          .layout-logo {
+            display: flex !important;
+            align-items: center;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--header-background);
+            
+            .logo-img {
+              height: 32px;
+              margin-right: 12px;
+              transition: transform 0.3s ease;
+              
+              &:hover {
+                transform: scale(1.05);
+              }
+            }
+            
+            .logo-title {
+              font-size: 18px;
+              font-weight: 600;
+              color: var(--text-primary);
+              white-space: nowrap;
+            }
+          }
+          
+          .ant-menu {
+            border-right: none;
+            background: var(--sidebar-background);
+            height: calc(100% - 80px);
+          }
+        }
+      }
+    }
+  }
+  
+  // 动画效果
+  @keyframes slideInLeft {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slideOutLeft {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+  
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+  .layout-column {
+    .column-header {
+      margin-left: 250px; // 70px + 180px
+    }
+
+    .first-level-menu {
+      width: 70px !important;
+      min-width: 70px !important;
+
+      .ant-menu-item {
+        height: 50px;
+        padding: 8px 4px;
+        margin: 4px 2px;
+
+        .anticon {
+          font-size: 16px;
+        }
+      }
+    }
+
+    .second-level-menu {
+      width: 180px !important;
+      min-width: 180px !important;
+    }
+
+    .column-history {
+      margin-left: 250px; // 调整后的宽度
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .layout-column {
+    .first-level-menu {
+      display: none;
+    }
+
+    .second-level-menu {
+      width: 100% !important;
+      min-width: auto !important;
+    }
+  }
+
+  .layout-drawer {
+    .drawer-menu {
+      width: 100% !important;
+    }
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .layout-drawer {
+    .drawer-menu {
+      width: 280px !important;
+    }
+  }
+}
+
+@media (min-width: 1025px) {
+  .layout-drawer {
+    .drawer-menu {
+      width: 240px !important;
+    }
+  }
+}
+
+/* 暗色主题适配 */
+.dark-theme {
+  &.layout-column {
+    .column-header {
+      background: var(--header-background);
+      border-bottom-color: var(--border-color-split);
+
+      .column-header-left {
+        .logo-title {
+          color: var(--primary-color);
+        }
+      }
+
+      .column-header-right {
+        .action-icon {
+          color: rgba(255, 255, 255, 0.65);
+
+          &:hover {
+            color: var(--primary-color);
+            background: rgba(255, 255, 255, 0.04);
+          }
+        }
+
+        .user-info {
+          &:hover {
+            background: rgba(255, 255, 255, 0.04);
+          }
+
+          .user-name {
+            color: rgba(255, 255, 255, 0.85);
+          }
+        }
+      }
+    }
+
+    .first-level-menu {
+      background: var(--sidebar-background);
+      border-right-color: var(--border-color-split);
+
+      .column-first-menu {
+        .menu-logo {
+          background: var(--header-background);
+          border-bottom-color: var(--border-color-split);
+          height: 56px; // 与HeaderBar高度保持一致
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .ant-menu-item {
+          color: rgba(255, 255, 255, 0.65);
+
+          .anticon {
+            color: var(--primary-color) !important;
+          }
+
+          &:hover {
+            background: var(--primary-1);
+            border-color: transparent;
+            
+            .anticon {
+              color: var(--primary-color) !important;
+            }
+          }
+
+          &.ant-menu-item-selected {
+            background: var(--primary-1);
+            color: var(--primary-color);
+            
+            .anticon {
+              color: var(--primary-color) !important;
+            }
+          }
+        }
+      }
+    }
+
+    .second-level-menu {
+      background: var(--sidebar-background);
+      border-right-color: var(--border-color-split);
+
+      .column-second-menu {
+        .system-title {
+          background: var(--header-background);
+          border-bottom-color: var(--border-color-split);
+          height: 56px; // 与HeaderBar高度保持一致
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .title-text {
+            color: var(--primary-color);
+          }
+        }
+
+        .ant-menu {
+          background: transparent;
+          color: rgba(255, 255, 255, 0.65);
+        }
+
+        .no-menu-tip {
+          color: rgba(255, 255, 255, 0.45);
+        }
+      }
+    }
+  }
+
+  &.layout-drawer {
+    background: var(--bg-color);
+    
+    .header-bar {
+      background: var(--header-background);
+      border-bottom-color: var(--border-color);
+      
+      .header-left {
+        .trigger {
+          color: var(--text-secondary);
+          
+          &:hover {
+            color: var(--primary-color);
+          }
+        }
+        
+        .header-title {
+          color: var(--text-primary);
+        }
+      }
+    }
+    
+    .drawer-history {
+      background: var(--card-background);
+    }
+    
+    .layout-container__content {
+      background: var(--bg-color) !important;
+      
+      .content-wrapper {
+        background: var(--bg-color) !important;
+        
+        &::after {
+          background: var(--bg-color);
+        }
+      }
+    }
+    
+    .custom-drawer-overlay {
+      background: rgba(0, 0, 0, 0.65);
+      
+      .custom-drawer-menu {
+        background: var(--sidebar-background);
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.25);
+        
+        .drawer-header {
+          background: var(--header-background);
+          border-bottom-color: var(--border-color);
+          
+          .drawer-title {
+            color: var(--text-primary);
+          }
+          
+          .drawer-close {
+            color: var(--text-secondary);
+            
+            &:hover {
+              background: var(--hover-bg);
+              color: var(--primary-color);
+            }
+          }
+        }
+        
+        .drawer-content {
+          background: var(--sidebar-background);
+          
+          .ant-layout-sider {
+            background: var(--sidebar-background) !important;
+            
+            .layout-logo {
+              background: var(--header-background);
+              border-bottom-color: var(--border-color);
+              
+              .logo-title {
+                color: var(--text-primary);
+              }
+            }
+            
+            .ant-menu {
+              background: var(--sidebar-background);
+              color: var(--text-primary);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+

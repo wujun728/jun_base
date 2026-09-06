@@ -1,0 +1,340 @@
+/**
+ * Modal弹窗组件专用样式
+ * 暗黑模式优化 - 遵循"海拔越高，颜色越亮"原则
+ *
+ * 优化内容：
+ * 1. 提升海拔色调 - 让弹窗从背景中"跳"出来
+ * 2. 发光边框 - 精致的1px半透明边框
+ * 3. 毛玻璃遮罩 - backdrop-filter模糊效果
+ * 4. 扩散式阴影 - 增强层次感
+ * 5. 标题栏优化 - 更精致的顶部设计
+ * 6. 关闭按钮优化 - 提升对比度
+ */
+
+@import '../mixins.less';
+
+// ========== 暗色主题Modal优化 ==========
+.dark-theme {
+
+  // ========== 1. 遮罩层 - 毛玻璃效果 ==========
+  .ant-modal-mask {
+    background-color: var(--modal-mask-bg) !important;
+    backdrop-filter: blur(var(--modal-mask-blur)) !important;
+    -webkit-backdrop-filter: blur(var(--modal-mask-blur)) !important;
+  }
+
+  // ========== 2. Modal主体容器 ==========
+  .ant-modal {
+    // 扩散式阴影
+    .ant-modal-content {
+      background-color: var(--modal-bg) !important;
+      border: 1px solid var(--modal-border) !important;
+      border-radius: 12px !important;
+      box-shadow: var(--modal-shadow) !important;
+      overflow: hidden;
+
+      // 添加微妙的内发光效果
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 12px;
+        padding: 1px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.1) 0%,
+          rgba(255, 255, 255, 0.05) 50%,
+          transparent 100%
+        );
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+      }
+    }
+  }
+
+  // ========== 3. Modal头部 - 标题栏优化 ==========
+  .ant-modal-header {
+    background-color: transparent;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    padding: 16px 24px !important;
+    margin: 0 !important;
+    border-radius: 12px 12px 0 0 !important;
+
+    // 标题左侧装饰线 - 使用品牌色
+    .ant-modal-title {
+      color: var(--text-primary) !important;
+      font-weight: 600 !important;
+      font-size: 16px !important;
+      padding-left: 12px !important;
+      border-left: 3px solid var(--primary-color) !important;
+      line-height: 1.4 !important;
+    }
+  }
+
+  // ========== 4. 关闭按钮优化 ==========
+  .ant-modal-close {
+    color: var(--modal-close-color) !important;
+    transition: all 0.2s ease !important;
+    top: 12px !important;
+    right: 12px !important;
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 6px !important;
+
+    &:hover {
+      color: var(--modal-close-hover-color) !important;
+      background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .ant-modal-close-x {
+      width: 32px !important;
+      height: 32px !important;
+      line-height: 32px !important;
+      font-size: 16px !important;
+    }
+  }
+
+  // ========== 5. Modal内容区域 ==========
+  .ant-modal-body {
+    background-color: var(--modal-bg) !important;
+    padding: 24px !important;
+    color: var(--text-primary) !important;
+
+    // Modal内表单标签
+    .ant-form-item-label > label {
+      color: var(--text-secondary) !important;
+    }
+
+    // Modal内必填标记
+    .ant-form-item-required::before {
+      color: #ff6b6b !important;
+    }
+  }
+
+  // ========== 6. Modal底部按钮区域 ==========
+  .ant-modal-footer {
+    background-color: var(--modal-bg) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+    padding: 16px 24px !important;
+    margin: 0 !important;
+    border-radius: 0 0 12px 12px !important;
+
+    // 取消按钮
+    .ant-btn:not(.ant-btn-primary) {
+      background-color: transparent !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      color: var(--text-secondary) !important;
+
+      &:hover {
+        border-color: var(--primary-color) !important;
+        color: var(--primary-color) !important;
+        background-color: rgba(96, 165, 250, 0.1) !important;
+      }
+    }
+
+    // 确认按钮
+    .ant-btn-primary {
+      background-color: var(--primary-color) !important;
+      border-color: var(--primary-color) !important;
+      color: #fff !important;
+      box-shadow: 0 2px 8px rgba(96, 165, 250, 0.35) !important;
+
+      &:hover {
+        background-color: var(--primary-color-hover) !important;
+        border-color: var(--primary-color-hover) !important;
+        box-shadow: 0 4px 12px rgba(96, 165, 250, 0.45) !important;
+      }
+    }
+  }
+
+  // ========== 7. 确认对话框（Confirm）样式 ==========
+  .ant-modal-confirm {
+    .ant-modal-content {
+      padding: 0 !important;
+    }
+
+    .ant-modal-confirm-body-wrapper {
+      padding: 24px !important;
+    }
+
+    .ant-modal-confirm-title {
+      color: var(--text-primary) !important;
+      font-weight: 600 !important;
+    }
+
+    .ant-modal-confirm-content {
+      color: var(--text-secondary) !important;
+      margin-top: 8px !important;
+    }
+
+    .ant-modal-confirm-btns {
+      margin-top: 24px !important;
+    }
+  }
+
+  // ========== 8. Modal内的Tree组件（菜单权限等）==========
+  .ant-modal-body {
+    .ant-tree {
+      background: var(--modal-input-bg) !important;
+      border-radius: 8px !important;
+      padding: 8px !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+
+      .ant-tree-node-content-wrapper {
+        color: var(--text-primary) !important;
+        border-radius: 4px !important;
+
+        &:hover {
+          background-color: rgba(96, 165, 250, 0.1) !important;
+        }
+
+        &.ant-tree-node-selected {
+          background-color: var(--primary-color) !important;
+          color: #fff !important;
+        }
+      }
+
+      .ant-tree-switcher {
+        color: var(--text-secondary) !important;
+      }
+
+      .ant-tree-checkbox {
+        .ant-tree-checkbox-inner {
+          background-color: var(--modal-input-bg) !important;
+          border-color: rgba(255, 255, 255, 0.2) !important;
+        }
+
+        &.ant-tree-checkbox-checked .ant-tree-checkbox-inner {
+          background-color: var(--primary-color) !important;
+          border-color: var(--primary-color) !important;
+        }
+      }
+    }
+  }
+
+  // ========== 9. Select下拉框 - 统一暗黑模式交互效果 ==========
+  // 注意：下拉框是渲染到body的，不在modal内部
+  .ant-select-dropdown {
+    // 下拉框本身的背景色 - 使用暗色组件背景
+    background-color: var(--component-background) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px !important;
+
+    // 虚拟滚动列表透明 - 只针对容器层
+    .rc-virtual-list {
+      background-color: transparent !important;
+      background: transparent !important;
+    }
+
+    .rc-virtual-list-holder {
+      background-color: transparent !important;
+      background: transparent !important;
+    }
+
+    .rc-virtual-list-holder-inner {
+      background-color: transparent !important;
+      background: transparent !important;
+    }
+
+    // 选项默认透明
+    .ant-select-item {
+      background-color: transparent !important;
+      background: transparent !important;
+      color: var(--text-primary) !important;
+      border-radius: 4px !important;
+      margin: 2px 4px !important;
+
+      // 选项内容区域透明
+      .ant-select-item-option-content {
+        background-color: transparent !important;
+        background: transparent !important;
+      }
+
+      // 悬浮效果 - 使用暗黑模式适配的半透明白色
+      &:hover,
+      &.ant-select-item-option-active {
+        background-color: rgba(255, 255, 255, 0.08) !important;
+        background: rgba(255, 255, 255, 0.08) !important;
+      }
+
+      // 选中效果 - 使用主题色
+      &.ant-select-item-option-selected {
+        background-color: var(--primary-color) !important;
+        background: var(--primary-color) !important;
+        color: #fff !important;
+        font-weight: 600 !important;
+
+        .ant-select-item-option-content {
+          color: #fff !important;
+        }
+
+        // 选中状态的勾选图标
+        .ant-select-item-option-state {
+          color: #fff !important;
+        }
+      }
+    }
+
+    // 分组标题
+    .ant-select-item-group {
+      background-color: transparent !important;
+      color: var(--text-secondary) !important;
+    }
+  }
+
+  // ========== 10. Dropdown下拉菜单（个人中心等）==========
+  // 只移除黑色背景，其他保持默认
+  .ant-dropdown-menu {
+    background-color: var(--component-background) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+
+    // 菜单项背景透明，移除黑色条纹
+    .ant-dropdown-menu-item,
+    .ant-dropdown-menu-item-only-child {
+      background-color: transparent !important;
+      background: transparent !important;
+    }
+  }
+
+  // ========== 11. TreeSelect下拉框 - 只修复背景 ==========
+  .ant-tree-select-dropdown,
+  .ant-select-tree-dropdown {
+    .ant-select-tree,
+    .ant-select-tree-list-holder-inner {
+      background-color: transparent !important;
+    }
+  }
+
+  // ========== 12. Cascader级联选择器 - 只修复背景 ==========
+  .ant-cascader-dropdown {
+    .ant-cascader-menus,
+    .ant-cascader-menu {
+      background-color: transparent !important;
+    }
+  }
+
+  // ========== 13. DatePicker下拉框 - 只修复背景 ==========
+  .ant-picker-dropdown {
+    .ant-picker-panel {
+      background-color: transparent !important;
+    }
+  }
+}
+
+// ========== 浅色主题Modal（保持默认样式的基础上微调）==========
+body:not(.dark-theme) {
+  .ant-modal-content {
+    border-radius: 12px !important;
+    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.12) !important;
+  }
+
+  .ant-modal-footer {
+    border-radius: 0 0 12px 12px !important;
+  }
+}

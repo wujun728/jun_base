@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="${packageName}.mapper.${ClassName}Mapper">
+
+    <sql id="${className}Columns">
+#foreach ($column in $columns)
+        a.${column.columnName} as "${column.javaField}"#if($foreach.hasNext),
+#else
+
+#end
+#end
+    </sql>
+
+    <sql id="${className}Joins">
+    </sql>
+
+    <sql id="commonWhere">
+        <if test="parentId != null and parentId != ''">
+            and a.parent_id = #{parentId}
+        </if>
+        <if test="parentIds != null and parentIds != ''">
+            and a.parent_ids like concat(#{parentIds},'%') and a.parent_ids &lt;&gt; #{parentIds}
+        </if>
+#foreach($column in $columns)
+#set($queryType=$column.queryType)
+#set($javaField=$column.javaField)
+#set($javaType=$column.javaType)
+#set($columnName=$column.columnName)
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#if($column.query || $columnName == $subTableFkName)
+##非日期
+#if($javaType != 'Date')
+#if($column.queryType == "EQ")
+        <if test="$javaField != null #if($javaType == 'String' )and $javaField.trim() != ''#end">
+            and a.$columnName = #{$javaField}
+        </if>
+#elseif($queryType == "NE")
+        <if test="$javaField != null #if($javaType == 'String' )and $javaField.trim() != ''#end">
+            and a.$columnName != #{$javaField}
+        </if>
+#elseif($queryType == "GT")
+        <if test="$javaField != null #if($javaType == 'String' )and $javaField.trim() != ''#end">
+            and a.$columnName &gt; #{$javaField}
+        </if>
+#elseif($queryType == "GTE")
+        <if test="$javaField != null #if($javaType == 'String' )and $javaField.trim() != ''#end">
+            and a.$columnName &gt;= #{$javaField}
+        </if>
+#elseif($queryType == "LT")
+        <if test="$javaField != null #if($javaType == 'String' )and $javaField.trim() != ''#end">
+            and a.$columnName &lt; #{$javaField}
+        </if>
+#elseif($queryType == "LTE")
+        <if test="$javaField != null #if($javaType == 'String' )and $javaField.trim() != ''#end">
+            and a.$columnName &lt;= #{$javaField}
+        </if>
+#elseif($queryType == "LIKE")
+        <if test="$javaField != null #if($javaType == 'String' )and $javaField.trim() != ''#end">
+            and a.$columnName like concat('%', #{$javaField}, '%')
+        </if>
+#end
+#else
+##日期
+#if($column.queryType == "EQ")
+        <if test="begin$AttrName != null and begin$AttrName != ''">
+            and date_format(a.$columnName,'%y%m%d') = date_format(#{begin$AttrName},'%y%m%d')
+        </if>
+#elseif($queryType == "GT")
+        <if test="begin$AttrName != null and begin$AttrName != ''">
+            and date_format(a.$columnName,'%y%m%d') &gt; date_format(#{begin$AttrName},'%y%m%d')
+        </if>
+#elseif($queryType == "GTE")
+         <if test="begin$AttrName != null and begin$AttrName != ''">
+            and date_format(a.$columnName,'%y%m%d') &gt;= date_format(#{begin$AttrName},'%y%m%d')
+        </if>
+#elseif($queryType == "LT")
+         <if test="end$AttrName != null and end$AttrName != ''">
+            and date_format(a.$columnName,'%y%m%d') &lt; date_format(#{end$AttrName},'%y%m%d')
+        /if>
+#elseif($queryType == "LTE")
+        <if test="end$AttrName != null and end$AttrName != ''">
+            and date_format(a.$columnName,'%y%m%d') &lt;= date_format(#{end$AttrName},'%y%m%d')
+        </if>
+#elseif($queryType == "BETWEEN")
+        <if test="begin$AttrName != null and begin$AttrName != ''">
+            and date_format(a.$columnName,'%y%m%d') &gt;= date_format(#{begin$AttrName},'%y%m%d')
+        </if>
+        <if test="end$AttrName != null and end$AttrName != ''">
+            and date_format(a.$columnName,'%y%m%d') &lt;= date_format(#{end$AttrName},'%y%m%d')
+        </if>
+#end
+#end
+#end
+#end
+    </sql>
+
+    <sql id="commonSorts">
+		order by a.tree_sorts
+	</sql>
+
+    <select id="get" resultType="${ClassName}">
+        SELECT
+            <include refid="${className}Columns"/>
+        FROM ${tableName} a
+        <include refid="${className}Joins"/>
+        WHERE a.id = #{id}
+    </select>
+
+    <select id="findList" resultType="${ClassName}">
+        SELECT
+            <include refid="${className}Columns"/>
+        FROM ${tableName} a
+        <include refid="${className}Joins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <include refid="commonWhere"/>
+        </where>
+        <include refid="commonSorts"/>
+    </select>
+
+    <select id="findCount"  resultType="integer">
+        SELECT
+          count(1)
+        FROM ${tableName} a
+        where a.del_flag = #{DEL_FLAG_NORMAL}
+        <include refid="commonWhere"/>
+    </select>
+
+    <select id="findListWithUnique" resultType="${ClassName}">
+        SELECT
+            a.id
+        FROM ${tableName} a
+        <include refid="${className}Joins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="notEqualId != null and notEqualId != ''">
+                AND id != #{notEqualId}
+            </if>
+#foreach($column in $columns)
+#set($javaField=$column.javaField)
+#set($javaType=$column.javaType)
+#set($columnName=$column.columnName)
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#if($column.isUnique == "1")
+            <if test="$javaField != null #if($javaType == 'String' )and $javaField.trim() != ''#end">
+                and $columnName = #{$javaField}
+            </if>
+#end
+#end
+        </where>
+    </select>
+
+	<!-- 根据条件查询节点 -->
+    <select id="findMaxSort" resultType="integer">
+        SELECT
+            max(a.tree_sort)
+        FROM ${tableName} a
+        WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+        <if test="parentId != null and parentId != ''">
+            and a.parent_id = #{parentId}
+        </if>
+    </select>
+
+    <!-- 根据条件查询节点 -->
+    <select id="search${ClassName}Tree" parameterType="java.util.Map" resultType="${ClassName}">
+        select
+        <include refid="${className}Columns"/>
+        from ${tableName} a
+        <where>
+            and a.del_flag = '0'
+            <include refid="commonWhere"/>
+        </where>
+        <include refid="commonSorts"/>
+    </select>
+
+    <!--根据ids获取所有的节点-->
+    <select id="search${ClassName}TreeByIds" parameterType="java.util.List" resultType="${ClassName}">
+        select
+        <include refid="${className}Columns"/>
+        from ${tableName} a
+        <where>
+            and a.del_flag = '0'
+            and ( 1 != 1
+            <foreach collection="ids" item="idsItem">
+                or a.id in
+                <foreach collection="idsItem" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </foreach>
+            )
+        </where>
+        <include refid="commonSorts"/>
+    </select>
+
+    <insert id="insert">
+        INSERT INTO ${tableName}(
+#foreach($column in $columns)
+            $column.columnName#if($foreach.hasNext),
+#end
+#end
+
+        ) VALUES (
+#foreach($column in $columns)
+            #{$column.javaField}#if($foreach.hasNext),
+#end
+#end
+
+        )
+    </insert>
+	
+#if($hasDisableEnable)
+	<!--更新状态-->
+	<update id="updateStatus">
+        UPDATE ${tableName} SET
+            status = #{status},
+            version = version + 1
+        WHERE id = #{id}
+    </update>
+#end
+
+    <update id="update">
+        UPDATE ${tableName} SET
+#foreach($column in $columns)
+#if($column.javaField != "id" && $column.javaField != "createBy" && $column.javaField != "createDept" && $column.javaField != "createTime" && $column.javaField != "id" && $column.javaField != "version" && $column.javaField != "delFlag")
+            $column.columnName = #{$column.javaField},
+#end
+#end
+            version = version + 1
+        WHERE id = #{id} and version = #{version}
+    </update>
+
+    <update id="update${ClassName}Children" parameterType="java.util.List">
+        update ${tableName} set parent_ids =
+        <foreach collection="${className}List" item="item" index="index"
+                 separator=" " open="case id" close="end">
+            when #{item.id} then #{item.parentIds}
+        </foreach>
+        , tree_sorts =
+        <foreach collection="${className}List" item="item" index="index"
+                 separator=" " open="case id" close="end">
+            when #{item.id} then #{item.treeSorts}
+        </foreach>
+        , tree_level =
+        <foreach collection="${className}List" item="item" index="index"
+                 separator=" " open="case id" close="end">
+            when #{item.id} then #{item.treeLevel}
+        </foreach>
+        where id in
+        <foreach collection="${className}List" item="item" index="index"
+                 separator="," open="(" close=")">
+            #{item.id}
+        </foreach>
+    </update>
+
+    <update id="delete">
+        UPDATE ${tableName} SET
+            del_flag = #{DEL_FLAG_DELETE}
+        WHERE id = #{id}
+    </update>
+</mapper>

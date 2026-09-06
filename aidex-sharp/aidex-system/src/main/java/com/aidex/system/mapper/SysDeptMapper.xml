@@ -1,0 +1,494 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aidex.system.mapper.SysDeptMapper">
+
+	<sql id="deptColumns">
+		t.id as "id",
+		t.dept_code AS "deptCode",
+		t.dept_name AS "deptName",
+		t.dept_full_name AS "deptFullName",
+		t.dept_type AS "deptType",
+		t.address AS "address",
+		t.zip_code AS "zipCode",
+		t.dept_pinyin AS "deptPinyin",
+		t.leader AS "leader",
+		t.phone  AS "phone",
+		t.email AS "email",
+		t.parent_id AS "parentId",
+		t.parent_ids AS "parentIds",
+		t.tree_sort AS "treeSort",
+		t.tree_sorts AS "treeSorts",
+		t.tree_level AS "treeLevel",
+		t.tree_leaf AS "treeLeaf",
+		t.status AS "status",
+		t.create_by AS "createBy",
+		t.create_dept AS "createDept",
+		t.create_time AS "createTime",
+		t.update_by AS "updateBy",
+		t.update_time AS "updateTime",
+		t.update_ip AS "updateIp",
+		t.remark AS "remark",
+		t.version AS "version",
+		t.del_flag AS "delFlag"
+	</sql>
+
+	<sql id="deptJoins">
+		INNER JOIN sys_user su ON su.id = a.user_id
+	</sql>
+
+	<sql id="commonWhere">
+		<if test="parentId != null and parentId != ''">
+			AND t.parent_id = #{parentId}
+		</if>
+		<if test="parentIds != null and parentIds != ''">
+			and t.parent_ids like concat(#{parentIds},'%') and t.parent_ids &lt;&gt; #{parentIds}
+		</if>
+		<if test="deptName != null and deptName != ''">
+			AND t.dept_name like concat('%', #{deptName}, '%')
+		</if>
+		<if test="deptCode != null and deptCode != ''">
+			AND t.dept_code like concat('%', #{deptCode}, '%')
+		</if>
+		<if test="status != null and status != ''">
+			AND t.status = #{status}
+		</if>
+	</sql>
+
+	<sql id="commonSorts">
+		order by t.tree_sorts
+	</sql>
+
+	<select id="get" resultType="SysDept">
+		SELECT
+		<include refid="deptColumns"/>
+		FROM sys_dept t
+		where t.id = #{id}
+	</select>
+
+	<select id="findList" resultType="SysDept">
+        SELECT
+        <include refid="deptColumns"/>
+        FROM sys_dept t
+        where t.del_flag = #{DEL_FLAG_NORMAL}
+		<include refid="commonWhere"/>
+		<include refid="commonSorts"/>
+    </select>
+
+	<select id="findListWithUnique" resultType="SysDept">
+		SELECT
+			t.id
+		FROM sys_dept t
+		WHERE t.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="deptName != null and deptName != ''">
+			AND t.dept_name = #{deptName}
+		</if>
+		<if test="deptCode != null and deptCode != ''">
+			AND t.dept_code = #{deptCode}
+		</if>
+		<if test="parentId != null and parentId != ''">
+			AND t.parent_id = #{parentId}
+		</if>
+		<if test="notEqualId != null and notEqualId != ''">
+			AND t.id != #{notEqualId}
+		</if>
+	</select>
+
+	<select id="findCount"  resultType="integer">
+		SELECT
+			count(1)
+		FROM sys_dept t
+		where t.del_flag = #{DEL_FLAG_NORMAL}
+		<include refid="commonWhere"/>
+	</select>
+
+	<select id="findMaxSort" resultType="integer">
+		SELECT max(t.tree_sort) + 120
+		FROM sys_dept t
+		WHERE t.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="parentId != null and parentId != ''">
+			and t.parent_id = #{parentId}
+		</if>
+	</select>
+
+	<insert id="insert" >
+		insert into sys_dept(
+			id,
+			dept_code,
+			dept_name,
+			dept_full_name,
+			dept_type,
+			address,
+			zip_code,
+			dept_pinyin,
+			leader,
+			phone,
+			email,
+			parent_id,
+			parent_ids,
+			tree_sort,
+			tree_sorts,
+			tree_level,
+			tree_leaf,
+			status,
+			create_by,
+			create_dept,
+			create_time,
+			update_by,
+			update_time,
+			update_ip,
+			remark,
+			del_flag,
+			version
+		)values(
+			#{id},
+			#{deptCode},
+			#{deptName},
+			#{deptFullName},
+			#{deptType},
+			#{address},
+			#{zipCode},
+			#{deptPinyin},
+			#{leader},
+			#{phone},
+			#{email},
+			#{parentId},
+			#{parentIds},
+			#{treeSort},
+			#{treeSorts},
+			#{treeLevel},
+			#{treeLeaf},
+			#{status},
+			#{createBy},
+			#{createDept},
+			#{createTime},
+			#{updateBy},
+			#{updateTime},
+			#{updateIp},
+			#{remark},
+			#{DEL_FLAG_NORMAL},
+			1
+		)
+	</insert>
+
+	<update id="update">
+		update sys_dept
+		<set>
+			dept_code = #{deptCode},
+			dept_name = #{deptName},
+			dept_full_name = #{deptFullName},
+	        dept_type = #{deptType},
+			address = #{address},
+			zip_code = #{zipCode},
+			dept_pinyin = #{deptPinyin},
+			leader = #{leader},
+			phone = #{phone},
+			email = #{email},
+			parent_id = #{parentId},
+			parent_ids = #{parentIds},
+			leader = #{leader},
+			tree_sort = #{treeSort},
+			tree_sorts = #{treeSorts},
+			tree_level = #{treeLevel},
+			tree_leaf = #{treeLeaf},
+			status = #{status},
+			update_by = #{updateBy},
+			update_time = #{updateTime},
+			update_ip = #{updateIp},
+			remark = #{remark},
+			version = version + 1
+		</set>
+		where id = #{id}  and version = #{version}
+	</update>
+
+	<update id="updateBatch" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+			update sys_dept
+				<set>
+					dept_code = #{item.deptCode},
+					dept_name = #{item.deptName},
+					dept_full_name = #{item.deptFullName},
+					dept_type = #{item.deptType},
+					address = #{item.address},
+					zip_code = #{item.zipCode},
+					dept_pinyin = #{item.deptPinyin},
+					leader = #{item.leader},
+					phone = #{item.phone},
+					email = #{item.email},
+					parent_id = #{item.parentId},
+					parent_ids = #{item.parentIds},
+					leader = #{item.leader},
+					tree_sort = #{item.treeSort},
+					tree_sorts = #{item.treeSorts},
+					tree_level = #{item.treeLevel},
+					tree_leaf = #{item.treeLeaf},
+					status = #{item.status},
+					update_by = #{item.updateBy},
+					update_time = #{item.updateTime},
+					update_ip = #{item.updateIp},
+					remark = #{item.remark},
+					version = version + 1
+				</set>
+			where id = #{item.id}  and version = #{item.version}
+		</foreach>
+	</update>
+
+	<delete id="delete">
+		UPDATE sys_dept SET
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</delete>
+
+	<delete id="deleteBatch" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+			UPDATE sys_dept SET
+				del_flag = #{DEL_FLAG_DELETE}
+			WHERE id = #{item.id}
+		</foreach>
+	</delete>
+
+    <select id="selectDeptListByRoleId" resultType="string">
+		select d.id
+		from sys_dept d
+            left join sys_role_dept rd on d.id = rd.dept_id
+        where rd.role_id = #{roleId}
+            <if test="deptCheckStrictly">
+              and d.id not in (select d.parent_id from sys_dept d inner join sys_role_dept rd on d.id = rd.dept_id and rd.role_id = #{roleId})
+            </if>
+		order by d.parent_id, d.tree_sorts
+	</select>
+
+    <select id="checkDeptExistUser"  resultType="int">
+		select count(1) from sys_user where dept_id = #{deptId} and del_flag = '0'
+	</select>
+	
+	<select id="hasChildByDeptId"  resultType="int">
+		select count(1) from sys_dept
+		where del_flag = '0' and parent_id = #{PARENT}
+	</select>
+	
+	<select id="selectChildrenDeptById"  resultType="SysDept">
+		select * from sys_dept t
+		where  t.parent_ids like CONCAT(#{parentIds},'%')
+	</select>
+	
+	<select id="selectNormalChildByParentIds" resultType="int">
+		select count(id) from sys_dept t where t.status = 0 and t.del_flag = '0'
+		and t.parent_ids like concat(#{parentIds},'%') and t.parent_ids &lt;&gt; #{parentIds}
+	</select>
+	
+	<select id="checkDeptNameUnique" resultType="SysDept">
+		SELECT
+		<include refid="deptColumns"/>
+		FROM sys_dept
+		where dept_name=#{deptName}  and del_flag = '0' and parent_id = #{parentId} limit 1
+	</select>
+
+	<update id="updateDeptChildren" parameterType="java.util.List">
+		update sys_dept set parent_ids =
+		<foreach collection="depts" item="item" index="index"
+				 separator=" " open="case id" close="end">
+			when #{item.id} then #{item.parentIds}
+		</foreach>
+		, tree_sorts =
+		<foreach collection="depts" item="item" index="index"
+				 separator=" " open="case id" close="end">
+			when #{item.id} then #{item.treeSorts}
+		</foreach>
+		, tree_level =
+		<foreach collection="depts" item="item" index="index"
+				 separator=" " open="case id" close="end">
+			when #{item.id} then #{item.treeLevel}
+		</foreach>
+		where id in
+		<foreach collection="depts" item="item" index="index"
+				 separator="," open="(" close=")">
+			#{item.id}
+		</foreach>
+	</update>
+	 
+	 <update id="updateDeptStatus">
+ 	    update sys_dept
+ 	    <set>
+ 	        <if test="status != null and status != ''">status = #{status},</if>
+ 	        <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+ 	        update_time = sysdate()
+        </set>
+ 	    where dept_id in (${ancestors})
+	</update>
+
+	<!--根据ids获取所有的节点-->
+	<select id="searchSysDeptTreeByIds" parameterType="java.util.List" resultType="SysDept">
+		select
+		<include refid="deptColumns"/>
+		from sys_dept t
+		<where>
+			<foreach collection="ids" item="idsItem">
+				or t.id in
+				<foreach collection="idsItem" item="id" open="(" separator="," close=")">
+					#{id}
+				</foreach>
+			</foreach>
+		</where>
+		order by t.tree_sorts asc
+	</select>
+
+	<!-- 根据条件查询节点 -->
+	<select id="searchSysDeptTree" parameterType="java.util.Map" resultType="SysDept">
+		select
+		<include refid="deptColumns"/>
+		from sys_dept t
+		<where>
+			t.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="deptName != null and deptName != ''">
+				and t.dept_name like concat(concat('%',#{deptName}),'%')
+			</if>
+			<if test="deptCode != null and deptCode != ''">
+				and t.dept_code like concat(concat('%',#{deptCode}),'%')
+			</if>
+			<if test="searchText != null and searchText != ''">
+				and (
+				  t.dept_name like concat(concat('%',#{searchText}),'%') or
+				  t.dept_code like concat(concat('%',#{searchText}),'%') or
+				  t.dept_pinyin like concat(concat('%',#{searchText}),'%')
+				)
+			</if>
+		</where>
+		order by t.tree_sorts asc
+	</select>
+
+
+	<sql id="seletUserDeptColumns">
+		SELECT
+				t.id,
+				t.parent_id as 'parentId',
+				t.parent_ids as 'parentIds',
+				t.dept_name as 'deptName',
+				t.dept_name as 'subtitle',
+				t.dept_type as 'deptType',
+				'n' AS treeLeaf,
+				0 AS groupSort,
+				t.tree_sorts  as 'treeSorts',
+				t.dept_pinyin as 'deptPinyin'
+				FROM
+				sys_dept t
+
+	</sql>
+	<sql id="seletUserUserColumns">
+		SELECT
+			t.id,
+			t.dept_id as 'parentId',
+			concat(d.parent_ids,'/',t.id) as 'parentIds',
+			t.NAME as 'deptName',
+			d.dept_name as 'subtitle',
+			'user' as 'deptType',
+			'y' AS treeLeaf,
+			1 AS groupSort,
+			t.sort  as 'treeSorts',
+			t.user_pinyin as 'deptPinyin'
+			FROM
+			sys_user t
+		    left join sys_dept d on t.dept_id = d.id
+	</sql>
+
+
+
+	<!--根据ids获取所有的节点-->
+	<select id="findDeptAndUserChildListByParentId" resultType="SysDept">
+			select
+			*
+			from (
+			<include refid="seletUserDeptColumns"/>
+			WHERE t.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="parentId != null and parentId != ''">
+				and t.parent_id = #{parentId}
+			</if>
+			UNION ALL
+			<include refid="seletUserUserColumns"/>
+			WHERE t.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="parentId != null and parentId != ''">
+				and t.dept_id = #{parentId}
+			</if>
+			) t
+		   order by groupSort,treeSorts
+	</select>
+	<select id="searchSysDeptUserTree" resultType="SysDept">
+		<include refid="seletUserUserColumns"/>
+			WHERE t.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="deptName != null and deptName != ''">
+				and t.name like concat(concat('%',#{deptName}),'%')
+			</if>
+			<if test="searchText != null and searchText != ''">
+				and (
+				t.name like concat(concat('%',#{searchText}),'%') or
+				t.user_name like concat(concat('%',#{searchText}),'%') or
+				t.user_pinyin like concat(concat('%',#{searchText}),'%')
+				)
+			</if>
+		order by treeSorts
+	</select>
+
+	<!--根据ids获取所有的节点-->
+	<select id="searchSysDeptUserTreeByIds" parameterType="java.util.List" resultType="SysDept">
+		select
+		*
+		from (
+		<include refid="seletUserDeptColumns"/>
+		WHERE t.del_flag = 0
+		UNION ALL
+		<include refid="seletUserUserColumns"/>
+		WHERE t.del_flag = 0
+		) t
+		<where>
+			<foreach collection="ids" item="idsItem">
+				or t.id in
+				<foreach collection="idsItem" item="id" open="(" separator="," close=")">
+					#{id}
+				</foreach>
+			</foreach>
+		</where>
+		order by groupSort,treeSorts
+
+	</select>
+
+	<select id="getDeptInfoByIds" parameterType="java.util.List" resultType="java.util.HashMap">
+		SELECT
+		t.id,
+		t.parent_ids as 'parentIds',
+		t.dept_name as 'name',
+		'apartment' as 'icon'
+		FROM
+		sys_dept t
+		<where>
+			t.del_flag = 0
+			and ( 1 != 1
+			<foreach collection="ids" item="idsItem">
+				or t.id in
+				<foreach collection="idsItem" item="id" open="(" separator="," close=")">
+					#{id}
+				</foreach>
+			</foreach>
+			)
+		</where>
+	</select>
+
+	<select id="searchChildrenTypeByParentId" resultType="SysDept">
+		SELECT
+			1
+		FROM
+			sys_dept
+		WHERE
+			parent_ids  like concat(concat('%',#{id}),'/%')
+		AND del_flag = #{DEL_FLAG_NORMAL}
+		AND dept_type = #{deptType}
+	</select>
+
+
+	<select id="selectDeptByDeptCode" parameterType="java.util.Map" resultType="SysDept">
+		SELECT
+		<include refid="deptColumns"/>
+		FROM sys_dept t
+		where t.dept_code = #{deptCode} and t.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+</mapper>

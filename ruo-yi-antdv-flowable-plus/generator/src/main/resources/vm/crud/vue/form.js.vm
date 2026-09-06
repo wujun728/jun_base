@@ -1,0 +1,264 @@
+#set( $listSize = $!{dictColumns.size()})
+import AntModal from '@/components/pt/dialog/AntModal'
+import { get${BusinessName}, add${BusinessName}, update${BusinessName}#foreach($column in $columns)#if($column.columnName == "sort"), findMaxSort#break#end#end#foreach($column in $uniqueColumns)#set($attrName = $column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)}), check${attrName}Unique#end } from '@/api/${moduleName}/${businessName}'
+#if($hasAttach)
+import SysUpload from '@/components/pt/uploader'
+#end
+#foreach ($column in $editColumns)
+#if($column.htmlType == "user")
+import SelectUser from '@/components/pt/selectUser/SelectUser'
+#elseif($column.htmlType == "dept")
+import SelectDept from '@/components/pt/selectDept/SelectDept'
+#end
+#end
+
+export default {
+  name: 'CreateForm',
+  props: {
+#foreach ($column in $dictColumns)
+    ${column.javaField}Options: {
+      type: Array,
+      required: true
+    }#if($foreach.hasNext),
+#else
+#end
+#end
+#if(${isSub} == 'true')#if($listSize > 0),
+#end
+    ${subTableFkNameUnCap}: {
+        type: String,
+        required: true
+    }
+#end
+ },
+  components: {
+    AntModal#foreach ($column in $editColumns)
+#if($column.htmlType == "user"),
+    SelectUser#elseif($column.htmlType == "dept"),
+    SelectDept
+#end
+#end
+#if($hasAttach),
+    SysUpload
+#end },
+  data () {
+#foreach($column in $uniqueColumns)
+#set($attrName = $column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+    const validate${attrName} = (rule, value, callback) => {
+      if (value === '' || value === undefined || value === null) {
+        callback(new Error('${comment}不允许为空'))
+      } else {
+        check${attrName}Unique(this.form.id, this.form.${column.javaField})
+        callback()
+      }
+    }
+#end
+    return {
+      open: false,
+      spinning: false,
+      delayTime: 100,
+      labelCol: { span: 4 },
+      wrapperCol: { span: 14 },
+      loading: false,
+      total: 0,
+      id: undefined,
+      formTitle: '添加${functionName}',
+      // 表单参数
+      form: {},
+#if($hasAttach)
+    attachmentRefName: 'addUploaderFile', // 标志表单是否含有附件
+    formId: '',
+#end
+      rules: {
+#foreach($column in $requireColumns)
+#set($attrName = $column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+        ${column.javaField}: [{ required: true, message: '${comment}不能为空',#foreach($uniqueColumn in $uniqueColumns)#if($column.javaField == $uniqueColumn.javaField) validator: validate${attrName},#break#end#end trigger: 'blur' }]#if($foreach.hasNext),
+#else
+
+#end
+#end
+      }
+    }
+  },
+  filters: {},
+  created () {},
+  computed: {},
+  watch: {},
+  mounted () {},
+  methods: {
+    onClose () {
+      this.open = false
+      this.reset()
+      this.$emit('close')
+    },
+    // 取消按钮
+    cancel () {
+      this.open = false
+      this.reset()
+      this.$emit('close')
+    },
+    // 表单重置
+    reset () {
+      this.form = {
+        id: undefined,
+#foreach ($column in $editColumns)
+        ${column.javaField}: undefined#if($foreach.hasNext),
+#else
+
+#end
+#end
+      }
+#if($hasAttach)
+    if (this.formId) {
+        // 清空附件的formId
+        this.formId = ''
+    }
+#end
+    },
+    /** 新增按钮操作 */
+    handleAdd () {
+      this.reset()
+#foreach($column in $columns)
+#if($column.columnName == "sort")
+      /** 获取最大编号 */
+      findMaxSort().then(response => {
+        this.form.sort = response.data
+        this.open = true
+        this.formTitle = '添加${functionName}'
+      })
+#break
+#end
+#end
+#if(${isSub} == 'true')
+    this.form.${subTableFkNameUnCap} = this.${subTableFkNameUnCap}
+#end
+    },
+    /** 修改按钮操作 */
+    handleUpdate (row) {
+      this.reset()
+      this.open = true
+      this.spinning = !this.spinning
+      const ${businessName}Id = row.id
+      get${BusinessName}(${businessName}Id).then(response => {
+#foreach($column in $columns)
+#set($javaField=$column.javaField)
+#if($column.htmlType == "selectMultiple" || $column.htmlType == "checkbox")
+          if (response.data.$javaField !== null) {
+              response.data.$javaField = response.data.$!{javaField}.split(',')
+          } else {
+              response.data.$javaField = []
+          }
+#elseif($column.htmlType == "user" || $column.htmlType == "dept")
+          response.data.$javaField = { ids: response.data.$javaField, names: response.data.$!{javaField}Name }
+#end
+#end
+        this.form = response.data
+#if($hasAttach)
+        this.formId = response.data.id
+#end
+        this.formTitle = '修改${functionName}'
+        this.spinning = !this.spinning
+      })
+    },
+    /** 提交按钮 */
+#set($refs='$refs')
+    submitForm: function () {
+      this.${refs}.form.validate(valid => {
+        if (valid) {
+            const saveForm = JSON.parse(JSON.stringify(this.form))
+#foreach($column in $columns)
+#set($javaField=$column.javaField)
+#if($column.htmlType == "selectMultiple" || $column.htmlType == "checkbox")
+			if (saveForm.$javaField) {
+				saveForm.$javaField = saveForm.$!{javaField}.join(',')
+			} else {
+				saveForm.$javaField = null
+			}
+#elseif($column.htmlType == "user" || $column.htmlType == "dept")
+			if (this.form.$javaField !== undefined) {
+				saveForm.$javaField = this.form.$!{javaField}.ids
+			}
+#end
+#end
+			if (this.form.id !== undefined) {
+				update${BusinessName}(saveForm).then(response => {
+#if($hasAttach)
+					if (this.attachmentRefName) {
+						// 表单含有附件
+						this.formId = response.data.id // 附件上传formId
+						this.${refs}[this.attachmentRefName].upload(this.formId) // 附件上传
+					} else {
+					this.$message.success('新增成功', 3)
+						this.open = false
+						this.$emit('ok')
+						this.$emit('close')
+					}
+#else
+					this.$message.success('新增成功', 3)
+					this.open = false
+					this.$emit('ok')
+					this.$emit('close')
+#end
+				})
+              } else {
+				add${BusinessName}(saveForm).then(response => {
+#if($hasAttach)
+					if (this.attachmentRefName) {
+						// 表单含有附件
+						this.formId = response.data.id // 附件上传formId
+						this.${refs}[this.attachmentRefName].upload(this.formId) // 附件上传
+					} else {
+						this.$message.success('新增成功', 3)
+						this.open = false
+						this.$emit('ok')
+						this.$emit('close')
+					}
+#else
+					this.$message.success('新增成功', 3)
+					this.open = false
+					this.$emit('ok')
+					this.$emit('close')
+#end
+				})
+			}
+        } else {
+          return false
+        }
+      })
+    },
+    back () {
+      const index = '/${moduleName}/${businessNameLowerCase}/index'
+      this.$router.push(index)
+    }
+#if($hasAttach),
+      uploadCompleteFile: function (successFile, errorFile) {
+          if (errorFile.length > 0) {
+              // 有附件保存失败的处理
+              this.attachmentUploadStatus = false // 记录附件上传失败
+              this.${refs}[this.attachmentRefName].$el.scrollIntoView() // 页面滚动到附件位置
+              this.uploaderButtonStatus = false // 按钮关闭loading状态
+          } else {
+              // 所有附件都保存成功的处理
+              this.attachmentUploadStatus = true // 记录附件上传成功
+              this.$message.success('保存成功', 3)
+              this.open = false
+              this.$emit('ok')
+              this.$emit('close')
+          }
+          this.uploaderButtonStatus = false // 返回按钮可用
+      }
+#end
+  }
+}

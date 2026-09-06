@@ -1,0 +1,61 @@
+{
+  "name": "bearjia-ui",
+  "version": "1.3.0",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "dev": "vite --mode dev",
+    "build": "vite build --mode prod",
+    "build:prod": "vite build --mode prod",
+    "build:test": "vite build --mode test",
+    "preview": "vite preview",
+    "cleanup": "node scripts/cleanup.js",
+    "lint": "eslint src --cache --cache-location node_modules/.cache/eslint/.eslintcache",
+    "lint:fix": "eslint src --fix --cache --cache-location node_modules/.cache/eslint/.eslintcache",
+    "format": "prettier --write \"src/**/*.{js,jsx,vue,json,css,less,scss,md}\"",
+    "format:check": "prettier --check \"src/**/*.{js,jsx,vue,json,css,less,scss,md}\"",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.typecheck.json"
+  },
+  "dependencies": {
+    "@ant-design/icons-vue": "^7.0.1",
+    "@form-create/ant-design-vue": "^3.3.0",
+    "@form-create/antd-designer": "^3.4.0",
+    "@vueuse/core": "^10.9.0",
+    "@wangeditor/editor": "^5.1.23",
+    "@wangeditor/editor-for-vue": "^5.1.12",
+    "ant-design-vue": "^4.1.2",
+    "axios": "^1.6.7",
+    "dayjs": "^1.11.10",
+    "echarts": "^5.6.0",
+    "file-saver": "^2.0.5",
+    "highlight.js": "^11.11.1",
+    "js-cookie": "^3.0.5",
+    "nprogress": "^0.2.0",
+    "pinia": "^2.1.7",
+    "sortablejs": "^1.15.0",
+    "vue": "^3.4.21",
+    "vue-cropper": "^1.1.4",
+    "vue-request": "^2.0.4",
+    "vue-router": "^4.3.0"
+  },
+  "devDependencies": {
+    "@types/nprogress": "^0.2.3",
+    "@vitejs/plugin-vue": "^5.0.4",
+    "@vitejs/plugin-vue-jsx": "^3.1.0",
+    "@vue/compiler-sfc": "^3.4.21",
+    "@vue/eslint-config-prettier": "^9.0.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-vue": "^9.24.0",
+    "less": "^4.2.0",
+    "prettier": "^3.2.5",
+    "rollup-plugin-visualizer": "^6.0.3",
+    "terser": "^5.29.1",
+    "typescript": "^5.4.5",
+    "unplugin-auto-import": "^0.17.5",
+    "unplugin-vue-components": "^0.26.0",
+    "vite": "^5.1.4",
+    "vue-tsc": "^2.0.29"
+  }
+}

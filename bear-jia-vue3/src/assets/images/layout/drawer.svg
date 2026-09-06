@@ -1,0 +1,19 @@
+<svg width="150" height="120" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="100" height="80" rx="4" fill="#F0F2F5"/>
+  <!-- Main Content Header -->
+  <rect x="0" y="0" width="100" height="20" fill="#FFFFFF" style="stroke:#E0E0E0; stroke-width:0.5;"/>
+  <!-- Hamburger Icon -->
+  <rect x="8" y="7" width="12" height="1.5" fill="#595959"/>
+  <rect x="8" y="10.5" width="12" height="1.5" fill="#595959"/>
+  <rect x="8" y="14" width="12" height="1.5" fill="#595959"/>
+  <!-- Main Content Body -->
+  <rect x="10" y="30" width="80" height="8" rx="2" fill="#BDBDBD"/>
+  <rect x="10" y="45" width="80" height="4" rx="2" fill="#BDBDBD"/>
+  <rect x="10" y="55" width="60" height="4" rx="2" fill="#BDBDBD"/>
+  <!-- Drawer Panel (Shown) -->
+  <rect x="0" y="0" width="60" height="80" fill="#2C3E50" style="opacity: 0.98;"/>
+  <!-- Drawer Menu Items -->
+  <rect x="10" y="15" width="40" height="4" rx="2" fill="#FFFFFF"/>
+  <rect x="10" y="25" width="40" height="4" rx="2" fill="#FFFFFF"/>
+  <rect x="10" y="35" width="40" height="4" rx="2" fill="#FFFFFF"/>
+</svg>

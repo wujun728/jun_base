@@ -1,0 +1,83 @@
+package ${packageName}.service;
+
+import com.aidex.common.core.service.BaseTreeService;
+import com.aidex.common.core.domain.TreeNode;
+import java.util.List;
+import ${packageName}.domain.${ClassName};
+
+/**
+ * ${functionName}Service接口
+ * @author ${functionAuthor}
+ * @email ${functionAuthorEmail}
+ * @date ${datetime}
+ */
+public interface ${ClassName}Service extends BaseTreeService<${ClassName}>
+{
+    
+	#if($hasDisableEnable)
+    /**
+     * 更新${functionName}状态
+     * @param ${className}
+     * @return 结果
+     */
+    public int updateStatus(${ClassName} ${className});
+#end
+	
+	/**
+    * 根据展开层级和父节点递归获取展示的数据
+    * @param level 展开层级
+    * @param id 父节点ID
+    * @return
+    */
+    public List<${ClassName}> listDataByLevel(int level, String id);
+
+    /**
+     * 构建前端所需要树结构
+     * @param level展开层级
+     * @param id 父节点ID
+     * @return
+     */
+    public List<TreeNode> buildTree(int level, String id);
+	
+	/**
+     * 构建前端所需要树结构（排除当前节点及子节点）
+     * @param level 展开层级
+     * @param id 父节点ID
+	 * @param exclude${ClassName} 排除节点信息
+     * @return
+     */
+    public List<TreeNode> buildTreeDataExcludeChild(int level, String id, ${ClassName} exclude${ClassName});
+
+    /**
+    * 根据父节点ID查询是否存在子节点
+    * @param parentId
+    * @return
+    */
+    public boolean hasChildByParentId(String parentId);
+
+    /**
+     * 树表格检索
+     * @param queryParams 检索对象
+     * @return
+     */
+    public List<${ClassName}> search${ClassName}List(${ClassName} queryParams);
+	
+    /**
+     * 树检索
+     * @param queryParams 检索对象
+     * @return
+     */
+    public List<TreeNode> search${ClassName}(${ClassName} queryParams);
+
+#foreach($column in $columns)
+#if($column.isUnique == "1")
+#set($attrName = $column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+    /**
+    * 校验${column.columnComment}的唯一性
+    * @param ${className}
+    */
+    public void check${attrName}Unique(${ClassName} ${className});
+
+#end
+#end
+}

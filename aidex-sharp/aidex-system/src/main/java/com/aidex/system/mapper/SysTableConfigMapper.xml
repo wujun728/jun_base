@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aidex.system.mapper.SysTableConfigMapper">
+
+    <sql id="sysTableConfigColumns">
+        table_key as "tableKey",
+        user_id as "userId",
+        space as "space",
+        columns as "columns",
+        remark as "remark",
+        status as "status",
+        id as "id",
+        create_by as "createBy",
+        create_dept as "createDept",
+        create_time as "createTime",
+        update_by as "updateBy",
+        update_time as "updateTime",
+        update_ip as "updateIp",
+        version as "version",
+        del_flag as "delFlag"
+        </sql>
+
+    <sql id="sysTableConfigJoins">
+    </sql>
+
+    <select id="get" resultType="SysTableConfig">
+        SELECT
+        <include refid="sysTableConfigColumns"/>
+        FROM sys_table_config a
+        <include refid="sysTableConfigJoins"/>
+        WHERE a.id = #{id}
+    </select>
+
+    <select id="findList" resultType="SysTableConfig">
+        SELECT
+        <include refid="sysTableConfigColumns"/>
+        FROM sys_table_config a
+        <include refid="sysTableConfigJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="tableKey != null  and tableKey != ''">
+                and table_key = #{tableKey}
+            </if>
+            <if test="userId != null  and userId != ''">
+                and user_id = #{userId}
+            </if>
+            <if test="space != null  and space != ''">
+                and space like concat('%', #{space}, '%')
+            </if>
+            <if test="columns != null  and columns != ''">
+                and columns like concat('%', #{columns}, '%')
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.create_time
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findListWithUnique" resultType="SysTableConfig">
+        SELECT
+        a.id
+        FROM sys_table_config a
+        <include refid="sysTableConfigJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="notEqualId != null and notEqualId != ''">
+                AND id != #{notEqualId}
+            </if>
+        </where>
+    </select>
+
+
+    <insert id="insert">
+        INSERT INTO sys_table_config(
+            table_key,
+            user_id,
+            space,
+            columns,
+            remark,
+            status,
+            id,
+            create_by,
+            create_dept,
+            create_time,
+            update_by,
+            update_time,
+            update_ip,
+            version,
+            del_flag
+        ) VALUES (
+            #{tableKey},
+            #{userId},
+            #{space},
+            #{columns},
+            #{remark},
+            #{status},
+            #{id},
+            #{createBy},
+            #{createDept},
+            #{createTime},
+            #{updateBy},
+            #{updateTime},
+            #{updateIp},
+            #{version},
+            #{delFlag}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE sys_table_config SET
+            table_key = #{tableKey},
+            user_id = #{userId},
+           <if test="space != null and space != ''">space = #{space}, </if>
+            columns = #{columns},
+            <if test="remark != null and remark != ''">remark = #{remark}, </if>
+            status = #{status},
+            update_by = #{updateBy},
+            update_time = #{updateTime},
+            update_ip = #{updateIp},
+            version = version + 1
+        WHERE id = #{id} and version = #{version}
+    </update>
+
+    <update id="delete">
+        UPDATE sys_table_config SET
+            del_flag = #{DEL_FLAG_DELETE}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteSysTableConfigByIds">
+        UPDATE sys_table_config SET
+        del_flag = #{DEL_FLAG_DELETE}
+        WHERE id in
+        <foreach item="tableKey" collection="array" open="(" separator="," close=")">
+            #{tableKey}
+        </foreach>
+    </delete>
+
+
+    <select id="getInfoByTableKey" resultType="SysTableConfig">
+        SELECT
+        <include refid="sysTableConfigColumns"/>,
+        'U' as configType
+        FROM sys_table_config a
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="tableKey != null  and tableKey != ''">
+                and table_key = #{tableKey}
+            </if>
+            <if test="userId != null  and userId != ''">
+                and user_id = #{userId}
+            </if>
+        </where>
+        <!--查询个人列配置时union all系统管理对应的配置，如果个人没有则使用管理员对应配置，用户管理员初始化全局配置-->
+        union all
+        SELECT
+        <include refid="sysTableConfigColumns"/>,
+        'S'  as configType
+        FROM sys_table_config a
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="tableKey != null  and tableKey != ''">
+                and table_key = #{tableKey}
+            </if>
+            and user_id = '1'
+        </where>
+    </select>
+
+</mapper>

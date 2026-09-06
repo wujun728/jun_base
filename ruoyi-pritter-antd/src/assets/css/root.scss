@@ -1,0 +1,45 @@
+:root {
+  --body-background: #f5f7fa;
+  --text-color: #141414;
+  --scrollbar-thumb-color: rgba(144, 147, 153, 0.3);
+  --scrollbar-thumb-hover-color: rgba(144, 147, 153, 0.5);
+  --scrollbar-track-color: transparent;
+}
+
+.dark {
+  --body-background: #141414;
+  --text-color: #fff;
+  --scrollbar-thumb-color: rgba(163, 166, 173, 0.3);
+  --scrollbar-thumb-hover-color: rgba(163, 166, 173, 0.5);
+}
+
+/* 全局滚动条美化（Element Plus el-scrollbar 风格） */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-track-color);
+}
+
+*::-webkit-scrollbar-track {
+  background-color: var(--scrollbar-track-color);
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb-color);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  transition: background-color 0.2s ease;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover-color);
+}
+
+*::-webkit-scrollbar-corner {
+  background-color: var(--scrollbar-track-color);
+}
+
+html.theme-switching,
+html.theme-switching * {
+  transition: none !important;
+}

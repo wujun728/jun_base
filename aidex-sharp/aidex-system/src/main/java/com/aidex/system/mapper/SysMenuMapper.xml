@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aidex.system.mapper.SysMenuMapper">
+
+	<sql id="menuColumns">
+		t.id as "id",
+		t.menu_name AS "menuName",
+		t.menu_code AS "menuCode",
+		t.path  AS "path",
+		t.component AS "component",
+		t.is_frame AS "isFrame",
+		t.is_cache AS "isCache",
+		t.menu_type AS "menuType",
+		t.visible AS "visible",
+		t.status AS "status",
+		ifnull(t.perms,'') AS "perms",
+		t.icon AS "icon",
+		t.parent_id AS "parentId",
+		t.parent_ids AS "parentIds",
+		t.tree_sort AS "treeSort",
+		t.tree_sorts AS "treeSorts",
+		t.tree_level AS "treeLevel",
+		t.tree_leaf AS "treeLeaf",
+		t.create_by AS "createBy",
+		t.create_dept AS "createDept",
+		t.create_time AS "createTime",
+		t.update_by AS "updateBy",
+		t.update_time AS "updateTime",
+		t.update_ip AS "updateIp",
+		t.remark AS "remark",
+		t.version AS "version",
+		t.del_flag AS "delFlag"
+	</sql>
+
+	<sql id="menuoins">
+	</sql>
+
+	<sql id="commonWhere">
+		<if test="parentId != null and parentId != ''">
+			AND t.parent_id = #{parentId}
+		</if>
+		<if test="parentIds != null and parentIds != ''">
+			and t.parent_ids like concat(#{parentIds},'%') and t.parent_ids &lt;&gt; #{parentIds}
+		</if>
+		<if test="menuName != null and menuName != ''">
+			AND t.menu_name like concat('%', #{menuName}, '%')
+		</if>
+		<if test="menuCode != null and menuCode != ''">
+			AND t.menu_code like concat('%', #{menuCode}, '%')
+		</if>
+		<if test="visible != null and visible != ''">
+			AND t.visible = t.#{visible}
+		</if>
+		<if test="component != null and component != ''">
+			AND t.component like concat('%', #{component}, '%')
+		</if>
+		<if test="status != null and status != ''">
+			AND t.status = #{status}
+		</if>
+	</sql>
+
+	<sql id="commonSorts">
+		order by t.tree_sorts
+	</sql>
+
+	<select id="get" resultType="SysMenu">
+		SELECT
+		<include refid="menuColumns"/>
+		FROM sys_menu t
+		where id = #{id}
+	</select>
+
+	<select id="findList" resultType="SysMenu">
+		SELECT
+		<include refid="menuColumns"/>
+		FROM sys_menu t
+		where t.del_flag = #{DEL_FLAG_NORMAL}
+		<include refid="commonWhere"/>
+		<include refid="commonSorts"/>
+	</select>
+
+	<select id="findCount"  resultType="integer">
+		SELECT
+		count(1)
+		FROM sys_menu t
+		where t.del_flag = #{DEL_FLAG_NORMAL}
+		<include refid="commonWhere"/>
+	</select>
+
+	<select id="findMaxSort" resultType="integer">
+		SELECT max(t.tree_sort)
+		FROM sys_menu t
+		WHERE t.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="parentId != null and parentId != ''">
+			and t.parent_id = #{parentId}
+		</if>
+	</select>
+
+	<select id="selectMenuListByUserId" resultType="SysMenu">
+		select distinct
+		<include refid="menuColumns"/>
+		from sys_menu t
+		left join sys_role_menu rm on t.id = rm.menu_id
+		left join sys_user_role ur on rm.role_id = ur.role_id
+		left join sys_role ro on ur.role_id = ro.id
+		where ur.user_id = #{params.userId}
+		and t.del_flag = '0'
+		<include refid="commonWhere"/>
+		<include refid="commonSorts"/>
+	</select>
+
+	<select id="selectMenuTreeByUserId" resultType="SysMenu">
+		select distinct
+		<include refid="menuColumns"/>
+		from sys_menu t
+			 left join sys_role_menu rm on t.id = rm.menu_id
+			 left join sys_user_role ur on rm.role_id = ur.role_id
+			 left join sys_role ro on ur.role_id = ro.id
+			 left join sys_user u on ur.user_id = u.id
+		where u.id = #{userId}
+		and t.del_flag = '0'
+		and t.menu_type in ('M', 'C') and t.status = 0  AND ro.status = 0
+		<include refid="commonSorts"/>
+	</select>
+
+	<select id="selectMenuPermsByUserId" parameterType="String" resultType="String">
+		select distinct t.perms
+		from sys_menu t
+			 left join sys_role_menu rm on t.id = rm.menu_id
+			 left join sys_user_role ur on rm.role_id = ur.role_id
+			 left join sys_role r on r.id = ur.role_id
+		where t.status = '0'
+			and r.status = '0'
+			and ur.user_id = #{userId}
+			and t.del_flag = '0'
+	</select>
+
+	<select id="selectMenuTreeAll" resultType="SysMenu">
+		select distinct
+		<include refid="menuColumns"/>
+		from sys_menu t
+		where t.menu_type in ('M', 'C')
+			and t.status = 0
+		and t.del_flag = '0'
+		<include refid="commonSorts"/>
+	</select>
+
+
+	<select id="selectMenuListByRoleId" resultType="String">
+		select t.id
+		from sys_menu t
+		left join sys_role_menu rm
+		on t.id = rm.menu_id
+		where rm.role_id = #{roleId}
+		and t.del_flag = '0'
+		<if test="menuCheckStrictly">
+			and t.id not in (select m.parent_id from sys_menu m inner join sys_role_menu rm on m.id = rm.menu_id and rm.role_id = #{roleId})
+		</if>
+		<include refid="commonSorts"/>
+	</select>
+
+	<select id="findListWithUnique" resultType="SysMenu">
+		SELECT
+		t.id
+		FROM sys_menu t
+		WHERE t.del_flag = '0'
+		<if test="menuName != null and menuName != ''">
+			AND t.menu_name = #{menuName}
+		</if>
+		<if test="menuCode != null and menuCode != ''">
+			AND t.menu_code = #{menuCode}
+		</if>
+		<if test="path != null and path != ''">
+			AND t.path = #{path}
+		</if>
+		<if test="parentId != null and parentId != ''">
+			AND t.parent_id = #{parentId}
+		</if>
+		<if test="notEqualId != null and notEqualId != ''">
+			AND t.id != #{notEqualId}
+		</if>
+	</select>
+
+	<!-- 根据条件查询节点 -->
+	<select id="searchSysMenuTree" parameterType="java.util.Map" resultType="SysMenu">
+		select
+		<include refid="menuColumns"/>
+		from sys_menu t
+		<where>
+			and t.del_flag = '0'
+			<if test="menuName != null and menuName != ''">
+				and t.menu_name like concat(concat('%',#{menuName}),'%')
+			</if>
+			<if test="visible != null and visible != ''">
+				and t.visible like concat(concat('%',#{visible}),'%')
+			</if>
+			<if test="status != null and status != ''">
+				and t.status = #{status}
+			</if>
+		</where>
+		<include refid="commonSorts"/>
+	</select>
+
+	<!--根据ids获取所有的节点-->
+	<select id="searchSysMenuTreeByIds" parameterType="java.util.List" resultType="SysMenu">
+		select
+		<include refid="menuColumns"/>
+		from sys_menu t
+		<where>
+			and t.del_flag = '0'
+			and ( 1 != 1
+			<foreach collection="ids" item="idsItem">
+				or t.id in
+				<foreach collection="idsItem" item="id" open="(" separator="," close=")">
+					#{id}
+				</foreach>
+			</foreach>
+			)
+		</where>
+		<include refid="commonSorts"/>
+	</select>
+
+	<select id="selectNormalChildByParentIds" resultType="int">
+		select count(*) from sys_menu t where t.status = 0 and t.del_flag = '0'
+		and t.parent_ids like concat(#{parentIds},'%') and t.parent_ids &lt;&gt; #{parentIds}
+	</select>
+
+	<insert id="insert" >
+		insert into sys_menu(
+			id,
+			menu_name,
+			menu_code,
+			path,
+			component,
+			is_frame,
+			is_cache,
+			menu_type,
+			visible,
+			perms,
+			icon,
+			parent_id,
+			parent_ids,
+			tree_sort,
+			tree_sorts,
+			tree_level,
+			tree_leaf,
+			status,
+			create_by,
+			create_dept,
+			create_time,
+			update_by,
+			update_time,
+			update_ip,
+			remark,
+			del_flag,
+			version
+		)values(
+			#{id},
+			#{menuName},
+			#{menuCode},
+			#{path},
+			#{component},
+			#{isFrame},
+			#{isCache},
+			#{menuType},
+			#{visible},
+			#{perms},
+			#{icon},
+			#{parentId},
+			#{parentIds},
+			#{treeSort},
+			#{treeSorts},
+			#{treeLevel},
+			#{treeLeaf},
+			#{status},
+			#{createBy},
+			#{createDept},
+			#{createTime},
+			#{updateBy},
+			#{updateTime},
+			#{updateIp},
+			#{remark},
+			#{DEL_FLAG_NORMAL},
+			1
+		)
+	</insert>
+
+	<update id="update" parameterType="SysMenu">
+		update sys_menu
+		<set>
+			<if test="menuName != null and menuName != ''">menu_name = #{menuName},</if>
+			<if test="menuCode != null and menuCode != ''">menu_code = #{menuCode},</if>
+			<if test="path != null and path != ''">path = #{path},</if>
+			<if test="component != null">component = #{component},</if>
+			<if test="isFrame != null and isFrame != ''">is_frame = #{isFrame},</if>
+			<if test="isCache != null and isCache != ''">is_cache = #{isCache},</if>
+			<if test="menuType != null and menuType != ''">menu_type = #{menuType},</if>
+			<if test="visible != null">visible = #{visible},</if>
+			<if test="perms !=null">perms = #{perms},</if>
+			<if test="icon !=null and icon != ''">icon = #{icon},</if>
+			<if test="parentId != null and parentId != ''"> parent_id = #{parentId}, </if>
+			<if test="parentIds != null and parentIds != ''"> parent_ids = #{parentIds}, </if>
+			<if test="treeSort != null">tree_sort = #{treeSort}, </if>
+			<if test="treeSorts != null">tree_sorts = #{treeSorts}, </if>
+			<if test="treeLevel != null">tree_level = #{treeLevel}, </if>
+			<if test="treeLeaf != null and treeLeaf != ''">tree_leaf = #{treeLeaf}, </if>
+			<if test="status != null and status != ''">status = #{status}, </if>
+			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy}, </if>
+			<if test="updateTime != null">update_time = #{updateTime}, </if>
+			<if test="updateIp != null and updateIp != ''">update_ip = #{updateIp}, </if>
+			<if test="remark != null and remark != ''">remark = #{remark}, </if>
+			version = version + 1
+		</set>
+		where id = #{id}  and version = #{version}
+	</update>
+
+	<update id="updateBatch" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+			update sys_menu
+			<set>
+				<if test="menuName != null and menuName != ''">menu_name = #{menuName},</if>
+				<if test="menuCode != null and menuCode != ''">menu_code = #{menuCode},</if>
+				<if test="path != null and path != ''">path = #{path},</if>
+				<if test="component != null">component = #{component},</if>
+				<if test="isFrame != null and isFrame != ''">is_frame = #{isFrame},</if>
+				<if test="isCache != null and isCache != ''">is_cache = #{isCache},</if>
+				<if test="menuType != null and menuType != ''">menu_type = #{menuType},</if>
+				<if test="visible != null">visible = #{visible},</if>
+				<if test="perms !=null">perms = #{perms},</if>
+				<if test="icon !=null and icon != ''">icon = #{icon},</if>
+				<if test="parentId != null and parentId != ''"> parent_id = #{parentId}, </if>
+				<if test="parentIds != null and parentIds != ''"> parent_ids = #{parentIds}, </if>
+				<if test="treeSort != null">tree_sort = #{treeSort}, </if>
+				<if test="treeSorts != null">tree_sorts = #{treeSorts}, </if>
+				<if test="treeLevel != null">tree_level = #{treeLevel}, </if>
+				<if test="treeLeaf != null and treeLeaf != ''">tree_leaf = #{treeLeaf}, </if>
+				<if test="status != null and status != ''">status = #{status}, </if>
+				<if test="updateBy != null and updateBy != ''">update_by = #{updateBy}, </if>
+				<if test="updateTime != null">update_time = #{updateTime}, </if>
+				<if test="updateIp != null and updateIp != ''">update_ip = #{updateIp}, </if>
+				<if test="remark != null and remark != ''">remark = #{remark}, </if>
+				version = version + 1
+			</set>
+			where id = #{item.id}  and version = #{item.version}
+		</foreach>
+	</update>
+
+	<update id="updateMenuChildren" parameterType="java.util.List">
+		update sys_menu set parent_ids =
+		<foreach collection="menus" item="item" index="index"
+				 separator=" " open="case id" close="end">
+			when #{item.id} then #{item.parentIds}
+		</foreach>
+		, tree_sorts =
+		<foreach collection="menus" item="item" index="index"
+				 separator=" " open="case id" close="end">
+			when #{item.id} then #{item.treeSorts}
+		</foreach>
+		, tree_level =
+		<foreach collection="menus" item="item" index="index"
+				 separator=" " open="case id" close="end">
+			when #{item.id} then #{item.treeLevel}
+		</foreach>
+		where id in
+		<foreach collection="menus" item="item" index="index"
+				 separator="," open="(" close=")">
+			#{item.id}
+		</foreach>
+	</update>
+
+	<delete id="delete">
+		UPDATE sys_menu SET
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</delete>
+
+	<delete id="deleteBatch" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+			UPDATE sys_menu SET
+			del_flag = #{DEL_FLAG_DELETE}
+			WHERE id = #{item.id}
+		</foreach>
+	</delete>
+
+</mapper> 

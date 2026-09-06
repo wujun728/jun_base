@@ -1,0 +1,52 @@
+package ${packageName}.service;
+
+import com.aidex.common.core.service.BaseService;
+import ${packageName}.domain.${ClassName};
+
+/**
+ * ${functionName}Service接口
+ * @author ${functionAuthor}
+ * @email ${functionAuthorEmail}
+ * @date ${datetime}
+ */
+public interface ${ClassName}Service extends BaseService<${ClassName}> {
+
+#if($hasDisableEnable)
+    /**
+     * 更新${functionName}状态
+     * @param ${className}
+     * @return 结果
+     */
+    public int updateStatus(${ClassName} ${className});
+
+#end
+#foreach($column in $columns)
+#if($column.isUnique == "1")
+#set($attrName = $column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+    /**
+    * 校验${column.columnComment}的唯一性
+    * @param ${className} ${functionName}
+    */
+    public void check${attrName}Unique(${ClassName} ${className});
+
+#end
+#end
+    /**
+     * 批量删除${functionName}
+     * @param ids 需要删除的${functionName}ID集合
+     * @return 结果
+     */
+    public int delete${ClassName}ByIds(String[] ids);
+
+#foreach($column in $columns)
+#if($column.columnName == "sort")
+    /**
+    * 获取最大编号
+    * @param ${className} ${functionName}
+    * @return 结果
+    */
+    public int findMaxSort(${ClassName} ${className});
+#break
+#end
+#end
+}

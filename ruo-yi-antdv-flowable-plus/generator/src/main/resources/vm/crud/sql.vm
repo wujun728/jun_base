@@ -1,0 +1,24 @@
+-- 菜单 SQL
+insert into sys_menu (id, menu_code, menu_name, sort, path, component, is_frame, is_cache, menu_type, visible, perms, icon, parent_id, parent_ids, tree_sort, tree_sorts, tree_level, tree_leaf, status, create_by, create_time, update_by, update_time, create_dept, update_ip, version, remark, del_flag)
+values('${sysMenu_id}', '${sysMenu_menuCode}', '${sysMenu_menuName}', '${sysMenu_sort}', '${sysMenu_path}', '${sysMenu_component}', 1, 0, 'C', 0, '${permissionPrefix}:list', '${menuIcon}', '${sysMenu_parentId}', '${sysMenu_parentIds}', '${sysMenu_treeSort}', '${sysMenu_treeSorts}', '${sysMenu_treeLevel}', 'n', '0', '1', sysdate(), '1', sysdate(), '', '127.0.0.1', 0, '', '0');
+
+-- 按钮 SQL
+insert into sys_menu (id, menu_code, menu_name, sort, path, component, is_frame, is_cache, menu_type, visible, perms, icon, parent_id, parent_ids, tree_sort, tree_sorts, tree_level, tree_leaf, status, create_by, create_time, update_by, update_time, create_dept, update_ip, version, remark, del_flag)
+values('${sysMenu_id_query}', '${sysMenu_menuCode}Query', '${sysMenu_menuName}查询', '${sysMenu_sort_query}', '#', '', 1, 0, 'F', 0, '${permissionPrefix}:query', '#', '${sysMenu_id}', '${sysMenu_parentIds_query}', '${sysMenu_treeSort_query}', '${sysMenu_treeSorts_query}', '${sysMenu_treeLevel_query}', 'y', '0', '1', sysdate(), '1', sysdate(), '', '127.0.0.1', 0, '', '0');
+
+insert into sys_menu (id, menu_code, menu_name, sort, path, component, is_frame, is_cache, menu_type, visible, perms, icon, parent_id, parent_ids, tree_sort, tree_sorts, tree_level, tree_leaf, status, create_by, create_time, update_by, update_time, create_dept, update_ip, version, remark, del_flag)
+values('${sysMenu_id_add}', '${sysMenu_menuCode}Add', '${sysMenu_menuName}新增', '${sysMenu_sort_add}', '#', '', 1, 0, 'F', 0, '${permissionPrefix}:add', '#', '${sysMenu_id}', '${sysMenu_parentIds_add}', '${sysMenu_treeSort_add}', '${sysMenu_treeSorts_add}', '${sysMenu_treeLevel_add}', 'y', '0', '1', sysdate(), '1', sysdate(), '', '127.0.0.1', 0, '', '0');
+
+insert into sys_menu (id, menu_code, menu_name, sort, path, component, is_frame, is_cache, menu_type, visible, perms, icon, parent_id, parent_ids, tree_sort, tree_sorts, tree_level, tree_leaf, status, create_by, create_time, update_by, update_time, create_dept, update_ip, version, remark, del_flag)
+values('${sysMenu_id_edit}', '${sysMenu_menuCode}Edit', '${sysMenu_menuName}修改', '${sysMenu_sort_edit}', '#', '', 1, 0, 'F', 0, '${permissionPrefix}:edit', '#', '${sysMenu_id}', '${sysMenu_parentIds_edit}', '${sysMenu_treeSort_edit}', '${sysMenu_treeSorts_edit}', '${sysMenu_treeLevel_edit}', 'y', '0', '1', sysdate(), '1', sysdate(), '', '127.0.0.1', 0, '', '0');
+
+insert into sys_menu (id, menu_code, menu_name, sort, path, component, is_frame, is_cache, menu_type, visible, perms, icon, parent_id, parent_ids, tree_sort, tree_sorts, tree_level, tree_leaf, status, create_by, create_time, update_by, update_time, create_dept, update_ip, version, remark, del_flag)
+values('${sysMenu_id_remove}', '${sysMenu_menuCode}Remove', '${sysMenu_menuName}删除', '${sysMenu_sort_query}', '#', '', 1, 0, 'F', 0, '${permissionPrefix}:remove', '#', '${sysMenu_id}', '${sysMenu_parentIds_remove}', '${sysMenu_treeSort_remove}', '${sysMenu_treeSorts_remove}', '${sysMenu_treeLevel_remove}', 'y', '0', '1', sysdate(), '1', sysdate(), '', '127.0.0.1', 0, '', '0');
+
+insert into sys_menu (id, menu_code, menu_name, sort, path, component, is_frame, is_cache, menu_type, visible, perms, icon, parent_id, parent_ids, tree_sort, tree_sorts, tree_level, tree_leaf, status, create_by, create_time, update_by, update_time, create_dept, update_ip, version, remark, del_flag)
+values('${sysMenu_id_export}', '${sysMenu_menuCode}Export', '${sysMenu_menuName}查询', '${sysMenu_sort_export}', '#', '', 1, 0, 'F', 0, '${permissionPrefix}:export', '#', '${sysMenu_id}', '${sysMenu_parentIds_export}', '${sysMenu_treeSort_export}', '${sysMenu_treeSorts_export}', '${sysMenu_treeLevel_export}', 'y', '0', '1', sysdate(), '1', sysdate(), '', '127.0.0.1', 0, '', '0');
+
+#if($parentSysMenu_treeLeaf == "y")
+-- 如果父节点为叶子节点，则更新为非叶子节点
+update sys_menu set tree_leaf = 'n' where id = '${sysMenu_parentId}';
+#end

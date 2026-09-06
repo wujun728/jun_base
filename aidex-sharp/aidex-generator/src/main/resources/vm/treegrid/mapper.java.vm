@@ -1,0 +1,54 @@
+package ${packageName}.mapper;
+
+import com.aidex.common.core.mapper.BaseTreeMapper;
+import org.apache.ibatis.annotations.Param;
+import java.util.List;
+import ${packageName}.domain.${ClassName};
+
+/**
+ * ${functionName}Mapper接口
+ * @author ${functionAuthor}
+ * @date ${datetime}
+ */
+public interface ${ClassName}Mapper extends BaseTreeMapper<${ClassName}>
+{
+
+#if($hasDisableEnable)
+    /**
+     * 更新${functionName}状态
+     * @param ${className} ${functionName}
+     * @return 结果
+     */
+    public int updateStatus(${ClassName} ${className});
+#end
+
+	/**
+     * 查询计数
+     * @param ${className} ${functionName}
+     * @return 结果
+     */
+    public Integer findCount(${ClassName} ${className});
+
+    /**
+     * 修改子元素关系
+     *
+     * @param ${className}List 子元素
+     * @return 结果
+     */
+    public Integer update${ClassName}Children(@Param("${className}List") List<${ClassName}> ${className}List);
+
+    /**
+     * 查询树
+     * @param ${className}
+     * @return
+     */
+    public List<${ClassName}> search${ClassName}Tree(${ClassName} ${className});
+
+    /**
+     * 根据ids获取所有的节点
+     * @param idsList ids
+     * @return List<SysDept>
+     */
+    List<${ClassName}> search${ClassName}TreeByIds(@Param("ids")List<List<String>> idsList);
+
+}

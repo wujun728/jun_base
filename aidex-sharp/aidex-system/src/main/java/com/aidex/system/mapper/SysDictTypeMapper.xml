@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.aidex.system.mapper.SysDictTypeMapper">
+	<sql id="dictTypeColumns">
+        a.id as "id",
+        a.dict_name as "dictName",
+        a.dict_type as "dictType",
+        a.status as "status",
+		a.create_by AS "createBy",
+		a.create_dept AS "createDept",
+		a.create_time AS "createTime",
+		a.update_by AS "updateBy",
+		a.update_time AS "updateTime",
+		a.update_ip AS "updateIp",
+		a.remark AS "remark",
+		a.version AS "version"
+	</sql>
+
+	<sql id="dictTypeJoins">
+
+	</sql>
+
+	<sql id="dictTypeOrderBy">
+		order by a.create_time desc
+	</sql>
+
+	<select id="get" resultType="SysDictType">
+		SELECT
+		<include refid="dictTypeColumns"/>
+		FROM sys_dict_type a
+		where id = #{id}
+	</select>
+
+	<select id="findList" resultType="SysDictType">
+		SELECT
+		<include refid="dictTypeColumns"/>
+		FROM sys_dict_type a
+		<include refid="dictTypeJoins"/>
+		where a.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="dictName != null and dictName != ''">
+			AND dict_name like concat('%', #{dictName}, '%')
+		</if>
+		<if test="status != null and status != ''">
+			AND status = #{status}
+		</if>
+		<if test="dictType != null and dictType != ''">
+			AND dict_type like concat('%', #{dictType}, '%')
+		</if>
+		<if test="dictTypeEq != null and dictTypeEq != ''">
+			AND dict_type = #{dictTypeEq}
+		</if>
+		<if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+			and date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+		</if>
+		<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+			and date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+		</if>
+		<include refid="dictTypeOrderBy"/>
+	</select>
+
+	<select id="findListWithUnique" resultType="SysDictType">
+		SELECT
+		<include refid="dictTypeColumns"/>
+		FROM sys_dict_type a
+		where a.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="dictType != null and dictType != ''">
+			AND dict_type = #{dictType}
+		</if>
+		<if test="notEqualId != null and notEqualId != ''">
+			AND id != #{notEqualId}
+		</if>
+	</select>
+
+	<update id="deleteDictTypeByIds" parameterType="java.util.Map">
+		UPDATE sys_dict_type SET
+		del_flag = #{DEL_FLAG_DELETE}
+		WHERE id in
+		<foreach collection="dictTypeIds" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</update>
+
+	<update id="update" parameterType="SysDictType">
+		update sys_dict_type
+		<set>
+			<if test="dictName != null and dictName != ''">
+				dict_name = #{dictName},
+			</if>
+			<if test="dictType != null and dictType != ''">
+				dict_type = #{dictType},
+			</if>
+			<if test="status != null">
+				status = #{status},
+			</if>
+			<if test="remark != null">
+				remark = #{remark},
+			</if>
+			<if test="updateBy != null and updateBy != ''">
+				update_by = #{updateBy},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime},
+			</if>
+			<if test="updateIp != null and updateIp != ''">
+				update_ip = #{updateIp},
+			</if>
+			version = version + 1
+		</set>
+		where id = #{id}
+	</update>
+
+	<insert id="insert" parameterType="SysDictType">
+ 		insert into sys_dict_type(
+ 			id,
+ 			dict_name,
+ 			dict_type,
+ 			status,
+ 			remark,
+ 			create_by,
+			create_dept,
+			create_time,
+			update_by,
+			update_time,
+			update_ip,
+			del_flag,
+			version
+ 		)values(
+ 			#{id},
+ 			#{dictName},
+ 			#{dictType},
+ 			#{status},
+ 			#{remark},
+ 			#{createBy},
+			#{createDept},
+			#{createTime},
+			#{updateBy},
+			#{updateTime},
+			#{updateIp},
+			#{DEL_FLAG_NORMAL},
+			1
+ 		)
+	</insert>
+
+</mapper>

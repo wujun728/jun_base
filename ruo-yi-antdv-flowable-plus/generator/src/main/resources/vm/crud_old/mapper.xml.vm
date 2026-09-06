@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="${packageName}.mapper.${ClassName}Mapper">
+
+    <sql id="${className}Columns">
+#foreach ($column in $columns)
+        a.${column.columnName} as "${column.javaField}"#if($foreach.hasNext),
+#else
+
+#end
+#end
+    </sql>
+
+    <sql id="${className}Joins">
+    </sql>
+
+    <select id="get" resultType="${ClassName}">
+        SELECT
+            <include refid="${className}Columns"/>
+        FROM ${tableName} a
+        <include refid="${className}Joins"/>
+        WHERE a.id = #{id}
+    </select>
+
+    <select id="findList" resultType="${ClassName}">
+        SELECT
+            <include refid="${className}Columns"/>
+        FROM ${tableName} a
+        <include refid="${className}Joins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+#foreach($column in $columns)
+#set($queryType=$column.queryType)
+#set($javaField=$column.javaField)
+#set($javaType=$column.javaType)
+#set($columnName=$column.columnName)
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#if($column.query || $columnName == $subTableFkName)
+##非日期
+#if($javaType != 'Date')
+#if($column.queryType == "EQ")
+            <if test="$javaField != null #if($javaType == 'String' )and $javaField.trim() != ''#end">
+                AND a.$columnName = #{$javaField}
+            </if>
+#elseif($queryType == "NE")
+            <if test="$javaField != null #if($javaType == 'String' )and $javaField.trim() != ''#end">
+                and a.$columnName != #{$javaField}
+            </if>
+#elseif($queryType == "GT")
+            <if test="$javaField != null #if($javaType == 'String' )and $javaField.trim() != ''#end">
+                and a.$columnName &gt; #{$javaField}
+            </if>
+#elseif($queryType == "GTE")
+            <if test="$javaField != null #if($javaType == 'String' )and $javaField.trim() != ''#end">
+                and a.$columnName &gt;= #{$javaField}
+            </if>
+#elseif($queryType == "LT")
+            <if test="$javaField != null #if($javaType == 'String' )and $javaField.trim() != ''#end">
+                and a.$columnName &lt; #{$javaField}
+            </if>
+#elseif($queryType == "LTE")
+            <if test="$javaField != null #if($javaType == 'String' )and $javaField.trim() != ''#end">
+                and a.$columnName &lt;= #{$javaField}
+            </if>
+#elseif($queryType == "LIKE")
+            <if test="$javaField != null #if($javaType == 'String' )and $javaField.trim() != ''#end">
+                and a.$columnName like concat('%', #{$javaField}, '%')
+            </if>
+#end
+#else
+##日期
+#if($column.queryType == "EQ")
+            <if test="begin$AttrName != null and begin$AttrName != ''">
+                AND date_format(a.$columnName,'%y%m%d') = date_format(#{begin$AttrName},'%y%m%d')
+            </if>
+#elseif($queryType == "GT")
+            <if test="begin$AttrName != null and begin$AttrName != ''">
+                and date_format(a.$columnName,'%y%m%d') &gt; date_format(#{begin$AttrName},'%y%m%d')
+            </if>
+#elseif($queryType == "GTE")
+            <if test="begin$AttrName != null and begin$AttrName != ''">
+                and date_format(a.$columnName,'%y%m%d') &gt;= date_format(#{begin$AttrName},'%y%m%d')
+            </if>
+#elseif($queryType == "LT")
+            <if test="end$AttrName != null and end$AttrName != ''">
+                and date_format(a.$columnName,'%y%m%d') &lt; date_format(#{end$AttrName},'%y%m%d')
+            </if>
+#elseif($queryType == "LTE")
+            <if test="end$AttrName != null and end$AttrName != ''">
+                 and date_format(a.$columnName,'%y%m%d') &lt;= date_format(#{end$AttrName},'%y%m%d')
+            </if>
+#elseif($queryType == "BETWEEN")
+			<if test="begin$AttrName != null and begin$AttrName != ''">
+                and date_format(a.$columnName,'%y%m%d') &gt;= date_format(#{begin$AttrName},'%y%m%d')
+            </if>
+            <if test="end$AttrName != null and end$AttrName != ''">
+                 and date_format(a.$columnName,'%y%m%d') &lt;= date_format(#{end$AttrName},'%y%m%d')
+            </if>
+#end
+#end
+#end
+#end
+        </where>
+        <choose>
+            <when test="page !=null and page.orderByColumn != null and page.orderByColumn != ''">
+                ORDER BY ${page.orderByColumn}
+            </when>
+            <otherwise>
+#foreach($column in $columns)
+#if($column.columnName == "sort")
+                ORDER BY a.sort
+#break
+
+#end
+#if($velocityCount == $columns.size())
+                ORDER BY a.create_time
+#break
+
+#end
+#end
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findListWithUnique" resultType="${ClassName}">
+        SELECT
+            a.id
+        FROM ${tableName} a
+        <include refid="${className}Joins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="notEqualId != null and notEqualId != ''">
+                AND id != #{notEqualId}
+            </if>
+#foreach($column in $columns)
+#set($javaField=$column.javaField)
+#set($javaType=$column.javaType)
+#set($columnName=$column.columnName)
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#if($column.isUnique == "1")
+            <if test="$javaField != null #if($javaType == 'String' )and $javaField.trim() != ''#end">
+                and $columnName = #{$javaField}
+            </if>
+#end
+#end
+        </where>
+    </select>
+
+##根据排序字段计算最大排序号
+#foreach($column in $columns)
+#if($column.columnName == "sort")
+    <select id="findMaxSort" resultType="integer">
+        SELECT
+            max(a.sort)
+        FROM ${tableName} a
+        WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+    </select>
+#break
+#end
+#end
+
+    <insert id="insert">
+        INSERT INTO ${tableName}(
+#foreach($column in $columns)
+            $column.columnName#if($foreach.hasNext),
+#end
+#end
+
+        ) VALUES (
+#foreach($column in $columns)
+            #{$column.javaField}#if($foreach.hasNext),
+#end
+#end
+
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE ${tableName} SET
+#foreach($column in $columns)
+#if($column.javaField != "id" && $column.javaField != "createBy" && $column.javaField != "createDept" && $column.javaField != "createTime" && $column.javaField != "id" && $column.javaField != "version" && $column.javaField != "delFlag")
+            $column.columnName = #{$column.javaField},
+#end
+#end
+            version = version + 1
+        WHERE id = #{id} and version = #{version}
+    </update>
+
+    <update id="updateStatus">
+        UPDATE ${tableName} SET
+            status = #{status},
+            version = version + 1
+        WHERE id = #{id}
+    </update>
+
+    <update id="delete">
+        UPDATE ${tableName} SET
+            del_flag = #{DEL_FLAG_DELETE}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete${ClassName}ByIds">
+        UPDATE ${tableName} SET
+            del_flag = '1'
+        WHERE id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

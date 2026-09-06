@@ -1,0 +1,217 @@
+@import '../theme.less';
+@import '../mixins.less';
+
+// 侧边栏菜单样式
+.side-menu {
+  height: 100%;
+  border-right: 0;
+
+  // 自定义滚动条
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background: rgba(148, 163, 184, 0.45);
+    background-clip: content-box;
+
+    &:hover {
+      background: rgba(100, 116, 139, 0.58);
+      background-clip: content-box;
+    }
+  }
+
+  &::-webkit-scrollbar-track {
+    border-radius: 999px;
+    background: transparent;
+  }
+}
+
+// Logo区域样式
+.layout-logo {
+  height: 64px;
+  line-height: 64px;
+  overflow: hidden;
+  white-space: nowrap;
+  // background: var(--menu-bg-dark);
+  padding: 0 16px;
+
+  img {
+    width: 32px;
+    height: 32px;
+    margin-right: 12px;
+    vertical-align: middle;
+  }
+
+  h1 {
+    display: inline-block;
+    margin: 0;
+    color: #fff;
+    font-weight: 600;
+    font-size: 18px;
+    vertical-align: middle;
+  }
+}
+
+// 亮色主题菜单样式
+.ant-menu-light {
+  background: var(--menu-bg-light);
+
+  // 移除菜单的右侧边框
+  &.ant-menu-root.ant-menu-inline,
+  &.ant-menu-root.ant-menu-vertical {
+    border-inline-end: none !important;
+  }
+
+  .ant-menu-item {
+    color: var(--menu-item-color-light);
+    transition: all 0.3s;
+
+    &.ant-menu-item-selected {
+      color: var(--menu-item-active-color-light) !important;
+      background: var(--menu-item-active-bg-light) !important;
+
+      &::after {
+        border-right-color: var(--primary-color) !important;
+      }
+
+      .anticon {
+        color: var(--menu-item-active-color-light) !important;
+      }
+    }
+
+    .anticon {
+      color: inherit;
+    }
+  }
+
+  .ant-menu-submenu-title {
+    color: var(--menu-item-color-light);
+    transition: all 0.3s;
+
+
+
+    .anticon {
+      color: inherit;
+    }
+  }
+
+  .ant-menu-submenu-selected > .ant-menu-submenu-title {
+    color: var(--menu-item-active-color-light) !important;
+
+    .anticon {
+      color: var(--menu-item-active-color-light) !important;
+    }
+  }
+}
+
+// 暗色主题菜单样式
+.dark-theme {
+  .side-menu {
+    background: var(--sidebar-background) !important;
+  }
+
+  .ant-menu-dark {
+    background: var(--sidebar-background) !important;
+
+    .ant-menu-item {
+      .menu-item-base();
+      color: var(--menu-item-color-dark);
+      background: transparent !important;
+
+      &:hover {
+        .menu-item-hover();
+      }
+
+      &.ant-menu-item-selected {
+        .menu-item-active();
+      }
+    }
+
+    .ant-menu-submenu-title {
+      .menu-item-base();
+      color: var(--menu-item-color-dark);
+      background: transparent !important;
+
+      &:hover {
+        .menu-item-hover();
+      }
+
+      &.ant-menu-submenu-selected {
+        color: var(--primary-color) !important;
+        background: linear-gradient(135deg, rgba(24, 144, 255, 0.2), rgba(24, 144, 255, 0.15)) !important;
+
+        span {
+          background: transparent !important;
+        }
+      }
+    }
+
+    .ant-menu-submenu-selected > .ant-menu-submenu-title {
+      color: var(--menu-item-active-color-dark) !important;
+
+      .anticon {
+        color: var(--menu-item-active-color-dark) !important;
+      }
+    }
+
+    // 子菜单背景
+    .ant-menu-submenu {
+      background: transparent !important;
+
+      .ant-menu-sub {
+        background: var(--sidebar-background) !important;
+      }
+    }
+  }
+
+  // 强制覆盖所有可能的 Ant Design 暗色背景
+  .ant-layout-sider {
+    background: var(--sidebar-background) !important;
+
+    .ant-menu {
+      background: var(--sidebar-background) !important;
+    }
+  }
+
+  // ========== Dropdown内的Menu样式（个人中心下拉菜单等）==========
+  .ant-dropdown {
+    .ant-menu {
+      background-color: var(--dropdown-bg) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      border-radius: 8px !important;
+      padding: 4px !important;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4) !important;
+
+      // 菜单项背景透明，移除黑色条纹
+      .ant-menu-item {
+        background-color: transparent !important;
+        background: transparent !important;
+        color: var(--text-primary) !important;
+        border-radius: 4px !important;
+        margin: 2px 4px !important;
+        height: 36px !important;
+        line-height: 36px !important;
+
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.08) !important;
+          background: rgba(255, 255, 255, 0.08) !important;
+        }
+
+        &.ant-menu-item-selected,
+        &.ant-menu-item-active {
+          background-color: rgba(255, 255, 255, 0.08) !important;
+          background: rgba(255, 255, 255, 0.08) !important;
+        }
+
+        // 图标颜色
+        .anticon {
+          color: var(--text-secondary) !important;
+        }
+      }
+    }
+  }
+}

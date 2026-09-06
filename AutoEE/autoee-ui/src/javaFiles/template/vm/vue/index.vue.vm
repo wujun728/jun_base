@@ -1,0 +1,432 @@
+<template>
+	<div>
+		<a-form ref="queryFormObj.data" :labelCol="{ span: 8 }" :wrapperCol="{ span: 14 }">
+			<a-row :gutter="24">
+            #foreach($column in $columns)
+            #if($column.query)
+            #set($dictType=$column.dictType)
+            #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+            #set($parentheseIndex=$column.columnComment.indexOf("（"))
+            #if($parentheseIndex != -1)
+            #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+            #else
+            #set($comment=$column.columnComment)
+            #end
+            #if($column.htmlType == "input" || $column.htmlType == "textarea")
+				<a-col span="8">
+					<a-form-item name="${column.javaField}" label="${comment}">
+						<a-input v-model:value="queryFormObj.data.${column.javaField}" allowClear></a-input>
+					</a-form-item>
+				</a-col>
+            #elseif(($column.htmlType == "select" || $column.htmlType == "radio") && "" != $dictType)
+				<a-col span="8">
+					<a-form-item name="${column.javaField}" label="${comment}">
+                    #set($wordarr=$column.dictType.split('_'))
+                    #set($newWord="")
+                    #foreach($word in $wordarr)
+                    #if($foreach.count==1)
+                    #set($AttrName=$word)
+                    #else
+                    #set($AttrName=$word.substring(0,1).toUpperCase() + ${word.substring(1)})
+                    #end
+                    #set($newWord=$newWord+$AttrName)
+                    #end
+						<a-select v-model:value="queryFormObj.data.${column.javaField}" :options="pageDataObj.${newWord}Dict" allowClear></a-select>
+					</a-form-item>
+				</a-col>
+            #elseif(($column.htmlType == "select" || $column.htmlType == "radio") && "" == $dictType)
+				<a-col span="8">
+					<a-form-item name="${column.javaField}" label="${comment}">
+						<a-select v-model:value="queryFormObj.data.${column.javaField}" :options="pageDataObj.${column.javaField}Dict" allowClear></a-select>
+					</a-form-item>
+				</a-col>
+            #elseif($column.htmlType == "datetime" && $column.queryType != "BETWEEN")
+				<a-col :span="8">
+					<a-form-item name="${column.javaField}" label="${comment}起期">
+						<a-date-picker v-model:value="queryFormObj.data.${column.javaField}" format="YYYY-MM-DD" valueFormat="YYYY-MM-DD"/>
+					</a-form-item>
+				</a-col>
+            #elseif($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+				<a-col :span="8">
+					<a-form-item name="beginTime" label="${comment}起期">
+						<a-date-picker v-model:value="query${BusinessName}Form.data.params.beginTime" format="YYYY-MM-DD" valueFormat="YYYY-MM-DD"/>
+					</a-form-item>
+				</a-col>
+				<a-col :span="8">
+					<a-form-item name="endTime" label="${comment}止期">
+						<a-date-picker v-model:value="query${BusinessName}Form.data.params.endTime" format="YYYY-MM-DD" valueFormat="YYYY-MM-DD"/>
+					</a-form-item>
+				</a-col>
+            #elseif($column.htmlType == "treeSelect")
+				<a-col span="8">
+					<a-form-item name="${column.javaField}" label="${comment}">
+						<a-tree-select v-model:value="queryFormObj.data.${column.javaField}" :tree-data="pageDataObj.${column.javaField}Dict"
+						               :fieldNames="{ children: 'children', label: 'label', key: 'id', value: 'id' }" allowClear></a-tree-select>
+					</a-form-item>
+				</a-col>
+            #end
+            #end
+            #end
+			</a-row>
+			<a-row :gutter="24" class="autoee-button-row">
+				<a-col :span="12" style="text-align: left">
+					<a-button type="primary" @click="openAddModal()" v-hasPermi="['${moduleName}:${businessName}:add']">
+						<AutoeeIcon icon="plus-outlined"/>
+						新增
+					</a-button>
+					<a-button type="primary" danger @click="clickDelete()" :disabled="tableObj.selectedRowKeys.length <= 0" v-hasPermi="['${moduleName}:${businessName}:remove']">
+						<AutoeeIcon icon="delete-outlined"/>
+						删除
+					</a-button>
+					<a-button type="primary" @click="clickExport()" v-hasPermi="['${moduleName}:${businessName}:export']">
+						<AutoeeIcon icon="export-outlined"/>
+						导出
+					</a-button>
+				</a-col>
+				<a-col :span="12" style="text-align: right">
+					<a-button type="primary" @click="queryTableData()">
+						<AutoeeIcon icon="SearchOutlined"/>
+						查询
+					</a-button>
+					<a-button @click="resetQueryForm()">
+						<AutoeeIcon icon="redo-outlined"/>
+						重置
+					</a-button>
+				</a-col>
+			</a-row>
+		</a-form>
+
+		<a-table
+        #foreach($column in $columns)
+        #set($javaField=$column.javaField)
+        #if($column.pk)
+			rowKey="${javaField}"
+        #end
+        #end
+			:columns="tableObj.columns"
+			:data-source="tableObj.dataSource"
+			:loading="tableObj.loading"
+			:pagination="tablePagination"
+			@change="tableHandChangePage"
+			:row-selection="{ selectedRowKeys: tableObj.selectedRowKeys, onChange: onTableSelectChange }"
+			bordered
+			size="small"
+			tableLayout="fixed"
+		>
+			<template #bodyCell="{ index, column, record }">
+				<template v-if="column.key === 'pageIndex'">
+					{{ index + 1 }}
+				</template>
+            #foreach($column in $columns)
+            #set($javaField=$column.javaField)
+            #set($parentheseIndex=$column.columnComment.indexOf("（"))
+            #if($parentheseIndex != -1)
+            #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+            #else
+            #set($comment=$column.columnComment)
+            #end
+            #if($column.list && $column.htmlType == "datetime")
+            #elseif($column.list && $column.htmlType == "imageUpload")
+            #elseif($column.list && $column.dictType && "" != $column.dictType)
+            #if($column.htmlType == "checkbox")
+				<template v-else-if="column.key === '${javaField}'">
+          			<span>
+#set($wordarr=$column.dictType.split('_'))
+#set($newWord="")
+#foreach($word in $wordarr)
+#if($foreach.count==1)
+#set($AttrName=$word)
+#else
+#set($AttrName=$word.substring(0,1).toUpperCase() + ${word.substring(1)})
+#end
+#set($newWord=$newWord+$AttrName)
+#end
+           				 {{ AutoeeUtil.getDictLabelByKey(record.${javaField} , pageDataObj.${newWord}Dict) }}
+          			</span>
+				</template>
+            #else
+				<template v-else-if="column.key === '${javaField}'">
+          			<span>
+#set($wordarr=$column.dictType.split('_'))
+#set($newWord="")
+#foreach($word in $wordarr)
+#if($foreach.count==1)
+#set($AttrName=$word)
+#else
+#set($AttrName=$word.substring(0,1).toUpperCase() + ${word.substring(1)})
+#end
+#set($newWord=$newWord+$AttrName)
+#end
+            			{{ AutoeeUtil.getDictLabelByKey(record.${javaField} , pageDataObj.${newWord}Dict) }}
+          			</span>
+				</template>
+            #end
+            #elseif($column.list && ($column.htmlType == "select" || $column.htmlType == "radio" || $column.htmlType == "treeSelect" || $column.htmlType == "tree") )
+				<template v-else-if="column.key === '${javaField}'">
+				  	<span>
+					 	{{ AutoeeUtil.getDictLabelByKey(record.${javaField} , pageDataObj.${javaField}Dict) }}
+          			</span>
+				</template>
+            #elseif($column.list && "" != $javaField)
+            #end
+            #end
+				<template v-else-if="column.key === '${businessName}TableOperateCol'">
+					<span>
+						<a @click="openDetailModal(record)"> 查看 </a>
+						<a-divider type="vertical" v-hasPermi="['${moduleName}:${businessName}:edit']"/>
+						<a @click="openUpdateModal(record)" v-hasPermi="['${moduleName}:${businessName}:edit']"> 修改 </a>
+          			</span>
+				</template>
+			</template>
+		</a-table>
+
+		<AddUpdateModal ref="addUpdateModalRef" @refreshFatherPageTable="queryTableData"
+        #set($dictAtr="")
+        #foreach($column in $columns)
+        #set($javaField=$column.javaField)
+        #if($column.dictType && "" != $column.dictType)
+        #if(${dictAtr.indexOf($column.dictType)}==-1)
+        #set($dictAtr=$dictAtr+$column.dictType+",")
+        #set($wordarr=$column.dictType.split('_'))
+        #set($newWord="")
+        #foreach($word in $wordarr)
+        #if($foreach.count==1)
+        #set($AttrName=$word)
+        #else
+        #set($AttrName=$word.substring(0,1).toUpperCase() + ${word.substring(1)})
+        #end
+        #set($newWord=$newWord+$AttrName)
+        #end
+		                :${newWord}Dict="pageDataObj.${newWord}Dict"
+        #end
+        #elseif(($column.htmlType == "select" || $column.htmlType == "radio") )
+		                :${javaField}Dict="pageDataObj.${javaField}Dict"
+        #elseif($column.htmlType == "treeSelect" || $column.htmlType == "tree")
+		                :${javaField}Dict="pageDataObj.${javaField}Dict"
+        #end
+        #end
+		/>
+		<DetailModal ref="detailModalRef"
+        #set($dictAtr="")
+        #foreach($column in $columns)
+        #set($javaField=$column.javaField)
+        #if($column.dictType && "" != $column.dictType)
+        #if(${dictAtr.indexOf($column.dictType)}==-1)
+        #set($dictAtr=$dictAtr+$column.dictType+",")
+        #set($wordarr=$column.dictType.split('_'))
+        #set($newWord="")
+        #foreach($word in $wordarr)
+        #if($foreach.count==1)
+        #set($AttrName=$word)
+        #else
+        #set($AttrName=$word.substring(0,1).toUpperCase() + ${word.substring(1)})
+        #end
+        #set($newWord=$newWord+$AttrName)
+        #end
+		             :${newWord}Dict="pageDataObj.${newWord}Dict"
+        #end
+        #elseif(($column.htmlType == "select" || $column.htmlType == "radio") )
+		             :${javaField}Dict="pageDataObj.${javaField}Dict"
+        #elseif($column.htmlType == "treeSelect" || $column.htmlType == "tree")
+		             :${javaField}Dict="pageDataObj.${javaField}Dict"
+        #end
+        #end
+		/>
+	</div>
+</template>
+
+<script setup name="${BusinessName}">
+	import {list${BusinessName}, get${BusinessName}, del${BusinessName}, add${BusinessName}, update${BusinessName}} from "@/api/${moduleName}/${businessName}";
+	import AddUpdateModal from './addUpdateModal.vue';
+	import DetailModal from './detailModal.vue';
+	import {computed, reactive, ref} from 'vue';
+	import {AutoeeIcon} from '@/utils/AutoeeIcon.js';
+	import AutoeeUtil from '@/utils/AutoeeUtil.js';
+	import {message} from 'ant-design-vue';
+	import moment from 'moment';
+
+	// 当前页面使用的数据
+	const pageDataObj = reactive({
+    #set($dictAtr="")
+    #foreach($column in $columns)
+    #set($javaField=$column.javaField)
+    #if($column.dictType && "" != $column.dictType)
+    #if(${dictAtr.indexOf($column.dictType)}==-1)
+    #set($dictAtr=$dictAtr+$column.dictType+",")
+    #set($wordarr=$column.dictType.split('_'))
+    #set($newWord="")
+    #foreach($word in $wordarr)
+    #if($foreach.count==1)
+    #set($AttrName=$word)
+    #else
+    #set($AttrName=$word.substring(0,1).toUpperCase() + ${word.substring(1)})
+    #end
+    #set($newWord=$newWord+$AttrName)
+    #end
+    ${newWord}Dict: [],
+    #end
+    #elseif(($column.htmlType == "select" || $column.htmlType == "radio") )
+    ${javaField}Dict: [],
+    #elseif($column.htmlType == "treeSelect" || $column.htmlType == "tree")
+    ${javaField}Dict: [],
+    #end
+    #end
+	});
+
+    #set($dictAtr="")
+    #foreach($column in $columns)
+    #set($javaField=$column.javaField)
+    #if($column.dictType && "" != $column.dictType)
+    #if(${dictAtr.indexOf($column.dictType)}==-1)
+    #set($dictAtr=$dictAtr+$column.dictType+",")
+    #set($wordarr=$column.dictType.split('_'))
+    #set($newWord="")
+    #foreach($word in $wordarr)
+    #if($foreach.count==1)
+    #set($AttrName=$word)
+    #else
+    #set($AttrName=$word.substring(0,1).toUpperCase() + ${word.substring(1)})
+    #end
+    #set($newWord=$newWord+$AttrName)
+    #end
+	AutoeeUtil.getDictsByType('${column.dictType}').then((res) => {
+		pageDataObj.${newWord}Dict = res;
+	});
+    #end
+    #elseif(($column.htmlType == "select" || $column.htmlType == "radio")  )
+	// 自定义转码字典
+	pageDataObj.${javaField}Dict = [{value: 'v1', label: '自定义1'}, {value: 'v2', label: '自定义2'}];
+    #elseif($column.htmlType == "treeSelect" || $column.htmlType == "tree")
+	// 自定义转码字典
+	pageDataObj.${javaField}Dict = [{value: 'v1', label: '自定义1'}, {value: 'v2', label: '自定义2'}];
+    #end
+    #end
+
+	// 查询Form
+	const queryFormRef = ref();
+	const queryFormObj = reactive({
+		data: {
+			pageNum: 1,
+			pageSize: 10,
+			params: {},
+			//orderByColumn: "update_time",
+			//isAsc: "desc",
+		}
+	});
+
+	// 重置查询Form
+	const resetQueryForm = () => {
+		queryFormObj.data = {
+			pageNum: 1,
+			pageSize: 10,
+			params: {},
+			//orderByColumn: "update_time",
+			//isAsc: "desc",
+		}
+		queryTableData();
+	};
+
+	// 列表定义
+	const tableObj = reactive({
+		// 列表数据集
+		dataSource: [],
+		// 列表总记录数
+		total: 0,
+		// 列表是否加载中
+		loading: false,
+		// 列表选中行数组
+		selectedRowKeys: [],
+		// 列表列定义
+		columns: [
+			{
+				title: '序号',
+				dataIndex: 'pageIndex',
+				key: 'pageIndex',
+				width: 50,
+				align: 'center',
+			},
+        #foreach($column in $columns)
+        #set($javaField=$column.javaField)
+        #set($parentheseIndex=$column.columnComment.indexOf("（"))
+        #if($parentheseIndex != -1)
+        #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+        #else
+        #set($comment=$column.columnComment)
+        #end
+        #if($column.list)
+			{
+				title: '${comment}',
+				key: '${javaField}',
+				dataIndex: '${javaField}',
+			},
+        #end
+        #end
+			{
+				title: '操作',
+				key: '${businessName}TableOperateCol',
+				width: 100,
+			},
+		],
+	});
+
+	// 查询列表数据方法
+	const queryTableData = () => {
+		// 调用后端列表查询方法，通过返回结果设置tableObj.total，tableObj.dataSource，tableObj.loading
+		AutoeeUtil.getTableDataByQueryFunc(list${BusinessName}(queryFormObj.data), tableObj);
+	}
+
+	// 初始化查询列表数据
+	queryTableData();
+
+	// 列表翻页工具条：必须通过计算函数每次重新生成
+	const tablePagination = computed(() => AutoeeUtil.createTablePagination(tableObj, queryFormObj));
+
+	// 手动翻页方法
+	const tableHandChangePage = (page, filters, sorter) => {
+		queryFormObj.data.pageSize = page.pageSize;
+		queryFormObj.data.pageNum = page.current;
+		queryTableData();
+	};
+
+	// 列表行选中方法
+	const onTableSelectChange = (selectedRowKeys) => {
+		tableObj.selectedRowKeys = selectedRowKeys;
+	};
+
+	// 打开新增窗口
+	const addUpdateModalRef = ref();
+	const openAddModal = () => {
+		addUpdateModalRef.value.openAddModal();
+	};
+
+	// 打开修改窗口
+	const openUpdateModal = (record) => {
+		addUpdateModalRef.value.openUpdateModal(record);
+	};
+
+	// 打开详细窗口
+	const detailModalRef = ref();
+	const openDetailModal = (record) => {
+		detailModalRef.value.openModal(record);
+	};
+
+	// 点击删除
+	const clickDelete = () => {
+		AutoeeUtil.confirmDeleteSelectedData(() => {
+			del${BusinessName}(tableObj.selectedRowKeys).then((res) => {
+				AutoeeUtil.messageSuccess('删除操作成功。');
+				queryTableData();
+			});
+		});
+	};
+
+	// 点击导出
+	const clickExport = () => {
+		let exportUrl = '${moduleName}/${businessName}/export';
+		let moduleName = "${functionName}";
+		let exportFileName = moduleName + "_" + moment().format('YYYY-MM-DD_HH-mm-ss') + ".xlsx";
+		AutoeeUtil.download(exportUrl, queryFormObj.data, exportFileName);
+	};
+
+</script>
+<style lang="less"></style>

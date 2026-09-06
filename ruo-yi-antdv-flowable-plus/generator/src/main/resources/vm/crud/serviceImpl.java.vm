@@ -1,0 +1,149 @@
+package ${packageName}.service.impl;
+
+
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import java.util.Arrays;
+import java.util.List;
+import com.github.pagehelper.PageInfo;
+import com.danny.common.core.domain.entity.SysUser;
+import com.danny.common.core.domain.entity.SysDept;
+import com.danny.common.core.service.BaseServiceImpl;
+import com.danny.framework.cache.DeptUtils;
+import com.danny.framework.cache.UserUtils;
+import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ${packageName}.mapper.${ClassName}Mapper;
+import ${packageName}.domain.${ClassName};
+import ${packageName}.service.${ClassName}Service;
+import org.springframework.transaction.annotation.Transactional;
+#if(${hasSubParam} == 'true')
+import ${packageName}.mapper.${subTableJavaNameCap}Mapper;
+import ${packageName}.domain.${subTableJavaNameCap};
+import org.springframework.beans.factory.annotation.Autowired;
+import com.danny.common.exception.CustomException;
+
+#end
+##是否有排序字段
+#foreach($column in $columns)
+#if($column.columnName == "sort")
+import com.danny.common.utils.NumberUtils;
+#break;
+#end
+#end
+##唯一性校验
+#foreach($column in $columns)
+#if($column.isUnique == "1")
+import com.danny.common.exception.BizException;
+import org.springframework.util.CollectionUtils;
+#break;
+#end
+#end
+
+/**
+ * ${functionName}Service业务层处理
+ * @author ${functionAuthor}
+ * @email ${functionAuthorEmail}
+ * @date ${datetime}
+ */
+@Service
+@Transactional(readOnly = true)
+public class ${ClassName}ServiceImpl extends ServiceImpl<${ClassName}Mapper, ${ClassName}> implements ${ClassName}Service
+{
+    private static final Logger log = LoggerFactory.getLogger(${ClassName}ServiceImpl.class);
+#if(${hasSubParam} == 'true')
+        @Autowired(required = false)
+        private ${subTableJavaNameCap}Mapper ${subTableJavaNameUnCap}Mapper;
+#end
+
+    /**
+     * 保存${functionName}
+     * @param ${className}
+     * @return 结果
+     */
+    @Override
+    public boolean su(${ClassName} ${className})
+    {
+#foreach($column in $columns)
+#if($column.isUnique == "1")
+#set($attrName = $column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+        check${attrName}Unique(${className});
+#end
+#end
+        return super.saveOrUpdate(${className});
+    }
+
+#foreach($column in $columns)
+#if($column.isUnique == "1")
+#set($attrName = $column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+    /**
+     * 校验${column.columnComment}的唯一性
+     * @param ${className}
+     */
+    @Override
+    public void check${attrName}Unique(${ClassName} ${className}){
+        ${ClassName} ${className}Unique = new ${ClassName}();
+        ${className}Unique.setNotEqualId(${className}.getId());
+        ${className}Unique.set${attrName}(${className}.get${attrName}());
+        if (!CollectionUtils.isEmpty(getBaseMapper().findListWithUnique(${className}Unique))) {
+            throw new BizException("${column.columnComment}已存在，请重新输入！");
+        }
+    }
+
+#end
+#end
+#if($hasDisableEnable)
+    /**
+     * 更新状态${functionName}
+     * @param ${className}
+     * @return 结果
+     */
+    @Transactional(readOnly = false)
+    @Override
+    public int updateStatus(${ClassName} ${className})
+    {
+        return getBaseMapper().updateStatus(${className});
+    }
+#end
+
+    /**
+     * 批量删除${functionName}
+     * @param ids 需要删除的${functionName}ID
+     * @return 结果
+     */
+    @Transactional(readOnly = false)
+    @Override
+    public boolean delete${ClassName}ByIds(String[] ids)
+    {
+#if(${hasSubParam} == 'true')
+        for (String id : ids)
+        {
+            ${subTableJavaNameCap} ${subTableJavaNameUnCap} = new ${subTableJavaNameCap}();
+            ${subTableJavaNameUnCap}.set${subTableFkNameCap}(id);
+            List<${subTableJavaNameCap}> ${subTableJavaNameUnCap}List = ${subTableJavaNameUnCap}Mapper.findList(${subTableJavaNameUnCap});
+            if (${subTableJavaNameUnCap}List.size() > 0)
+            {
+                throw new CustomException("子表存在数据,不能删除");
+            }
+        }
+#end
+##        return mapper.delete${ClassName}ByIds(ids);
+        return super.removeByIds(Arrays.asList(ids));
+    }
+
+#foreach($column in $columns)
+#if($column.columnName == "sort")
+    /**
+     * 获取最大编号
+     * @param ${className} ${functionName}
+     * @return 结果
+     */
+    @Override
+    public int findMaxSort(${ClassName} ${className})
+    {
+        return NumberUtils.nextOrder(getBaseMapper().findMaxSort(${className}));
+    }
+#break
+#end
+#end
+}

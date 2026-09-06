@@ -1,0 +1,42 @@
+package ${packageName}.mapper;
+
+import com.danny.common.core.mapper.BaseMapper;
+import ${packageName}.domain.${ClassName};
+
+/**
+ * ${functionName}Mapper接口
+ * @author ${functionAuthor}
+ * @email ${functionAuthorEmail}
+ * @date ${datetime}
+ */
+public interface ${ClassName}Mapper extends BaseMapper<${ClassName}>
+{
+#if($hasDisableEnable)
+    /**
+     * 更新${functionName}状态
+     * @param ${className} ${functionName}
+     * @return 结果
+     */
+    public int updateStatus(${ClassName} ${className});
+#end
+
+    /**
+     * 批量删除${functionName}
+     * @param ids 需要删除的${functionName}ID集合
+     * @return
+     */
+    public int delete${ClassName}ByIds(String[] ids);
+
+#foreach($column in $columns)
+#if($column.columnName == "sort")
+    /**
+     * 获取最大编号
+     * @param ${className} ${functionName}
+     * @return 结果
+     */
+    public Integer findMaxSort(${ClassName} ${className});
+#break
+#end
+#end
+
+}

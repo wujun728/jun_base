@@ -1,0 +1,211 @@
+#set($pkCapName=$pkColumn.javaField.substring(0,1).toUpperCase() + ${pkColumn.javaField.substring(1)})
+package ${packageName}.controller;
+
+import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import javax.validation.constraints.*;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.aidex.common.annotation.Log;
+import com.aidex.common.core.domain.R;
+import com.aidex.common.core.domain.TreeNode;
+import com.aidex.common.enums.BusinessType;
+import com.aidex.common.constant.Constants;
+import com.aidex.framework.cache.DictUtils;
+import com.aidex.common.core.controller.BaseController;
+import ${packageName}.domain.${ClassName};
+import ${packageName}.service.${ClassName}Service;
+
+/**
+ * ${functionName}Controller
+ * @author ${functionAuthor}
+ * @email ${functionAuthorEmail}
+ * @date ${datetime}
+ */
+@RestController
+@RequestMapping("/${moduleName}/${businessName}")
+public class ${ClassName}Controller extends BaseController
+{
+    @Autowired
+    private ${ClassName}Service ${className}Service;
+
+    /**
+     * 查询${functionName}树列表
+     */
+    @PreAuthorize("@ss.hasPermi('${permissionPrefix}:list')")
+    @GetMapping("/list/{level}/{id}")
+    public R list(@PathVariable("level") @NotEmpty int level, @PathVariable("id") String id) {
+        if (level == 0) {
+            level = 2;
+        }
+        //默认为根节点
+        if (StringUtils.isEmpty(id)) {
+            id = Constants.TREE_ROOT;
+        }
+        List<${ClassName}> ${className}List = ${className}Service.listDataByLevel(level, id);
+        return R.data(${className}List);
+    }
+	
+	/**
+    * 查询${functionName}树结构
+    * @param level
+    * @return
+    */
+    @PreAuthorize("@ss.hasPermi('${permissionPrefix}:list')")
+    @GetMapping("/listTree/{level}/{id}")
+    public R listTree(@NotBlank @PathVariable("level") int level, @PathVariable("id") String id) {
+        if (level == 0) {
+            level = 2;
+        }
+        //默认为根节点
+        if (StringUtils.isEmpty(id)) {
+            id = Constants.TREE_ROOT;
+        }
+        List<TreeNode> ${className}List = ${className}Service.buildTree(level, id);
+        return R.data(${className}List);
+    }
+	
+	/**
+    * 查询${functionName}树结构（排除当前节点及子节点）
+    * @param level
+    * @return
+    */
+    @PreAuthorize("@ss.hasPermi('${permissionPrefix}:list')")
+    @GetMapping("/listTreeExcludeChild/{level}/{id}/{excludeId}")
+    public R listTreeExcludeChild(@NotBlank @PathVariable("level") int level, @PathVariable("id") String id, @PathVariable("excludeId") String excludeId) {
+        if (level == 0) {
+            level = 2;
+        }
+        //默认为根节点
+        if (StringUtils.isEmpty(id)) {
+            id = Constants.TREE_ROOT;
+        }
+        ${ClassName} ${className} = ${className}Service.get(excludeId);
+        List<TreeNode> ${className}List = ${className}Service.buildTreeDataExcludeChild(level, id, ${className});
+        return R.data(${className}List);
+    }
+
+    /**
+     * 获取${functionName}详细信息
+     */
+    @PreAuthorize("@ss.hasPermi('${permissionPrefix}:query')")
+    @GetMapping(value = "/{id}")
+    public R<${ClassName}> detail(@PathVariable("id") ${pkColumn.javaType} id)
+    {
+        return R.data(${className}Service.get(id));
+    }
+
+    /**
+     * 新增${functionName}
+     */
+    @PreAuthorize("@ss.hasPermi('${permissionPrefix}:add')")
+    @Log(title = "${functionName}", businessType = BusinessType.INSERT)
+    @PostMapping
+    public R add(@RequestBody @Validated  ${ClassName} ${className})
+    {
+        ${className}Service.save(${className});
+        return R.data(${className});
+    }
+
+    /**
+     * 修改${functionName}
+     */
+    @PreAuthorize("@ss.hasPermi('${permissionPrefix}:edit')")
+    @Log(title = "${functionName}", businessType = BusinessType.UPDATE)
+    @PutMapping
+    public R edit(@RequestBody @Validated ${ClassName} ${className})
+    {
+        ${className}Service.save(${className});
+        return R.data(${className});
+    }
+
+    /**
+     * 删除${functionName}
+     */
+    @PreAuthorize("@ss.hasPermi('${permissionPrefix}:remove')")
+    @Log(title = "${functionName}", businessType = BusinessType.DELETE)
+    @DeleteMapping("/{id}")
+    public R remove(@PathVariable  String id) {
+        ${ClassName} ${className} = new ${ClassName}();
+        ${className}.set${pkCapName}(id);
+        return R.status(${className}Service.remove(${className}));
+    }
+	
+#if($hasDisableEnable)
+    /**
+     * 更新${functionName}状态
+     */
+    @PreAuthorize("@ss.hasPermi('${permissionPrefix}:edit')")
+    @Log(title = "${functionName}", businessType = BusinessType.UPDATE)
+    @PutMapping("/updateStatus")
+    public R updateStatus(@RequestBody ${ClassName} ${className}) {
+        return R.status(${className}Service.updateStatus(${className}));
+    }
+	
+#end
+    /**
+     * 获取最大编号
+     */
+    @PreAuthorize("@ss.hasPermi('${permissionPrefix}:query')")
+    @GetMapping("/findMaxSort/{parentId}")
+    public R findMaxSort(@PathVariable  String parentId)
+    {
+        ${ClassName} ${className} = new ${ClassName}();
+        ${className}.setParentId(parentId);
+		return R.data(${className}Service.findMaxSort(${className}));
+    }
+
+    /**
+     * ${functionName}树表格检索
+     */
+    @PreAuthorize("@ss.hasPermi('${permissionPrefix}:list')")
+    @GetMapping("/search${ClassName}List")
+    public R search${ClassName}List (${ClassName} ${className})
+    {
+        List<${ClassName}> ${className}List =  ${className}Service.search${ClassName}List(${className});
+        return R.data(${className}List);
+    }
+	
+	/**
+     * ${functionName}树检索
+     */
+    @PreAuthorize("@ss.hasPermi('${permissionPrefix}:list')")
+    @GetMapping("/search${ClassName}")
+    public R search${ClassName} (${ClassName} ${className})
+    {
+        List<TreeNode> ${className}List =  ${className}Service.search${ClassName}(${className});
+        return R.data(${className}List);
+    }
+
+#foreach($column in $uniqueColumns)
+#set($attrName = $column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+    /**
+     * 校验${column.columnComment}的唯一性
+     */
+    @PreAuthorize("@ss.hasPermi('${permissionPrefix}:query')")
+    @Log(title = "${functionName}", businessType = BusinessType.CHECK)
+    @GetMapping(value = {"/check${attrName}Unique/{${column.javaField}}/{id}", "/check${attrName}Unique/{${column.javaField}}"})
+    public R check${attrName}Unique(@NotBlank(message = "${column.columnComment}不允许为空") @PathVariable("${column.javaField}") String ${column.javaField}, @PathVariable(value = "id", required = false) String id) {
+        ${ClassName} ${className} = new ${ClassName}();
+        ${className}.set${attrName}(${column.javaField});
+        ${className}.set${pkCapName}(id);
+        ${className}Service.check${attrName}Unique(${className});
+        return R.status(Boolean.TRUE);
+    }
+#end
+	
+    /**
+     * 根据字典类型查询字典数据信息等其他自定义信息
+     */
+    @GetMapping(value = "/getInitData/{dictTypes}")
+    public R getInitData(@PathVariable String dictTypes) {
+        Map<String, Object> dataMap = new HashMap<String, Object>();
+        dataMap.putAll(DictUtils.getMultiDictList(dictTypes));
+        return R.data(dataMap);
+    }
+
+}

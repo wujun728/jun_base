@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aidex.system.mapper.SysCommonUseMenuMapper">
+
+    <sql id="sysCommonUseMenuColumns">
+        user_id as "userId",
+        path as "path",
+        icon as "icon",
+        title as "title",
+        menu_obj as "menuObj",
+        status as "status",
+        remark as "remark",
+        sort as "sort",
+        id as "id",
+        create_by as "createBy",
+        create_dept as "createDept",
+        create_time as "createTime",
+        update_by as "updateBy",
+        update_time as "updateTime",
+        update_ip as "updateIp",
+        version as "version",
+        del_flag as "delFlag"
+    </sql>
+
+    <sql id="sysCommonUseMenuJoins">
+    </sql>
+
+    <select id="get" resultType="SysCommonUseMenu">
+        SELECT
+            <include refid="sysCommonUseMenuColumns"/>
+        FROM sys_common_use_menu a
+        <include refid="sysCommonUseMenuJoins"/>
+        WHERE a.id = #{id}
+    </select>
+
+    <select id="findList" resultType="SysCommonUseMenu">
+        SELECT
+            <include refid="sysCommonUseMenuColumns"/>
+        FROM sys_common_use_menu a
+        <include refid="sysCommonUseMenuJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="userId != null and userId != ''">
+                AND a.user_id = #{userId}
+            </if>
+            <if test="status != null and status != ''">
+                AND a.status = #{status}
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderByColumn != null and page.orderByColumn != ''">
+                ORDER BY ${page.orderByColumn}
+            </when>
+            <otherwise>
+                ORDER BY a.sort
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findListWithUnique" resultType="SysCommonUseMenu">
+        SELECT
+            a.id
+        FROM sys_common_use_menu a
+        <include refid="sysCommonUseMenuJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="notEqualId != null and notEqualId != ''">
+                AND id != #{notEqualId}
+            </if>
+        </where>
+    </select>
+
+    <select id="findMaxSort" resultType="integer">
+        SELECT
+            max(a.sort)
+        FROM sys_common_use_menu a
+        WHERE a.del_flag = #{DEL_FLAG_NORMAL} and a.user_id = #{userId}
+    </select>
+
+    <insert id="insert">
+        INSERT INTO sys_common_use_menu(
+            user_id,
+            path,
+            icon,
+            title,
+            menu_obj,
+            status,
+            remark,
+            sort,
+            id,
+            create_by,
+            create_dept,
+            create_time,
+            update_by,
+            update_time,
+            update_ip,
+            version,
+            del_flag
+        ) VALUES (
+            #{userId},
+            #{path},
+            #{icon},
+            #{title},
+            #{menuObj},
+            #{status},
+            #{remark},
+            #{sort},
+            #{id},
+            #{createBy},
+            #{createDept},
+            #{createTime},
+            #{updateBy},
+            #{updateTime},
+            #{updateIp},
+            #{version},
+            #{delFlag}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE sys_common_use_menu SET
+            user_id = #{userId},
+            path = #{path},
+            icon = #{icon},
+            title = #{title},
+            menu_obj = #{menuObj},
+            status = #{status},
+            sort = #{sort},
+            remark = #{remark},
+            update_by = #{updateBy},
+            update_time = #{updateTime},
+            update_ip = #{updateIp},
+            version = version + 1
+        WHERE id = #{id} and version = #{version}
+    </update>
+
+    <update id="delete">
+        delete from  sys_common_use_menu
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteSysCommonUseMenuByIds">
+        delete from sys_common_use_menu
+        WHERE id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="batchEditSort">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            UPDATE sys_common_use_menu
+            <set >
+                <if test="item.sort != null" >
+                    sort = #{item.sort},
+                </if>
+            </set>
+            where id = #{item.id}
+        </foreach>
+    </update>
+</mapper>

@@ -1,0 +1,543 @@
+// ==========================================
+// BearJia Admin - 全局样式入口
+// 采用模块化设计，保持主文件简洁
+// ==========================================
+
+// 1. 基础配置与变量
+@import './theme.less';
+@import './mixins.less';
+@import './layout-modes.less';
+
+// 2. 核心组件模块化 (将 1800 行拆分到以下文件)
+@import './components/menu.less';
+@import './components/button.less';
+@import './components/function-components.less';
+@import './components/table.less';
+@import './components/form.less';
+@import './components/modal.less';
+@import './components/editor.less';
+
+// === 全局基础样式 ===
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: var(--text-primary);
+  background: var(--page-background-gradient);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.45) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.45);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.58);
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+// 顶部操作区只保留图标颜色变化，避免 hover 背景块突兀
+.header-bar {
+  .header-icon-btn.ant-btn,
+  .header-icon-btn.ant-btn-link,
+  .message-center-container .header-icon-btn.ant-btn,
+  .message-center-container .header-icon-btn.ant-btn-link {
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+
+    &:hover,
+    &:focus,
+    &:active {
+      background: transparent !important;
+      background-color: transparent !important;
+      box-shadow: none !important;
+    }
+  }
+}
+
+// === 暗色主题核心逻辑 (去框化 & 精致感) ===
+.dark-theme {
+  // 基础背景：统一使用变量，避免硬编码
+  body, .ant-layout, .ant-app, #app,
+  .page-container, .content-wrapper, .layout-container {
+    background: var(--page-background-gradient) !important;
+  }
+}
+
+// Portal 组件（Drawer/Modal/Message/Notification/Dropdown）渲染到 body
+// 需要在 body.dark-theme 或 html.dark-theme 下选择
+body.dark-theme,
+html.dark-theme {
+  // 强制覆盖 Ant Design 默认的白色背景变量
+  .ant-drawer-content,
+  .ant-drawer-header,
+  .ant-modal-content,
+  .ant-modal-header,
+  .ant-popover-inner,
+  .ant-select-dropdown,
+  .ant-dropdown-menu {
+    --ant-component-background: var(--component-background);
+    --ant-container-background: var(--component-background);
+    background-color: var(--modal-bg) !important;
+  }
+
+  .ant-drawer-mask {
+    background-color: rgba(0, 0, 0, 0.45) !important;
+    backdrop-filter: blur(4px);
+  }
+
+  .ant-drawer-content,
+  .ant-drawer-header,
+  .ant-drawer-wrapper-body,
+  .ant-drawer-body,
+  .ant-modal-content,
+  .ant-modal-header,
+  .ant-modal-body,
+  .ant-modal-footer {
+    background-color: var(--modal-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color-split) !important;
+  }
+
+  // 针对设置面板 (SettingDrawer) 的专项适配
+  .theme-setting-drawer {
+    .ant-drawer-content,
+    .ant-drawer-header,
+    .ant-drawer-body {
+      background-color: var(--drawer-bg) !important;
+      color: var(--text-primary) !important;
+    }
+
+    .ant-divider-inner-text {
+      color: var(--text-primary) !important;
+      background-color: transparent !important;
+      font-weight: 600;
+    }
+
+    .ant-list-item {
+      color: var(--text-primary) !important;
+    }
+
+    .setting-drawer-block h3 {
+      color: var(--text-primary) !important;
+    }
+
+    // 修复布局预览图标在暗色模式下的背景
+    .setting-drawer-block-checbox-item {
+      background-color: var(--component-background) !important;
+      border-color: var(--border-color-base) !important;
+
+      img {
+        filter: invert(0.8) hue-rotate(180deg) brightness(1.2);
+        opacity: 0.7;
+      }
+
+      &.active {
+        border-color: var(--primary-color) !important;
+        background-color: rgba(24, 144, 255, 0.1) !important;
+        img {
+          filter: none;
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  .ant-drawer-title,
+  .ant-drawer-close,
+  .ant-modal-title,
+  .ant-modal-close {
+    color: var(--text-primary) !important;
+  }
+
+  // 修复全局 Message 和 Notification 的暗色模式样式
+  .ant-message-notice-content,
+  .ant-notification-notice {
+    background-color: var(--modal-bg) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color-split) !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4) !important;
+
+    .ant-message-custom-content > span:last-child,
+    .ant-notification-notice-message,
+    .ant-notification-notice-description,
+    .ant-notification-notice-close {
+      color: var(--text-primary) !important;
+    }
+
+    .ant-notification-notice-description {
+      color: var(--text-secondary) !important;
+    }
+  }
+
+  // 修复 Select 下拉框在暗色模式下的背景
+  .ant-select-dropdown {
+    background-color: var(--dropdown-bg) !important;
+    border: 1px solid var(--border-color-split) !important;
+
+    .ant-select-item {
+      color: var(--text-primary) !important;
+
+      &-option-active {
+        background-color: var(--hover-bg) !important;
+      }
+
+      &-option-selected {
+        background-color: var(--primary-alpha-20) !important;
+        color: var(--primary-color) !important;
+      }
+    }
+  }
+}
+
+// 继续 .dark-theme 内的其他样式
+.dark-theme {
+
+  // 卡片：实心背景 + 1px 亮边 (金属质感)
+  .ant-card {
+    background: var(--component-background) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+
+    .ant-card-head {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      background: transparent !important;
+    }
+
+    .ant-card-body {
+      background: transparent !important;
+    }
+  }
+
+  // 标签组件 - 适配暗色模式，采用半透明有色背景增强精致感
+  .ant-tag {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: var(--text-secondary) !important;
+
+    &.ant-tag-blue, &.ant-tag-processing {
+      color: #60A5FA !important;
+      background-color: rgba(96, 165, 250, 0.1) !important;
+      border-color: rgba(96, 165, 250, 0.2) !important;
+    }
+
+    &.ant-tag-green, &.ant-tag-success {
+      color: #4ADE80 !important;
+      background-color: rgba(74, 222, 128, 0.1) !important;
+      border-color: rgba(74, 222, 128, 0.2) !important;
+    }
+
+    &.ant-tag-orange, &.ant-tag-warning {
+      color: #FB923C !important;
+      background-color: rgba(251, 146, 60, 0.1) !important;
+      border-color: rgba(251, 146, 60, 0.2) !important;
+    }
+
+    &.ant-tag-red, &.ant-tag-error {
+      color: #F87171 !important;
+      background-color: rgba(248, 113, 113, 0.1) !important;
+      border-color: rgba(248, 113, 113, 0.2) !important;
+    }
+  }
+
+  // 树形组件适配
+  .ant-tree {
+    background: transparent !important;
+    color: var(--text-primary) !important;
+
+    .ant-tree-node-content-wrapper {
+      color: var(--text-primary) !important;
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+      }
+      &.ant-tree-node-selected {
+        background-color: rgba(96, 165, 250, 0.2) !important;
+        color: #60A5FA !important;
+      }
+    }
+
+    .ant-tree-switcher {
+      color: var(--text-secondary) !important;
+      background: transparent !important;
+    }
+
+    .ant-checkbox-inner {
+      background-color: var(--input-bg) !important;
+      border-color: var(--border-color-base) !important;
+    }
+
+    .ant-checkbox-checked .ant-checkbox-inner,
+    .ant-tree-checkbox-checked .ant-checkbox-inner {
+      background-color: var(--primary-color) !important;
+      border-color: var(--primary-color) !important;
+    }
+  }
+
+  // 表单控件适配
+  .ant-input, .ant-input-number, .ant-select-selector, .ant-picker {
+    background-color: var(--input-bg) !important;
+    border-color: var(--border-color-base) !important;
+    color: var(--text-primary) !important;
+
+    &:hover, &:focus {
+      border-color: var(--primary-color) !important;
+    }
+  }
+
+  // 彻底消除所有组件在深色模式下的白色背景和边框残留
+  .ant-table-wrapper,
+  .ant-table,
+  .ant-table-container,
+  .ant-table-content,
+  .ant-table-header,
+  .ant-table-body,
+  .ant-table-summary,
+  .ant-spin-nested-loading,
+  .ant-spin-container,
+  .ant-pagination,
+  .ant-pagination-item,
+  .ant-pagination-prev,
+  .ant-pagination-next,
+  .ant-pagination-jump-prev,
+  .ant-pagination-jump-next {
+    background-color: transparent !important;
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+  }
+
+  // 去框化：内部组件默认透明，消除“块感”
+  .ant-statistic,
+  .ant-list-item,
+  .ant-collapse-header,
+  .ant-collapse-content,
+  .ant-descriptions-item-label,
+  .ant-descriptions-item-content {
+    background: transparent !important;
+  }
+
+  // 文本颜色统配
+  *:not(.ant-btn-primary):not(.ant-btn-link):not(a):not(.anticon) {
+    color: var(--text-color);
+  }
+
+  // 菜单选中项：微光效果 (Glow Effect)
+  .ant-menu-item-selected {
+    background: rgba(24, 144, 255, 0.1) !important;
+    box-shadow: 0 0 20px rgba(24, 144, 255, 0.1);
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 20%; bottom: 20%;
+      width: 3px;
+      background: var(--primary-color);
+      box-shadow: 0 0 8px var(--primary-color);
+    }
+  }
+
+  // ========== 修复 SVG 图标在暗色模式下的颜色显示 ==========
+  // 确保 SVG 图标在暗色模式下有正确的颜色
+  .svg-icon {
+    color: var(--text-primary) !important;
+    fill: currentColor !important;
+
+    // 对于使用 img 标签的 SVG
+    &[src*=".svg"] {
+      // 确保图标不被反色
+      filter: none !important;
+      opacity: 0.85 !important;
+
+      &:hover {
+        opacity: 1 !important;
+      }
+    }
+  }
+
+  // 菜单中的 SVG 图标
+  .ant-menu-item .svg-icon,
+  .ant-menu-submenu-title .svg-icon {
+    color: var(--text-secondary) !important;
+    opacity: 0.8 !important;
+
+    &:hover {
+      opacity: 1 !important;
+    }
+  }
+
+  .ant-menu-item-selected .svg-icon {
+    color: var(--primary-color) !important;
+    opacity: 1 !important;
+  }
+
+  // 表格中的 SVG 图标
+  .ant-table .svg-icon {
+    color: var(--text-secondary) !important;
+    opacity: 0.7 !important;
+
+    &:hover {
+      opacity: 1 !important;
+    }
+  }
+
+  // 按钮中的 SVG 图标
+  .ant-btn .svg-icon {
+    color: inherit !important;
+    opacity: 0.85 !important;
+  }
+
+  // 外部图标样式（使用 mask）
+  .svg-external-icon {
+    background-color: var(--text-primary) !important;
+    opacity: 0.85 !important;
+
+    &:hover {
+      opacity: 1 !important;
+    }
+  }
+
+  // Sprite 图标样式
+  svg.svg-icon {
+    color: var(--text-primary) !important;
+    fill: currentColor !important;
+
+    use {
+      fill: currentColor !important;
+      color: inherit !important;
+    }
+  }
+
+  // 滚动条美化
+  ::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.45);
+    &:hover {
+      background: rgba(100, 116, 139, 0.58);
+    }
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+// === 业务组件微调 (Workbench & 个人中心 & 文件上传) ===
+.dark-theme {
+  // 个人中心页面适配
+  .account-settings-page {
+    background-color: var(--bg-color) !important;
+
+    .stylish-card {
+      background-color: var(--component-background) !important;
+      border: 1px solid rgba(255, 255, 255, 0.05) !important;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+
+      .info-row {
+        border-bottom-color: rgba(255, 255, 255, 0.05) !important;
+      }
+
+      .info-label {
+        color: var(--text-secondary) !important;
+        .info-icon { color: var(--text-tertiary) !important; }
+      }
+
+      .info-value { color: var(--text-primary) !important; }
+
+      .username { color: var(--text-primary) !important; }
+    }
+
+    // Tabs 适配
+    .ant-tabs-tab {
+      color: var(--text-secondary) !important;
+      &.ant-tabs-tab-active { color: var(--primary-color) !important; }
+    }
+  }
+
+  // 文件上传组件适配
+  .file-upload-container {
+    .ant-upload-drag {
+      background-color: rgba(255, 255, 255, 0.02) !important;
+      border-color: rgba(255, 255, 255, 0.1) !important;
+
+      &:hover {
+        background-color: rgba(96, 165, 250, 0.05) !important;
+        border-color: var(--primary-color) !important;
+      }
+
+      .ant-upload-text { color: var(--text-primary) !important; }
+      .ant-upload-hint { color: var(--text-tertiary) !important; }
+    }
+
+    .file-item {
+      background-color: rgba(255, 255, 255, 0.03) !important;
+      border-color: rgba(255, 255, 255, 0.08) !important;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.06) !important;
+      }
+
+      .file-name { color: var(--text-primary) !important; }
+    }
+  }
+
+  // 欢迎卡片：Mesh Gradient 氛围感
+  .welcome-card {
+    position: relative;
+    overflow: hidden;
+    &::after {
+      content: '';
+      position: absolute;
+      right: -50px; top: -50px;
+      width: 250px; height: 250px;
+      background: radial-gradient(circle, rgba(24, 144, 255, 0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .welcome-text { color: var(--text-tertiary) !important; }
+  }
+
+  // 通知列表：去框化分割线 + 彩色标识点
+  .notice-list {
+    .ant-list-item {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+      padding: 12px 0 !important;
+      &:last-child { border-bottom: none !important; }
+    }
+    .notice-dot {
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      margin-right: 8px;
+      &.blue { background: #60A5FA; box-shadow: 0 0 6px #60A5FA; }
+      &.orange { background: #F59E0B; box-shadow: 0 0 6px #F59E0B; }
+    }
+  }
+
+  // 更新日志：垂直指示线 (Visual Breathing)
+  .changelog-section {
+    .section-title {
+      border-left: 3px solid var(--primary-color);
+      padding-left: 12px;
+      font-weight: 600;
+      background: transparent !important;
+    }
+  }
+}
+
+// === 基础组件全局覆盖 (不分主题) ===
+.ant-btn { border-radius: 6px; transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1); }
+.ant-table { border-radius: 8px; }

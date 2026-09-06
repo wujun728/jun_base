@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aidex.system.mapper.SysNoticeUserReadMapper">
+
+    <sql id="sysNoticeUserReadColumns">
+        notice_id as "noticeId",
+        user_id as "userId",
+        is_read as "isRead",
+        status as "status",
+        remark as "remark",
+        id as "id",
+        create_by as "createBy",
+        create_dept as "createDept",
+        create_time as "createTime",
+        update_by as "updateBy",
+        update_time as "updateTime",
+        update_ip as "updateIp",
+        version as "version",
+        del_flag as "delFlag"
+    </sql>
+
+    <sql id="sysNoticeUserReadJoins">
+    </sql>
+
+    <select id="get" resultType="SysNoticeUserRead">
+        SELECT
+            <include refid="sysNoticeUserReadColumns"/>
+        FROM sys_notice_user_read a
+        <include refid="sysNoticeUserReadJoins"/>
+        WHERE a.id = #{id}
+    </select>
+
+    <select id="findList" resultType="SysNoticeUserRead">
+        SELECT
+            <include refid="sysNoticeUserReadColumns"/>
+        FROM sys_notice_user_read a
+        <include refid="sysNoticeUserReadJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="noticeId != null and noticeId != ''">
+                AND a.notice_id = #{noticeId}
+            </if>
+            <if test="userId != null and userId != ''">
+                AND a.user_id = #{userId}
+            </if>
+            <if test="isRead != null and isRead != ''">
+                AND a.is_read = #{isRead}
+            </if>
+            <if test="status != null and status != ''">
+                AND a.status = #{status}
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderByColumn != null and page.orderByColumn != ''">
+                ORDER BY ${page.orderByColumn}
+            </when>
+            <otherwise>
+                ORDER BY a.create_time
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findListWithUnique" resultType="SysNoticeUserRead">
+        SELECT
+            a.id
+        FROM sys_notice_user_read a
+        <include refid="sysNoticeUserReadJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="notEqualId != null and notEqualId != ''">
+                AND id != #{notEqualId}
+            </if>
+        </where>
+    </select>
+
+
+    <insert id="insert">
+        INSERT INTO sys_notice_user_read(
+            notice_id,
+            user_id,
+            is_read,
+            status,
+            remark,
+            id,
+            create_by,
+            create_dept,
+            create_time,
+            update_by,
+            update_time,
+            update_ip,
+            version,
+            del_flag
+        ) VALUES (
+            #{noticeId},
+            #{userId},
+            #{isRead},
+            #{status},
+            #{remark},
+            #{id},
+            #{createBy},
+            #{createDept},
+            #{createTime},
+            #{updateBy},
+            #{updateTime},
+            #{updateIp},
+            #{version},
+            #{delFlag}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE sys_notice_user_read SET
+            notice_id = #{noticeId},
+            user_id = #{userId},
+            is_read = #{isRead},
+            status = #{status},
+            remark = #{remark},
+            update_by = #{updateBy},
+            update_time = #{updateTime},
+            update_ip = #{updateIp},
+            version = version + 1
+        WHERE id = #{id} and version = #{version}
+    </update>
+
+    <update id="delete">
+        UPDATE sys_notice_user_read SET
+            del_flag = #{DEL_FLAG_DELETE}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteSysNoticeUserReadByIds">
+        UPDATE sys_notice_user_read SET
+            del_flag = '1'
+        WHERE id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

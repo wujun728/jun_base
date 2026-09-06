@@ -1,0 +1,448 @@
+/**
+ * 表单组件专用样式
+ * 包含输入框、选择器、表单验证等相关样式
+ */
+
+@import '../mixins.less';
+
+// === 全局搜索框样式修复 ===
+.ant-input-search {
+  display: flex !important;
+  align-items: stretch !important;
+
+  &.ant-input-group {
+    display: flex !important;
+
+    .ant-input-group-wrapper {
+      display: flex !important;
+      flex: 1 !important;
+    }
+  }
+
+  .ant-input {
+    border-right: none !important;
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+
+    &:focus {
+      border-color: var(--primary-color) !important;
+      box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2) !important;
+      z-index: 1 !important;
+    }
+  }
+
+  .ant-input-search-button {
+    border-left: none !important;
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    margin-left: -1px !important;
+
+    &:hover {
+      background-color: var(--primary-color-hover) !important;
+      border-color: var(--primary-color-hover) !important;
+    }
+  }
+
+  .ant-input-group-addon {
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+
+    .ant-btn {
+      border-top-left-radius: 0 !important;
+      border-bottom-left-radius: 0 !important;
+    }
+  }
+}
+
+// === 表单组件暗黑模式适配 ===
+.dark-theme {
+
+  // === 基础输入框样式 - 优化的暗色背景+明显边框 ===
+  .ant-input,
+  .ant-input-number,
+  .ant-input-number-input,
+  .ant-input-password,
+  .ant-textarea,
+  .ant-mentions {
+    background-color: var(--input-bg) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--input-border) !important;
+    border-radius: 6px !important;
+    transition: all 0.2s ease !important;
+
+    &::placeholder {
+      color: var(--text-tertiary) !important;
+    }
+
+    &:hover {
+      border-color: var(--input-border-hover) !important;
+      background-color: var(--input-bg) !important;
+    }
+
+    &:focus {
+      border-color: var(--input-border-focus) !important;
+      box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.15) !important;
+      background-color: var(--input-bg) !important;
+    }
+  }
+
+  // === Input Number 特殊处理 ===
+  .ant-input-number {
+    background-color: var(--input-bg) !important;
+    border: 1px solid var(--input-border) !important;
+
+    .ant-input-number-input {
+      background-color: transparent !important;
+      border: none !important;
+    }
+
+    .ant-input-number-handler-wrap {
+      background-color: var(--input-bg) !important;
+      border-left: 1px solid var(--input-border) !important;
+    }
+
+    &:hover {
+      border-color: var(--input-border-hover) !important;
+    }
+
+    &:focus,
+    &.ant-input-number-focused {
+      border-color: var(--input-border-focus) !important;
+      box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.15) !important;
+    }
+  }
+
+  // === Select 选择器 - 优化边框和背景 ===
+  .ant-select {
+    .ant-select-selector {
+      background-color: var(--input-bg) !important;
+      border: 1px solid var(--input-border) !important;
+      border-radius: 6px !important;
+      transition: all 0.2s ease !important;
+
+      .ant-select-selection-placeholder {
+        color: var(--text-tertiary) !important;
+      }
+
+      .ant-select-selection-item {
+        color: var(--text-primary) !important;
+      }
+
+      .ant-select-selection-search-input {
+        background-color: transparent !important;
+      }
+    }
+
+    &:hover .ant-select-selector {
+      border-color: var(--input-border-hover) !important;
+    }
+
+    &.ant-select-focused .ant-select-selector,
+    &.ant-select-open .ant-select-selector {
+      border-color: var(--input-border-focus) !important;
+      box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.15) !important;
+    }
+  }
+
+  // === Picker 组件（日期/时间选择器）===
+  .ant-picker {
+    background-color: var(--input-bg) !important;
+    border: 1px solid var(--input-border) !important;
+    border-radius: 6px !important;
+    transition: all 0.2s ease !important;
+
+    .ant-picker-input > input {
+      background-color: transparent !important;
+      color: var(--text-primary) !important;
+
+      &::placeholder {
+        color: var(--text-tertiary) !important;
+      }
+    }
+
+    .ant-picker-suffix,
+    .ant-picker-clear {
+      color: var(--text-secondary) !important;
+    }
+
+    &:hover {
+      border-color: var(--input-border-hover) !important;
+    }
+
+    &.ant-picker-focused,
+    &:focus {
+      border-color: var(--input-border-focus) !important;
+      box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.15) !important;
+    }
+  }
+
+  // === Cascader 级联选择器 ===
+  .ant-cascader {
+    .ant-select-selector {
+      background-color: var(--input-bg) !important;
+      border: 1px solid var(--input-border) !important;
+    }
+  }
+
+  // === TreeSelect 树选择器 ===
+  .ant-tree-select {
+    .ant-select-selector {
+      background-color: var(--input-bg) !important;
+      border: 1px solid var(--input-border) !important;
+    }
+  }
+
+  // === Input Group 组件 ===
+  .ant-input-group {
+    .ant-input-group-addon {
+      background-color: var(--component-background) !important;
+      border-color: var(--border-color-base) !important;
+      color: var(--text-primary) !important;
+    }
+  }
+
+  // === Input Search 搜索框组件 ===
+  .ant-input-search {
+    display: flex !important;
+    align-items: stretch !important;
+
+    &.ant-input-group {
+      display: flex !important;
+
+      .ant-input-group-wrapper {
+        display: flex !important;
+        flex: 1 !important;
+      }
+    }
+
+    .ant-input {
+      border-right: none !important;
+      border-top-right-radius: 0 !important;
+      border-bottom-right-radius: 0 !important;
+      background-color: var(--input-bg) !important;
+
+      &:focus {
+        border-color: var(--primary-color) !important;
+        box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2) !important;
+        z-index: 1 !important;
+      }
+    }
+
+    .ant-input-search-button {
+      border-left: none !important;
+      border-top-left-radius: 0 !important;
+      border-bottom-left-radius: 0 !important;
+      background-color: var(--primary-color) !important;
+      border-color: var(--primary-color) !important;
+      margin-left: -1px !important;
+
+      &:hover {
+        background-color: var(--primary-color-hover) !important;
+        border-color: var(--primary-color-hover) !important;
+      }
+    }
+
+    .ant-input-group-addon {
+      padding: 0 !important;
+      border: none !important;
+      background: transparent !important;
+
+      .ant-btn {
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+      }
+    }
+  }
+
+  // === Input Affix Wrapper（带前缀/后缀的输入框）===
+  .ant-input-affix-wrapper {
+    background-color: var(--input-bg) !important;
+    border: 1px solid var(--input-border) !important;
+    border-radius: 6px !important;
+    transition: all 0.2s ease !important;
+
+    .ant-input {
+      background-color: transparent !important;
+      border: none !important;
+    }
+
+    .ant-input-prefix,
+    .ant-input-suffix {
+      color: var(--text-secondary) !important;
+    }
+
+    &:hover {
+      border-color: var(--input-border-hover) !important;
+    }
+
+    &:focus,
+    &.ant-input-affix-wrapper-focused {
+      border-color: var(--input-border-focus) !important;
+      box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.15) !important;
+    }
+  }
+
+  // === 表单标签和验证信息 ===
+  .ant-form-item-label > label {
+    color: var(--text-primary) !important;
+  }
+
+  .ant-form-item-explain-error {
+    color: #ff4d4f !important;
+  }
+
+  .ant-form-item-explain-success {
+    color: #52c41a !important;
+  }
+
+  .ant-form-item-explain-warning {
+    color: #faad14 !important;
+  }
+
+  // === Checkbox 和 Radio 组件 ===
+  .ant-checkbox-wrapper,
+  .ant-radio-wrapper {
+    color: var(--text-primary) !important;
+  }
+
+  .ant-checkbox-inner,
+  .ant-radio-inner {
+    background-color: var(--input-bg) !important;
+    border-color: var(--border-color-base) !important;
+  }
+
+  .ant-checkbox-checked .ant-checkbox-inner,
+  .ant-radio-checked .ant-radio-inner {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+  }
+
+  // === Radio Button 样式 (弹窗内常见) ===
+  .ant-radio-group {
+    .ant-radio-button-wrapper {
+      background-color: rgba(255, 255, 255, 0.05) !important;
+      border-color: rgba(255, 255, 255, 0.1) !important;
+      color: var(--text-secondary) !important;
+
+      &:first-child {
+        border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
+      }
+
+      &:hover {
+        color: var(--primary-color) !important;
+      }
+
+      &-checked:not(.ant-radio-button-wrapper-disabled) {
+        background-color: var(--primary-color) !important;
+        border-color: var(--primary-color) !important;
+        color: #fff !important;
+
+        &::before {
+          background-color: var(--primary-color) !important;
+        }
+      }
+    }
+  }
+
+  // === Switch 开关组件 ===
+  .ant-switch {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+
+    .ant-switch-inner {
+      color: var(--text-primary) !important;
+    }
+
+    &-checked {
+      background-color: var(--primary-color) !important;
+    }
+
+    // 修复开关滑块背景
+    .ant-switch-handle::before {
+      background-color: #fff !important;
+    }
+  }
+
+  // === 输入框提示文字统一样式 ===
+  .ant-input::placeholder,
+  .ant-input-number-input::placeholder,
+  .ant-select-selection-placeholder,
+  .ant-picker-input > input::placeholder,
+  .ant-input-affix-wrapper input::placeholder,
+  .ant-textarea::placeholder {
+    color: var(--text-secondary) !important;
+    opacity: 0.65 !important;
+    background-color: transparent !important;
+  }
+
+  // ========== 搜索表单区域透明背景修复 ==========
+  // 确保搜索表单、筛选区域所有元素背景透明
+  .search-form,
+  .search-actions,
+  .filter-form,
+  .query-form,
+  [class*="search-"],
+  [class*="filter-"],
+  [class*="query-"] {
+    background-color: transparent !important;
+    background: transparent !important;
+
+    // 表单项容器
+    .ant-form-item,
+    .ant-form-item-control,
+    .ant-form-item-control-input,
+    .ant-form-item-control-input-content {
+      background-color: transparent !important;
+      background: transparent !important;
+    }
+
+    // 按钮组和按钮容器
+    .ant-space,
+    .ant-space-item,
+    .ant-btn-group,
+    .button-group,
+    .btn-group,
+    [class*="button"],
+    [class*="action"] {
+      background-color: transparent !important;
+      background: transparent !important;
+    }
+
+    // Row 和 Col 布局组件
+    .ant-row,
+    .ant-col {
+      background-color: transparent !important;
+      background: transparent !important;
+    }
+  }
+
+  // ========== 表单内所有按钮区域透明背景 ==========
+  .ant-form {
+    // 表单内的按钮操作区域
+    .ant-form-item:last-child,
+    .form-actions,
+    .form-buttons,
+    .submit-row {
+      background-color: transparent !important;
+      background: transparent !important;
+
+      .ant-form-item-control-input-content {
+        background-color: transparent !important;
+        background: transparent !important;
+      }
+    }
+  }
+
+  // ========== Space组件内的按钮透明背景 ==========
+  .ant-space {
+    background-color: transparent !important;
+    background: transparent !important;
+
+    .ant-space-item {
+      background-color: transparent !important;
+      background: transparent !important;
+    }
+  }
+}

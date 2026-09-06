@@ -1,0 +1,104 @@
+html,
+body,
+#app {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family:
+    Helvetica Neue,
+    Helvetica,
+    PingFang SC,
+    Hiragino Sans GB,
+    Microsoft YaHei,
+    SimSun,
+    sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  font-size: 14px;
+  overflow: hidden;
+  position: relative;
+}
+
+@for $i from 1 through 20 {
+  .mt#{$i} {
+    margin-top: #{$i}px;
+  }
+  .mr#{$i} {
+    margin-right: #{$i}px;
+  }
+  .mb#{$i} {
+    margin-bottom: #{$i}px;
+  }
+  .ml#{$i} {
+    margin-left: #{$i}px;
+  }
+  .pt#{$i} {
+    padding-top: #{$i}px;
+  }
+  .pr#{$i} {
+    padding-right: #{$i}px;
+  }
+  .pb#{$i} {
+    padding-bottom: #{$i}px;
+  }
+  .pl#{$i} {
+    padding-left: #{$i}px;
+  }
+  .order#{$i} {
+    order: #{$i};
+  }
+}
+
+.default-main {
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* 全局遮罩-s */
+.ba-layout-shade {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999990;
+}
+.ant-layout {
+  background-color: var(--ba-bg-color);
+}
+.customLabel {
+  position: relative;
+  max-width: 100%;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.88);
+  font-size: 14px;
+}
+
+.full-modal {
+  .ant-modal {
+    max-width: 100%;
+    top: 0;
+    padding-bottom: 0;
+    margin: 0;
+  }
+  .ant-modal-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .ant-modal-body {
+    flex: 1;
+  }
+}
+.right-border {
+  border-right: 1px solid var(--ba-border-color);
+}
+
+@media (max-width: 575px) {
+  .ant-form-item .ant-form-item-label {
+    padding: 0;
+  }
+}

@@ -1,0 +1,14 @@
+<svg width="150" height="120" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="100" height="80" rx="4" fill="#F0F2F5"/>
+  <!-- Sidebar -->
+  <rect x="0" y="0" width="30" height="80" fill="#2C3E50"/>
+  <!-- Sidebar Menu Items -->
+  <rect x="6" y="10" width="18" height="4" rx="2" fill="#FFFFFF"/>
+  <rect x="6" y="20" width="18" height="4" rx="2" fill="#FFFFFF"/>
+  <rect x="6" y="30" width="18" height="4" rx="2" fill="#FFFFFF"/>
+  <!-- Content Area -->
+  <rect x="35" y="10" width="55" height="8" rx="2" fill="#BDBDBD"/>
+  <rect x="35" y="25" width="55" height="4" rx="2" fill="#BDBDBD"/>
+  <rect x="35" y="35" width="55" height="4" rx="2" fill="#BDBDBD"/>
+  <rect x="35" y="45" width="40" height="4" rx="2" fill="#BDBDBD"/>
+</svg>

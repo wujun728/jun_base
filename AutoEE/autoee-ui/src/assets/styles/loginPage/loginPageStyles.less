@@ -1,0 +1,81 @@
+#userLayout.user-layout-wrapper {
+  height: 100%;
+  .container {
+    width: 100%;
+    min-height: 100%;
+    background: #e2effc url(./loginPageBackground.jpg) no-repeat center top;
+    background-size: 100%;
+    vertical-align: middle;
+    display: flex;
+
+    a {
+      text-decoration: none;
+    }
+    .loginbox {
+      width: 800px;
+      height: 500px;
+      margin: auto;
+      background: #ffffff;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+      border-radius: 8px;
+    }
+    .top {
+      text-align: center;
+      width: 355px;
+      height: 500px;
+      background: url(@/assets/styles/loginPage/loginPageLogoBackground.png) no-repeat center top;
+      float: left;
+
+      .header {
+        height: 44px;
+        line-height: 44px;
+
+        .logo {
+          height: 60px;
+          width: 100%;
+          vertical-align: top;
+          margin-top: 110px;
+          margin-bottom: 10px;
+          border-style: none;
+        }
+
+        .title {
+          font-size: 24px;
+          color: #ffffff;
+          font-family: Avenir, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+          font-weight: 600;
+          position: relative;
+          top: 2px;
+        }
+      }
+    }
+
+    .main {
+      width: 445px;
+      height: 500px;
+      margin: 0 auto;
+      float: left;
+      display: block;
+      padding: 0 30px;
+      position: relative;
+    }
+    .user-layout-login {
+      .ant-page-header {
+        padding: 60px 0 45px 0;
+      }
+      .getCaptcha {
+        display: block;
+        width: 100%;
+        height: 40px;
+      }
+
+      button.login-button {
+        padding: 0 15px;
+        font-size: 16px;
+        height: 40px;
+        width: 100%;
+        border-radius: 4px;
+      }
+    }
+  }
+}

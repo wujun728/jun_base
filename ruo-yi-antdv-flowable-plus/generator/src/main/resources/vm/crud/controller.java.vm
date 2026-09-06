@@ -1,0 +1,268 @@
+package ${packageName}.controller;
+
+import cn.hutool.core.util.StrUtil;
+import java.util.List;
+import com.danny.common.annotation.Log;
+import com.danny.common.core.domain.R;
+import com.github.pagehelper.PageInfo;
+import com.danny.common.core.page.PageDomain;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import com.danny.common.enums.BusinessType;
+import com.danny.common.utils.poi.ExcelUtil;
+import javax.validation.constraints.*;
+import org.springframework.web.bind.annotation.*;
+import com.danny.common.core.controller.BaseController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.beans.factory.annotation.Autowired;
+import ${packageName}.domain.${ClassName};
+import ${packageName}.service.${ClassName}Service;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+
+/**
+ * ${functionName}Controller
+ * @author ${functionAuthor}
+ * @email ${functionAuthorEmail}
+ * @date ${datetime}
+ */
+@RestController
+@RequestMapping("/${moduleName}/${businessName}")
+public class ${ClassName}Controller extends BaseController
+{
+    @Autowired
+    private ${ClassName}Service ${className}Service;
+
+    /**
+     * 查询${functionName}列表
+     */
+    @PreAuthorize("@ss.hasPermi('${permissionPrefix}:list')")
+    @GetMapping("/list")
+    public R<Page> list(${ClassName} param, HttpServletRequest request, HttpServletResponse response)
+    {
+        LambdaQueryWrapper<${ClassName}> query = Wrappers.<${ClassName}>lambdaQuery();
+
+#foreach($column in $columns)
+#set($queryType=$column.queryType)
+#set($javaField=$column.javaField)
+#set($javaType=$column.javaType)
+#set($columnName=$column.columnName)
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#if($column.query || $columnName == $subTableFkName)
+##非日期
+#if($javaType != 'Date')
+#if($column.queryType == "EQ")
+        query.eq(StrUtil.isNotBlank(param.get$AttrName()),${ClassName}::get$AttrName,param.get$AttrName());
+#elseif($queryType == "NE")
+        query.ne(StrUtil.isNotBlank(param.get$AttrName()),${ClassName}::get$AttrName,param.$column.javaField);
+#elseif($queryType == "GT")
+        query.gt(StrUtil.isNotBlank(param.get$AttrName()),${ClassName}::get$AttrName,param.$column.javaField);
+#elseif($queryType == "GTE")
+        query.ge(StrUtil.isNotBlank(param.get$AttrName()),${ClassName}::get$AttrName,param.$column.javaField);
+#elseif($queryType == "LT")
+        query.lt(StrUtil.isNotBlank(param.get$AttrName()),${ClassName}::get$AttrName,param.$column.javaField);
+#elseif($queryType == "LTE")
+        query.le(StrUtil.isNotBlank(param.get$AttrName()),${ClassName}::get$AttrName,param.$column.javaField);
+#elseif($queryType == "LIKE")
+        query.like(StrUtil.isNotBlank(param.get$AttrName()),${ClassName}::get$AttrName,param.get$AttrName());
+#end
+#else
+##日期
+#if($column.queryType == "EQ")
+        //EQ
+        query.apply(StrUtil.isNotBlank(param.getBegin$AttrName()), "date_format($columnName,'%y%m%d') = date_format({0},'%y%m%d')",param.getBegin$AttrName());
+#elseif($queryType == "GT")
+        //GT
+        query.apply(StrUtil.isNotBlank(param.getBegin$AttrName()), "date_format($columnName,'%y%m%d') > date_format({0},'%y%m%d')",param.getBegin$AttrName());
+#elseif($queryType == "GTE")
+        //GTE
+        query.apply(StrUtil.isNotBlank(param.getBegin$AttrName()), "date_format($columnName,'%y%m%d') >= date_format({0},'%y%m%d')",param.getBegin$AttrName());
+#elseif($queryType == "LT")
+        //LT
+        query.apply(StrUtil.isNotBlank(param.getBegin$AttrName()), "date_format($columnName,'%y%m%d') < date_format({0},'%y%m%d')",param.getBegin$AttrName());
+#elseif($queryType == "LTE")
+        //LTE
+        query.apply(StrUtil.isNotBlank(param.getBegin$AttrName()), "date_format($columnName,'%y%m%d') <= date_format({0},'%y%m%d')",param.getBegin$AttrName());
+#elseif($queryType == "BETWEEN")
+        //BETWEEN
+        query.apply(StrUtil.isNotBlank(param.getBegin$AttrName()), "date_format($columnName,'%y%m%d') >= date_format({0},'%y%m%d')",param.getBegin$AttrName());
+        query.apply(StrUtil.isNotBlank(param.getEnd$AttrName()), "date_format($columnName,'%y%m%d') <= date_format({0},'%y%m%d')",param.getEnd$AttrName());
+#end
+#end
+#end
+#end
+
+        PageDomain pageDomain = new PageDomain(request, response);
+        Page page = ${className}Service.page(new Page(pageDomain.getPageNum(), pageDomain.getPageSize()), query);
+        return R.data(page);
+    }
+
+    /**
+     * 获取${functionName}详细信息
+     */
+    @PreAuthorize("@ss.hasPermi('${permissionPrefix}:query')")
+    @GetMapping(value = "/{${pkColumn.javaField}}")
+    public R<${ClassName}> detail(@PathVariable("${pkColumn.javaField}") ${pkColumn.javaType} ${pkColumn.javaField})
+    {
+        return R.data(${className}Service.getById(${pkColumn.javaField}));
+    }
+
+    /**
+     * 新增${functionName}
+     */
+    @PreAuthorize("@ss.hasPermi('${permissionPrefix}:add')")
+    @Log(title = "${functionName}", businessType = BusinessType.INSERT)
+    @PostMapping
+    public R add(@RequestBody @Validated  ${ClassName} ${className})
+    {
+#if($hasAttach)
+        ${className}Service.su(${className});
+        return R.data(${className});
+#else
+        return R.status(${className}Service.saveOrUpdate(${className}));
+#end
+    }
+
+    /**
+     * 修改${functionName}
+     */
+    @PreAuthorize("@ss.hasPermi('${permissionPrefix}:edit')")
+    @Log(title = "${functionName}", businessType = BusinessType.UPDATE)
+    @PutMapping
+    public R edit(@RequestBody @Validated ${ClassName} ${className})
+    {
+#if($hasAttach)
+        ${className}Service.su(${className});
+        return R.data(${className});
+#else
+        return R.status(${className}Service.saveOrUpdate(${className}));
+#end
+    }
+
+#if($hasDisableEnable)
+    /**
+     * 更新${functionName}状态
+     */
+    @PreAuthorize("@ss.hasPermi('${permissionPrefix}:edit')")
+    @Log(title = "${functionName}", businessType = BusinessType.UPDATE)
+    @PutMapping("/updateStatus")
+    public R updateStatus(@RequestBody ${ClassName} ${className})
+    {
+        return R.status(${className}Service.updateStatus(${className}));
+    }
+#end
+
+    /**
+     * 删除${functionName}
+     */
+    @PreAuthorize("@ss.hasPermi('${permissionPrefix}:remove')")
+    @Log(title = "${functionName}", businessType = BusinessType.DELETE)
+    @DeleteMapping("/{${pkColumn.javaField}s}")
+    public R remove(@PathVariable ${pkColumn.javaType}[] ids)
+    {
+        return R.status(${className}Service.delete${ClassName}ByIds(ids));
+    }
+
+#foreach($column in $columns)
+#if($column.columnName == "sort")
+    /**
+     * 获取最大编号
+     */
+    @PreAuthorize("@ss.hasPermi('${permissionPrefix}:query')")
+    @GetMapping("/findMaxSort")
+    public R findMaxSort()
+    {
+        return R.data(${className}Service.findMaxSort(new ${ClassName}()));
+    }
+#break
+#end
+#end
+
+#foreach($column in $uniqueColumns)
+#set($attrName = $column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+    /**
+     * 校验${column.columnComment}的唯一性
+     */
+    @PreAuthorize("@ss.hasPermi('${permissionPrefix}:query')")
+    @Log(title = "${functionName}", businessType = BusinessType.CHECK)
+    @GetMapping(value = {"/check${attrName}Unique/{${column.javaField}}/{id}", "/check${attrName}Unique/{${column.javaField}}"})
+    public R check${attrName}Unique(@NotBlank(message = "${column.columnComment}不允许为空") @PathVariable("${column.javaField}") String ${column.javaField}, @PathVariable(value = "id", required = false) String id) {
+        ${ClassName} ${className} = new ${ClassName}();
+        ${className}.set${attrName}(${column.javaField});
+        ${className}.setId(id);
+        ${className}Service.check${attrName}Unique(${className});
+        return R.status(Boolean.TRUE);
+    }
+
+#end
+    /**
+     * 导出${functionName}列表
+     */
+    @PreAuthorize("@ss.hasPermi('${permissionPrefix}:export')")
+    @Log(title = "${functionName}", businessType = BusinessType.EXPORT)
+    @GetMapping("/export")
+    public R export(${ClassName} param)
+    {
+
+
+        LambdaQueryWrapper<${ClassName}> query = Wrappers.<${ClassName}>lambdaQuery();
+
+#foreach($column in $columns)
+#set($queryType=$column.queryType)
+#set($javaField=$column.javaField)
+#set($javaType=$column.javaType)
+#set($columnName=$column.columnName)
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#if($column.query || $columnName == $subTableFkName)
+##非日期
+#if($javaType != 'Date')
+#if($column.queryType == "EQ")
+        query.eq(StrUtil.isNotBlank(param.get$AttrName()),${ClassName}::get$AttrName,param.get$AttrName());
+#elseif($queryType == "NE")
+        query.ne(StrUtil.isNotBlank(param.get$AttrName()),${ClassName}::get$AttrName,param.$column.javaField);
+#elseif($queryType == "GT")
+        query.gt(StrUtil.isNotBlank(param.get$AttrName()),${ClassName}::get$AttrName,param.$column.javaField);
+#elseif($queryType == "GTE")
+        query.ge(StrUtil.isNotBlank(param.get$AttrName()),${ClassName}::get$AttrName,param.$column.javaField);
+#elseif($queryType == "LT")
+        query.lt(StrUtil.isNotBlank(param.get$AttrName()),${ClassName}::get$AttrName,param.$column.javaField);
+#elseif($queryType == "LTE")
+        query.le(StrUtil.isNotBlank(param.get$AttrName()),${ClassName}::get$AttrName,param.$column.javaField);
+#elseif($queryType == "LIKE")
+        query.like(StrUtil.isNotBlank(param.get$AttrName()),${ClassName}::get$AttrName,param.get$AttrName());
+#end
+#else
+##日期
+#if($column.queryType == "EQ")
+        //EQ
+        query.apply(StrUtil.isNotBlank(param.getBegin$AttrName()), "date_format($columnName,'%y%m%d') = date_format({0},'%y%m%d')",param.getBegin$AttrName());
+#elseif($queryType == "GT")
+        //GT
+        query.apply(StrUtil.isNotBlank(param.getBegin$AttrName()), "date_format($columnName,'%y%m%d') > date_format({0},'%y%m%d')",param.getBegin$AttrName());
+#elseif($queryType == "GTE")
+        //GTE
+        query.apply(StrUtil.isNotBlank(param.getBegin$AttrName()), "date_format($columnName,'%y%m%d') >= date_format({0},'%y%m%d')",param.getBegin$AttrName());
+#elseif($queryType == "LT")
+        //LT
+        query.apply(StrUtil.isNotBlank(param.getBegin$AttrName()), "date_format($columnName,'%y%m%d') < date_format({0},'%y%m%d')",param.getBegin$AttrName());
+#elseif($queryType == "LTE")
+        //LTE
+        query.apply(StrUtil.isNotBlank(param.getBegin$AttrName()), "date_format($columnName,'%y%m%d') <= date_format({0},'%y%m%d')",param.getBegin$AttrName());
+#elseif($queryType == "BETWEEN")
+        //BETWEEN
+        query.apply(StrUtil.isNotBlank(param.getBegin$AttrName()), "date_format($columnName,'%y%m%d') >= date_format({0},'%y%m%d')",param.getBegin$AttrName());
+        query.apply(StrUtil.isNotBlank(param.getEnd$AttrName()), "date_format($columnName,'%y%m%d') <= date_format({0},'%y%m%d')",param.getEnd$AttrName());
+#end
+#end
+#end
+#end
+
+        List<${ClassName}> list = ${className}Service.list(query);
+        ExcelUtil<${ClassName}> util = new ExcelUtil<${ClassName}>(${ClassName}.class);
+        return util.exportExcel(list, "${functionName}数据");
+    }
+
+}
