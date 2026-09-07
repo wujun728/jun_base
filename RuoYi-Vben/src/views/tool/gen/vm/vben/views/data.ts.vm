@@ -1,0 +1,144 @@
+﻿import { BasicColumn } from '@/components/Table';
+import { FormSchema } from '@/components/Form';
+#if(${dicts} != '')
+import { getDictOptions } from '@/utils/dict';
+import { useRender } from '@/hooks/component/useRender';
+#end
+export const formSchemas: FormSchema[] = [
+  #foreach($column in $columns)
+    #if($column.query)
+      #if($column.dictType)
+        #set($dictType=$column.dictType)
+      #else
+        #set($dictType="")
+      #end
+      #set($parentheseIndex=$column.columnComment.indexOf("（"))
+      #if($parentheseIndex != -1)
+        #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+      #else
+        #set($comment=$column.columnComment)
+      #end
+      #if($column.htmlType == "input")
+        #set($component="Input")
+      #elseif($column.htmlType == "textarea")
+        #set($component="InputTextArea")
+      #elseif($column.htmlType == "select")
+        #set($component="Select")
+      #elseif($column.htmlType == "radio")
+        #set($component="RadioButtonGroup")
+      #elseif($column.htmlType == "datetime" && $column.queryType != "BETWEEN")
+        #set($component="DatePicker")
+      #elseif($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+        #set($component="RangePicker")
+      #else
+        #set($component="Input")
+      #end
+      {
+        label: '${comment}',
+        field: '${column.javaField}',
+        component: '${component}',
+        #if($dictType != "")
+          componentProps: {
+            options: getDictOptions('$dictType')
+          },
+        #elseif($component == "DatePicker" || $component == "RangePicker")
+          componentProps: {
+            showTime: true,
+            format: 'YYYY-MM-DD HH:mm:ss',
+            valueFormat: 'YYYY-MM-DD HH:mm:ss',
+          },
+        #end
+      },
+    #end
+  #end
+];
+
+#if(${dicts} != '')
+const { renderDict } = useRender();
+#end
+export const columns: BasicColumn[] = [
+  #foreach($column in $columns)
+    #if($column.list)
+      #if($column.dictType)
+        #set($dictType=$column.dictType)
+      #else
+        #set($dictType="")
+      #end
+      #set($parentheseIndex=$column.columnComment.indexOf("（"))
+      #if($parentheseIndex != -1)
+        #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+      #else
+        #set($comment=$column.columnComment)
+      #end
+      {
+        title: '${comment}',
+        dataIndex: '${column.javaField}',
+        #if($dictType != "")
+          customRender: ({ value }) => renderDict(value, '$dictType'),
+        #end
+      },
+    #end
+  #end
+];
+
+export const modalSchemas: FormSchema[] = [
+  #foreach($column in $columns)
+    #if($column.edit)
+      #if($column.dictType)
+        #set($dictType=$column.dictType)
+      #else
+        #set($dictType="")
+      #end
+      #set($parentheseIndex=$column.columnComment.indexOf("（"))
+      #if($parentheseIndex != -1)
+        #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+      #else
+        #set($comment=$column.columnComment)
+      #end
+      #if($column.htmlType == "input")
+        #set($component="Input")
+      #elseif($column.htmlType == "textarea")
+        #set($component="InputTextArea")
+      #elseif($column.htmlType == "select")
+        #set($component="Select")
+      #elseif($column.htmlType == "radio")
+        #set($component="RadioButtonGroup")
+      #elseif($column.htmlType == "datetime" && $column.queryType != "BETWEEN")
+        #set($component="DatePicker")
+      #elseif($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+        #set($component="RangePicker")
+      #else
+        #set($component="Input")
+      #end
+      #if($column.required)
+        #set($required='true')
+      #else
+        #set($required='false')
+      #end
+      {
+        label: '${comment}',
+        field: '${column.javaField}',
+        required: ${required},
+        #if("" != $treeParentCode && $column.javaField == $treeParentCode)
+        component: 'TreeSelect',
+        #else
+        component: '${component}',
+        #end
+        #if($dictType != "")
+          componentProps: {
+            options: getDictOptions('$dictType')
+          },
+        #elseif($component == "DatePicker" || $component == "RangePicker")
+          componentProps: {
+            showTime: true,
+            format: 'YYYY-MM-DD HH:mm:ss',
+            valueFormat: 'YYYY-MM-DD HH:mm:ss',
+          },
+        #end
+        #if(${column.pk})
+          show: false,
+        #end
+      },
+    #end
+  #end
+];
