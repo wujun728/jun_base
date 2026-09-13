@@ -2,5 +2,6 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/RuoYi-Vue-3.92-UI-new/theme-antd" vcs="Git" />
   </component>
 </project>
